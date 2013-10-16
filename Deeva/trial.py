@@ -14,6 +14,4 @@ def load():
 
 def getSource():
     load()
-    for line in source:
-        print line
     return source 
