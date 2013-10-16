@@ -1,0 +1,37 @@
+<!doctype html>
+
+<html ng-app="deeva">
+
+<head ng-controller="SimpleController">
+  <title>Deeva - {{codeName}}</title>
+
+  <!-- Common css -->
+  <link rel="stylesheet" href="static/css/app.css">
+  <link rel="stylesheet" href="static/css/bootstrap.css">
+
+  <!-- Angular -->
+  <script src="static/lib/angular/angular.js"></script>  
+  
+  <!-- codemirror.net online code editor -->
+  <script src="static/lib/jquery/jquery-1.10.2.min.js"></script>
+  <script src="static/lib/codemirror-3.18/lib/codemirror.js"></script>  
+  <script src="static/lib/codemirror-3.18/mode/clike/clike.js"></script>
+  <link href="static/lib/codemirror-3.18/lib/codemirror.css" rel="stylesheet">
+  
+  <!-- Controller -->
+  <script src="static/js/controllers.js"></script>  
+</head>
+
+<body>
+  <h1>Deeva</h1>
+  <br>
+
+  <!-- populate with a CodeMirror instance -->
+  <div id="codeInputPane">
+  </div>
+	
+	<div> {{codeName}} </div>
+
+</body>
+
+</html>

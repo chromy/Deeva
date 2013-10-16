@@ -1,0 +1,8 @@
+*.pyc
+*.class
+*.log
+*.aux
+*.pdf
+docs/_build
+.env
+*~
