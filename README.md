@@ -3,6 +3,10 @@ Deeva
 
 [![Build Status](https://travis-ci.org/chromy/Deeva.png?token=XXSWJz9i5a1KH8iRHhzr&branch=master)](https://magnum.travis-ci.com/chromy/Deeva)
 
+Installation
+------------
+For OSX cry :(
+
 Building
 --------
 ```bash
