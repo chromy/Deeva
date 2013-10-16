@@ -9,7 +9,7 @@ def index():
 @app.route("/javacode.json")
 def code():
     codeName = "Trial code!"
-    code = trial.printTrialNo()
+    code = trial.getSource()
     return jsonify(codeName=codeName,
                    code=code)
 
