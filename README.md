@@ -1,7 +1,11 @@
 Deeva
 =====
 
-[![Build Status](https://magnum.travis-ci.com/chromy/Deeva.png?token=m7fgCEW8zGb4ttyG4Loj&branch=master)](https://magnum.travis-ci.com/chromy/Deeva)
+[![Build Status](https://travis-ci.org/chromy/Deeva.png?branch=master)](https://travis-ci.org/chromy/Deeva)
+
+Installation
+------------
+For OSX cry :(
 
 Building
 --------
