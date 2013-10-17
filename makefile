@@ -4,4 +4,4 @@ PY4J_JAR_PATH:=$(shell python -c "import py4j.java_gateway; print py4j.java_gate
 .PHONY: build
 
 build:
-	cd Deeva; javac *.java -classpath $(PY4J_JAR_PATH)
+	cd deeva; javac *.java -classpath $(PY4J_JAR_PATH)
