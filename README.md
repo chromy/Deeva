@@ -3,14 +3,11 @@ Deeva
 
 [![Build Status](https://travis-ci.org/chromy/Deeva.png?branch=master)](https://travis-ci.org/chromy/Deeva)
 
-Installation
-------------
-For OSX cry :(
-
 Building
 --------
 ```bash
 $ pip install -r requirements.txt
+$ make build
 ```
 
 Running Tests
