@@ -24,12 +24,19 @@
 
 <body>
   <h1>Deeva</h1>
+  <script>
+    function step() {
+      $.post("step", function(data) {
+        alert(data.step_number);
+      });
+    }
+  </script>
+  <button name="button" onclick="step()">Step</button>	
   <br>
 
   <!-- populate with a CodeMirror instance -->
   <div id="codeInputPane">
   </div>
-	
 	<div> {{codeName}} </div>
 
 </body>
