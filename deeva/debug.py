@@ -21,7 +21,7 @@ def connect_to_server():
 def get_debug():
     return debug
 
-filename = 'MyTrial.java'
+fileName = 'MyTrial.java'
 
 def load():
     source = []
