@@ -7,10 +7,10 @@ def create_java_debugger(classpath):
         debugger = gateway.jvm.Debug()
         return debugger
 
-fileName = sys.argv[1]
 
 def load():
     source = []
+    fileName = sys.argv[1]
     try:
         f = open(fileName, "r")
         for line in f:
