@@ -6,13 +6,18 @@ def create_java_debugger(classpath):
         debugger = gateway.jvm.Debug()
         return debugger
 
-fileName = 'MyTrial.java'
+fileName = 'deeva/Debug.java'
 
 def load():
     source = []
-    file = open(fileName, 'r')
-    for line in file:
-        source.append(line)
-    file.close()
-    return source
 
+    try:
+        f = open(fileName, "r")
+	for line in f:
+           source.append(line)
+    except IOError:
+        print 'cannot open', fileName
+    else:
+        print fileName, 'has', len(source), 'lines'
+        f.close()
+    return source
