@@ -1,8 +1,7 @@
 <!doctype html>
-
-<html ng-app="deeva">
-
-<head ng-controller="SimpleController">
+<html ng-app="deeva" ng-controller="SimpleController">
+<head>
+  <meta charset="utf-8">
   <title>Deeva - {{codeName}}</title>
 
   <!-- Common css -->
@@ -10,20 +9,27 @@
   <link rel="stylesheet" href="static/css/bootstrap.css">
 
   <!-- AngularJS -->
-  <script src="static/lib/angular/angular.min.js"></script>  
-  
+  <script src="static/lib/angular/angular.min.js"></script>
+
   <!-- codemirror.net online code editor -->
   <script src="static/lib/jquery/jquery-1.10.2.min.js"></script>
   <script src="static/lib/codemirror/codemirror-compressed.js"></script>
-  <script src="static/lib/codemirror/clike.js"></script>  
+  <script src="static/lib/codemirror/clike.js"></script>
   <link href="static/css/codemirror.css" rel="stylesheet">
-  
+
   <!-- Controller -->
-  <script src="static/js/controllers.js"></script>  
+  <script src="static/js/controllers.js"></script>
 </head>
 
 <body>
   <h1>Deeva</h1>
+
+  <br>
+
+  <!-- populate with a CodeMirror instance -->
+  <div id="codeInputPane">
+  </div>
+
   <script>
     function step() {
       $.post("step", function(data) {
@@ -31,13 +37,9 @@
       });
     }
   </script>
-  <button name="button" onclick="step()">Step</button>	
-  <br>
+  <button name="button" onclick="step()">Step</button>
 
-  <!-- populate with a CodeMirror instance -->
-  <div id="codeInputPane">
-  </div>
-	<div> {{codeName}} </div>
+  <div> {{codeName}} </div>
 
 </body>
 
