@@ -1,4 +1,5 @@
 import subprocess
+import time
 from lettuce import step, world, before, after
 
 @step(r'I have a simple Java program')
@@ -8,6 +9,8 @@ def simple_java_program(step):
 @step(r'I run the command "(.*)"')
 def run_the_command(step, cmd):
     world.p = subprocess.Popen(cmd.split())
+    time.sleep(0.2)
+    assert world.p.returncode is None
 
 @step(u'I see deeva running')
 def is_deeva_up(step):
