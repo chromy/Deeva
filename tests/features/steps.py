@@ -12,7 +12,7 @@ def run_the_command(step, cmd):
 @step(u'I see deeva running')
 def is_deeva_up(step):
     step.given('I go to "http://localhost:5000"')
-    step.then('I should see "Hello"')
+    step.then('I should see "Deeva"')
 
 @before.each_scenario
 def setup_p(scenario):

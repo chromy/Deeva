@@ -1,25 +1,10 @@
-import time
-from py4j.java_gateway import JavaGateway
-from py4j.protocol import Py4JNetworkError
+from py4j.java_gateway import JavaGateway, GatewayClient, launch_gateway
 
-debug = None
-
-def _connect_debug(gateway):
-    try:
-        return gateway.entry_point.getDebugger()
-    except Py4JNetworkError:
-        return None
-
-def connect_to_server():
-    global debug
-    gateway = JavaGateway()
-    debug = _connect_debug(gateway)
-    while debug is None:
-        # Add timeout
-        debug = _connect_debug(gateway)
-
-def get_debug():
-    return debug
+def create_java_debugger(classpath):
+        port = launch_gateway(classpath=classpath, die_on_exit=True)
+        gateway = JavaGateway(GatewayClient(port=port))
+        debugger = gateway.jvm.Debug()
+        return debugger
 
 fileName = 'MyTrial.java'
 

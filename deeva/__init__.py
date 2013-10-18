@@ -1,5 +1,5 @@
-from flask import Flask, jsonify, render_template, request
-from debug import get_debug, load
+from flask import Flask, jsonify, render_template, request, g
+from debug import load
 app = Flask('deeva')
 
 @app.route("/")
@@ -9,7 +9,7 @@ def index():
 @app.route("/step", methods=['POST'])
 def step():
     if request.method == 'POST':
-        return jsonify(step_number=get_debug().step())
+        return jsonify(step_number=app.debugger.step())
 
 @app.route("/javacode.json")
 def code():
@@ -19,5 +19,5 @@ def code():
                    code=code)
 
 if __name__ == '__main__':
-   app.run(host='0.0.0.0')
+   app.run(host='0.0.0.0', debug=True)
    print 'hello'

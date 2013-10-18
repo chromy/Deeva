@@ -5,5 +5,6 @@ Feature: Deeva should be runnable
  
     Scenario: Deeva can be started from the command line
       Given I have a simple Java program
-       When I run the command "./run_deeva.py"
+       When I run the command "./run_deeva.py prog"
        Then I see deeva running
+
