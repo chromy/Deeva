@@ -1,10 +1,10 @@
-from flask import Flask, jsonify, render_template, request, g
+from flask import Flask, jsonify, render_template, request, g, make_response
 from debug import load
 app = Flask('deeva')
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    return make_response(open('templates/index.html').read())
 
 @app.route("/step", methods=['POST'])
 def step():
