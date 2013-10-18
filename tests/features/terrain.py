@@ -4,7 +4,10 @@ import lettuce_webdriver.webdriver
 
 @before.all
 def setup_browser():
-    world.browser = webdriver.Chrome()
+    try:
+        world.browser = webdriver.Chrome()
+    except:
+        world.browser = webdriver.Firefox()
 
 @after.all
 def teardown_browser(total):
