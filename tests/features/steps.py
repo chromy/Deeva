@@ -9,7 +9,7 @@ def simple_java_program(step):
 @step(r'I run the command "(.*)"')
 def run_the_command(step, cmd):
     world.p = subprocess.Popen(cmd.split())
-    time.sleep(0.2)
+    time.sleep(5.0)
     assert world.p.returncode is None
 
 @step(u'I see deeva running')
