@@ -4,7 +4,7 @@ app = Flask('deeva')
 
 @app.route("/")
 def index():
-    return make_response(open('templates/index.html').read())
+    return make_response(open('deeva/templates/index.html').read())
 
 @app.route("/step", methods=['POST'])
 def step():

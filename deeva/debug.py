@@ -1,4 +1,5 @@
 from py4j.java_gateway import JavaGateway, GatewayClient, launch_gateway
+import sys
 
 def create_java_debugger(classpath):
         port = launch_gateway(classpath=classpath, die_on_exit=True)
@@ -6,11 +7,10 @@ def create_java_debugger(classpath):
         debugger = gateway.jvm.Debug()
         return debugger
 
-fileName = 'deeva/Debug.java'
+fileName = 'deeva/Debug.java' 
 
 def load():
     source = []
-
     try:
         f = open(fileName, "r")
 	for line in f:
