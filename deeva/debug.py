@@ -7,13 +7,13 @@ def create_java_debugger(classpath):
         debugger = gateway.jvm.Debug()
         return debugger
 
-fileName = 'deeva/Debug.java' 
 
 def load():
     source = []
+    fileName = sys.argv[1]
     try:
         f = open(fileName, "r")
-	for line in f:
+        for line in f:
            source.append(line)
     except IOError:
         print 'cannot open', fileName
