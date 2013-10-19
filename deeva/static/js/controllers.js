@@ -1,10 +1,12 @@
 var deeva = angular.module('deeva', []);
 
+// CUrrently is a whole document controller
 deeva.controller('SimpleController', function ($scope, $http) {
   $scope.prevLine = 0;
   $scope.currentLine = 1;
   $scope.breakPoints = new Array();
 
+  // When loaded, invoke a GET method to ask for Java code.
   $http.get('./javacode.json')
     .success(function(data) {
       $scope.codeName = data.codeName;
@@ -18,7 +20,9 @@ deeva.controller('SimpleController', function ($scope, $http) {
       $scope.displayCode();
   });
 
+  // Initialze codeMirror and display it
   $scope.displayCode = function() {
+    // Initialize codeMirror
     $scope.codeMirror = CodeMirror(document.getElementById('codeInputPane'), {
       mode: 'text/x-java',
       tabSize: 4,
@@ -28,6 +32,8 @@ deeva.controller('SimpleController', function ($scope, $http) {
       readOnly: "nocursor",
       gutters: ["CodeMirror-linenumbers", "breakpoints"],
     });
+    // Set an event handler when the gutter is clicked
+    // which update frontend as well ass invoke a method setBreakPoints
     $scope.codeMirror.on("gutterClick", function(cm, line) {
       var info = cm.lineInfo(line);
       var breakPoint;
@@ -40,23 +46,25 @@ deeva.controller('SimpleController', function ($scope, $http) {
       }
       cm.setGutterMarker(line, "breakpoints", breakPoint);
       $scope.setBreakPoints();
-      console.log($scope.breakPoints);
     });
+    // Load an input file to be display in codeMirror
     for (index = 0;index < $scope.code.length;index++) {
       $scope.codeMirror.setLine(index, $scope.code[index]);
     }
   }
 
+  // Invoke a POST method to backend to send a data about a set of breakpoint.
   $scope.setBreakPoints = function() {
     $http.post('breakPoints', $scope.breakPoints)
       .success(function(data) {
-        console.log(data.status);
+        //console.log(data.status);
       })
       .error(function(data) {
         console.log("There is an error sending break points " + data.status);
     });
   }
 
+  // Return a div that contain a marker for breakpoint.
   $scope.makeBreakPoint = function () {
     var breakPoint = document.createElement("div");
     breakPoint.style.color = "#0000FF";
@@ -64,6 +72,14 @@ deeva.controller('SimpleController', function ($scope, $http) {
     return breakPoint;
   }
 
+  // High light the current line. The previous line high light is also removed.
+  $scope.highLightLine = function() {
+    var BACK_CLASS = "CodeMirror-activeline-background";
+    $scope.codeMirror.removeLineClass($scope.prevLine, "background", BACK_CLASS);
+    $scope.codeMirror.addLineClass($scope.currentLine, 'background', BACK_CLASS);
+  }
+
+  // Called by step button which send a POST method to backend infroming step occur
   $scope.step = function() {
     if ($scope.currentLine <= $scope.code.length) {
       $http.post('step')
@@ -78,12 +94,6 @@ deeva.controller('SimpleController', function ($scope, $http) {
           console.log("There is an error on step()");
       });
     }
-  }
-
-  $scope.highLightLine = function() {
-    var BACK_CLASS = "CodeMirror-activeline-background";
-    $scope.codeMirror.removeLineClass($scope.prevLine, "background", BACK_CLASS);
-    $scope.codeMirror.addLineClass($scope.currentLine, 'background', BACK_CLASS);
   }
 
 });
