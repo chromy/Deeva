@@ -24,20 +24,16 @@
 <body>
   <h1>Deeva</h1>
 
+<div id="code"></div>
+
   <br>
 
+<div>
   <!-- populate with a CodeMirror instance -->
   <div id="codeInputPane">
   </div>
-
-  <script>
-    function step() {
-      $.post("step", function(data) {
-        alert(data.step_number);
-      });
-    }
-  </script>
-  <button name="button" onclick="step()">Step</button>
+</div>
+  <button ng-click="step()">Step</button>
 
   <div> {{codeName}} </div>
 
