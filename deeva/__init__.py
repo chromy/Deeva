@@ -6,6 +6,12 @@ app = Flask('deeva')
 def index():
     return make_response(open('deeva/templates/index.html').read())
 
+@app.route("/breakPoints", methods=['POST'])
+def breakPoints():
+    if request.method == 'POST':
+        breakPoints = request.data
+        return jsonify(status='ok')
+
 @app.route("/step", methods=['POST'])
 def step():
     if request.method == 'POST':
@@ -20,4 +26,4 @@ def code():
 
 if __name__ == '__main__':
    app.run()
-   print 'hello'
+   print 'hello's
