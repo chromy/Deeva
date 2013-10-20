@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 
-import os
+import os, webbrowser
 from deeva import app, debug
 
 def main(prog):
@@ -9,6 +9,7 @@ def main(prog):
     app.debugger = debug.create_java_debugger(classpath)
 
     # Start Flask
+    webbrowser.open('http://localhost:5000')
     app.run()
 
 if __name__ == "__main__":
