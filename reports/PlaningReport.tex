@@ -1,6 +1,7 @@
 \documentclass[11pt]{article}
 
 \usepackage{listings}
+\usepackage{subfigure}
 \usepackage{graphicx}
 \usepackage{titling}
 \usepackage{fullpage}
@@ -50,17 +51,20 @@ Immediately after we got a group assignment we had a very short stand up group m
 
 \subsection{First Group Meeting}
 After our first meeting with Tristan, we had our first formal group meeting with the information Tristan had provided us. We decided to use Agile Programming as we go along. During the meeting, we came up with some research topics that were neccessary for the project such as: tools/frameworks, different java debugger comparison, getting first year java projects and etc. Everyone picked one story base on their preference with a set deadline. For example, Krit and Kira were working on the comparison of different debuggers, we used google docs for editing and gathering information that we had found. Hector and Felix were working on researching on frameworks. Alina was assigned with making estimation pokers and getting the first year java projects. 
-\begin{figure}[h!]
+
+\begin{figure}[ht]
 \centering
-\includegraphics[width=110mm]{estimation.jpg}
-\end{figure}
-\begin{figure}[h!]
-\centering
-\includegraphics[width=50mm]{UpdatedPlan.jpg}
+\subfigure[Planning Poker Game]{%
+\includegraphics[height=55mm]{estimation.jpg}
+\label{fig:subfigure1}}
+\quad
+\subfigure[Updated Plan]{%
+\includegraphics[height=70mm]{UpdatedPlan.jpg}
+\label{fig:subfigure2}}
 \end{figure}
 
 \subsection{Second Group Meeting}
-In our second group meeting we discussed the research results from the previous iteration. We decided which tools would best fit our requirements and would be easy to integrate between each other. Afterwards, we created a formal plan that covers: iteration-by-iteration, all the milestones needed to deliver the product in time. For example, by week 5 we plan to have a minimal-feature demo to show Tristan and by week 7 we plan to have a basic-feature debugger that can get tested by first year students starting the `Intro to Java' course. Finally, we created new stories for each stub part of our minimal implementation. Again, we used Planning Poker to estimate the stories and then allocate them to a memeber of the team. For example, the card 'Front end' got a score of 3 and got allocated to Krit.
+\indent In our second group meeting we discussed the research results from the previous iteration. We decided which tools would best fit our requirements and would be easy to integrate between each other. Afterwards, we created a formal plan that covers: iteration-by-iteration, all the milestones needed to deliver the product in time. For example, by week 5 we plan to have a minimal-feature demo to show Tristan and by week 7 we plan to have a basic-feature debugger that can get tested by first year students starting the `Intro to Java' course. Finally, we created new stories for each stub part of our minimal implementation. Again, we used Planning Poker to estimate the stories and then allocate them to a memeber of the team. For example, the card 'Front end' got a score of 3 and got allocated to Krit.
 
 We started work on an end-to-end stub solution i.e. method stubs for a basic
 debugger but correct interoperability between the tools we would be using.
