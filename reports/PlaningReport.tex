@@ -56,11 +56,13 @@ After our first meeting with Tristan, we had our first formal group meeting with
 \centering
 \subfigure[Planning Poker Game]{%
 \includegraphics[height=55mm]{estimation.jpg}
-\label{fig:subfigure1}}
+\label{fig:figure1}}
 \quad
 \subfigure[Updated Plan]{%
 \includegraphics[height=70mm]{UpdatedPlan.jpg}
-\label{fig:subfigure2}}
+\label{fig:figure2}}
+\caption{Agile Programming methods}
+\label{fig:figure}
 \end{figure}
 
 \subsection{Second Group Meeting}
@@ -102,19 +104,13 @@ All requirements and changes are displayed in the project plan.
 
 \begin{description}
   \item[Trello] \hfill \\
-  As an Information Radiator\footnote{\tt{https://www.atlassian.com/wallboards/information-radiators.jsp}} we decided to use an electronic version, Trello, which allows us to track our progress and average velocity. We decided to use Trello as it fulfills most of the key features required for such a tool: it is easy to use and update, relatively flexible and allows for communications between members without to much interruption\footnote{\tt{https://www.atlassian.com/wallboards/information-radiators.jsp}}. Electronic notice boards are a manageable alternative to physical boards and we found it extremely useful when it came to keeping everyone informed on the general progress and keeping all the information in one compact environment. 
+  As an Information Radiator\footnote{\tt{https://www.atlassian.com/wallboards/information-radiators.jsp}} we decided to use an electronic version, Trello (see Figure \ref{fig:figure4}), which allows us to track our progress and average velocity. We decided to use Trello as it fulfills most of the key features required for such a tool: it is easy to use and update, relatively flexible and allows for communications between members without to much interruption. Electronic notice boards are a manageable alternative to physical boards and we found it extremely useful when it came to keeping everyone informed on the general progress and keeping all the information in one compact environment. 
   A Trello board was created for a better project management process. There are several different swimlanes on the board: ``Proposed'', which allows all members to throw in ideas; ``In analysis'', where people talk about their ideas and have a discussion with group members to see if the story is feasible. If it is, the card will be then moved to ``In estimation'' where we gather together to use planning pokers to give a complexity points to the story. Otherwise, the story will be moved to ``Discarded''. The reason why we want to keep track of what we have discarded is that we might have thought we would not have time for it but in reality we did have time at the end, we might want to move it back and reconsider it. After estimation, the card will be assigned to group members with a set due date and be moved into ``In development'' on the Trello board. Once the development is complete, the card should be moved into ``In review''. This is when we need someone to review our code to improve our styling and pattern-usage.  
-\begin{figure}[h!]
-\centering
-\includegraphics[width=100mm]{Trello.png}
-\end{figure}
+
   \item[Planing Poker] \hfill \\
-We are using Planning Poker in order to estimate stories in each cycle of development. This method is known to avoid anchoring and will produce more accurate, less optimistic story point estimations\footnote{\tt{http://en.wikipedia.org/wiki/Planning\_poker\#Planning\_poker\_benefits}}. This technique takes some time to get used to because initially the story point bared little meaning to us. As the tasks got more concrete and we got used to compare stories against numbers in the fibonacci sequence the poker game proved to be a very efficient method. 
+We are using Planning Poker (see Figure \ref{fig:figure3}) in order to estimate stories in each cycle of development. This method is known to avoid anchoring and will produce more accurate, less optimistic story point estimations\footnote{\tt{http://en.wikipedia.org/wiki/Planning\_poker\#Planning\_poker\_benefits}}. This technique takes some time to get used to because initially the story point bared little meaning to us. As the tasks got more concrete and we got used to compare stories against numbers in the fibonacci sequence the poker game proved to be a very efficient method. 
 For example, it helped determine when people aren't really talking about the same scope for a certain task. Frequently we have a task like ``Set up the back end." and one person gives a task a 2 while another gives it an 8. The first person thinks the task title means ``Write some stubs so the middleware can integrate." while the second thinks it means ``Implement the backend up to the minimal specification.". So using planing poker has already helped us make sure we're all on the same page. One of our group members had hand-made a set of pokers just for estimation. It contains Fibonacci number 0 - 13 and ``infinity'' if we think it's impossible to do as well as ``coffee time'' if we think we need a break. 
-\begin{figure}[h!]
-\centering
-\includegraphics[width=100mm]{planningPokers.jpg}
-\end{figure}  
+ 
   \item[Facebook Group] \hfill \\
   For questions and comment that are too general or conversational for Trello.
   \item[Google Docs] \hfill \\
@@ -123,6 +119,19 @@ For example, it helped determine when people aren't really talking about the sam
   Source control which somebody else manages and is easily accessible from anywhere
   (which also plays nice with tools like Travis).
 
+
+\begin{figure}[ht]
+\centering
+\subfigure[Trello Board]{%
+\includegraphics[height=50mm]{Trello.png}
+\label{fig:figure4}}
+\quad
+\subfigure[Planning Poker Cards]{%
+\includegraphics[height=35mm]{planningPokers.jpg}
+\label{fig:figure3}}
+\caption{Tools used}
+\label{fig:figure}
+\end{figure}
 
 \end{description}
 
