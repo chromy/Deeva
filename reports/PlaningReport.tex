@@ -27,12 +27,10 @@
 Our group was assigned to a project to build a simple but powerful Java debugger to help teach first year computing students Java.
 
 Our supervisor Dr.~Tristan Allwood proposed this project for two main reasons.
-Firstly although he would like to avoid teaching Java in a way that made students dependent on a `magic' IDE like Eclipse this becomes difficult without a good external debugger like GDB is for C\footnote{The various external Java debuggers like JDB all have serious bugs and/or usability problems.}.
+Firstly although he would like to avoid teaching Java in a way that made students dependent on a `magic' IDE like Eclipse this becomes difficult without a good external debugger like GDB which is for C\footnote{The various external Java debuggers like JDB all have serious bugs and/or usability problems.}.
 Secondly many students initially don't have a clear mental picture of what the computer is doing\footnote{Roughly half are programing in an imperative language for the first time.} so it would be good for students to be able to graphically inspect the stack and heap of a running Java program in a similar way to how they are being taught to visualize the stack and heap in lectures.
 
 To fix these problems he envisioned a Java debugger that was: started from the command line (to avoid IDE magic), intuitive enough to used by people who had not previously used a debugger (but powerful enough to be useful) and which could visually display the state of the stack and the heap to help further the development of a mental model of Java.
-
-%%After we discussed with , who proposed this project, we understood that the problem while teaching Java to first year students is that students tend to get really dependant on IDE like Eclipse with functionalities like auto-fill etc. Tristan has tried alternatives like using JDB however it sometimes gets out of sync and breaks. This is why he wants a simpler version of IDE that is more light-weight.
 
 \section{How we prepared the Plan}
 
@@ -46,10 +44,13 @@ Agile
 
 By meeting our project owner every week we hope to foster an accurate understanding of the prowe problems
 
-\subsection{0th Group Meeting}
+\subsection{0th group meeting}
 Immediately after we got a group assignment we had a very short stand up group meeting where we agreed which of us would arrange a meeting with Tristan, set-up Trello and create a Github repository.  
 
-\subsection{First Group Meeting}
+\subsection{First meeting with Tristan}
+During the meeting that we arranged with Tristan, we talked through what we had understood from the specification for the project. We also asked him to go through his expectations in detials so that we could get a full understanding on the project. For example, what core functionalities does the debugger need and how it should be used e.g. how it should be started from the command line. We wrote down our  meeting minutes on Google Docs.
+
+\subsection{First group meeting}
 After our first meeting with Tristan, we had our first formal group meeting with the information Tristan had provided us. We decided to use Agile Programming as our development methodology as we go along. During the meeting, we came up with some research topics that were neccessary for the project such as: tools/frameworks, comparison of different java debuggers and etc. Everyone picked one story based on their preference with a set deadline. For example, Krit and Kira were working on the comparison of different debuggers. Hector and Felix were researching on frameworks and tools. Alina was assigned with making estimation pokers and getting the first year java projects. We used google docs for editing and gathering information that we had found. 
 
 \begin{figure}[ht]
@@ -63,7 +64,7 @@ After our first meeting with Tristan, we had our first formal group meeting with
 \label{fig:subfigure2}}
 \end{figure}
 
-\subsection{Second Group Meeting}
+\subsection{Second group meeting}
 \indent In our second group meeting we discussed the research results from the previous iteration. We decided which tools would best fit our requirements and would be easy to integrate between each other. Afterwards, we created a formal plan that covers: iteration-by-iteration, all the milestones needed to deliver the product in time. For example, by week 5 we plan to have a minimal-feature demo to show Tristan and by week 7 we plan to have a basic-feature debugger that can get tested by first year students starting the `Intro to Java' course. Finally, we created new stories for each stub part of our minimal implementation. Again, we used Planning Poker to estimate the stories and then allocate them to a memeber of the team. For example, the card 'Front end' got a score of 3 and got allocated to Krit.
 
 We started work on an end-to-end stub solution i.e. method stubs for a basic
