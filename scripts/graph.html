@@ -28,7 +28,7 @@
 <script src="cloudlayout.js"></script>
 <script type="text/javascript">
 d3.csv("data.csv", function(data) {
-  var totals = data.map(function(d) {return +d.total;});
+  var totals = data.map(function(d) {return +d.time;});
   console.log(totals);
   data = totals;
 
