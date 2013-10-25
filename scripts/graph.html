@@ -28,9 +28,13 @@
 <script src="cloudlayout.js"></script>
 <script type="text/javascript">
 d3.csv("statistics.csv", function(data) {
-  var totals = data.map(function(d) {console.log(d);});
-  console.log(totals);
-  data = totals;
+  var data = data.map(function(d) {
+    return {
+      time: (+d.time)*1000,
+      url: "http://github.com/chromy/Deeva/commit/" + d.commit,
+    }
+  });
+  console.log(data);
 
   var height = 20*data.length
   var chart = d3.select("body").append("svg")
@@ -41,7 +45,7 @@ d3.csv("statistics.csv", function(data) {
     .attr("transform", "translate(20.5,20.5)");
 
     var x = d3.scale.linear()
-      .domain([0, d3.max(data)])
+      .domain([0, d3.max(data, function(d) {return d.time;})])
       .range(["0px", "420px"]);
 
     chart.selectAll("line")
@@ -65,21 +69,23 @@ d3.csv("statistics.csv", function(data) {
 
   chart.selectAll("rect")
       .data(data)
-    .enter().append("rect")
+    .enter().append("svg:a")
+        .attr("xlink:href", function(d) { return d.url; })
+      .append("rect")
       .attr("y", function(d, i) { return i * 20; })
-      .attr("width", x)
+      .attr("width", function(d) { return x(d.time); })
       .attr("height", 20);
 
   chart.selectAll(".bar")
       .data(data)
     .enter().append("text")
       .attr("class", "bar")
-      .attr("x", function(d, i) { return x(d) })
+      .attr("x", function(d, i) { return x(d.time); })
       .attr("y", function(d, i) { return i * 20 + 20 / 2; })
       .attr("dx", -3)
       .attr("dy", ".35em")
       .attr("text-anchor", "end")
-      .text(String);
+      .text(function(d, i) { return String(d.time); });
 
   chart.append("line")
       .attr("y1", 0)
