@@ -7,7 +7,7 @@ main() {
     echo "commit, time"
     # hack to measure the beginning of time
     cp $(dirname $0)/start-time $(dirname $0)/xxx__start-time 
-    command="echo $hash, `$(dirname $0)/xxx__start-time`"
+    command='echo $hash, `$(dirname $0)/xxx__start-time`'
     $(dirname $0)/run-command-on-git-revisions -v $start $end "$command"
     rm $(dirname $0)/xxx__start-time 
 }
