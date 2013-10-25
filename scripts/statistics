@@ -5,7 +5,7 @@ end=$2
 
 main() {
     echo "commit, time"
-    command="echo $hash, $(dirname $0)/start-time"
+    command="echo $hash, `$(dirname $0)/start-time`"
     $(dirname $0)/run-command-on-git-revisions -v $start $end "$command"
 }
 
