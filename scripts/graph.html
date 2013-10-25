@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>D3 CSV</title>
+    <style>
+      body {
+    font-family: sans-serif;
+    font-size: 14px;
+       text-rendering: optimizeLegibility;
+      }
+  .chart rect {
+      stroke: white;
+      fill: steelblue;
+    }
+    line {
+    shape-rendering: crispEdges;
+  }
+
+  .bar {
+    fill: white;
+  }
+
+</style>
+</head>
+<body>
+<script src="d3.v3.min.js"></script>
+<script src="cloudlayout.js"></script>
+<script type="text/javascript">
+d3.csv("data.csv", function(data) {
+  var totals = data.map(function(d) {return +d.total;});
+  console.log(totals);
+  data = totals;
+
+  var height = 20*data.length
+  var chart = d3.select("body").append("svg")
+    .attr("class", "chart")
+    .attr("width", 450)
+    .attr("height", height)
+  .append("g")
+    .attr("transform", "translate(20.5,20.5)");
+
+    var x = d3.scale.linear()
+      .domain([0, d3.max(data)])
+      .range(["0px", "420px"]);
+
+    chart.selectAll("line")
+      .data(x.ticks(10))
+    .enter().append("line")
+      .attr("x1", x)
+      .attr("x2", x)
+      .attr("y1", 0)
+      .attr("y2", height)
+      .style("stroke", "#ccc");
+
+  chart.selectAll(".rule")
+      .data(x.ticks(10))
+    .enter().append("text")
+      .attr("class", "rule")
+      .attr("x", x)
+      .attr("y", 0)
+      .attr("dy", -10)
+      .attr("text-anchor", "middle")
+      .text(String);
+
+  chart.selectAll("rect")
+      .data(data)
+    .enter().append("rect")
+      .attr("y", function(d, i) { return i * 20; })
+      .attr("width", x)
+      .attr("height", 20);
+
+  chart.selectAll(".bar")
+      .data(data)
+    .enter().append("text")
+      .attr("class", "bar")
+      .attr("x", function(d, i) { return x(d) })
+      .attr("y", function(d, i) { return i * 20 + 20 / 2; })
+      .attr("dx", -3)
+      .attr("dy", ".35em")
+      .attr("text-anchor", "end")
+      .text(String);
+
+  chart.append("line")
+      .attr("y1", 0)
+      .attr("y2", height)
+      .style("stroke", "#000");
+});
+</script>
+</body>
+</html>

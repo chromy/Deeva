@@ -1,0 +1,11 @@
+
+print_line() {
+    /usr/bin/time -p python stats.py 2>&1 | tail -n6 | tr -d '[A-Za-z ]' | xargs
+}
+
+for_each_commit() {
+    git rev-list HEAD --reverse | while read rev; do git checkout -q $rev; $1; done
+}
+
+for_each_commit print_line
+
