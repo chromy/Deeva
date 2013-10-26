@@ -7,7 +7,8 @@ app = Flask('deeva')
 @app.route("/")
 def index():
     # Please leave this as it is as it require for flask to work with angular
-    return make_response(open('deeva/templates/index.html').read())
+    # return make_response(open('deeva/templates/index.html').read())
+    return render_template('index.html')
 
 @app.route("/breakPoints", methods=['POST'])
 def breakPoints():
