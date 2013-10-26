@@ -7,7 +7,7 @@ deeva.controller('SimpleController', function ($scope, $http) {
   $scope.breakPoints = new Array();
 
   // When loaded, invoke a GET method to ask for Java code.
-  $http.get('./javacode.json')
+  $http.get('./main_class.json')
     .success(function(data) {
       $scope.codeName = data.codeName;
       $scope.code = data.code;

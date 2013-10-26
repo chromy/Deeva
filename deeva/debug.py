@@ -7,17 +7,16 @@ def create_java_debugger(classpath):
         debugger = gateway.jvm.Debug()
         return debugger
 
-
-def load():
+def load(name):
     source = []
-    fileName = sys.argv[1]
+    name = name + '.java'
     try:
-        f = open(fileName, "r")
+        f = open(name, "r")
         for line in f:
            source.append(line)
     except IOError:
-        print 'cannot open', fileName
+        print 'cannot open', name
     else:
-        print fileName, 'has', len(source), 'lines'
+        print name, 'has', len(source), 'lines'
         f.close()
     return source
