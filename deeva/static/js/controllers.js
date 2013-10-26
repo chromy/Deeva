@@ -1,6 +1,6 @@
 var deeva = angular.module('deeva', []);
 
-// CUrrently is a whole document controller
+// Currently is a whole document controller
 deeva.controller('SimpleController', function ($scope, $http) {
   $scope.prevLine = 0;
   $scope.currentLine = 1;
@@ -9,12 +9,12 @@ deeva.controller('SimpleController', function ($scope, $http) {
   // When loaded, invoke a GET method to ask for Java code.
   $http.get('./main_class.json')
     .success(function(data) {
-      $scope.codeName = data.codeName;
+      $scope.file_name = data.file_name;
       $scope.code = data.code;
       $scope.displayCode();
     })
     .error(function(status) {
-      $scope.codeName = "Can not load Java code";
+      $scope.file_name = "Can not load Java code";
       $scope.code = [];
       console.log("There is an error getting json");
       $scope.displayCode();
