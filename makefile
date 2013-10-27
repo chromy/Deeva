@@ -1,7 +1,7 @@
 
 PY4J_JAR_PATH:=$(shell python -c "import py4j.java_gateway; print py4j.java_gateway.find_jar_path()")
 
-.PHONY: build deploy setup_deploy install
+.PHONY: build deploy setup_deploy install test test_long
 
 build:
 	cd deeva; javac *.java -classpath $(PY4J_JAR_PATH)
@@ -13,4 +13,11 @@ setup_deploy:
 	chmod u+x start_deeva
 
 deploy: setup_deploy build
+
+test:
+	nosetests
+
+test_long: test
+	lettuce tests
+	
 

@@ -16,8 +16,15 @@ You will need to get the [Chrome driver](http://chromedriver.storage.googleapis.
 and put it somewhere on your path.
 
 ```bash
-$ nosetests
-$ lettuce tests
+$ make test       # Fast tests
+$ make test_long  # Fast then slow tests
+```
+
+To run the tests by hand you can do:
+
+```bash
+$ nosetests       # Python unit tests
+$ lettuce tests   # System tests
 ```
 
 To Generate Documentation
