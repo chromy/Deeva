@@ -14,8 +14,8 @@ print_runtime() {
 }
 
 start_server() {
-    # cd example
-    ./run_deeva.py -s deeva/Debug.java >/dev/null 2>&1 &
+    export DEEVA_OPEN_BROWSER='False'
+    ./run_deeva.py example/helloworld/HelloWorld >/dev/null 2>&1 &
     echo $!
 }
 
