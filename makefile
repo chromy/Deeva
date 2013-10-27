@@ -8,8 +8,8 @@ build:
 
 setup_deploy:
 	test -d .env || virtualenv .env
-	source .env/bin/activate; pip -r requirements.txt
-	echo "#! /usr/bin/env bash\nsource .env/bin/activate\n./run_deeva.py" > start_deeva
+	source .env/bin/activate; pip install -r requirements.txt
+	echo '#! /usr/bin/env bash\nsource .env/bin/activate\n./run_deeva.py "$$@"' > start_deeva
 	chmod u+x start_deeva
 
 deploy: setup_deploy build
