@@ -19,5 +19,8 @@ test:
 
 test_long: test
 	lettuce tests
+
+coverage:
+	nosetests --with-coverage --cover-package=deeva
 	
 
