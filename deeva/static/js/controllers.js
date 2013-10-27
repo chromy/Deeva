@@ -5,6 +5,8 @@ deeva.controller('SimpleController', function ($scope, $http) {
   $scope.prevLine = 0;
   $scope.currentLine = 1;
   $scope.breakPoints = new Array();
+  $scope.showStdIn = false;
+  $scope.showStdOut = false;
 
   // When loaded, invoke a GET method to ask for Java code.
   $http.get('./main_class.json')
@@ -51,6 +53,7 @@ deeva.controller('SimpleController', function ($scope, $http) {
     for (index = 0;index < $scope.code.length;index++) {
       $scope.codeMirror.setLine(index, $scope.code[index]);
     }
+    $scope.codeMirror.setCursor($scope.codeMirror.firstLine());
   }
 
   // Invoke a POST method to backend to send a data about a set of breakpoint.
@@ -87,6 +90,7 @@ deeva.controller('SimpleController', function ($scope, $http) {
           $scope.prevLine = $scope.currentLine;
           $scope.currentLine = data.step_number;
           $scope.highLightLine();
+          $scope.codeMirror.setCursor($scope.currentLine);
           console.log("The current step is " + $scope.currentLine);
         })
         .error(function(status) {
