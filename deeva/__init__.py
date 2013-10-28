@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, render_template, request, g, make_response
+from flask import Flask, jsonify, render_template, request, g, make_response, redirect, url_for
 from debug import load
 import os
 
@@ -6,9 +6,7 @@ app = Flask('deeva')
 
 @app.route("/")
 def index():
-    # Please leave this as it is as it require for flask to work with angular
-    # return make_response(open('deeva/templates/index.html').read())
-    return render_template('index.html')
+    return app.send_static_file('index.html')
 
 @app.route("/breakPoints", methods=['POST'])
 def breakPoints():
