@@ -1,10 +1,12 @@
 
 PY4J_JAR_PATH:=$(shell python -c "import py4j.java_gateway; print py4j.java_gateway.find_jar_path()")
+TOOL_JAR_PATH:="/Library/Java/JavaVirtualMachines/jdk1.7.0_40.jdk/Contents/Home/lib/tools.jar"
+CLASS_PATH:="$(PY4J_JAR_PATH):$(TOOL_JAR_PATH)"
 
 .PHONY: build deploy setup_deploy install test test_long
 
 build:
-	cd deeva; javac *.java -classpath $(PY4J_JAR_PATH)
+	cd deeva; javac *.java -classpath $(CLASS_PATH)
 
 setup_deploy:
 	test -d .env || virtualenv .env

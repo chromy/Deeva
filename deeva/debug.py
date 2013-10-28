@@ -1,10 +1,9 @@
 from py4j.java_gateway import JavaGateway, GatewayClient, launch_gateway
-import sys
 
 def create_java_debugger(classpath):
         port = launch_gateway(classpath=classpath, die_on_exit=True)
         gateway = JavaGateway(GatewayClient(port=port))
-        debugger = gateway.jvm.Debug()
+        debugger = gateway.jvm.Debug('HelloWorld')
         return debugger
 
 def load(name):
