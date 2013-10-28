@@ -25,7 +25,9 @@ def main(prog):
     config(app)
 
     # Start the Java debug server
-    classpath = os.path.dirname(os.path.abspath(__file__)) + "/deeva"
+    deeva_cp = os.path.dirname(os.path.abspath(__file__)) + "/deeva"
+    jdi_cp = "/Library/Java/JavaVirtualMachines/jdk1.7.0_40.jdk/Contents/Home/lib/tools.jar"
+    classpath = deeva_cp + ":" + jdi_cp
     app.debugger = debug.create_java_debugger(classpath)
 
     # Save the program name
