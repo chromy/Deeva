@@ -17,6 +17,15 @@
   <script src="static/lib/codemirror/clike.js"></script>
   <link href="static/css/codemirror.css" rel="stylesheet">
 
+  <!-- jquery-terminal -->
+  <script src="static/lib/jquery-terminal/jquery.mousewheel-min.js"></script>
+  <script src="static/lib/jquery-terminal/jquery.terminal-0.7.7.min.js"></script>
+  <link href="static/css/jquery.terminal.css" rel="stylesheet">
+
+  <!-- jquery-terminal -->
+  <script src="static/lib/jquery-ui/jquery-ui-1.10.3.custom.min.js"></script>
+  <link href="static/css/jquery-ui-1.10.3.custom.min.css" rel="stylesheet">
+
   <!-- Controller -->
   <script src="static/js/controllers.js"></script>
 </head>
@@ -28,23 +37,21 @@
 <div id="navibar"></div>
 
 <div> {{file_name}} </div>
-<table border='0'>
-  <td id=code>
+<table id="container">
+  <td id="code" class="resizable">
   <!-- populate with a CodeMirror instance -->
     <div id="codeInputPane">
     </div>
 
+    <div id='buttons_container'>
     <button ng-click="step()">Step</button>
     <button ng-click="">others</button>
+    <button ng-click="" id='run'>run</button>
+    </div>
 
-    <h2>
-      <button ng-click="showStdIn=!showStdIn">StdIn</button>
-    </h2>
-    <textarea ng-show="showStdIn" ng-model="stdin"></textarea>
-    <h2>
-      <button ng-click="showStdOut=!showStdOut">StdOut</button>
-    </h2>
-    <textarea ng-show="showStdOut" ng-model="stdout"></textarea>
+    <button ng-click="showStdIn=!showStdIn">StdIn</button>
+    <div ng-show="showStdIn" id="terminal"></div>
+
   </td>
 
   <td id=virtualizer>
