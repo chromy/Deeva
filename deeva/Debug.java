@@ -18,6 +18,7 @@ public class Debug {
 
     public Debug(String arg) {
         vm = launchTarget(arg);
+        redirectOutput();
         start();
     }
 
