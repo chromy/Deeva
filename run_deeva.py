@@ -28,7 +28,7 @@ def main(prog):
     deeva_cp = os.path.dirname(os.path.abspath(__file__)) + "/deeva"
     jdi_cp = subprocess.check_output("find $JAVA_HOME -iname tools.jar", shell=True).replace('\n', '')
     classpath = deeva_cp + ":" + jdi_cp
-    app.debugger = debug.create_java_debugger(classpath)
+    app.debugger = debug.create_java_debugger(classpath, prog)
 
     # Save the program name
     app.program = prog
