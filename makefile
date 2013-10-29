@@ -1,6 +1,6 @@
 
 PY4J_JAR_PATH:=$(shell python -c "import py4j.java_gateway; print py4j.java_gateway.find_jar_path()")
-TOOL_JAR_PATH:="/Library/Java/JavaVirtualMachines/jdk1.7.0_40.jdk/Contents/Home/lib/tools.jar"
+TOOL_JAR_PATH:=$(shell find $$JAVA_HOME -iname tools.jar)
 CLASS_PATH:="$(PY4J_JAR_PATH):$(TOOL_JAR_PATH)"
 
 .PHONY: build deploy setup_deploy install test test_long
@@ -25,4 +25,5 @@ test_long: test
 coverage:
 	nosetests --with-coverage --cover-package=deeva
 	
-
+clean:
+	rm deeva/*.class
