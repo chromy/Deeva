@@ -126,4 +126,8 @@ public class Debug {
     public Boolean setBreakPoint() {
         return true;
     }
+
+    public static String hello() {
+        return "Hello";
+    }
 }
