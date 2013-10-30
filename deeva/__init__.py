@@ -25,6 +25,7 @@ def get_main_class():
 
 @app.route("/file/<name>.json")
 def get_code(name):
+    name = name + '.java'
     code = load(name)
     return jsonify(file_name=name, code=code)
 

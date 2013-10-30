@@ -8,7 +8,6 @@ def create_java_debugger(classpath):
 
 def load(name):
     source = []
-    name = name + '.java'
     try:
         f = open(name, "r")
         for line in f:
