@@ -1,9 +1,17 @@
 /* deeva css stylesheet */
 
-#stdin {
-  min-width: 395px; 
+#container {
+  position: absoloute;
+  width: 100%;
 }
 
-#stdout {
-  min-width: 395px; 
+#code {
+  position: relative;
+  width: 50%;
+
+}
+
+#run {
+  right: 0px;
+  position: absolute;
 }

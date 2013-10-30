@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 
-import os, webbrowser
+import os, webbrowser, subprocess 
 from deeva import app, debug
 
 class ConfigError(Exception):
@@ -25,10 +25,11 @@ def main(prog):
     config(app)
 
     # Start the Java debug server
-    deeva_cp = os.path.dirname(os.path.abspath(__file__)) + "/deeva"
-    jdi_cp = "/Library/Java/JavaVirtualMachines/jdk1.7.0_40.jdk/Contents/Home/lib/tools.jar"
+    deeva_cp = os.path.dirname(os.path.abspath(__file__))
+    findjava_script = os.path.join(deeva_cp, 'findjava.sh')
+    jdi_cp = subprocess.check_output(findjava_script, shell=True).replace('\n', '')
     classpath = deeva_cp + ":" + jdi_cp
-    app.debugger = debug.create_java_debugger(classpath)
+    app.debugger = debug.create_java_debugger(classpath, prog)
 
     # Save the program name
     app.program = prog

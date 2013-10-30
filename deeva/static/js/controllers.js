@@ -1,12 +1,17 @@
 var deeva = angular.module('deeva', []);
 
+var initial_prompt = '$ '
+
 // Currently is a whole document controller
 deeva.controller('SimpleController', function ($scope, $http) {
   $scope.prevLine = 0;
   $scope.currentLine = 1;
   $scope.breakPoints = new Array();
   $scope.showStdIn = false;
-  $scope.showStdOut = false;
+  $scope.currentPrompt = "";
+
+  console.log($(".resizable"));
+  $(".resizable").resizable();
 
   // When loaded, invoke a GET method to ask for Java code.
   $http.get('./main_class.json')
@@ -91,12 +96,49 @@ deeva.controller('SimpleController', function ($scope, $http) {
           $scope.currentLine = data.step_number;
           $scope.highLightLine();
           $scope.codeMirror.setCursor($scope.currentLine);
+          $scope.printToTerminal(data.stdout);
           console.log("The current step is " + $scope.currentLine);
         })
         .error(function(status) {
           alert("There is an error on step " + data.step_number);
           console.log("There is an error on step()");
       });
+    }
+  }
+
+  $scope.displayTerminal = function() { 
+    $scope.terminal = $('#terminal').terminal(function(input, term) {
+      $scope.sendInput(input);
+      }, {
+        greetings: "Welcome to Deeva",
+        height: 200,
+        width: "100%",
+        prompt: initial_prompt,
+      }
+    );
+  }
+
+  $scope.displayTerminal();
+
+  $scope.sendInput = function(input) {
+    $http.post('input', input)
+      .success(function(data) {
+        //console.log(data.status);
+      })
+      .error(function(data) {
+        console.log("There is an error sending input " + data.status);
+    });
+  }
+
+  $scope.printToTerminal = function(output) { 
+    if (output.charAt(output.length - 1).valueOf() == "\n") {
+      output = output.substring(0, output.length - 1);
+      var remainedToPrint = $scope.currentPrompt.substring(0, $scope.currentPrompt.length);
+      $scope.terminal.echo(remainedToPrint + output);
+      $scope.terminal.set_prompt(initial_prompt);
+    } else {
+      $scope.currentPrompt += (output);
+      $scope.terminal.set_prompt($scope.currentPrompt + initial_prompt);
     }
   }
 
