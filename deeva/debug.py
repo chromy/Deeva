@@ -42,8 +42,6 @@ def create_java_debugger(classpath, prog):
         gateway = JavaGateway(gateway_client, auto_convert=True, 
                               start_callback_server=True)
         print port, proc, classpath, prog
-        #mytrial = gateway.jvm.MyTrial()#
-        #print mytrial.getTrialNo()
 
         # Setup Response Queue callback
         response_queue_callback = ResponseQueue()
@@ -55,14 +53,11 @@ def create_java_debugger(classpath, prog):
 
         #string_class = gateway.jvm.java.lang.String
         #empty_string_array = gateway.new_array(string_class, 0)
-        #print gateway.jvm.deeva.Debug.hello()
-        #response_queue_callback.put("Hello")
+
         debugger = gateway.jvm.deeva.Debug(prog, response_queue_callback)
 
         # debugger.main(empty_string_array)
-        #return debugger
-        #return debugger
-        return debugger
+        return gateway
 
 def load(name):
     source = []
@@ -81,8 +76,7 @@ def load(name):
 class ResponseQueue(object):
     def put(self, string):
         """Add `string' to response queue that will be processed later."""
-        response_queue.put(string)
-        pass
+        response_queue.put(string)    
 
     class Java:
         implements = ['deeva.DebugResponseQueue']
