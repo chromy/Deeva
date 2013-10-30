@@ -105,6 +105,15 @@ deeva.controller('SimpleController', function ($scope, $http) {
       });
     }
   }
+  $scope.start = function() {
+    $http.post('start')
+      .success(function(data) {
+      })
+      .error(function(status) {
+        alert("There is an error on start.");
+        console.log("There is an error on start()");
+      });
+  };
 
   $scope.displayTerminal = function() { 
     $scope.terminal = $('#terminal').terminal(function(input, term) {

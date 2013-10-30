@@ -22,18 +22,18 @@ public class Debug {
     int num_steps = 0;
 
     public Debug(String arg, DebugResponseQueue reqQueue) {
-	this.reqQueue = reqQueue;
+	    this.reqQueue = reqQueue;
         vm = launchTarget(arg);
         redirectOutput();
-        start();
+        //start();
     }
 
     void printOutArguments(Map<String, Connector.Argument> arguments) {
-	/* Find out arguments */
-	System.out.println("Arguments");
-	for (String arg : arguments.keySet()) {
-	    System.out.println(arg + ":" + arguments.get(arg));
-	}
+	    /* Find out arguments */
+	    System.out.println("Arguments");
+	    for (String arg : arguments.keySet()) {
+	        System.out.println(arg + ":" + arguments.get(arg));
+	    }
     }
 
     VirtualMachine launchTarget(String mainArgs) {
@@ -72,7 +72,7 @@ public class Debug {
 	/* Somehow need to capture input i.e. in the other direction */
     }
 
-    void start() {
+    public void start() {
         EventThread eventThread = new EventThread(vm, excludes);
         eventThread.start();
         vm.resume();

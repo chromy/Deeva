@@ -56,7 +56,7 @@ def create_java_debugger(classpath, prog):
         debugger = gateway.jvm.deeva.Debug(prog, response_queue_callback)
 
         # debugger.main(empty_string_array)
-        return gateway
+        return debugger
 
 def load(name):
     source = []

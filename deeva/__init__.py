@@ -18,11 +18,18 @@ def breakPoints():
 @app.route("/step", methods=['POST'])
 def step():
     stdout = debug.pop_stdout()
+    print 'GET', stdout
     if request.method == 'POST':
         return jsonify(
             step_number=1,
             stdout=stdout,
             )
+
+@app.route("/start", methods=['POST'])
+def start():
+    if request.method == 'POST':
+        app.debugger.start()
+        return jsonify(state="started")
 
 @app.route("/main_class.json")
 def get_main_class():
