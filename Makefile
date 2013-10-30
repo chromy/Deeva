@@ -2,11 +2,14 @@ PY4J_JAR_PATH:=$(shell python -c "import py4j.java_gateway; print py4j.java_gate
 TOOL_JAR_PATH:=$(shell ./findjava.sh)
 CLASS_PATH:="$(PY4J_JAR_PATH):$(TOOL_JAR_PATH)"
 
-.PHONY: build deploy setup_deploy install test test_long
+.PHONY: build build_examples deploy setup_deploy install test test_long
 
 build:
 	test $(TOOL_JAR_PATH) || test -f $(TOOL_JAR_PATH)
 	cd deeva; javac *.java -classpath $(CLASS_PATH)
+
+build_examples:
+	 $(MAKE) -C examples
 
 setup_deploy:
 	test -d .env || virtualenv .env
