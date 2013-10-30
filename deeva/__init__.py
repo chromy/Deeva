@@ -25,10 +25,10 @@ def step():
             stdout=stdout,
             )
 
-@app.route("/start", methods=['POST'])
-def start():
+@app.route("/run", methods=['POST'])
+def run():
     if request.method == 'POST':
-        app.debugger.start()
+        app.debugger.run()
         return jsonify(state="started")
 
 @app.route("/main_class.json")

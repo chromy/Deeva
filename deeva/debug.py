@@ -53,7 +53,8 @@ def create_java_debugger(classpath, prog):
         #string_class = gateway.jvm.java.lang.String
         #empty_string_array = gateway.new_array(string_class, 0)
 
-        debugger = gateway.jvm.deeva.Debug(prog, response_queue_callback)
+        debugger = gateway.jvm.deeva.Debug(response_queue_callback)
+        debugger.start(prog)
 
         # debugger.main(empty_string_array)
         return debugger

@@ -12,20 +12,24 @@ import java.io.IOException;
 import deeva.DebugResponseQueue;
 
 public class Debug {
-    private final VirtualMachine vm;
+    public enum State {
+        NO_INFERIOR,
+        STASIS,
+        RUNNING,
+    }
+
     private final String[] excludes = {};
+    private VirtualMachine vm;
     private StreamRedirectThread outThread;
     private StreamRedirectThread errThread;
     private boolean ready = false;
     private DebugResponseQueue reqQueue;
+    private State state;
 
     int num_steps = 0;
 
-    public Debug(String arg, DebugResponseQueue reqQueue) {
+    public Debug(DebugResponseQueue reqQueue) {
         this.reqQueue = reqQueue;
-        vm = launchTarget(arg);
-        redirectOutput();
-        //start();
     }
 
     void printOutArguments(Map<String, Connector.Argument> arguments) {
@@ -72,24 +76,15 @@ public class Debug {
         /* Somehow need to capture input i.e. in the other direction */
     }
 
-    public void start() {
+    public void start(String arg) {
+        vm = launchTarget(arg);
         EventThread eventThread = new EventThread(vm, excludes);
         eventThread.start();
+        redirectOutput();
+    }
+
+    public void run() {
         vm.resume();
-
-    //    vm.setDebugTraceMode(debugTraceMode);
-    //    eventThread.setEventRequests(watchFields);
-    //    redirectOutput();
-
-    //    // Shutdown begins when event thread terminates
-    //    try {
-    //        eventThread.join();
-    //        errThread.join(); // Make sure output is forwarded
-    //        outThread.join(); // before we exit
-    //    } catch (InterruptedException exc) {
-    //        // we don't interrupt
-    //    }
-    //    writer.close();
     }
 
     LaunchingConnector findLaunchingConnector() {

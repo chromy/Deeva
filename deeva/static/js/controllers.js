@@ -105,13 +105,13 @@ deeva.controller('SimpleController', function ($scope, $http) {
       });
     }
   }
-  $scope.start = function() {
-    $http.post('start')
+  $scope.run = function() {
+    $http.post('run')
       .success(function(data) {
       })
       .error(function(status) {
-        alert("There is an error on start.");
-        console.log("There is an error on start()");
+        alert("There is an error on run.");
+        console.log("There is an error on run()");
       });
   };
 
