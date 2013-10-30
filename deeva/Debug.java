@@ -62,10 +62,11 @@ public class Debug {
         // outThread = new StreamRedirectThread("output reader",
         //         process.getInputStream(),
         //         System.out);
+        //errThread.start();
         outThread = new StreamRedirectThread("output reader",
                 process.getInputStream(),
                 this.reqQueue);
-        errThread.start();
+
         outThread.start();
 
 	/* Somehow need to capture input i.e. in the other direction */

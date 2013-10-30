@@ -9,7 +9,7 @@ itsdangerous==0.23
 lettuce==0.2.19
 lettuce-webdriver==0.3.2
 nose==1.3.0
-py4j==0.8
+https://github.com/felixdesouza/py4j/raw/master/current-release/py4j-0.8.1.tar.gz
 selenium==2.36.0
 sh==1.09
 sure==1.2.2

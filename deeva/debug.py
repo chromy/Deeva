@@ -36,27 +36,33 @@ def launch_gateway(port=0, jarpath="", classpath="", javaopts=[],
     return (_port, proc)
 
 def create_java_debugger(classpath, prog):
-        print classpath
+        print "CLASSPATH", classpath
         port, proc = launch_gateway(classpath=classpath, die_on_exit=True)
         gateway_client = GatewayClient(port=port) 
-        gateway = JavaGateway(gateway_client, auto_convert=True)
+        gateway = JavaGateway(gateway_client, auto_convert=True, 
+                              start_callback_server=True)
         print port, proc, classpath, prog
         #mytrial = gateway.jvm.MyTrial()#
         #print mytrial.getTrialNo()
+
+        # Setup Response Queue callback
+        response_queue_callback = ResponseQueue()
 
         # Start the Response Queue listener
         response_queue_handler = Thread(target=response_queue_method)
         response_queue_handler.daemon = True
         response_queue_handler.start()
 
-        string_class = gateway.jvm.java.lang.String
-        empty_string_array = gateway.new_array(string_class, 0)
-        print gateway.jvm.deeva.Debug.hello()
-        # debugger = gateway.jvm.deeva.Debug(prog) need extra arg
+        #string_class = gateway.jvm.java.lang.String
+        #empty_string_array = gateway.new_array(string_class, 0)
+        #print gateway.jvm.deeva.Debug.hello()
+        #response_queue_callback.put("Hello")
+        debugger = gateway.jvm.deeva.Debug(prog, response_queue_callback)
 
         # debugger.main(empty_string_array)
         #return debugger
-        return None
+        #return debugger
+        return debugger
 
 def load(name):
     source = []
@@ -72,12 +78,13 @@ def load(name):
         f.close()
     return source
 
-class Response_Queue(object):
-    def put(string):
+class ResponseQueue(object):
+    def put(self, string):
         """Add `string' to response queue that will be processed later."""
         response_queue.put(string)
+        pass
 
-    class Java(object):
+    class Java:
         implements = ['deeva.DebugResponseQueue']
 
 def response_queue_method():
