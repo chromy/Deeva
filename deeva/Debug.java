@@ -22,25 +22,25 @@ public class Debug {
     int num_steps = 0;
 
     public Debug(String arg, DebugResponseQueue reqQueue) {
-	    this.reqQueue = reqQueue;
+        this.reqQueue = reqQueue;
         vm = launchTarget(arg);
         redirectOutput();
         //start();
     }
 
     void printOutArguments(Map<String, Connector.Argument> arguments) {
-	    /* Find out arguments */
-	    System.out.println("Arguments");
-	    for (String arg : arguments.keySet()) {
-	        System.out.println(arg + ":" + arguments.get(arg));
-	    }
+        /* Find out arguments */
+        System.out.println("Arguments");
+        for (String arg : arguments.keySet()) {
+            System.out.println(arg + ":" + arguments.get(arg));
+        }
     }
 
     VirtualMachine launchTarget(String mainArgs) {
         LaunchingConnector connector = findLaunchingConnector();
         Map<String, Connector.Argument> arguments = connectorArguments(connector, mainArgs);
-	System.out.println("launch");
-	printOutArguments(arguments);
+        System.out.println("launch");
+        printOutArguments(arguments);
         try {
             return connector.launch(arguments);
         } catch (IOException exc) {
@@ -69,7 +69,7 @@ public class Debug {
 
         outThread.start();
 
-	/* Somehow need to capture input i.e. in the other direction */
+        /* Somehow need to capture input i.e. in the other direction */
     }
 
     public void start() {
@@ -107,16 +107,16 @@ public class Debug {
      */
     Map<String, Connector.Argument> connectorArguments(LaunchingConnector connector, String mainArgs) {
         Map<String, Connector.Argument> arguments = connector.defaultArguments();
-	System.out.println("Before - con");
-	printOutArguments(arguments);
+        System.out.println("Before - con");
+        printOutArguments(arguments);
         Connector.Argument mainArg = (Connector.Argument)arguments.get("main");
         if (mainArg == null) {
             throw new Error("Bad launching connector");
         }
 
         mainArg.setValue(mainArgs);
-	System.out.println("After - con");
-	printOutArguments(arguments);
+        System.out.println("After - con");
+        printOutArguments(arguments);
         return arguments;
     }
 
