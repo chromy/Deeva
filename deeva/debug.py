@@ -3,12 +3,11 @@ from py4j.java_collections import ListConverter
 from py4j.java_gateway import JavaGateway, GatewayClient
 from py4j.java_gateway import *
 
-from Queue import Queue
+from Queue import Queue, Empty
 import threading
 
 # FIX - SORRY
 response_queue = Queue()
-
 
 # fix
 def launch_gateway(port=0, jarpath="", classpath="", javaopts=[],
@@ -47,9 +46,9 @@ def create_java_debugger(classpath, prog):
         response_queue_callback = ResponseQueue()
 
         # Start the Response Queue listener
-        response_queue_handler = Thread(target=response_queue_method)
-        response_queue_handler.daemon = True
-        response_queue_handler.start()
+        #response_queue_handler = Thread(target=response_queue_method)
+        #response_queue_handler.daemon = True
+        #response_queue_handler.start()
 
         #string_class = gateway.jvm.java.lang.String
         #empty_string_array = gateway.new_array(string_class, 0)
@@ -73,17 +72,27 @@ def load(name):
         f.close()
     return source
 
+def pop_stdout():
+    try:
+        result = response_queue.get(False)
+    except Empty:
+        return None
+    else:
+        response_queue.task_done()
+        return result
+
 class ResponseQueue(object):
     def put(self, string):
         """Add `string' to response queue that will be processed later."""
-        response_queue.put(string)    
+        response_queue.put(string)
 
     class Java:
         implements = ['deeva.DebugResponseQueue']
 
 def response_queue_method():
     while True:
-        debuggee_string = response_queue.get()
+        pass
+        #debuggee_string = response_queue.get()
         # Put this out to Flask or do stuff with it
-        print 'Debuggee output:', debuggee_string
-        response_queue.task_done()
+        #print 'Debuggee output:', debuggee_string
+        #response_queue.task_done()

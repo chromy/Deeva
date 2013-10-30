@@ -1,4 +1,5 @@
 from flask import Flask, jsonify, render_template, request, g, make_response, redirect, url_for
+import debug
 from debug import load
 import os
 
@@ -16,8 +17,12 @@ def breakPoints():
 
 @app.route("/step", methods=['POST'])
 def step():
+    stdout = debug.pop_stdout()
     if request.method == 'POST':
-        return jsonify(step_number=app.debugger.step())
+        return jsonify(
+            step_number=1,
+            stdout=stdout,
+            )
 
 @app.route("/main_class.json")
 def get_main_class():
@@ -34,6 +39,11 @@ def code():
     code = load()
     return jsonify(codeName=codeName,
                    code=code)
+
+@app.errorhandler(500)
+def page_not_found(error):
+    print 'Error:', error
+    return "500"
 
 if __name__ == '__main__':
    app.run()
