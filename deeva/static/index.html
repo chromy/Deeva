@@ -38,6 +38,7 @@
 
 <div> {{file_name}} </div>
 <table id="container">
+
   <td id="code" class="resizable">
   <!-- populate with a CodeMirror instance -->
     <div id="codeInputPane">
@@ -49,7 +50,7 @@
     <button ng-click="" id='run'>run</button>
     </div>
 
-    <button ng-click="showStdIn=!showStdIn">StdIn</button>
+    <button ng-click="showStdIn=!showStdIn">Console</button>
     <div ng-show="showStdIn" id="terminal"></div>
 
   </td>

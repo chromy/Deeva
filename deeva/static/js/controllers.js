@@ -10,22 +10,25 @@ deeva.controller('SimpleController', function ($scope, $http) {
   $scope.showStdIn = false;
   $scope.currentPrompt = "";
 
-  console.log($(".resizable"));
   $(".resizable").resizable();
 
-  // When loaded, invoke a GET method to ask for Java code.
-  $http.get('./main_class.json')
-    .success(function(data) {
-      $scope.file_name = data.file_name;
-      $scope.code = data.code;
-      $scope.displayCode();
-    })
-    .error(function(status) {
-      $scope.file_name = "Can not load Java code";
-      $scope.code = [];
-      console.log("There is an error getting json");
-      $scope.displayCode();
-  });
+  loadMainClass($scope, $http);
+
+  // Invoke a GET method to ask for Java code.
+  function loadMainClass($scope, $http) {
+    $http.get('./main_class.json')
+      .success(function(data) {
+        $scope.file_name = data.file_name;
+        $scope.code = data.code;
+        $scope.displayCode();
+      })
+      .error(function(status) {
+        $scope.file_name = "Can not load Java code";
+        $scope.code = [];
+        console.log("There is an error getting json");
+        $scope.displayCode();
+    });
+  };
 
   // Initialze codeMirror and display it
   $scope.displayCode = function() {
@@ -106,10 +109,12 @@ deeva.controller('SimpleController', function ($scope, $http) {
     }
   }
 
-  $scope.displayTerminal = function() { 
+  $scope.displayTerminal = function() {
     $scope.terminal = $('#terminal').terminal(function(input, term) {
+      // This function is called whenever the enter is hit.
       $scope.sendInput(input);
       }, {
+        // Initial setup for
         greetings: "Welcome to Deeva",
         height: 200,
         width: "100%",
@@ -118,20 +123,19 @@ deeva.controller('SimpleController', function ($scope, $http) {
     );
   }
 
-  $scope.displayTerminal();
-
   $scope.sendInput = function(input) {
     $http.post('input', input)
       .success(function(data) {
-        //console.log(data.status);
       })
       .error(function(data) {
         console.log("There is an error sending input " + data.status);
     });
   }
 
-  $scope.printToTerminal = function(output) { 
-    if (output.charAt(output.length - 1).valueOf() == "\n") {
+  $scope.displayTerminal();
+
+  $scope.printToTerminal = function(output) {
+    if (output.slice(-1) == "\n") {
       output = output.substring(0, output.length - 1);
       var remainedToPrint = $scope.currentPrompt.substring(0, $scope.currentPrompt.length);
       $scope.terminal.echo(remainedToPrint + output);
