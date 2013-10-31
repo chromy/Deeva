@@ -43,6 +43,7 @@ class StreamRedirectThread extends Thread {
             while ((count = in.read(cbuf, 0, BUFFER_SIZE)) >= 0) {
                 //out.write(cbuf, 0, count);
 		String s = new String(cbuf, 0, count);
+        System.err.println(s);
 		resQueue.put(s);
             }
             //out.flush();

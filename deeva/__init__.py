@@ -17,6 +17,7 @@ def breakPoints():
 
 @app.route("/step", methods=['POST'])
 def step():
+    app.debugger.stepInto()
     stdout = debug.pop_stdout()
     print 'GET', stdout
     if request.method == 'POST':

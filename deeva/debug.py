@@ -21,7 +21,7 @@ def launch_gateway(port=0, jarpath="", classpath="", javaopts=[],
 
     # Launch the server in a subprocess.
     classpath = os.pathsep.join((jarpath, classpath))
-    command = ["java", "-classpath", classpath] + javaopts + \
+    command = ["java", "-ea",  "-classpath", classpath] + javaopts + \
               ["py4j.GatewayServer"]
     if die_on_exit:
         command.append("--die-on-broken-pipe")
@@ -37,8 +37,9 @@ def launch_gateway(port=0, jarpath="", classpath="", javaopts=[],
 def create_java_debugger(classpath, prog):
         print "CLASSPATH", classpath
         port, proc = launch_gateway(classpath=classpath, die_on_exit=True)
-        gateway_client = GatewayClient(port=port) 
-        gateway = JavaGateway(gateway_client, auto_convert=True, 
+        gateway_client = GatewayClient(port=port)
+        gateway = JavaGateway(gateway_client, auto_convert=True,
+                              auto_field=True,
                               start_callback_server=True)
         print port, proc, classpath, prog
 
@@ -55,6 +56,7 @@ def create_java_debugger(classpath, prog):
 
         debugger = gateway.jvm.deeva.Debug(response_queue_callback)
         debugger.start(prog)
+        print str(debugger.getState())
 
         # debugger.main(empty_string_array)
         return debugger
