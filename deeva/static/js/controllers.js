@@ -108,6 +108,15 @@ deeva.controller('SimpleController', function ($scope, $http) {
       });
     }
   }
+  $scope.run = function() {
+    $http.post('run')
+      .success(function(data) {
+      })
+      .error(function(status) {
+        alert("There is an error on run.");
+        console.log("There is an error on run()");
+      });
+  };
 
   $scope.displayTerminal = function() {
     $scope.terminal = $('#terminal').terminal(function(input, term) {

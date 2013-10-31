@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Deeva </title>
+
+  <!-- Common css -->
+  <link rel="stylesheet" href="./d3Trial.css">
+  <link rel="stylesheet" href="../css/bootstrap.css">
+
+  <!-- D3 -->
+  <script type="text/javascript" src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+
+</head>
+
+<body>
+ <script type="text/javascript">
+   function createDataset(n)
+   { var dataset = [];
+     for(i=0; i<n; i++){
+       dataset.push(i);    
+     }
+     return dataset;
+   } 
+
+
+    var vector_length =10;
+    
+    var svg = d3.select("body")
+                .append("svg")
+                .attr("height", 500)
+                .attr("width", 500);
+
+    var vector = svg.selectAll("rect")
+                 .data(createDataset(vector_length))
+                 .enter()
+                 .append("rect");
+    vector.attr("y", 10)
+          .attr("x", function(d, i){
+               return i*30;     
+           })
+          .attr("height", 30)
+          .attr("width", 30)
+          .attr("stroke", "black")
+          .attr("fill", "white");
+    
+ </script>
+ 
+</body>
+
+</html>
