@@ -11,6 +11,9 @@ import java.util.List;
 import java.io.PrintWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+
+import java.util.concurrent.Semaphore;
+
 import deeva.DebugResponseQueue;
 
 public class Debug implements EventHandler {
@@ -28,12 +31,13 @@ public class Debug implements EventHandler {
     private boolean ready = false;
     private DebugResponseQueue reqQueue;
     private State state;
+    private Semaphore sema;
 
-    int num_steps = 0;
+    int line_number = 0;
 
     public Debug(DebugResponseQueue reqQueue) {
-        System.err.println("Debug");
         this.reqQueue = reqQueue;
+        sema = new Semaphore(0);
         state = State.NO_INFERIOR;
     }
 
@@ -43,11 +47,19 @@ public class Debug implements EventHandler {
         eventThread.start();
         redirectOutput();
         state = State.STASIS;
+
+
         EventRequestManager reqMgr = vm.eventRequestManager();
         final MethodEntryRequest menr = reqMgr.createMethodEntryRequest();
         for (String ex: excludes) { menr.addClassExclusionFilter (ex); }
         menr.setSuspendPolicy(EventRequest.SUSPEND_ALL);    // suspend so we can examine vars
         menr.enable();
+
+        final MethodExitRequest mext = reqMgr.createMethodExitRequest();
+        for (String ex: excludes) { menr.addClassExclusionFilter (ex); }
+        menr.setSuspendPolicy(EventRequest.SUSPEND_ALL);    // suspend so we can examine vars
+        menr.enable();
+
     }
 
     public void run() {
@@ -55,16 +67,20 @@ public class Debug implements EventHandler {
         state = State.RUNNING;
     }
 
-    public void stepInto() {
+    public int stepInto() throws InterruptedException {
         step(StepRequest.STEP_INTO);
-        if (state == State.STASIS) {
-        }
+        sema.acquire();
+        return line_number;
+        //if (state == State.STASIS) {
+        //}
     }
 
-    public void stepOut() {
+    public int stepOut() throws InterruptedException {
         step(StepRequest.STEP_OUT);
-        if (state == State.STASIS) {
-        }
+        sema.acquire();
+        return line_number;
+        //if (state == State.STASIS) {
+        //}
     }
 
     public void setBreakPoint(String clas, int lineNum) {
@@ -77,7 +93,7 @@ public class Debug implements EventHandler {
     private void step(int depth) {
         EventRequestManager reqMgr = vm.eventRequestManager();
         StepRequest request = reqMgr.createStepRequest(getThread(),
-                StepRequest.STEP_MIN, depth);
+                StepRequest.STEP_LINE, depth);
         request.addCountFilter(1);
         for (int i=0; i<excludes.length; ++i) {
              request.addClassExclusionFilter(excludes[i]);
@@ -96,14 +112,20 @@ public class Debug implements EventHandler {
         } else if (event instanceof MethodEntryEvent) {
             final Method method = ((MethodEntryEvent)event).method();
             System.err.println(method.toString());
+            if (!method.toString().equals("SimpleLoop.main(java.lang.String[])")) {
+                System.err.println("Resumed!!!");
+                vm.resume();
+            }
             //methodEntryEvent((MethodEntryEvent)event);
         } else if (event instanceof MethodExitEvent) {
             //methodExitEvent((MethodExitEvent)event);
         } else if (event instanceof StepEvent) {
-            System.err.println(((StepEvent)event).location().method() + "@" + ((StepEvent)event).location().lineNumber());
             //System.err.println(((StepEvent)event).location().sourceName());
+            System.err.println(((StepEvent)event).location().method() + "@" + ((StepEvent)event).location().lineNumber());
+            line_number = ((StepEvent)event).location().lineNumber();
             EventRequestManager mgr = vm.eventRequestManager();
             mgr.deleteEventRequest(event.request());
+            sema.release();
             //stepEvent((StepEvent)event);
         } else if (event instanceof ThreadDeathEvent) {
             //threadDeathEvent((ThreadDeathEvent)event);
@@ -217,10 +239,6 @@ public class Debug implements EventHandler {
 
         System.out.println("After - con");
         return arguments;
-    }
-
-    public int step() {
-        return num_steps++;
     }
 
     public Boolean setBreakPoint() {

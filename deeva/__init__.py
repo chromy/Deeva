@@ -17,12 +17,11 @@ def breakPoints():
 
 @app.route("/step", methods=['POST'])
 def step():
-    app.debugger.stepInto()
-    stdout = debug.pop_stdout()
-    print 'GET', stdout
     if request.method == 'POST':
+        line_number = app.debugger.stepInto() - 1
+        stdout = debug.pop_stdout()
         return jsonify(
-            step_number=1,
+            step_number=line_number,
             stdout=stdout,
             )
 

@@ -118,11 +118,11 @@ deeva.controller('SimpleController', function ($scope, $http) {
   }
 
   // High light the current line. The previous line high light is also removed.
-  function highLightLine($scope) {
+  $scope.highLightLine = function() {
     var BACK_CLASS = "CodeMirror-activeline-background";
     $scope.codeMirror.removeLineClass($scope.prevLine, "background", BACK_CLASS);
     $scope.codeMirror.addLineClass($scope.currentLine, 'background', BACK_CLASS);
-  }
+  };
 
     function printToTerminal($scope, output) {
     if (output.slice(-1) == "\n") {
