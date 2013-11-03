@@ -16,7 +16,7 @@ import java.util.concurrent.Semaphore;
 
 import deeva.DebugResponseQueue;
 
-public class Debug implements EventHandler {
+public class Debug extends EventHandlerBase {
     public static enum State {
         NO_INFERIOR,
         STASIS,
@@ -33,6 +33,9 @@ public class Debug implements EventHandler {
     private State state;
     private Semaphore sema;
 
+    private StepRequest stepRequest;
+    private MethodEntryRequest entryRequest;
+    private MethodExitRequest exitRequest;
     int line_number = 0;
 
     public Debug(DebugResponseQueue reqQueue) {
@@ -50,15 +53,16 @@ public class Debug implements EventHandler {
 
 
         EventRequestManager reqMgr = vm.eventRequestManager();
-        final MethodEntryRequest menr = reqMgr.createMethodEntryRequest();
-        for (String ex: excludes) { menr.addClassExclusionFilter (ex); }
-        menr.setSuspendPolicy(EventRequest.SUSPEND_ALL);    // suspend so we can examine vars
-        menr.enable();
 
-        final MethodExitRequest mext = reqMgr.createMethodExitRequest();
-        for (String ex: excludes) { menr.addClassExclusionFilter (ex); }
-        menr.setSuspendPolicy(EventRequest.SUSPEND_ALL);    // suspend so we can examine vars
-        menr.enable();
+        entryRequest = reqMgr.createMethodEntryRequest();
+        for (String ex: excludes) { entryRequest.addClassExclusionFilter (ex); }
+        entryRequest.setSuspendPolicy(EventRequest.SUSPEND_ALL);    // suspend so we can examine vars
+        entryRequest.enable();
+
+        exitRequest = reqMgr.createMethodExitRequest();
+        for (String ex: excludes) { exitRequest.addClassExclusionFilter (ex); }
+        exitRequest.setSuspendPolicy(EventRequest.SUSPEND_ALL);    // suspend so we can examine vars
+        //exitRequest.enable();
 
     }
 
@@ -68,16 +72,32 @@ public class Debug implements EventHandler {
     }
 
     public int stepInto() throws InterruptedException {
+        entryRequest.disable();
+        exitRequest.enable();
         step(StepRequest.STEP_INTO);
         sema.acquire();
+        exitRequest.disable();
+        entryRequest.enable();
         return line_number;
         //if (state == State.STASIS) {
         //}
     }
 
     public int stepOut() throws InterruptedException {
+        entryRequest.disable();
         step(StepRequest.STEP_OUT);
         sema.acquire();
+        entryRequest.enable();
+        return line_number;
+        //if (state == State.STASIS) {
+        //}
+    }
+
+    public int stepOver() throws InterruptedException {
+        entryRequest.disable();
+        step(StepRequest.STEP_OVER);
+        sema.acquire();
+        entryRequest.enable();
         return line_number;
         //if (state == State.STASIS) {
         //}
@@ -92,57 +112,42 @@ public class Debug implements EventHandler {
 
     private void step(int depth) {
         EventRequestManager reqMgr = vm.eventRequestManager();
-        StepRequest request = reqMgr.createStepRequest(getThread(),
+        stepRequest = reqMgr.createStepRequest(getThread(),
                 StepRequest.STEP_LINE, depth);
-        request.addCountFilter(1);
+        stepRequest.addCountFilter(1);
         for (int i=0; i<excludes.length; ++i) {
-             request.addClassExclusionFilter(excludes[i]);
+             stepRequest.addClassExclusionFilter(excludes[i]);
         }
-        request.enable();
+        stepRequest.enable();
         vm.resume();
     }
 
-    public void handleEvent(Event event) {
-        System.err.println("handleEvent");
-        System.err.println(event.getClass().getName());
-        if (event instanceof ExceptionEvent) {
-            //exceptionEvent((ExceptionEvent)event);
-        } else if (event instanceof ModificationWatchpointEvent) {
-            //fieldWatchEvent((ModificationWatchpointEvent)event);
-        } else if (event instanceof MethodEntryEvent) {
-            final Method method = ((MethodEntryEvent)event).method();
-            System.err.println(method.toString());
-            if (!method.toString().equals("SimpleLoop.main(java.lang.String[])")) {
-                System.err.println("Resumed!!!");
-                vm.resume();
-            }
-            //methodEntryEvent((MethodEntryEvent)event);
-        } else if (event instanceof MethodExitEvent) {
-            //methodExitEvent((MethodExitEvent)event);
-        } else if (event instanceof StepEvent) {
-            //System.err.println(((StepEvent)event).location().sourceName());
-            System.err.println(((StepEvent)event).location().method() + "@" + ((StepEvent)event).location().lineNumber());
-            line_number = ((StepEvent)event).location().lineNumber();
-            EventRequestManager mgr = vm.eventRequestManager();
-            mgr.deleteEventRequest(event.request());
-            sema.release();
-            //stepEvent((StepEvent)event);
-        } else if (event instanceof ThreadDeathEvent) {
-            //threadDeathEvent((ThreadDeathEvent)event);
-        } else if (event instanceof ClassPrepareEvent) {
-            //classPrepareEvent((ClassPrepareEvent)event);
-        } else if (event instanceof VMStartEvent) {
-            //vmStartEvent((VMStartEvent)event);
-        } else if (event instanceof VMDeathEvent) {
-            //vmDeathEvent((VMDeathEvent)event);
-        } else if (event instanceof VMDisconnectEvent) {
-            state = State.NO_INFERIOR;
-            //vmDisconnectEvent((VMDisconnectEvent)event);
-        } else {
-            throw new Error("Unexpected event type");
+    @Override
+    public void methodEntryEvent(MethodEntryEvent event) {
+        final Method method = event.method();
+        System.err.println(method.toString());
+        // XXX: hack
+        if (!method.toString().equals("SimpleLoop.main(java.lang.String[])")) {
+            vm.resume();
         }
+    }
 
-        reqQueue.put("I GOT AN EVENT!");
+    @Override
+    public void stepEvent(StepEvent event) {
+        System.err.println(event.location().method() + "@" + event.location().lineNumber());
+        line_number = event.location().lineNumber();
+        EventRequestManager mgr = vm.eventRequestManager();
+        mgr.deleteEventRequest(event.request());
+        sema.release();
+    }
+
+    @Override
+    public void methodExitEvent(MethodExitEvent event) {
+        if (stepRequest != null) {
+            sema.release();
+            EventRequestManager mgr = vm.eventRequestManager();
+            mgr.deleteEventRequest(stepRequest);
+        }
     }
 
     public State getState() {
@@ -150,22 +155,14 @@ public class Debug implements EventHandler {
     }
 
     private ThreadReference getThread() {
-        for (ThreadReference ref : vm.allThreads()) {
-            System.err.println("Thread: " + ref.name());
-        }
         // We only handle the main thread.
         for (ThreadReference ref : vm.allThreads()) {
             if (ref.name().equals("main")) {
                 return ref;
             }
         }
-        assert false : "No main thread.";
-        return null;
+        throw new Error("No main thread.");
     }
-
-
-
-
 
     // XXX: Refactor beneath this line... and above this line...
 
