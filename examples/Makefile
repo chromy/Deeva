@@ -6,7 +6,7 @@ all: make
 
 make:
 	for dir in $(EXAMPLES); do \
-		cd $$dir; javac *.java; cd ..; \
+		cd $$dir; javac -g *.java; cd ..; \
 	done
 
 clean:

@@ -26,6 +26,12 @@ def step():
             stdout=stdout,
             )
 
+@app.route("/setBreakPoint", methods=['POST'])
+def breakPoint():
+    if request.method == 'POST':
+        app.debugger.setBreakPoint('hello', 12)
+        return jsonify(status=True)
+
 @app.route("/run", methods=['POST'])
 def run():
     if request.method == 'POST':

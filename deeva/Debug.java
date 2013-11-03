@@ -43,6 +43,11 @@ public class Debug implements EventHandler {
         eventThread.start();
         redirectOutput();
         state = State.STASIS;
+        EventRequestManager reqMgr = vm.eventRequestManager();
+        final MethodEntryRequest menr = reqMgr.createMethodEntryRequest();
+        for (String ex: excludes) { menr.addClassExclusionFilter (ex); }
+        menr.setSuspendPolicy(EventRequest.SUSPEND_ALL);    // suspend so we can examine vars
+        menr.enable();
     }
 
     public void run() {
@@ -51,26 +56,32 @@ public class Debug implements EventHandler {
     }
 
     public void stepInto() {
+        step(StepRequest.STEP_INTO);
         if (state == State.STASIS) {
-            step(StepRequest.STEP_INTO);
         }
     }
 
     public void stepOut() {
+        step(StepRequest.STEP_OUT);
         if (state == State.STASIS) {
-            step(StepRequest.STEP_OUT);
         }
+    }
+
+    public void setBreakPoint(String clas, int lineNum) {
+         List<ReferenceType> classes = vm.allClasses();
+         for (ReferenceType ref : classes) {
+             System.err.println(ref.name());
+         }
     }
 
     private void step(int depth) {
         EventRequestManager reqMgr = vm.eventRequestManager();
         StepRequest request = reqMgr.createStepRequest(getThread(),
-                StepRequest.STEP_LINE, depth);
+                StepRequest.STEP_MIN, depth);
         request.addCountFilter(1);
-        //for (int i=0; i<excludes.length; ++i) {
-        //     request.addClassExclusionFilter(excludes[i]);
-        //}
-        request.addClassFilter("HelloWorld");
+        for (int i=0; i<excludes.length; ++i) {
+             request.addClassExclusionFilter(excludes[i]);
+        }
         request.enable();
         vm.resume();
     }
@@ -83,14 +94,15 @@ public class Debug implements EventHandler {
         } else if (event instanceof ModificationWatchpointEvent) {
             //fieldWatchEvent((ModificationWatchpointEvent)event);
         } else if (event instanceof MethodEntryEvent) {
+            final Method method = ((MethodEntryEvent)event).method();
+            System.err.println(method.toString());
             //methodEntryEvent((MethodEntryEvent)event);
         } else if (event instanceof MethodExitEvent) {
             //methodExitEvent((MethodExitEvent)event);
         } else if (event instanceof StepEvent) {
-            EventRequestManager mgr = vm.eventRequestManager();
-            System.err.println(((StepEvent)event).location().lineNumber());
+            System.err.println(((StepEvent)event).location().method() + "@" + ((StepEvent)event).location().lineNumber());
             //System.err.println(((StepEvent)event).location().sourceName());
-            System.err.println(((StepEvent)event).location().method());
+            EventRequestManager mgr = vm.eventRequestManager();
             mgr.deleteEventRequest(event.request());
             //stepEvent((StepEvent)event);
         } else if (event instanceof ThreadDeathEvent) {
