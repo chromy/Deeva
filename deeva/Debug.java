@@ -13,8 +13,11 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import java.util.concurrent.Semaphore;
+import java.util.HashMap;
+import java.util.Map;
 
 import deeva.DebugResponseQueue;
+import deeva.WrongStateError;
 
 public class Debug extends EventHandlerBase {
     public static enum State {
@@ -71,16 +74,23 @@ public class Debug extends EventHandlerBase {
         state = State.RUNNING;
     }
 
-    public int stepInto() throws InterruptedException {
+    public Map<String, Object> getState() {
+        Map<String, Object> result = new HashMap<String, Object>();
+        result.put("line_number", line_number);
+        return result;
+    }
+
+    public Map<String, Object> stepInto() throws InterruptedException {
+        if (state != State.STASIS) {
+            throw new WrongStateError("Should be in STASIS state.");
+        }
         entryRequest.disable();
         exitRequest.enable();
         step(StepRequest.STEP_INTO);
         sema.acquire();
         exitRequest.disable();
         entryRequest.enable();
-        return line_number;
-        //if (state == State.STASIS) {
-        //}
+        return getState();
     }
 
     public int stepOut() throws InterruptedException {
@@ -113,7 +123,7 @@ public class Debug extends EventHandlerBase {
     private void step(int depth) {
         EventRequestManager reqMgr = vm.eventRequestManager();
         stepRequest = reqMgr.createStepRequest(getThread(),
-                StepRequest.STEP_LINE, depth);
+                StepRequest.STEP_MIN, depth);
         stepRequest.addCountFilter(1);
         for (int i=0; i<excludes.length; ++i) {
              stepRequest.addClassExclusionFilter(excludes[i]);
@@ -129,6 +139,8 @@ public class Debug extends EventHandlerBase {
         // XXX: hack
         if (!method.toString().equals("SimpleLoop.main(java.lang.String[])")) {
             vm.resume();
+        } else {
+            state = State.STASIS;
         }
     }
 
@@ -158,7 +170,7 @@ public class Debug extends EventHandlerBase {
         System.err.println("DEATH");
     }
 
-    public State getState() {
+    public State getStateName() {
         return state;
     }
 

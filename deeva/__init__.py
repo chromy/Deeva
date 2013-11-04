@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, render_template, request, g, make_response, redirect, url_for
 import debug
-from debug import load
+from debug import load, WrongState
 import os
 
 app = Flask('deeva')
@@ -18,12 +18,7 @@ def breakPoints():
 @app.route("/step", methods=['POST'])
 def step():
     if request.method == 'POST':
-        line_number = app.debugger.stepInto() - 1
-        stdout = debug.pop_stdout()
-        return jsonify(
-            step_number=line_number,
-            stdout=stdout,
-            )
+        return make_api_response(app.debugger.stepInto)
 
 @app.route("/setBreakPoint", methods=['POST'])
 def breakPoint():
@@ -47,17 +42,21 @@ def get_code(name):
     code = load(name)
     return jsonify(file_name=name, code=code)
 
-@app.route("/javacode.json")
-def code():
-    codeName = "Trial code!"
-    code = load()
-    return jsonify(codeName=codeName,
-                   code=code)
-
 @app.errorhandler(500)
 def page_not_found(error):
     print 'Error:', error
     return "500"
 
-if __name__ == '__main__':
-   app.run()
+def make_api_response(f, *args, **kargs):
+    try:
+        result = f(*args, **kargs)
+    except WrongState as e:
+        return jsonify(
+                status='error',
+                error='Invalid call ' + f.__name__ + ' in this state.'
+                )
+    else:
+        stdout = debug.pop_stdout()
+        # XXX: fix
+        result['line_number'] -= 1
+        return jsonify(status='ok', stdout=stdout, **result) 

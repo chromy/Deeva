@@ -1,10 +1,14 @@
 from subprocess import Popen, PIPE
 from py4j.java_collections import ListConverter
+from py4j.protocol import Py4JJavaError
 from py4j.java_gateway import JavaGateway, GatewayClient
 from py4j.java_gateway import *
 
 from Queue import Queue, Empty
 import threading
+
+class WrongState(Exception):
+    pass
 
 # FIX - SORRY
 response_queue = Queue()
@@ -54,12 +58,29 @@ def create_java_debugger(classpath, prog):
         #string_class = gateway.jvm.java.lang.String
         #empty_string_array = gateway.new_array(string_class, 0)
 
-        debugger = gateway.jvm.deeva.Debug(response_queue_callback)
+        debugger = JavaProxy(gateway.jvm.deeva.Debug(response_queue_callback))
         debugger.start(prog)
         print str(debugger.getState())
 
         # debugger.main(empty_string_array)
         return debugger
+
+class JavaProxy:
+    """Translates py4j Java exceptions into Python exceptions. 
+    Supports only function calls -- not attributes."""
+    def __init__(self, obj):
+        self.__obj = obj
+
+    def __getattr__(self, name):
+        if name in self.__dict__:
+            return self.__dict__[name]
+        def _missing(*args, **kargs):
+            try:
+                return getattr(self.__obj, name)(*args, **kargs)
+            except Py4JJavaError as e:
+                print e.java_exception
+                raise WrongState()
+        return _missing
 
 def load(name):
     source = []
