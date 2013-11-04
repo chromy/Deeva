@@ -199,6 +199,12 @@ deeva.controller('SimpleController', function ($scope, $http) {
         console.log("There is an error sending input " + data.status);
     });
   }
+  
+  function displayTag-it() {
+    $("#arguments").tagit({
+    fieldName: "skills"
+});
+  }
 
 });
 
