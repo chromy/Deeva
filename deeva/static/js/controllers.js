@@ -8,6 +8,7 @@ deeva.controller('SimpleController', function ($scope, $http) {
   $scope.currentLine = 1;
   $scope.breakPoints = new Array();
   $scope.showStdIn = true;
+  $scope.showArguments = true;
   $scope.currentPrompt = "";
   $scope.canStep = false;
   $scope.canRun = true;
@@ -18,6 +19,7 @@ deeva.controller('SimpleController', function ($scope, $http) {
   $(".resizable").resizable();
   displayCodeMirror($scope, $http);
   displayTerminal($scope);
+  displayTagit($scope);
 
   // Called by step button which send a POST method to backend infroming step occur
   $scope.step = function() {
@@ -199,11 +201,11 @@ deeva.controller('SimpleController', function ($scope, $http) {
         console.log("There is an error sending input " + data.status);
     });
   }
-  
-  function displayTag-it() {
-    $("#arguments").tagit({
-    fieldName: "skills"
-});
+
+  function displayTagit($scope) {
+    //Use the function below to get all arguments
+    //console.log($scope.arguments.tagit("assignedTags"));
+    $scope.arguments = $("#arguments").tagit({});
   }
 
 });

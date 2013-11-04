@@ -45,6 +45,11 @@
         <div id="codeInputPane">{{file_name}}</div>
       </div>
       <div class="span6">
+        
+        <p id='console-btn' ng-click="showArguments=!showArguments">Arguments</p>
+        <ul id="arguments" ng-show="showArguments">
+        </ul>
+
         <div id='buttons_container'>
         <input type="image" id='run-btn' ng-click="run()" src="static/css/images/Run.png" ng-disabled="!canRun"></input>
         <input type="image" id='stop-btn' ng-click="stop()" src="static/css/images/Stop.png" ng-disabled="!canStop"></input>
