@@ -42,3 +42,18 @@
   cursor: pointer;
 }
 
+#header {
+  height: 130px;
+  color: black;
+  background-color: rgb(255, 153, 0);
+  border-radius: 10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+#title {
+  font-size: 50px;
+  padding-left: 30px;
+  padding-top: 60px;
+}
+
