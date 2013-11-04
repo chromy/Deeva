@@ -27,7 +27,7 @@ deeva.controller('SimpleController', function ($scope, $http) {
       $http.post('step')
         .success(function(data) {
           $scope.prevLine = $scope.currentLine;
-          $scope.currentLine = data.step_number;
+          $scope.currentLine = data.line_number;
           highLightLine($scope);
           $scope.codeMirror.setCursor($scope.currentLine);
           printToTerminal($scope, data.stdout);
