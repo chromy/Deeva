@@ -45,13 +45,14 @@
     </div>
 
     <div id='buttons_container'>
-    <button ng-click="step()" ng-disabled="!canStep">Step</button>
-    <button ng-click="">others</button>
-    <button ng-click="start()" id='start'>Start</button>
-    <button ng-click="run()" ng-disabled="!canRun" id='run'>Run</button>
+    <input type="image" id='run-btn' ng-click="run()" src="static/css/images/Run.png" ng-disabled="!canRun"></input>
+    <input type="image" id='stop-btn' ng-click="stop()" src="static/css/images/Stop.png" ng-disabled="!canStop"></input>
+    <input type="image" id='step-btn' ng-click="step()" src="static/css/images/Step_over.png" ng-disabled="!canStep"></input>
+    <input type="image" id='step-into-btn' ng-click="step_into()" src="static/css/images/Step_into.png" ng-disabled="!canStepInto"></input>
+    <input type="image" id='step-return-btn' ng-click="step_return()" src="static/css/images/Step_return.png" ng-disabled="!canStepReturn"></input>
     </div>
 
-    <button ng-click="showStdIn=!showStdIn">Console</button>
+    <p id='console-btn' ng-click="showStdIn=!showStdIn">Console</p>
     <div ng-show="showStdIn" id="terminal"></div>
 
   </td>

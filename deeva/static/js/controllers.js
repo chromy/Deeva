@@ -11,6 +11,9 @@ deeva.controller('SimpleController', function ($scope, $http) {
   $scope.currentPrompt = "";
   $scope.canStep = false;
   $scope.canRun = true;
+  $scope.canStop = false;
+  $scope.canStepInto = false;
+  $scope.canStepReturn = false;
 
   $(".resizable").resizable();
   displayCodeMirror($scope, $http);
@@ -35,10 +38,14 @@ deeva.controller('SimpleController', function ($scope, $http) {
     }
   }
 
-  // Called by a run button which sned a POST method to backend to invoke run
+  // Called by a run button which send a POST method to backend to invoke run
+
   $scope.run = function() {
     $scope.canRun = false;
     $scope.canStep = true;
+    $scope.canStop = true;
+    $scope.canStepInto = true;
+    $scope.canStepReturn = true;
     $http.post('run')
       .success(function(data) {
       })
@@ -46,6 +53,31 @@ deeva.controller('SimpleController', function ($scope, $http) {
         alert("There is an error on run.");
         console.log("There is an error on run()");
       });
+  };
+
+  // Called by a stop button which send a POST method to backend to invoke stop
+  $scope.stop = function() {
+    $scope.canRun = true;
+    $scope.canStep = false;
+    $scope.canStop = false;
+    $scope.canStepInto = false;
+    $scope.canStepReturn = false;
+  };
+
+  // Called by a step-into button which send a POST method to backend to invoke step-into
+  $scope.step_into = function() {
+    $scope.canStep = true;
+    $scope.canStop = true;
+    $scope.canStepInto = true;
+    $scope.canStepReturn = true;
+  };
+
+ // Called by a step-return button which send a POST method to backend to invoke step-return
+  $scope.step_return = function() {
+    $scope.canStep = true;
+    $scope.canStop = true;
+    $scope.canStepInto = true;
+    $scope.canStepReturn = true;
   };
 
   // Invoke a GET method to ask for Java code.
