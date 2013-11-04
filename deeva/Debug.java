@@ -150,6 +150,14 @@ public class Debug extends EventHandlerBase {
         }
     }
 
+    public void exceptionEvent(ExceptionEvent event) {
+        System.err.println("EXCPETION");
+    }
+
+    public void vmDeathEvent(VMDeathEvent event) {
+        System.err.println("DEATH");
+    }
+
     public State getState() {
         return state;
     }

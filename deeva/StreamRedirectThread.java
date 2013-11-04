@@ -46,7 +46,6 @@ class StreamRedirectThread extends Thread {
                 System.err.println(s);
 		        resQueue.put(s);
             }
-            System.err.flush();
         } catch(IOException exc) {
             System.err.println("Child I/O Transfer - " + exc);
         }
