@@ -28,7 +28,7 @@ class StreamRedirectThread extends Thread {
         super(name);
         this.in = new InputStreamReader(in);
         //this.out = new OutputStreamWriter(out);
-	this.resQueue = resQueue;
+    	this.resQueue = resQueue;
         setPriority(Thread.MAX_PRIORITY-1);
     }
 
@@ -43,7 +43,7 @@ class StreamRedirectThread extends Thread {
             while ((count = in.read(cbuf, 0, BUFFER_SIZE)) >= 0) {
                 //out.write(cbuf, 0, count);
 		        String s = new String(cbuf, 0, count);
-                System.err.println(s);
+                //System.err.println(s);
 		        resQueue.put(s);
             }
         } catch(IOException exc) {

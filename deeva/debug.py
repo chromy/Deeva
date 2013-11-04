@@ -96,17 +96,20 @@ def load(name):
     return source
 
 def pop_stdout():
-    try:
-        result = response_queue.get(False)
-    except Empty:
-        return None
-    else:
-        response_queue.task_done()
-        return result
+    result = ''
+    while True:
+        try:
+            result += response_queue.get(False)
+        except Empty:
+            break
+        else:
+            response_queue.task_done()
+    return result
 
 class ResponseQueue(object):
     def put(self, string):
         """Add `string' to response queue that will be processed later."""
+        print repr(string)
         response_queue.put(string)
 
     class Java:

@@ -65,7 +65,7 @@ public class Debug extends EventHandlerBase {
         exitRequest = reqMgr.createMethodExitRequest();
         for (String ex: excludes) { exitRequest.addClassExclusionFilter (ex); }
         exitRequest.setSuspendPolicy(EventRequest.SUSPEND_ALL);    // suspend so we can examine vars
-        //exitRequest.enable();
+        exitRequest.enable();
 
     }
 
@@ -84,12 +84,12 @@ public class Debug extends EventHandlerBase {
         if (state != State.STASIS) {
             throw new WrongStateError("Should be in STASIS state.");
         }
-        entryRequest.disable();
-        exitRequest.enable();
+        //entryRequest.disable();
+        //exitRequest.enable();
         step(StepRequest.STEP_INTO);
         sema.acquire();
-        exitRequest.disable();
-        entryRequest.enable();
+        //exitRequest.disable();
+        //entryRequest.enable();
         return getState();
     }
 
@@ -124,12 +124,18 @@ public class Debug extends EventHandlerBase {
         EventRequestManager reqMgr = vm.eventRequestManager();
         stepRequest = reqMgr.createStepRequest(getThread(),
                 StepRequest.STEP_MIN, depth);
-        stepRequest.addCountFilter(1);
         for (int i=0; i<excludes.length; ++i) {
              stepRequest.addClassExclusionFilter(excludes[i]);
         }
+        //stepRequest.addCountFilter(1);
         stepRequest.enable();
         vm.resume();
+    }
+
+    @Override
+    public void handleEvent(Event e) {
+        System.err.println(e.getClass());
+        super.handleEvent(e);
     }
 
     @Override
@@ -155,6 +161,7 @@ public class Debug extends EventHandlerBase {
 
     @Override
     public void methodExitEvent(MethodExitEvent event) {
+        System.err.println("METHOD EXIT");
         if (stepRequest != null) {
             sema.release();
             EventRequestManager mgr = vm.eventRequestManager();
