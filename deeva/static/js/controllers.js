@@ -7,8 +7,10 @@ deeva.controller('SimpleController', function ($scope, $http) {
   $scope.prevLine = 0;
   $scope.currentLine = 1;
   $scope.breakPoints = new Array();
-  $scope.showStdIn = false;
+  $scope.showStdIn = true;
   $scope.currentPrompt = "";
+  $scope.canStep = false;
+  $scope.canRun = true;
 
   $(".resizable").resizable();
   displayCodeMirror($scope, $http);
@@ -21,13 +23,13 @@ deeva.controller('SimpleController', function ($scope, $http) {
         .success(function(data) {
           $scope.prevLine = $scope.currentLine;
           $scope.currentLine = data.step_number;
-          $scope.highLightLine();
+          highLightLine($scope);
           $scope.codeMirror.setCursor($scope.currentLine);
           printToTerminal($scope, data.stdout);
           console.log("The current step is " + $scope.currentLine);
         })
         .error(function(status) {
-          alert("There is an error on step " + data.step_number);
+          //alert("There is an error on step " + data.step_number);
           console.log("There is an error on step()");
       });
     }
@@ -35,6 +37,8 @@ deeva.controller('SimpleController', function ($scope, $http) {
 
   // Called by a run button which sned a POST method to backend to invoke run
   $scope.run = function() {
+    $scope.canRun = false;
+    $scope.canStep = true;
     $http.post('run')
       .success(function(data) {
       })
@@ -118,13 +122,17 @@ deeva.controller('SimpleController', function ($scope, $http) {
   }
 
   // High light the current line. The previous line high light is also removed.
-  $scope.highLightLine = function() {
+  function highLightLine($scope) {
     var BACK_CLASS = "CodeMirror-activeline-background";
     $scope.codeMirror.removeLineClass($scope.prevLine, "background", BACK_CLASS);
     $scope.codeMirror.addLineClass($scope.currentLine, 'background', BACK_CLASS);
   };
 
     function printToTerminal($scope, output) {
+    if (!output) {
+      return;
+    }
+    console.log(output + "is output end with newline?");
     if (output.slice(-1) == "\n") {
       output = output.substring(0, output.length - 1);
       var remainedToPrint = $scope.currentPrompt.substring(0, $scope.currentPrompt.length);
@@ -151,6 +159,7 @@ deeva.controller('SimpleController', function ($scope, $http) {
   }
 
   function sendInput($scope, input) {
+    $scope.terminal.set_prompt(initial_prompt);
     $http.post('input', input)
       .success(function(data) {
       })
