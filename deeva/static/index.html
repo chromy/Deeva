@@ -26,42 +26,45 @@
   <script src="static/lib/jquery-ui/jquery-ui-1.10.3.custom.min.js"></script>
   <link href="static/css/jquery-ui-1.10.3.custom.min.css" rel="stylesheet">
 
+  <!-- tag-it -->
+  <script src="static/lib/tag-it/tag-it.min.js"></script>
+  <link href="static/css/jquery.tagit.css" rel="stylesheet">
+
   <!-- Controller -->
   <script src="static/js/controllers.js"></script>
 </head>
 
 <body>
-
-<h1>Deeva</h1>
-
-<div id="navibar"></div>
-
-<div> {{file_name}} </div>
-<table id="container">
-
-  <td id="code" class="resizable">
-  <!-- populate with a CodeMirror instance -->
-    <div id="codeInputPane">
+  <div class="container">
+    <div class="row" id="header">
+      <h1 id="title">Deeva</h1>
     </div>
+    <div class="row">
+      <div class="span6">
+        <!-- populate with a CodeMirror instance -->
+        <div id="codeInputPane">{{file_name}}</div>
+      </div>
+      <div class="span6">
+        
+        <p id='console-btn' ng-click="showArguments=!showArguments">Arguments</p>
+        <ul id="arguments" ng-show="showArguments">
+        </ul>
 
-    <div id='buttons_container'>
-    <button ng-click="step()" ng-disabled="!canStep">Step</button>
-    <button ng-click="">others</button>
-    <button ng-click="start()" id='start'>Start</button>
-    <button ng-click="run()" ng-disabled="!canRun" id='run'>Run</button>
+        <div id='buttons_container'>
+        <input type="image" id='run-btn' ng-click="run()" src="static/css/images/Run.png" ng-disabled="!canRun"></input>
+        <input type="image" id='stop-btn' ng-click="stop()" src="static/css/images/Stop.png" ng-disabled="!canStop"></input>
+        <input type="image" id='step-btn' ng-click="step()" src="static/css/images/Step_over.png" ng-disabled="!canStep"></input>
+        <input type="image" id='step-into-btn' ng-click="step_into()" src="static/css/images/Step_into.png" ng-disabled="!canStepInto"></input>
+        <input type="image" id='step-return-btn' ng-click="step_return()" src="static/css/images/Step_return.png" ng-disabled="!canStepReturn"></input>
+
+        <p id='console-btn' ng-click="showStdIn=!showStdIn">Console</p>
+        <div ng-show="showStdIn" id="terminal"></div>
+      </div>
     </div>
-
-    <button ng-click="showStdIn=!showStdIn">Console</button>
-    <div ng-show="showStdIn" id="terminal"></div>
-
-  </td>
-
-  <td id=virtualizer>
-    Drawing
-  </td>
-
-</table>
-
+    <div class="row">
+      Stack&Heap
+    </div>
+  </div>
 </body>
 
 </html>

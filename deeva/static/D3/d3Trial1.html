@@ -1,0 +1,89 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Deeva </title>
+
+  <!-- Common css -->
+  <link rel="stylesheet" href="./d3Trial.css">
+  <link rel="stylesheet" href="../css/bootstrap.css">
+
+  <!-- D3 -->
+  <script type="text/javascript" src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+
+</head>
+
+<body>
+    <div id="stack"></div>
+    <div><p>stack = [("args", "null"),("a", "1"),("b", "2"),("c", '"z"'),("sentence", '"hello"'),("array", "int[4]")]</p></div>
+<button id="run">Run</button>
+ <script type="text/javascript">
+    var stack = [("args", "null"),("a", "1"),("b", "2"),("c", '"z"'),("sentence", '"hello"'),("array", "int[4]")]
+        function createDataset(n){ 
+             var dataset = [];
+             for(i=0; i<n; i++){
+               dataset.push(i);    
+             }
+             return dataset;
+        } 
+        var r = 30;
+        var w = 100;
+        var h = 50;
+        var x = 50;
+        var no = 5;
+        var stack = d3.select("#stack")
+                .append("svg")
+                .attr("height", 500)
+                .attr("width", 500);
+
+        var recs = stack.selectAll("rect")
+                        .append("rect")
+                        .data(createDataset(no))
+                        .enter();
+        
+        recs.append("rect")
+            .attr("y", function(d, i){
+                return 2*h+i*h;     
+            })
+            .attr("x", x)
+            .attr("height", h)
+            .attr("width", w)
+            .style("fill", "#ffbb78")
+            .style("stroke", "black")
+            .style("stroke-width", 3);
+
+        var name = stack.selectAll("name")
+                        .append("text")
+                        .enter();
+
+        name.append("text")
+            .attr("x", x+w/2)
+            .attr("y", function(d, i){
+                return 3/4*h+2*h+i*h;     
+            })
+            .attr("text-anchor", "middle")
+            .attr("font-size", "25px")
+            .text(function(){
+                return "hello";
+            })
+
+                        
+          
+        
+
+        d3.select("#run").on("click", function() {
+                var enter = svg.append("circle");
+             enter.attr("cy", y);
+             enter.attr("fill", "red").attr("r", 30);
+             enter.attr("cx", function(d) {
+                   res = 2*r+(no)*2*r;
+                   no++;
+                   return res;                
+                });
+  });
+         
+ </script>
+ 
+</body>
+
+</html>
