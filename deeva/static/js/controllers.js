@@ -10,7 +10,7 @@ deeva.controller('SimpleController', function ($scope, $http) {
   $scope.showStdIn = true;
   $scope.showArguments = true;
   $scope.currentPrompt = "";
-  $scope.canStep = false;
+  $scope.canStepOver = false;
   $scope.canRun = true;
   $scope.canStop = false;
   $scope.canStepInto = false;
@@ -21,12 +21,47 @@ deeva.controller('SimpleController', function ($scope, $http) {
   displayTerminal($scope);
   displayTagit($scope);
 
+  // Called by a run button which send a POST method to backend to invoke run
+  $scope.run = function() {
+    if ($scope.canRun) {
+      $scope.canRun = false;
+      $scope.canStepOver = true;
+      $scope.canStop = true;
+      $scope.canStepInto = true;
+      $scope.canStepReturn = true;
+      refreshButtonsWithCurrentState();
+      $http.post('run')
+        .success(function(data) {
+        })
+        .error(function(status) {
+          alert("There is an error on run.");
+          console.log("There is an error on run()");
+        });
+    } else {
+      console.log("Run button is disabled, something is wrong!");
+    }
+  };
+
+  // Called by a stop button which send a POST method to backend to invoke stop
+  $scope.stop = function() {
+    if ($scope.canStop) {
+      $scope.canRun = true;
+      $scope.canStepOver = false;
+      $scope.canStop = false;
+      $scope.canStepInto = false;
+      $scope.canStepReturn = false;
+      refreshButtonsWithCurrentState();
+    } else {
+       console.log("Stop button is disabled, please run first!");
+    }
+  };
+
   // Called by step button which send a POST method to backend infroming step occur
-  $scope.step = function() {
-    if ($scope.canStep) {
+  $scope.step_over = function() {
+    if ($scope.canStepOver) {
       refreshButtonsWithCurrentState();
       if ($scope.currentLine <= $scope.code.length) {
-        $http.post('step')
+        $http.post('stepOver')
           .success(function(data) {
             $scope.prevLine = $scope.currentLine;
             $scope.currentLine = data.line_number;
@@ -45,28 +80,57 @@ deeva.controller('SimpleController', function ($scope, $http) {
     }
   }
 
-  // Called by a run button which send a POST method to backend to invoke run
-
-  $scope.run = function() {
-    if ($scope.canRun) {
-      $scope.canRun = false;
-      $scope.canStep = true;
-      $scope.canStop = true;
-      $scope.canStepInto = true;
-      $scope.canStepReturn = true;
+  // Called by a step-into button which send a POST method to backend to invoke step-into
+  $scope.step_into = function() {
+     if ($scope.canStepInto) {
       refreshButtonsWithCurrentState();
-      $http.post('run')
-        .success(function(data) {
-        })
-        .error(function(status) {
-          alert("There is an error on run.");
-          console.log("There is an error on run()");
+      if ($scope.currentLine <= $scope.code.length) {
+        $http.post('stepInto')
+          .success(function(data) {
+            $scope.prevLine = $scope.currentLine;
+            $scope.currentLine = data.line_number;
+            console.log(data);
+            console.log($scope.r);
+            console.log($scope.currentLine);
+            highLightLine($scope);
+            $scope.codeMirror.setCursor($scope.currentLine);
+            printToTerminal($scope, data.stdout);
+            console.log("The current step is " + $scope.currentLine);
+          })
+          .error(function(status) {
+            console.log("There is an error on step()");
         });
+      }
     } else {
-      console.log("Run button is disabled, something is wrong!");
+      console.log("Step-into button is disabled, please run again!");
     }
   };
-  
+
+ // Called by a step-return button which send a POST method to backend to invoke step-return
+  $scope.step_return = function() {
+     if ($scope.canStepReturn) {
+      refreshButtonsWithCurrentState();
+      if ($scope.currentLine <= $scope.code.length) {
+        $http.post('stepReturn')
+          .success(function(data) {
+            $scope.prevLine = $scope.currentLine;
+            $scope.currentLine = data.line_number;
+            console.log(data);
+            console.log($scope.r);
+            console.log($scope.currentLine);
+            highLightLine($scope);
+            $scope.codeMirror.setCursor($scope.currentLine);
+            printToTerminal($scope, data.stdout);
+            console.log("The current step is " + $scope.currentLine);
+          })
+          .error(function(status) {
+            console.log("There is an error on step()");
+        });
+      }
+    } else {
+      console.log("Step-return button is disabled, please run again!");
+    }
+  };
 
   function refreshButtonsWithCurrentState() {
      if ($scope.canRun) {
@@ -74,7 +138,7 @@ deeva.controller('SimpleController', function ($scope, $http) {
      } else {
         $("#run-btn").attr("src", "static/css/images/Run_disabled.png");
      }
-     if ($scope.canStep) {
+     if ($scope.canStepOver) {
         $("#step-btn").attr("src", "static/css/images/Step_over.png");
      } else {
         $("#step-btn").attr("src", "static/css/images/Step_over_disabled.png");
@@ -95,38 +159,6 @@ deeva.controller('SimpleController', function ($scope, $http) {
         $("#stop-btn").attr("src", "static/css/images/Stop_disabled.png");
      }
    }
-
-  // Called by a stop button which send a POST method to backend to invoke stop
-  $scope.stop = function() {
-    if ($scope.canStop) {
-      $scope.canRun = true;
-      $scope.canStep = false;
-      $scope.canStop = false;
-      $scope.canStepInto = false;
-      $scope.canStepReturn = false;
-      refreshButtonsWithCurrentState();
-    } else {
-       console.log("Stop button is disabled, please run first!");
-    }
-  };
-
-  // Called by a step-into button which send a POST method to backend to invoke step-into
-  $scope.step_into = function() {
-     if ($scope.canStepInto) {
-       refreshButtonsWithCurrentState();
-     } else {
-        console.log("Step-into button is disabled, please run again!");
-     }
-  };
-
- // Called by a step-return button which send a POST method to backend to invoke step-return
-  $scope.step_return = function() {
-    if ($scope.canStepReturn) {
-       refreshButtonsWithCurrentState();
-     } else {
-        console.log("Step-return button is disabled, please run again!");
-     }
-  };
 
   // Invoke a GET method to ask for Java code.
   function displayCodeMirror($scope, $http) {
