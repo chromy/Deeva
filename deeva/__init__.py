@@ -15,10 +15,20 @@ def breakPoints():
         breakPoints = request.data
         return jsonify(status='ok')
 
-@app.route("/step", methods=['POST'])
+@app.route("/stepOver", methods=['POST'])
+def step():
+    if request.method == 'POST':
+        return make_api_response(app.debugger.stepOver)
+
+@app.route("/stepInto", methods=['POST'])
 def step():
     if request.method == 'POST':
         return make_api_response(app.debugger.stepInto)
+
+@app.route("/stepReturn", methods=['POST'])
+def step():
+    if request.method == 'POST':
+        return make_api_response(app.debugger.stepReturn)
 
 @app.route("/setBreakPoint", methods=['POST'])
 def breakPoint():

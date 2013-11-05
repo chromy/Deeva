@@ -84,33 +84,28 @@ public class Debug extends EventHandlerBase {
         if (state != State.STASIS) {
             throw new WrongStateError("Should be in STASIS state.");
         }
-        //entryRequest.disable();
-        //exitRequest.enable();
         step(StepRequest.STEP_INTO);
         sema.acquire();
-        //exitRequest.disable();
-        //entryRequest.enable();
         return getState();
     }
 
-    public int stepOut() throws InterruptedException {
-        entryRequest.disable();
+    public Map<String, Object> stepReturn() throws InterruptedException {
+        if (state != State.STASIS) {
+            throw new WrongStateError("Should be in STASIS state.");
+        }
         step(StepRequest.STEP_OUT);
         sema.acquire();
-        entryRequest.enable();
-        return line_number;
-        //if (state == State.STASIS) {
-        //}
+        return getState();
     }
 
-    public int stepOver() throws InterruptedException {
+    public Map<String, Object> stepOver() throws InterruptedException {
+        if (state != State.STASIS) {
+            throw new WrongStateError("Should be in STASIS state.");
+        }
         entryRequest.disable();
         step(StepRequest.STEP_OVER);
         sema.acquire();
-        entryRequest.enable();
-        return line_number;
-        //if (state == State.STASIS) {
-        //}
+        return getState();
     }
 
     public void setBreakPoint(String clas, int lineNum) {
