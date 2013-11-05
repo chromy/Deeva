@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>D3 Test</title>
+    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    </head>
+    <body>
+        <script type="text/javascript">
+ var dataset = [11,12,13,14];
+
+ var svg = d3.select("body").append("svg")
+             .attr("width", 300)
+             .attr("height", 300);
+
+ var rectangulars = svg.selectAll("rect")
+                       .data(dataset)
+                       .enter()
+                       .append("rect");
+ var h = 30;
+
+ rectangulars.attr("x", function(d, i) {return i*h;})
+             .attr("y", 0)
+             .attr("height" , h)
+             .attr("width", h)
+             .attr("fill" , "white")
+             .attr("stroke", "black");
+
+ var text = svg.selectAll("text")
+               .data(dataset)
+               .enter()
+               .append("text");
+
+ text.attr("y", 17)
+     .attr("x", function(d, i){ return i*h +10})
+     .attr("fill", "red")
+     .text(function(d, i){return d;});
+
+        </script>
+    </body>
+</html>

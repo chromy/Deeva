@@ -18,7 +18,7 @@
     <div><p>stack = [("args", "null"),("a", "1"),("b", "2"),("c", '"z"'),("sentence", '"hello"'),("array", "int[4]")]</p></div>
 <button id="run">Run</button>
  <script type="text/javascript">
-    var stack = [("args", "null"),("a", "1"),("b", "2"),("c", '"z"'),("sentence", '"hello"'),("array", "int[4]")]
+    var dataset2 = [["args", "null"],["a", "1"],["b", "2"],["c", '"z"'],["sentence", "hello"],["array", "int[4]"]]
         function createDataset(n){ 
              var dataset = [];
              for(i=0; i<n; i++){
@@ -31,6 +31,10 @@
         var h = 50;
         var x = 50;
         var no = 5;
+
+        var dataset = createDataset(no);
+        console.log(dataset2);
+        console.log(dataset2[1][0]);
         var stack = d3.select("#stack")
                 .append("svg")
                 .attr("height", 500)
@@ -38,7 +42,7 @@
 
         var recs = stack.selectAll("rect")
                         .append("rect")
-                        .data(createDataset(no))
+                        .data(dataset)
                         .enter();
         
         recs.append("rect")
@@ -52,19 +56,19 @@
             .style("stroke", "black")
             .style("stroke-width", 3);
 
-        var name = stack.selectAll("name")
-                        .append("text")
-                        .enter();
+        var text = stack.selectAll("text")
+			.data(dataset)
+                        .enter()
+                        .append("text");
 
-        name.append("text")
-            .attr("x", x+w/2)
+        text.attr("x", x+w/2)
             .attr("y", function(d, i){
                 return 3/4*h+2*h+i*h;     
             })
             .attr("text-anchor", "middle")
             .attr("font-size", "25px")
-            .text(function(){
-                return "hello";
+            .text(function(d, i){
+                return dataset2[i][0];
             })
 
                         
