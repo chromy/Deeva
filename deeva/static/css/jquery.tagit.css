@@ -12,6 +12,7 @@ ul.tagit li {
 ul.tagit li.tagit-choice {    
     position: relative;
     line-height: inherit;
+    white-space:pre;
 }
 input.tagit-hidden-field {
     display: none;
@@ -32,6 +33,7 @@ ul.tagit li.tagit-choice a.tagit-label {
     cursor: pointer;
     text-decoration: none;
 }
+
 ul.tagit li.tagit-choice .tagit-close {
     cursor: pointer;
     position: absolute;

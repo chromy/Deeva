@@ -48,6 +48,7 @@ deeva.controller('SimpleController', function ($scope, $http) {
     $scope.canStop = true;
     $scope.canStepInto = true;
     $scope.canStepReturn = true;
+    console.log($scope.arguments.tagit("assignedTags"));
     $http.post('run')
       .success(function(data) {
       })
@@ -205,7 +206,9 @@ deeva.controller('SimpleController', function ($scope, $http) {
   function displayTagit($scope) {
     //Use the function below to get all arguments
     //console.log($scope.arguments.tagit("assignedTags"));
-    $scope.arguments = $("#arguments").tagit({});
+    $scope.arguments = $("#arguments").tagit({
+      allowDuplicates: true,
+    });
   }
 
 });
