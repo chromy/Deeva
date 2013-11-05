@@ -37,10 +37,13 @@
 
 .terminal {
     font-family: FreeMono, monospace;
-    color: #aaa;
-    background-color: #000;
+    color: #000;
+    background-color: #FFF;
     font-size: 16px;
     line-height: 14px;
+    border-style: solid;
+	border-width: 1px;
+	border-color: #aaa;
 }
 .terminal-output > div {
     /*padding-top: 3px;*/
