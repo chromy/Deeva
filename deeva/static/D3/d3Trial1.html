@@ -32,7 +32,6 @@
         var x = 50;
         var no = 5;
 
-        var dataset = createDataset(no);
         console.log(dataset2);
         console.log(dataset2[1][0]);
         var stack = d3.select("#stack")
@@ -42,7 +41,7 @@
 
         var recs = stack.selectAll("rect")
                         .append("rect")
-                        .data(dataset)
+                        .data(dataset2)
                         .enter();
         
         recs.append("rect")
@@ -52,12 +51,26 @@
             .attr("x", x)
             .attr("height", h)
             .attr("width", w)
+            .attr("class", "key")
             .style("fill", "#ffbb78")
             .style("stroke", "black")
             .style("stroke-width", 3);
 
-        var text = stack.selectAll("text")
-			.data(dataset)
+
+        recs.append("rect")
+            .attr("y", function(d, i){
+                return 2*h+i*h;     
+            })
+            .attr("x", x+w)
+            .attr("height", h)
+            .attr("width", w)
+            .attr("class", "value")
+            .style("fill", "#ffbb78")
+            .style("stroke", "black")
+            .style("stroke-width", 3);
+
+        var text = stack.selectAll("key")
+			.data(dataset2)
                         .enter()
                         .append("text");
 
@@ -71,10 +84,20 @@
                 return dataset2[i][0];
             })
 
-                        
-          
-        
+        var text2 = stack.selectAll("value")
+			.data(dataset2)
+                        .enter()
+                        .append("text");
 
+        text2.attr("x", x+3*w/2)
+            .attr("y", function(d, i){
+                return 3/4*h+2*h+i*h;     
+            })
+            .attr("text-anchor", "middle")
+            .attr("font-size", "25px")
+            .text(function(d, i){
+                return dataset2[i][1];
+            })
         d3.select("#run").on("click", function() {
                 var enter = svg.append("circle");
              enter.attr("cy", y);
