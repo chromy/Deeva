@@ -1,0 +1,142 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Deeva </title>
+
+  <!-- Common css -->
+  <link rel="stylesheet" href="./d3Trial.css">
+  <link rel="stylesheet" href="../css/bootstrap.css">
+
+  <!-- D3 -->
+  <script type="text/javascript" src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+
+</head>
+
+<body>
+    <div id="visual"></div>
+ <script type="text/javascript">
+    var dataset2 = [["args", "null", "array"],["a", "1", "int"],["b", "2", "int"],["c", "'z'", "char"],["string", "hello", "string"],["array", "int[4]", "array"]];
+        var r = 30;
+        var w = 100;
+        var h = 50;
+        var x = 50;
+        var no = 5;
+
+        var visual = d3.select("#visual")
+                .append("svg")
+                .attr("height", 500)
+                .attr("width", 1000);
+
+        var stack = visual.selectAll("g")
+                        .append("g")
+                        .data(dataset2)
+                        .enter();
+        
+        stack.append("rect")
+            .attr("y", function(d, i){
+                return 2*h+i*h;     
+            })
+            .attr("x", x)
+            .attr("height", h)
+            .attr("width", w)
+            .attr("class", "key")
+            .style("fill", "#ffbb78")
+            .style("stroke", "black")
+            .style("stroke-width", 2);
+
+
+        stack.append("rect")
+            .attr("y", function(d, i){
+                return 2*h+i*h;     
+            })
+            .attr("x", x+w)
+            .attr("height", h)
+            .attr("width", w)
+            .attr("class", "value")
+            .style("fill", "#ffbb78")
+            .style("stroke", "black")
+            .style("stroke-width", 2);
+
+        var text = visual.selectAll("key")
+			.data(dataset2)
+                        .enter()
+                        .append("text");
+
+        text.attr("x", x+w/2)
+            .attr("y", function(d, i){
+                return 3/4*h+2*h+i*h;     
+            })
+            .attr("text-anchor", "middle")
+            .attr("font-size", "25px")
+            .text(function(d, i){
+                return dataset2[i][0];
+            })
+
+        var text2 = visual.selectAll("value")
+			.data(dataset2)
+                        .enter()
+                        .append("text");
+
+
+        text2.attr("x", x+3*w/2)
+            .attr("y", function(d, i){
+                return 3/4*h+2*h+i*h;     
+            })
+            .attr("text-anchor", "middle")
+            .attr("font-size", "25px")
+            .text(function(d, i){
+                if(dataset2[i][2] == "array" || dataset2[i][2]=="string"){
+                  stack.append("circle")
+                      .attr("cx", text2.attr("x"))
+                      .attr("cy", 3/4*h+2*h+i*h - 10)
+                      .attr("r", 10)
+                      .style("fill", "black");
+                }
+                else 
+                  return dataset2[i][1];
+            });
+
+
+/*
+   var node = stack.selectAll(".node")
+                   .data(nodes)
+                   .enter().append("g")
+                   .attr("class", "node");
+
+
+var path = stack.append("stack:g").selectAll("path")
+    .data(links)
+  .enter().append("stack:path")
+    .attr("class", "link")
+    .attr("marker-end", "url(#end)");
+
+function tick() {
+    path.attr("d", function(d) {
+        var dx = d.target.x - d.source.x,
+            dy = d.target.y - d.source.y,
+            dr = Math.sqrt(dx * dx + dy * dy);
+        return "M" + 
+            d.source.x + "," + 
+            d.source.y + "A" + 
+            dr + "," + dr + " 0 0,1 " + 
+            d.target.x + "," + 
+            d.target.y;
+    });
+
+    node
+        .attr("transform", function(d) { 
+            return "translate(" + d.x + "," + d.y + ")"; });
+}
+
+        var force = d3.layout.force()
+                      .nodes(d3.values(nodes))
+                      .links(links)
+                      .start()
+                      .on("tick", tick);
+*/
+ </script>
+ 
+</body>
+
+</html>
