@@ -57,7 +57,6 @@ public class Debug extends EventHandlerBase {
         redirectOutput();
         state = State.STASIS;
 
-
         EventRequestManager reqMgr = vm.eventRequestManager();
 
         entryRequest = reqMgr.createMethodEntryRequest();
@@ -68,7 +67,7 @@ public class Debug extends EventHandlerBase {
         exitRequest = reqMgr.createMethodExitRequest();
         for (String ex: excludes) { exitRequest.addClassExclusionFilter (ex); }
         exitRequest.setSuspendPolicy(EventRequest.SUSPEND_ALL);    // suspend so we can examine vars
-        exitRequest.enable();
+        //exitRequest.enable();
 
     }
 
@@ -168,15 +167,17 @@ public class Debug extends EventHandlerBase {
             sema.release();
             EventRequestManager mgr = vm.eventRequestManager();
             mgr.deleteEventRequest(stepRequest);
+            stepRequest = null;
         }
     }
 
     public void exceptionEvent(ExceptionEvent event) {
-        System.err.println("EXCPETION");
+        System.err.println("EXCEPTION");
     }
 
     public void vmDeathEvent(VMDeathEvent event) {
         System.err.println("DEATH");
+        sema.release();
     }
 
     public State getStateName() {
@@ -221,19 +222,16 @@ public class Debug extends EventHandlerBase {
     void redirectOutput() {
         Process process = vm.process();
 
-        // Copy target's output and error to our output and error.
-        // errThread = new StreamRedirectThread("error reader",
-        //         process.getErrorStream(),
-        //         System.err);
-        // outThread = new StreamRedirectThread("output reader",
-        //         process.getInputStream(),
-        //         System.out);
-        //errThread.start();
+        errThread = new StreamRedirectThread("error reader",
+                process.getErrorStream(),
+                this.reqQueue);
+
         outThread = new StreamRedirectThread("output reader",
                 process.getInputStream(),
                 this.reqQueue);
 
         outThread.start();
+        errThread.start();
 
         /* Somehow need to capture input i.e. in the other direction */
     }
