@@ -75,6 +75,8 @@ public class Debug extends EventHandlerBase {
     public void run() {
         vm.resume();
         state = State.RUNNING;
+        sema.acquire();
+        return getState();
     }
 
     public Map<String, Object> getState() {
@@ -146,6 +148,7 @@ public class Debug extends EventHandlerBase {
             vm.resume();
         } else {
             state = State.STASIS;
+            sema.release();
         }
     }
 
