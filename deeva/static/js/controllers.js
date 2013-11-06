@@ -15,12 +15,14 @@ deeva.controller('SimpleController', function ($scope, $http) {
   $scope.canStop = false;
   $scope.canStepInto = false;
   $scope.canStepReturn = false;
-  $scope.currentState = "";
+  $scope.currentState = "NO_INFERIOR";
 
   $(".resizable").resizable();
   displayCodeMirror($scope, $http);
   displayTerminal($scope);
   displayTagit($scope);
+  getCurrentState({state: "NO_INFERIOR"})
+  refreshButtonsWithCurrentState();
 
   // Called by a run button which send a POST method to backend to invoke run
   $scope.run = function() {
@@ -151,19 +153,29 @@ deeva.controller('SimpleController', function ($scope, $http) {
 
   function refreshButtonsWithCurrentState() {
      if ($scope.canRun) {
+        $("#run-btn").fadeTo( "slow", 1 );
      } else {
+        $("#run-btn").fadeTo( "slow", 0.6 );
      }
      if ($scope.canStepOver) {
+        $("#step-btn").fadeTo( "slow", 1 );
      } else {
+        $("#step-btn").fadeTo( "slow", 0.6 );
      }
      if ($scope.canStepInto) {
+        $("#step-into-btn").fadeTo( "slow", 1 );
      } else {
+        $("#step-into-btn").fadeTo( "slow", 0.6 );
      }
      if ($scope.canStepReturn) {
+        $("#step-return-btn").fadeTo( "slow", 1 );
      } else {
+        $("#step-return-btn").fadeTo( "slow", 0.6 );
      }
      if ($scope.canStop) {
+        $("#stop-btn").fadeTo( "slow", 1 );
      } else {
+        $("#stop-btn").fadeTo( "slow", 0.6 );
      }
    }
 
