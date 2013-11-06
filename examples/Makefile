@@ -1,4 +1,4 @@
-EXAMPLES = helloworld infinite_helloworld simpleloop
+EXAMPLES = helloworld infinite_helloworld simpleloop throws_exception
 
 .PHONY = make clean
 
