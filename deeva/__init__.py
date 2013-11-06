@@ -39,8 +39,7 @@ def breakPoint():
 @app.route("/run", methods=['POST'])
 def run():
     if request.method == 'POST':
-        app.debugger.run()
-        return jsonify(state="started")
+        return make_api_response(app.debugger.run)
 
 @app.route("/main_class.json")
 def get_main_class():
