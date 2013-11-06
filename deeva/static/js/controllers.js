@@ -27,6 +27,7 @@ deeva.controller('SimpleController', function ($scope, $http) {
     if ($scope.canRun) {
       $http.post('run')
         .success(function(data) {
+          console.log(data);
           updateState(data);
         })
         .error(function(status) {
@@ -150,29 +151,19 @@ deeva.controller('SimpleController', function ($scope, $http) {
 
   function refreshButtonsWithCurrentState() {
      if ($scope.canRun) {
-        $("#run-btn").attr("src", "static/css/images/Run.png");
      } else {
-        $("#run-btn").attr("src", "static/css/images/Run_disabled.png");
      }
      if ($scope.canStepOver) {
-        $("#step-btn").attr("src", "static/css/images/Step_over.png");
      } else {
-        $("#step-btn").attr("src", "static/css/images/Step_over_disabled.png");
      }
      if ($scope.canStepInto) {
-        $("#step-into-btn").attr("src", "static/css/images/Step_into.png");
      } else {
-        $("#step-into-btn").attr("src", "static/css/images/Step_into_disabled.png");
      }
      if ($scope.canStepReturn) {
-        $("#step-return-btn").attr("src", "static/css/images/Step_return.png");
      } else {
-        $("#step-return-btn").attr("src", "static/css/images/Step_return_disabled.png");
      }
      if ($scope.canStop) {
-        $("#stop-btn").attr("src", "static/css/images/Stop.png");
      } else {
-        $("#stop-btn").attr("src", "static/css/images/Stop_disabled.png");
      }
    }
 
