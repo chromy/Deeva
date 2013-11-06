@@ -15,18 +15,21 @@ deeva.controller('SimpleController', function ($scope, $http) {
   $scope.canStop = false;
   $scope.canStepInto = false;
   $scope.canStepReturn = false;
-  $scope.currentState = "";
+  $scope.currentState = "NO_INFERIOR";
 
   $(".resizable").resizable();
   displayCodeMirror($scope, $http);
   displayTerminal($scope);
   displayTagit($scope);
+  getCurrentState({state: "NO_INFERIOR"})
+  refreshButtonsWithCurrentState();
 
   // Called by a run button which send a POST method to backend to invoke run
   $scope.run = function() {
     if ($scope.canRun) {
       $http.post('run')
         .success(function(data) {
+          console.log(data);
           updateState(data);
         })
         .error(function(status) {
@@ -150,29 +153,29 @@ deeva.controller('SimpleController', function ($scope, $http) {
 
   function refreshButtonsWithCurrentState() {
      if ($scope.canRun) {
-        $("#run-btn").attr("src", "static/css/images/Run.png");
+        $("#run-btn").fadeTo( "slow", 1 );
      } else {
-        $("#run-btn").attr("src", "static/css/images/Run_disabled.png");
+        $("#run-btn").fadeTo( "slow", 0.6 );
      }
      if ($scope.canStepOver) {
-        $("#step-btn").attr("src", "static/css/images/Step_over.png");
+        $("#step-btn").fadeTo( "slow", 1 );
      } else {
-        $("#step-btn").attr("src", "static/css/images/Step_over_disabled.png");
+        $("#step-btn").fadeTo( "slow", 0.6 );
      }
      if ($scope.canStepInto) {
-        $("#step-into-btn").attr("src", "static/css/images/Step_into.png");
+        $("#step-into-btn").fadeTo( "slow", 1 );
      } else {
-        $("#step-into-btn").attr("src", "static/css/images/Step_into_disabled.png");
+        $("#step-into-btn").fadeTo( "slow", 0.6 );
      }
      if ($scope.canStepReturn) {
-        $("#step-return-btn").attr("src", "static/css/images/Step_return.png");
+        $("#step-return-btn").fadeTo( "slow", 1 );
      } else {
-        $("#step-return-btn").attr("src", "static/css/images/Step_return_disabled.png");
+        $("#step-return-btn").fadeTo( "slow", 0.6 );
      }
      if ($scope.canStop) {
-        $("#stop-btn").attr("src", "static/css/images/Stop.png");
+        $("#stop-btn").fadeTo( "slow", 1 );
      } else {
-        $("#stop-btn").attr("src", "static/css/images/Stop_disabled.png");
+        $("#stop-btn").fadeTo( "slow", 0.6 );
      }
    }
 
