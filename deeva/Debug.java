@@ -135,7 +135,14 @@ public class Debug extends EventHandlerBase {
     @Override
     public void handleEvent(Event e) {
         System.err.println(e.getClass());
+        if (e instanceof LocatableEvent) {
+            locatableEvent((LocatableEvent)e);
+        }
         super.handleEvent(e);
+    }
+
+    public void locatableEvent(LocatableEvent e) {
+        line_number = e.location().lineNumber();
     }
 
     @Override
@@ -154,7 +161,6 @@ public class Debug extends EventHandlerBase {
     @Override
     public void stepEvent(StepEvent event) {
         System.err.println(event.location().method() + "@" + event.location().lineNumber());
-        line_number = event.location().lineNumber();
         EventRequestManager mgr = vm.eventRequestManager();
         mgr.deleteEventRequest(event.request());
         sema.release();

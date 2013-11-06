@@ -51,6 +51,10 @@ def get_code(name):
     code = load(name)
     return jsonify(file_name=name, code=code)
 
+@app.route("/getCurrentState")
+def get_state():
+    return make_api_response(app.debugger.getState)
+
 @app.errorhandler(500)
 def page_not_found(error):
     print 'Error:', error
