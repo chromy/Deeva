@@ -15,6 +15,7 @@ deeva.controller('SimpleController', function ($scope, $http) {
   $scope.canStop = false;
   $scope.canStepInto = false;
   $scope.canStepReturn = false;
+  $scope.currentState = "";
 
   $(".resizable").resizable();
   displayCodeMirror($scope, $http);
@@ -24,14 +25,9 @@ deeva.controller('SimpleController', function ($scope, $http) {
   // Called by a run button which send a POST method to backend to invoke run
   $scope.run = function() {
     if ($scope.canRun) {
-      $scope.canRun = false;
-      $scope.canStepOver = true;
-      $scope.canStop = true;
-      $scope.canStepInto = true;
-      $scope.canStepReturn = true;
-      refreshButtonsWithCurrentState();
       $http.post('run')
         .success(function(data) {
+          updateState(data);
         })
         .error(function(status) {
           alert("There is an error on run.");
@@ -45,12 +41,6 @@ deeva.controller('SimpleController', function ($scope, $http) {
   // Called by a stop button which send a POST method to backend to invoke stop
   $scope.stop = function() {
     if ($scope.canStop) {
-      $scope.canRun = true;
-      $scope.canStepOver = false;
-      $scope.canStop = false;
-      $scope.canStepInto = false;
-      $scope.canStepReturn = false;
-      refreshButtonsWithCurrentState();
     } else {
        console.log("Stop button is disabled, please run first!");
     }
@@ -59,15 +49,10 @@ deeva.controller('SimpleController', function ($scope, $http) {
   // Called by step button which send a POST method to backend infroming step occur
   $scope.step_over = function() {
     if ($scope.canStepOver) {
-      refreshButtonsWithCurrentState();
       if ($scope.currentLine <= $scope.code.length) {
         $http.post('stepOver')
           .success(function(data) {
-            $scope.prevLine = $scope.currentLine;
-            $scope.currentLine = data.line_number;
-            highLightLine($scope);
-            $scope.codeMirror.setCursor($scope.currentLine);
-            printToTerminal($scope, data.stdout);
+            updateState(data);
             console.log("The current step is " + $scope.currentLine);
           })
           .error(function(status) {
@@ -87,14 +72,7 @@ deeva.controller('SimpleController', function ($scope, $http) {
       if ($scope.currentLine <= $scope.code.length) {
         $http.post('stepInto')
           .success(function(data) {
-            $scope.prevLine = $scope.currentLine;
-            $scope.currentLine = data.line_number;
-            console.log(data);
-            console.log($scope.r);
-            console.log($scope.currentLine);
-            highLightLine($scope);
-            $scope.codeMirror.setCursor($scope.currentLine);
-            printToTerminal($scope, data.stdout);
+            updateState(data);
             console.log("The current step is " + $scope.currentLine);
           })
           .error(function(status) {
@@ -113,14 +91,7 @@ deeva.controller('SimpleController', function ($scope, $http) {
       if ($scope.currentLine <= $scope.code.length) {
         $http.post('stepReturn')
           .success(function(data) {
-            $scope.prevLine = $scope.currentLine;
-            $scope.currentLine = data.line_number;
-            console.log(data);
-            console.log($scope.r);
-            console.log($scope.currentLine);
-            highLightLine($scope);
-            $scope.codeMirror.setCursor($scope.currentLine);
-            printToTerminal($scope, data.stdout);
+            updateState(data)
             console.log("The current step is " + $scope.currentLine);
           })
           .error(function(status) {
@@ -131,6 +102,51 @@ deeva.controller('SimpleController', function ($scope, $http) {
       console.log("Step-return button is disabled, please run again!");
     }
   };
+
+  function updateState(data) {
+    if (!data) {
+      return;
+    }
+    getCurrentState(data);
+    refreshButtonsWithCurrentState();
+    if (data.line_number) {
+      $scope.prevLine = $scope.currentLine;
+      $scope.currentLine = data.line_number;
+      highLightLine($scope);
+      $scope.codeMirror.setCursor($scope.currentLine);
+    }
+    if (data.stdout) {
+      printToTerminal($scope, data.stdout);
+    }
+  }
+
+  function getCurrentState(data) {
+    if (!data) {
+      console.log("NO DATA");
+      return;
+    }
+    $scope.currentState = data.state;
+    console.log($scope.currentState);
+    if ($scope.currentState == "STASIS") {
+      $scope.canRun = true;
+      $scope.canStop = false;
+      $scope.canStepOver = true;
+      $scope.canStepInto = true;
+      $scope.canStepReturn = true;    
+    } else if ($scope.currentState == "RUNNING") {
+      $scope.canRun = false;
+      $scope.canStop = true;
+      $scope.canStepOver = false;
+      $scope.canStepInto = false;
+      $scope.canStepReturn = false; 
+    } else if ($scope.currentState == "NO_INFERIOR") {
+      $scope.canRun = true;
+      $scope.canStop = false;
+      $scope.canStepOver = false;
+      $scope.canStepInto = false;
+      $scope.canStepReturn = false; 
+    }
+  }
 
   function refreshButtonsWithCurrentState() {
      if ($scope.canRun) {
