@@ -23,7 +23,11 @@ public class Debug extends EventHandlerBase {
     public static enum State {
         NO_INFERIOR,
         STASIS,
-        RUNNING,
+        RUNNING;
+
+        public String __html__() {
+            return this.toString();
+        }
     }
 
     private final String[] excludes = {"java.*", "javax.*", "sun.*", "com.sun.*"};
@@ -76,6 +80,7 @@ public class Debug extends EventHandlerBase {
 
     public Map<String, Object> getState() {
         Map<String, Object> result = new HashMap<String, Object>();
+        result.put("state", state);
         result.put("line_number", line_number);
         return result;
     }
