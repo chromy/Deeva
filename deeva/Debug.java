@@ -72,7 +72,7 @@ public class Debug extends EventHandlerBase {
 
     }
 
-    public void run() {
+    public Map<String, Object> run() throws InterruptedException {
         vm.resume();
         state = State.RUNNING;
         sema.acquire();
