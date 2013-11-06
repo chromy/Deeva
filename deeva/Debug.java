@@ -75,6 +75,7 @@ public class Debug extends EventHandlerBase {
         vm.resume();
         state = State.RUNNING;
         sema.acquire();
+        state = State.STASIS;
         return getState();
     }
 
@@ -113,11 +114,12 @@ public class Debug extends EventHandlerBase {
         return getState();
     }
 
-    public void setBreakPoint(String clas, int lineNum) {
-         List<ReferenceType> classes = vm.allClasses();
-         for (ReferenceType ref : classes) {
-             System.err.println(ref.name());
-         }
+    public void setBreakPoint(String clas, int lineNum) throws AbsentInformationException {
+        ReferenceType classRef = vm.classesByName(clas).get(0);
+        Location loc = classRef.locationsOfLine(lineNum).get(0);
+        EventRequestManager reqMgr = vm.eventRequestManager();
+        BreakpointRequest req = reqMgr.createBreakpointRequest(loc);
+        req.enable();
     }
 
     private void step(int depth) {
@@ -167,14 +169,26 @@ public class Debug extends EventHandlerBase {
     }
 
     @Override
+    public void breakpointEvent(BreakpointEvent event) {
+        System.err.println(event.location().method() + "@" + event.location().lineNumber());
+        // XXX: What to do on step?
+        //if (stepRequest != null) {
+        //    EventRequestManager mgr = vm.eventRequestManager();
+        //    mgr.deleteEventRequest(stepRequest);
+        //    stepRequest = null;
+        //}
+        sema.release();
+    }
+
+    @Override
     public void methodExitEvent(MethodExitEvent event) {
         System.err.println("METHOD EXIT");
-        if (stepRequest != null) {
-            sema.release();
-            EventRequestManager mgr = vm.eventRequestManager();
-            mgr.deleteEventRequest(stepRequest);
-            stepRequest = null;
-        }
+        //if (stepRequest != null) {
+        //    sema.release();
+        //    EventRequestManager mgr = vm.eventRequestManager();
+        //    mgr.deleteEventRequest(stepRequest);
+        //    stepRequest = null;
+        //}
     }
 
     public void exceptionEvent(ExceptionEvent event) {

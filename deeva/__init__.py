@@ -12,7 +12,11 @@ def index():
 @app.route("/breakPoints", methods=['POST'])
 def breakPoints():
     if request.method == 'POST':
-        breakPoints = request.data
+        breakPoints = request.get_json()
+        print breakPoints
+        for b in breakPoints:
+            # XXX: fix line numbers
+            app.debugger.setBreakPoint('SimpleLoop', b+1)
         return jsonify(status='ok')
 
 @app.route("/stepOver", methods=['POST'])
