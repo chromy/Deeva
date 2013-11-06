@@ -23,7 +23,11 @@ public class Debug extends EventHandlerBase {
     public static enum State {
         NO_INFERIOR,
         STASIS,
-        RUNNING,
+        RUNNING;
+
+        public String __html__() {
+            return this.toString();
+        }
     }
 
     private final String[] excludes = {"java.*", "javax.*", "sun.*", "com.sun.*"};
@@ -31,7 +35,6 @@ public class Debug extends EventHandlerBase {
     private VirtualMachine vm;
     private StreamRedirectThread outThread;
     private StreamRedirectThread errThread;
-    private boolean ready = false;
     private DebugResponseQueue reqQueue;
     private State state;
     private Semaphore sema;
@@ -54,7 +57,6 @@ public class Debug extends EventHandlerBase {
         redirectOutput();
         state = State.STASIS;
 
-
         EventRequestManager reqMgr = vm.eventRequestManager();
 
         entryRequest = reqMgr.createMethodEntryRequest();
@@ -65,17 +67,20 @@ public class Debug extends EventHandlerBase {
         exitRequest = reqMgr.createMethodExitRequest();
         for (String ex: excludes) { exitRequest.addClassExclusionFilter (ex); }
         exitRequest.setSuspendPolicy(EventRequest.SUSPEND_ALL);    // suspend so we can examine vars
-        exitRequest.enable();
+        //exitRequest.enable();
 
     }
 
-    public void run() {
+    public Map<String, Object> run() throws InterruptedException {
         vm.resume();
         state = State.RUNNING;
+        sema.acquire();
+        return getState();
     }
 
     public Map<String, Object> getState() {
         Map<String, Object> result = new HashMap<String, Object>();
+        result.put("state", state);
         result.put("line_number", line_number);
         return result;
     }
@@ -118,7 +123,7 @@ public class Debug extends EventHandlerBase {
     private void step(int depth) {
         EventRequestManager reqMgr = vm.eventRequestManager();
         stepRequest = reqMgr.createStepRequest(getThread(),
-                StepRequest.STEP_MIN, depth);
+                StepRequest.STEP_LINE, depth);
         for (int i=0; i<excludes.length; ++i) {
              stepRequest.addClassExclusionFilter(excludes[i]);
         }
@@ -142,6 +147,7 @@ public class Debug extends EventHandlerBase {
             vm.resume();
         } else {
             state = State.STASIS;
+            sema.release();
         }
     }
 
@@ -161,15 +167,17 @@ public class Debug extends EventHandlerBase {
             sema.release();
             EventRequestManager mgr = vm.eventRequestManager();
             mgr.deleteEventRequest(stepRequest);
+            stepRequest = null;
         }
     }
 
     public void exceptionEvent(ExceptionEvent event) {
-        System.err.println("EXCPETION");
+        System.err.println("EXCEPTION");
     }
 
     public void vmDeathEvent(VMDeathEvent event) {
         System.err.println("DEATH");
+        sema.release();
     }
 
     public State getStateName() {
@@ -214,19 +222,16 @@ public class Debug extends EventHandlerBase {
     void redirectOutput() {
         Process process = vm.process();
 
-        // Copy target's output and error to our output and error.
-        // errThread = new StreamRedirectThread("error reader",
-        //         process.getErrorStream(),
-        //         System.err);
-        // outThread = new StreamRedirectThread("output reader",
-        //         process.getInputStream(),
-        //         System.out);
-        //errThread.start();
+        errThread = new StreamRedirectThread("error reader",
+                process.getErrorStream(),
+                this.reqQueue);
+
         outThread = new StreamRedirectThread("output reader",
                 process.getInputStream(),
                 this.reqQueue);
 
         outThread.start();
+        errThread.start();
 
         /* Somehow need to capture input i.e. in the other direction */
     }
