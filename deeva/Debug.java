@@ -35,7 +35,6 @@ public class Debug extends EventHandlerBase {
     private VirtualMachine vm;
     private StreamRedirectThread outThread;
     private StreamRedirectThread errThread;
-    private boolean ready = false;
     private DebugResponseQueue reqQueue;
     private State state;
     private Semaphore sema;
