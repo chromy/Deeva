@@ -124,7 +124,7 @@ public class Debug extends EventHandlerBase {
     private void step(int depth) {
         EventRequestManager reqMgr = vm.eventRequestManager();
         stepRequest = reqMgr.createStepRequest(getThread(),
-                StepRequest.STEP_MIN, depth);
+                StepRequest.STEP_LINE, depth);
         for (int i=0; i<excludes.length; ++i) {
              stepRequest.addClassExclusionFilter(excludes[i]);
         }
