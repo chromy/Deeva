@@ -67,7 +67,7 @@ public class Debug extends EventHandlerBase {
         exitRequest = reqMgr.createMethodExitRequest();
         for (String ex: excludes) { exitRequest.addClassExclusionFilter (ex); }
         exitRequest.setSuspendPolicy(EventRequest.SUSPEND_ALL);    // suspend so we can examine vars
-        exitRequest.enable();
+        //exitRequest.enable();
 
     }
 
@@ -167,6 +167,7 @@ public class Debug extends EventHandlerBase {
             sema.release();
             EventRequestManager mgr = vm.eventRequestManager();
             mgr.deleteEventRequest(stepRequest);
+            stepRequest = null;
         }
     }
 
