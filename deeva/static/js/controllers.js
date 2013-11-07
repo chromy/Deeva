@@ -27,10 +27,8 @@ deeva.controller('SimpleController', function ($scope, $http) {
   $scope.clickButton = function(destination) {
     if ($scope.buttons[destination + "Btn"]) {
       if ($scope.currentLine <= $scope.code.length) {
-        console.log(destination);
         $http.post(destination)
           .success(function(data) {
-            console.log(data);
             updateState(data)
           })
           .error(function(status) {
@@ -63,6 +61,7 @@ deeva.controller('SimpleController', function ($scope, $http) {
       return;
     }
     if (data.state) {
+      console.log(data.state);
       switch (data.state) {
         case "STASIS" :
           $scope.buttons.runBtn = true;
@@ -84,6 +83,7 @@ deeva.controller('SimpleController', function ($scope, $http) {
           $scope.buttons.stepOverBtn = false;
           $scope.buttons.stepIntoBtn = false;
           $scope.buttons.stepReturnBtn = false;
+          break;
         default :
           $scope.buttons.runBtn = false;
           $scope.buttons.stopBtn = false;
