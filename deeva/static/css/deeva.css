@@ -15,7 +15,7 @@ body {
 
 }
 
-#run-btn {
+#runBtn {
   width: 50px;
   height: 50px;
   background: orange;
@@ -24,7 +24,7 @@ body {
   margin-right: 5px;
 }
 
-#step-btn {
+#stepOverBtn {
   width: 50px;
   height: 50px;
   background: orange;
@@ -33,7 +33,7 @@ body {
   margin-right: 5px;
 }
 
-#stop-btn {
+#stopBtn {
   width: 50px;
   height: 50px;
   background: orange;
@@ -42,7 +42,7 @@ body {
   margin-right: 5px;
 }
 
-#step-into-btn {
+#stepIntoBtn {
   width: 50px;
   height: 50px;
   background: orange;
@@ -51,7 +51,7 @@ body {
   margin-right: 5px;
 }
 
-#step-return-btn {
+#stepReturnBtn {
   width: 50px;
   height: 50px;
   background: orange;
