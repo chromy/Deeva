@@ -17,6 +17,8 @@ public class EventHandlerBase implements EventHandler {
             methodExitEvent((MethodExitEvent)event);
         } else if (event instanceof StepEvent) {
             stepEvent((StepEvent)event);
+        } else if (event instanceof BreakpointEvent) {
+            breakpointEvent((BreakpointEvent)event);
         } else if (event instanceof ThreadDeathEvent) {
             threadDeathEvent((ThreadDeathEvent)event);
         } else if (event instanceof ClassPrepareEvent) {
@@ -27,6 +29,7 @@ public class EventHandlerBase implements EventHandler {
             vmDeathEvent((VMDeathEvent)event);
         } else if (event instanceof VMDisconnectEvent) {
             vmDisconnectEvent((VMDisconnectEvent)event);
+
         } else {
             throw new Error("Unexpected event type");
         }
@@ -37,6 +40,7 @@ public class EventHandlerBase implements EventHandler {
     public void methodEntryEvent(MethodEntryEvent event) {}
     public void methodExitEvent(MethodExitEvent event) {}
     public void stepEvent(StepEvent event) {}
+    public void breakpointEvent(BreakpointEvent event) {}
     public void threadDeathEvent(ThreadDeathEvent event) {}
     public void classPrepareEvent(ClassPrepareEvent event) {}
     public void vmStartEvent(VMStartEvent event) {}
