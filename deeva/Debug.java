@@ -55,7 +55,7 @@ public class Debug extends EventHandlerBase {
         EventThread eventThread = new EventThread(vm, excludes, this);
         eventThread.start();
         redirectOutput();
-        state = State.STASIS;
+        state = State.NO_INFERIOR;
 
         EventRequestManager reqMgr = vm.eventRequestManager();
 
