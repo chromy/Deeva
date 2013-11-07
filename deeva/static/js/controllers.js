@@ -247,4 +247,11 @@ deeva.controller('SimpleController', function ($scope, $http) {
     });
   }
 
+  var tabs = $('.tabs > li');
+
+  tabs.on("click", function(){
+    tabs.removeClass('active');
+    $(this).addClass('active');
+  });
+
 });

@@ -15,49 +15,19 @@ body {
 
 }
 
-#runBtn {
-  width: 50px;
-  height: 50px;
-  background: orange;
-  border-radius: 7px;
-  box-shadow: 5px 5px 0px 0px #ccc;
-  margin-right: 5px;
-}
-
-#stepOverBtn {
-  width: 50px;
-  height: 50px;
-  background: orange;
-  border-radius: 7px;
-  box-shadow: 5px 5px 0px 0px #ccc;
-  margin-right: 5px;
-}
-
-#stopBtn {
-  width: 50px;
-  height: 50px;
-  background: orange;
-  border-radius: 7px;
-  box-shadow: 5px 5px 0px 0px #ccc;
-  margin-right: 5px;
-}
-
-#stepIntoBtn {
-  width: 50px;
-  height: 50px;
-  background: orange;
-  border-radius: 7px;
-  box-shadow: 5px 5px 0px 0px #ccc;
-  margin-right: 5px;
-}
-
-#stepReturnBtn {
-  width: 50px;
-  height: 50px;
-  background: orange;
-  border-radius: 7px;
-  box-shadow: 5px 5px 0px 0px #ccc;
-  margin-right: 5px;
+#startBtn {
+	width: 38px;
+	height: 38px;
+	background: orange;
+	border-radius: 7px;
+	box-shadow: 5px 5px 0px 0px #ccc;
+	margin-right: 5px;
+	text-align: center;
+	line-height: 2.5;
+	color: black;
+	font-size: 15px;
+	font-weight: bolder;
+	cursor: pointer;
 }
 
 #console-btn {
@@ -73,18 +43,11 @@ body {
 }
 
 #header {
-  height: 130px;
   color: black;
   background-color: rgb(255, 153, 0);
-  border-radius: 10px;
   margin-top: 10px;
   margin-bottom: 10px;
-}
-
-#title {
-  font-size: 50px;
-  padding-left: 30px;
-  padding-top: 60px;
+  border-radius: 20px;
 }
 
 #buttons_container {
@@ -93,3 +56,15 @@ body {
   text-align: center;
 }
 
+.myButtons {
+  width: 50px;
+  height: 50px;
+  background: orange;
+  border-radius: 7px;
+  box-shadow: 5px 5px 0px 0px #ccc;
+  margin-right: 5px;
+}
+
+.myButtons:hover {
+  box-shadow: 3px 3px 0px 0px #ccc;
+}
