@@ -1,12 +1,18 @@
 package deeva;
 
+import com.sun.jdi.*;
+import com.sun.jdi.connect.*;
+import com.sun.jdi.request.*;
 import com.sun.jdi.event.*;
 
 import deeva.EventHandler;
 
 public class EventHandlerBase implements EventHandler {
 
-    public void handleEvent(Event event) {
+    public void handleEvent(Event event)
+	throws IncompatibleThreadStateException, AbsentInformationException, 
+	       ClassNotLoadedException 
+    {
         if (event instanceof ExceptionEvent) {
             exceptionEvent((ExceptionEvent)event);
         } else if (event instanceof ModificationWatchpointEvent) {
@@ -39,8 +45,13 @@ public class EventHandlerBase implements EventHandler {
     public void fieldWatchEvent(ModificationWatchpointEvent event) {}
     public void methodEntryEvent(MethodEntryEvent event) {}
     public void methodExitEvent(MethodExitEvent event) {}
-    public void stepEvent(StepEvent event) {}
-    public void breakpointEvent(BreakpointEvent event) {}
+    public void stepEvent(StepEvent event) throws 
+	IncompatibleThreadStateException, AbsentInformationException, 
+	ClassNotLoadedException {}
+    public void breakpointEvent(BreakpointEvent event) {
+	// when we get a breakpoint event what does one do?
+	System.out.println("We have a breakpoint.");
+    }
     public void threadDeathEvent(ThreadDeathEvent event) {}
     public void classPrepareEvent(ClassPrepareEvent event) {}
     public void vmStartEvent(VMStartEvent event) {}
