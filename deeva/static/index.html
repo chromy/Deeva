@@ -52,11 +52,11 @@
         <p id='arg-btn' ng-click="showArguments=!showArguments">Arguments</p>
         <ul id="arguments" ng-show="showArguments"></ul>
         <div id='buttons_container'>
-          <input type="image" id='run-btn' ng-click="run()" src="static/css/images/run.png"></input>
-          <input type="image" id='stop-btn' ng-click="stop()" src="static/css/images/stop.png"></input>
-          <input type="image" id='step-btn' ng-click="step_over()" src="static/css/images/step_over.png"></input>
-          <input type="image" id='step-into-btn' ng-click="step_into()" src="static/css/images/Step_into.png"></input>
-          <input type="image" id='step-return-btn' ng-click="step_return()" src="static/css/images/step_return.png"></input>
+          <input type="image" id='runBtn' ng-click="clickButton('run')" src="static/css/images/run.png"></input>
+          <input type="image" id='stopBtn' ng-click="stop()" src="static/css/images/stop.png"></input>
+          <input type="image" id='stepOverBtn' ng-click="clickButton('stepOver')" src="static/css/images/step_over.png"></input>
+          <input type="image" id='stepIntoBtn' ng-click="clickButton('stepInto')" src="static/css/images/Step_into.png"></input>
+          <input type="image" id='stepReturnBtn' ng-click="clickButton('stepReturn')" src="static/css/images/step_return.png"></input>
         </div>
         <p id='console-btn' ng-click="showStdIn=!showStdIn">Console</p>
         <div ng-show="showStdIn" id="terminal"></div>
