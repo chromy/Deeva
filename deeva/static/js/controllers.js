@@ -13,7 +13,8 @@ deeva.controller('SimpleController', function ($scope, $http) {
   $scope.showStdIn = true;
   $scope.showArguments = true;
   $scope.currentPrompt = "";
-  $scope.buttons = {"runBtn" : false,
+  $scope.currentState = "";
+  $scope.state = {"runBtn" : false,
                     "stopBtn" : false,
                     "stepOverBtn" : false,
                     "stepIntoBtn" : false,
@@ -25,10 +26,14 @@ deeva.controller('SimpleController', function ($scope, $http) {
   displayTagit($scope);
 
   $scope.clickButton = function(destination) {
-    if ($scope.buttons[destination + "Btn"]) {
+    if ($scope.state[destination + "Btn"]) {
+      if (destination == "run") {
+        setCurrentState("RUNNING");
+      }
       if ($scope.currentLine <= $scope.code.length) {
         $http.post(destination)
           .success(function(data) {
+            console.log(data);
             updateState(data)
           })
           .error(function(status) {
@@ -44,7 +49,7 @@ deeva.controller('SimpleController', function ($scope, $http) {
     if (!data) {
       return;
     }
-    updateButtonState(data);
+    setCurrentState(data.state);
     if (data.line_number) {
       $scope.prevLine = $scope.currentLine;
       $scope.currentLine = data.line_number;
@@ -55,50 +60,52 @@ deeva.controller('SimpleController', function ($scope, $http) {
       printToTerminal($scope, data.stdout);
     }
   }
-
-  function updateButtonState(data) {
-    if (!data) {
-      return;
-    }
-    if (data.state) {
-      console.log(data.state);
-      switch (data.state) {
+  
+  function setCurrentState(state) {
+    $scope.currentState = state;
+    setButtonState(state);
+  }
+  
+  function setButtonState(state) {
+    if (state) {
+      switch (state) {
         case "STASIS" :
-          $scope.buttons.runBtn = true;
-          $scope.buttons.stopBtn = false;
-          $scope.buttons.stepOverBtn = true;
-          $scope.buttons.stepIntoBtn = true;
-          $scope.buttons.stepReturnBtn = true;
+          $scope.state.runBtn = true;
+          $scope.state.stopBtn = false;
+          $scope.state.stepOverBtn = true;
+          $scope.state.stepIntoBtn = true;
+          $scope.state.stepReturnBtn = true;
           break;
         case "RUNNING" :
-          $scope.buttons.runBtn = false;
-          $scope.buttons.stopBtn = true;
-          $scope.buttons.stepOverBtn = false;
-          $scope.buttons.stepIntoBtn = false;
-          $scope.buttons.stepReturnBtn = false;
+          $scope.state.runBtn = false;
+          $scope.state.stopBtn = true;
+          $scope.state.stepOverBtn = false;
+          $scope.state.stepIntoBtn = false;
+          $scope.state.stepReturnBtn = false;
           break;
         case "NO_INFERIOR" :
-          $scope.buttons.runBtn = true;
-          $scope.buttons.stopBtn = false;
-          $scope.buttons.stepOverBtn = false;
-          $scope.buttons.stepIntoBtn = false;
-          $scope.buttons.stepReturnBtn = false;
+          $scope.state.runBtn = true;
+          $scope.state.stopBtn = false;
+          $scope.state.stepOverBtn = false;
+          $scope.state.stepIntoBtn = false;
+          $scope.state.stepReturnBtn = false;
           break;
         default :
-          $scope.buttons.runBtn = false;
-          $scope.buttons.stopBtn = false;
-          $scope.buttons.stepOverBtn = false;
-          $scope.buttons.stepIntoBtn = false;
-          $scope.buttons.stepReturnBtn = false;
+          $scope.state.runBtn = false;
+          $scope.state.stopBtn = false;
+          $scope.state.stepOverBtn = false;
+          $scope.state.stepIntoBtn = false;
+          $scope.state.stepReturnBtn = false;
           break;
       }
       refreshButtonsWithCurrentState();
+      console.log(state)
     }
   }
-
+  
   function refreshButtonsWithCurrentState() {
-    for (button in $scope.buttons) {
-      buttonState = $scope.buttons[button]? enable : disable;
+    for (button in $scope.state) {
+      buttonState = $scope.state[button]? enable : disable;
       $("#" + button).fadeTo(speed, buttonState);
     }
    }
@@ -106,7 +113,7 @@ deeva.controller('SimpleController', function ($scope, $http) {
   function init($scope, $http) {
     $http.get('getCurrentState')
       .success(function(data) {
-        updateButtonState(data);
+        setCurrentState(data.state);  
       })
       .error(function(status) {
         console.log("There is an error getting ")
