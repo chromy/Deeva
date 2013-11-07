@@ -19,6 +19,9 @@
     </div>
     
  <script type="text/javascript">
+
+   var variables = [["int", "x", "3"], ["char", "y","z"] ];
+
    var table = d3.selectAll("#visual")
                .append("table")
                .attr("id", "stackHeapTable");
@@ -46,8 +49,8 @@
                               .attr("id", "globals");
 
    var stackFrameHeader = stackFrame.append("div")
-                                    .append("class", "stackFrameHeader")
-                                    .append("id", "globals_header")
+                                    .attr("class", "stackFrameHeader")
+                                    .attr("id", "globals_header")
                                     .text("Global Frame");
 
 
@@ -55,12 +58,37 @@
    var stackFrameTable = stackFrame.append("table")
                                    .attr("class", "stackFrameVarTable")
                                    .attr("id", "global_table");
+   var stackFrameSel = d3.select(".stackFrameVarTable");
 
+   var globalVariables = stackFrameSel.selectAll("tr")
+                                      .data(variables)
+                                      .enter()
+                                      .append("tr");
+
+   globalVariables.attr("class", "variableTr")
+                  .attr("id", function(d,i){
+                           return "global_"+d[1]+"_tr";
+                  });
+ 
+   var variableTr = stackFrameSel.selectAll("tr");
+
+   variableTr.append("td")
+             .attr("class", "stackFrameVar")
+             .text(function(d){
+                    return d[1];
+              });
+
+   variableTr.append("td")
+             .attr("class", "stackFrameValue")
+             .text(function(d){
+                    return d[2];
+              });
 
    var stackFrames = stack.selectAll("div")
                           .append("div") 
                           .data([1,2,3])
                           .enter();
+
    stackFrames.append("div")
               .attr("class", "stackFrame")
               .attr("id", function(d,i){
