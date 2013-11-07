@@ -1,0 +1,132 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Deeva </title>
+
+  <!-- Common css -->
+  <link rel="stylesheet" href="./d3Trial.css">
+  <link rel="stylesheet" href="../css/bootstrap.css">
+
+  <!-- D3 -->
+  <script type="text/javascript" src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+
+</head>
+
+<body>
+    <div id="visual">
+  
+    </div>
+    
+ <script type="text/javascript">
+   var table = d3.selectAll("#visual")
+               .append("table")
+               .attr("id", "stackHeapTable");
+
+   var tbody = table.append("tbody");
+
+   var table_tr = tbody.append("tr");
+
+   var stack_td = table_tr.append("td").attr("id", "stack_id");
+   var heap_id  = table_tr.append("td").attr("id", "heap_id");
+               
+
+   var global_area = stack_td.append("div").attr("id", "global_area");
+   var stack = stack_td.append("div").attr("id", "stack");
+
+   var heap = heap_id.append("div").attr("id", "heap");
+
+   var stackHeader = global_area.append("div")
+                                .attr("id", "stackHeader")
+                                .text("Stacks");   
+ 
+   // Global stack 
+   var stackFrame = global_area.append("div")
+                              .attr("class", "stackFrame")
+                              .attr("id", "globals");
+
+   var stackFrameHeader = stackFrame.append("div")
+                                    .append("class", "stackFrameHeader")
+                                    .append("id", "globals_header")
+                                    .text("Global Frame");
+
+
+   
+   var stackFrameTable = stackFrame.append("table")
+                                   .attr("class", "stackFrameVarTable")
+                                   .attr("id", "global_table");
+
+
+   var stackFrames = stack.selectAll("div")
+                          .append("div") 
+                          .data([1,2,3])
+                          .enter();
+   stackFrames.append("div")
+              .attr("class", "stackFrame")
+              .attr("id", function(d,i){
+                            return "stack" + i;  
+              });
+
+   var heapHeader = heap.append("div")
+                        .attr("id", "heapHeader")
+                        .text("Objects");   
+   
+   var heapRows = heap.selectAll("table")
+                      .append("table")
+                      .data([1,2,3,4])
+                      .enter();
+ 
+   heapRows.append("table")
+           .attr("class", "heapRow");
+
+   var heapRow = d3.select("#heap")
+                   .selectAll(".heapRow")
+                   .append("td");
+
+   heapRow.attr("class", "toplevelHeapObject")
+          .attr("id", function(d,i){
+                        return "toplevel_heap_object_" + i; 
+          });
+
+  // on heapRowObjects will all the JsPlumb be added !!!
+  var heapRowObject = d3.select("#heap")
+                        .selectAll(".heapRow")
+                        .selectAll(".toplevelHeapObject")
+                        .append("div");
+
+  heapRowObject.attr("class", "heapObject")
+               .attr("id", function(d,i){
+                        return "heap_object_" + i; 
+               });
+           
+  var heapRowObjectElemsSelect = 
+                  d3.select("#heap")
+                    .selectAll(".heapRow")
+                    .selectAll(".toplevelHeapObject")
+                    .selectAll(".heapObject");
+ 
+  varheapObjectType = heapRowObjectElemsSelect.append("div")
+                                              .attr("class", "typeLabel")
+                                              .text("label");
+ 
+  var objectArray = heapRowObjectElemsSelect.append("table")
+                                            .attr("class", "array");
+  
+  var objectArraySelection = heapRowObjectElemsSelect.selectAll("table")
+                                                     .append("tbody");
+
+  var objectElementsSelection = heapRowObjectElemsSelect.selectAll("table")
+                                                        .select("tbody");
+
+  var objectEntries = objectElementsSelection.append("tr").attr("id", "value");
+  var objectEntriesIndice = objectElementsSelection.append("tr")
+                                                   .attr("id", "indice");
+  
+  var objectEntriesSel = objectElementsSelection.select(".value");
+  var objectEntriesIndiceSel = objectElementsSelection.select(".indice");
+  
+
+ </script>
+</body>
+
+</html>
