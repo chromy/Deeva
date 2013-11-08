@@ -4,8 +4,7 @@ var initial_prompt = '';
 
 // Currently is a whole document controller
 deeva.controller('SimpleController', function ($scope, $http) {
-  $scope.prevLine = 0;
-  $scope.currentLine = 1;
+  $scope.currentLine = -1;
   $scope.breakPoints = new Array();
   $scope.showStdIn = true;
   $scope.showArguments = true;
@@ -42,15 +41,24 @@ deeva.controller('SimpleController', function ($scope, $http) {
     }
     setCurrentState(data.state);
     if (data.line_number) {
-      $scope.prevLine = $scope.currentLine;
       $scope.currentLine = data.line_number;
-      highLightLine($scope);
       $scope.codeMirror.setCursor($scope.currentLine);
     }
     if (data.stdout) {
       printToTerminal($scope, data.stdout);
     }
   }
+
+  $scope.$watch('currentLine', function (currentLine, prevLine) {
+    console.log(currentLine, prevLine);
+    var BACK_CLASS = "CodeMirror-activeline-background";
+    if (prevLine >= 0) {
+        $scope.codeMirror.removeLineClass(prevLine, "background", BACK_CLASS);
+    }
+    if (currentLine >= 0) {
+        $scope.codeMirror.addLineClass(currentLine, 'background', BACK_CLASS);
+    }
+  });
 
   function setCurrentState(state) {
     $scope.currentState = state;
@@ -174,13 +182,6 @@ deeva.controller('SimpleController', function ($scope, $http) {
       .error(function(data) {
         console.log("There is an error sending break points " + data.status);
     });
-  }
-
-  // High light the current line. The previous line high light is also removed.
-  function highLightLine($scope) {
-    var BACK_CLASS = "CodeMirror-activeline-background";
-    $scope.codeMirror.removeLineClass($scope.prevLine, "background", BACK_CLASS);
-    $scope.codeMirror.addLineClass($scope.currentLine, 'background', BACK_CLASS);
   }
 
   function printToTerminal($scope, output) {
