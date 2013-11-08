@@ -5,7 +5,7 @@
   <title>Deeva </title>
 
   <!-- Common css -->
-  <link rel="stylesheet" href="./d3Trial.css">
+  <link rel="stylesheet" href="./stackHeap.css">
   <link rel="stylesheet" href="../css/bootstrap.css">
 
   <!-- D3 -->
@@ -15,29 +15,27 @@
 
 <body>
     <div id="visual">
-  
+       <table id="stackHeapTable">
+         <tbody>
+           <tr>
+              <td id="stack_td"> </td>
+              <td id="heap_td"> </td>
+           </tr>
+         </tbody>
+       </table>  
     </div>
     
  <script type="text/javascript">
 
    var variables = [["int", "x", "3"], ["char", "y","z"] ];
 
-   var table = d3.selectAll("#visual")
-               .append("table")
-               .attr("id", "stackHeapTable");
-
-   var tbody = table.append("tbody");
-
-   var table_tr = tbody.append("tr");
-
-   var stack_td = table_tr.append("td").attr("id", "stack_id");
-   var heap_id  = table_tr.append("td").attr("id", "heap_id");
-               
+   var stack_td = d3.select("#stack_td");
+   var heap_td  = d3.select("#heap_td");
 
    var global_area = stack_td.append("div").attr("id", "global_area");
    var stack = stack_td.append("div").attr("id", "stack");
 
-   var heap = heap_id.append("div").attr("id", "heap");
+   var heap = heap_td.append("div").attr("id", "heap");
 
    var stackHeader = global_area.append("div")
                                 .attr("id", "stackHeader")
@@ -51,7 +49,7 @@
    var stackFrameHeader = stackFrame.append("div")
                                     .attr("class", "stackFrameHeader")
                                     .attr("id", "globals_header")
-                                    .text("Global Frame");
+                                    .text("Main");
 
 
    
