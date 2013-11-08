@@ -74,11 +74,11 @@
         </div>
 
         <div id='buttons_container'>
-          <input type="image" class='myButtons' id='runBtn' ng-click="clickButton('run')" src="static/css/images/run.png"></input>
-          <input type="image" class='myButtons' id='stopBtn' ng-click="stop()" src="static/css/images/stop.png"></input>
-          <input type="image" class='myButtons' id='stepOverBtn' ng-click="clickButton('stepOver')" src="static/css/images/step_over.png"></input>
-          <input type="image" class='myButtons' id='stepIntoBtn' ng-click="clickButton('stepInto')" src="static/css/images/Step_into.png"></input>
-          <input type="image" class='myButtons' id='stepReturnBtn' ng-click="clickButton('stepReturn')" src="static/css/images/step_return.png"></input>
+          <input type="image" class='myButtons' id='runBtn' ng-disabled="!state.runBtn" ng-click="clickButton('run')" src="static/css/images/run.png"></input>
+          <input type="image" class='myButtons' id='stopBtn' ng-disabled="!state.stopBtn" ng-click="stop()" src="static/css/images/stop.png"></input>
+          <input type="image" class='myButtons' id='stepOverBtn' ng-disabled="!state.stepOverBtn" ng-click="clickButton('stepOver')" src="static/css/images/step_over.png"></input>
+          <input type="image" class='myButtons' id='stepIntoBtn' ng-disabled="!state.stepIntoBtn" ng-click="clickButton('stepInto')" src="static/css/images/Step_into.png"></input>
+          <input type="image" class='myButtons' id='stepReturnBtn' ng-disabled="!state.stepReturnBtn" ng-click="clickButton('stepReturn')" src="static/css/images/step_return.png"></input>
         </div>
         <p id='console-btn' ng-click="showStdIn=!showStdIn">Console</p>
         <div ng-show="showStdIn" id="terminal"></div>

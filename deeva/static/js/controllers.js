@@ -1,9 +1,6 @@
 var deeva = angular.module('deeva', []);
 
 var initial_prompt = '';
-var speed = "slow";
-var enable = 1;
-var disable = 0.6;
 
 // Currently is a whole document controller
 deeva.controller('SimpleController', function ($scope, $http) {
@@ -26,24 +23,18 @@ deeva.controller('SimpleController', function ($scope, $http) {
   displayTagit($scope);
 
   $scope.clickButton = function(destination) {
-    if ($scope.state[destination + "Btn"]) {
-      if (destination == "run") {
+    if (destination == "run") {
         setCurrentState("RUNNING");
-      }
-      if ($scope.currentLine <= $scope.code.length) {
-        $http.post(destination)
-          .success(function(data) {
-            console.log(data);
-            updateState(data)
-          })
-          .error(function(status) {
-            console.log("There is an error on " + destination + "()");
-          });
-      }
-    } else {
-      console.log(destination + " is disabled");
     }
-  }
+    $http.post(destination)
+      .success(function(data) {
+        console.log(data);
+        updateState(data);
+      })
+      .error(function(status) {
+        console.log("There is an error on " + destination + "()");
+      });
+  };
 
   function updateState(data) {
     if (!data) {
@@ -60,12 +51,12 @@ deeva.controller('SimpleController', function ($scope, $http) {
       printToTerminal($scope, data.stdout);
     }
   }
-  
+
   function setCurrentState(state) {
     $scope.currentState = state;
     setButtonState(state);
   }
-  
+
   function setButtonState(state) {
     if (state) {
       switch (state) {
@@ -98,25 +89,17 @@ deeva.controller('SimpleController', function ($scope, $http) {
           $scope.state.stepReturnBtn = false;
           break;
       }
-      refreshButtonsWithCurrentState();
-      console.log(state)
+      console.log(state);
     }
   }
-  
-  function refreshButtonsWithCurrentState() {
-    for (button in $scope.state) {
-      buttonState = $scope.state[button]? enable : disable;
-      $("#" + button).fadeTo(speed, buttonState);
-    }
-   }
 
   function init($scope, $http) {
     $http.get('getCurrentState')
       .success(function(data) {
-        setCurrentState(data.state);  
+        setCurrentState(data.state);
       })
       .error(function(status) {
-        console.log("There is an error getting ")
+        console.log("There is an error getting state.");
     });
   }
 
@@ -134,7 +117,7 @@ deeva.controller('SimpleController', function ($scope, $http) {
         console.log("There is an error getting json");
         setUpCodeMirror($scope);
     });
-  };
+  }
 
   // Initialze codeMirror and display it
   function setUpCodeMirror($scope) {
@@ -198,7 +181,7 @@ deeva.controller('SimpleController', function ($scope, $http) {
     var BACK_CLASS = "CodeMirror-activeline-background";
     $scope.codeMirror.removeLineClass($scope.prevLine, "background", BACK_CLASS);
     $scope.codeMirror.addLineClass($scope.currentLine, 'background', BACK_CLASS);
-  };
+  }
 
   function printToTerminal($scope, output) {
     if (!output) {
