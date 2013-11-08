@@ -15,11 +15,13 @@ import java.io.IOException;
 import java.util.concurrent.Semaphore;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.LinkedList;
 import java.util.List;
 
 import deeva.DebugResponseQueue;
 import deeva.WrongStateError;
+import deeva.Breakpoint;
 
 public class Debug extends EventHandlerBase {
     public static enum State {
@@ -40,10 +42,12 @@ public class Debug extends EventHandlerBase {
     private DebugResponseQueue reqQueue;
     private State state;
     private Semaphore sema;
+    private Map<Breakpoint, BreakpointRequest> breakpoints;
 
     private StepRequest stepRequest;
     private MethodEntryRequest entryRequest;
     private MethodExitRequest exitRequest;
+
     int line_number = 0;
 
     public Debug(DebugResponseQueue reqQueue) {
@@ -53,6 +57,7 @@ public class Debug extends EventHandlerBase {
     }
 
     public void start(String arg) {
+        breakpoints = new HashMap<Breakpoint, BreakpointRequest>();
         vm = launchTarget(arg);
         EventThread eventThread = new EventThread(vm, excludes, this);
         eventThread.start();
@@ -116,12 +121,36 @@ public class Debug extends EventHandlerBase {
         return getState();
     }
 
-    public void setBreakPoint(String clas, int lineNum) throws AbsentInformationException {
+    public boolean setBreakPoint(String clas, int lineNum) throws AbsentInformationException {
+        Breakpoint bkpt = new Breakpoint(clas, lineNum);
+        if (breakpoints.keySet().contains(bkpt)) {
+            return true;
+        }
         ReferenceType classRef = vm.classesByName(clas).get(0);
-        Location loc = classRef.locationsOfLine(lineNum).get(0);
+        List<Location> locs = classRef.locationsOfLine(lineNum);
+        if (locs.size() < 1) {
+            return false;
+        }
+        Location loc = locs.get(0);
+
         EventRequestManager reqMgr = vm.eventRequestManager();
         BreakpointRequest req = reqMgr.createBreakpointRequest(loc);
+        breakpoints.put(bkpt, req);
         req.enable();
+        return true;
+    }
+
+    public boolean unsetBreakpoint(String clas, int lineNum) {
+        Breakpoint bkpt = new Breakpoint(clas, lineNum);
+        BreakpointRequest req = breakpoints.remove(bkpt);
+        EventRequestManager mgr = vm.eventRequestManager();
+        mgr.deleteEventRequest(req);
+        // TODO: fix
+        return true;
+    }
+
+    public Set<Breakpoint> getBreakpoints() {
+        return breakpoints.keySet();
     }
 
     private void step(int depth) {
@@ -391,13 +420,5 @@ public class Debug extends EventHandlerBase {
 
         System.out.println("After - con");
         return arguments;
-    }
-
-    public Boolean setBreakPoint() {
-        return true;
-    }
-
-    public static String hello() {
-        return "Hello";
     }
 }

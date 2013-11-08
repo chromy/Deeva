@@ -1,3 +1,4 @@
+import traceback
 from subprocess import Popen, PIPE
 from py4j.java_collections import ListConverter
 from py4j.protocol import Py4JJavaError
@@ -79,6 +80,7 @@ class JavaProxy:
                 return getattr(self.__obj, name)(*args, **kargs)
             except Py4JJavaError as e:
                 print e.java_exception
+                print traceback.print_exc()
                 raise WrongState()
         return _missing
 
