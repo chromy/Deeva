@@ -137,9 +137,9 @@ public class Debug extends EventHandlerBase {
     }
 
     @Override
-    public void handleEvent(Event e) 
-	throws IncompatibleThreadStateException, AbsentInformationException, 
-	       ClassNotLoadedException 
+    public void handleEvent(Event e)
+	throws IncompatibleThreadStateException, AbsentInformationException,
+	       ClassNotLoadedException
     {
         System.err.println(e.getClass());
         if (e instanceof LocatableEvent) {
@@ -166,8 +166,8 @@ public class Debug extends EventHandlerBase {
     }
 
     @Override
-    public void stepEvent(StepEvent event) 
-	throws IncompatibleThreadStateException, AbsentInformationException, 
+    public void stepEvent(StepEvent event)
+	throws IncompatibleThreadStateException, AbsentInformationException,
 	       ClassNotLoadedException
     {
         System.err.println(event.location().method() + "@" + event.location().lineNumber());
@@ -179,16 +179,22 @@ public class Debug extends EventHandlerBase {
 	StackFrame stackFrame = threadRef.frame(0);
 
 	/* We want to create a list of maps */
-	List<Map<String, String>> localVariables = new LinkedList<Map<String, String>>();	
+	List<Map<String, String>> localVariables = new LinkedList<Map<String, String>>();
+
+    try {
+        System.err.println(stackFrame.visibleVariables().size());
+    } catch (AbsentInformationException e) {
+        System.err.println("Absent Info!");
+    }
 
 	/* List all the variables on the stack */
 	for (LocalVariable var : stackFrame.visibleVariables()) {
-	    Map<String, String> varMap = new HashMap<String, String>();	   
-	    
+	    Map<String, String> varMap = new HashMap<String, String>();
+
 	    String name = var.name();
 	    Type type = var.type();
 	    String typeString = var.typeName();
-	    Value variableValue = stackFrame.getValue(var); 
+	    Value variableValue = stackFrame.getValue(var);
 	    /*System.err.println("Type string: " + typeString);
 	    System.err.println("Type instance: " + type.getClass().getName());*/
 	    System.err.println("-------------");
@@ -200,11 +206,11 @@ public class Debug extends EventHandlerBase {
 	    varMap.put("name", var.name());
 	    varMap.put("type", typeString);
 
-	    if (variableValue instanceof IntegerValue) {		
+	    if (variableValue instanceof IntegerValue) {
 		System.err.println("Value: " + ((IntegerValue)variableValue).value());
 		Integer value = ((IntegerValue)variableValue).value();
 		varMap.put("value", value.toString());
-	    } else if (variableValue instanceof BooleanValue) { 
+	    } else if (variableValue instanceof BooleanValue) {
 		System.err.println("Value: " + ((BooleanValue)variableValue).value());
 		Boolean value = new Boolean(((BooleanValue)variableValue).value());
 		varMap.put("value", value.toString());
@@ -233,10 +239,10 @@ public class Debug extends EventHandlerBase {
 		Short value = new Short(((ShortValue)variableValue).value());
 		varMap.put("value", value.toString());
 	    } else if (variableValue instanceof VoidValue) {
-		System.err.println("Value: void");		
+		System.err.println("Value: void");
 		varMap.put("value", "void");
-	    } 
-	    
+	    }
+
 	    /* Let's deal with Reference Types */
 	    /* We need to enumerate the array/objects, and then convert
 	     * all the Value objects to some representable format,
@@ -248,15 +254,15 @@ public class Debug extends EventHandlerBase {
 	    } else if (variableValue instanceof ArrayReference) {
 		System.err.println("Array of length: " + ((ArrayReference)variableValue).length());
 		Integer length = ((ArrayReference)variableValue).length();
-		varMap.put("length", length.toString());	       
+		varMap.put("length", length.toString());
 	    } else if (variableValue instanceof ObjectReference) {
-		
+
 	    }
-	       
+
 	    /* Append the local variable to the end of the list (stack) */
 	    localVariables.add(varMap);
 	}
-       
+
 	System.err.println("-------------");
 
 	/* Delete the request */
@@ -274,9 +280,9 @@ public class Debug extends EventHandlerBase {
         //    mgr.deleteEventRequest(stepRequest);
         //    stepRequest = null;
         //}
-	
+
 	/* Try to extract the stack variables */
-	
+
 
 
         sema.release();
