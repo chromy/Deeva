@@ -121,12 +121,22 @@ public class Debug extends EventHandlerBase {
         return getState();
     }
 
-    public boolean setBreakPoint(String clas, int lineNum) throws AbsentInformationException {
+    public boolean setBreakpoint(String clas, int lineNum) throws AbsentInformationException {
         Breakpoint bkpt = new Breakpoint(clas, lineNum);
         if (breakpoints.keySet().contains(bkpt)) {
             return true;
         }
-        ReferenceType classRef = vm.classesByName(clas).get(0);
+        List<ReferenceType> classes = vm.classesByName(clas);
+        if (classes.size() < 1) {
+            // Attempt to load class.
+            classes = vm.classesByName(clas);
+        }
+
+        if (classes.size() < 1) {
+            return false;
+        }
+
+        ReferenceType classRef = classes.get(0);
         List<Location> locs = classRef.locationsOfLine(lineNum);
         if (locs.size() < 1) {
             return false;
@@ -142,11 +152,13 @@ public class Debug extends EventHandlerBase {
 
     public boolean unsetBreakpoint(String clas, int lineNum) {
         Breakpoint bkpt = new Breakpoint(clas, lineNum);
-        BreakpointRequest req = breakpoints.remove(bkpt);
-        EventRequestManager mgr = vm.eventRequestManager();
-        mgr.deleteEventRequest(req);
-        // TODO: fix
-        return true;
+        if (breakpoints.containsKey(bkpt)) {
+            BreakpointRequest req = breakpoints.remove(bkpt);
+            EventRequestManager mgr = vm.eventRequestManager();
+            mgr.deleteEventRequest(req);
+            return true;
+        }
+        return false;
     }
 
     public Set<Breakpoint> getBreakpoints() {

@@ -152,16 +152,13 @@ deeva.controller('SimpleController', function ($scope, $http) {
   function setGutterHandler($scope) {
       $scope.codeMirror.on("gutterClick", function(cm, line) {
       var info = cm.lineInfo(line);
-      var breakPoint;
+      // XXX: Horrible hack
+      var clas = $scope.file_name.substring(0, $scope.file_name.indexOf('.'));
       if (info.gutterMarkers) {
-        breakPoint = null;
-        $scope.breakPoints.splice($scope.breakPoints.indexOf(line), 1);
+        tryToUnsetBreakpoint(cm, clas, line);
       } else {
-        breakPoint = makeBreakPoint();
-        $scope.breakPoints.push(line);
+        tryToSetBreakpoint(cm, clas, line);
       }
-      cm.setGutterMarker(line, "breakpoints", breakPoint);
-      setBreakPoints($scope, $http);
     });
   }
 
@@ -171,6 +168,42 @@ deeva.controller('SimpleController', function ($scope, $http) {
     breakPoint.style.color = "#0000FF";
     breakPoint.innerHTML = "●";
     return breakPoint;
+  }
+
+  // Invoke a POST method to backend to send a data about a set of breakpoint.
+  function tryToSetBreakpoint(cm, clas, lineNumber) {
+    console.log("Trying to set breakpoint: " + clas + "@" + lineNumber);
+    $http.post('setBreakpoint', {clas: clas, lineNumber: lineNumber})
+      .success(function(data) {
+        if (data.success) {
+          console.log("Setting breakpoint.");
+          breakPoint = makeBreakPoint();
+          //$scope.breakPoints.push(lineNumber);
+          cm.setGutterMarker(lineNumber, "breakpoints", breakPoint);
+        } else {
+          console.log("Could not set breakpoint.");
+        }
+      })
+      .error(function(data) {
+        console.log("Setting breakpoint error.");
+    });
+  }
+
+  function tryToUnsetBreakpoint(cm, clas, lineNumber) {
+    console.log("Trying to unset breakpoint: " + clas + "@" + lineNumber);
+    $http.post('unsetBreakpoint', {clas: clas, lineNumber: lineNumber})
+      .success(function(data) {
+        if (data.success) {
+          console.log("Unsetting breakpoint.");
+          //$scope.breakPoints.splice($scope.breakPoints.indexOf(lineNumber), 1);
+          cm.setGutterMarker(lineNumber, "breakpoints", null);
+        } else {
+          console.log("Could not unset breakpoint.");
+        }
+      })
+      .error(function(data) {
+        console.log("Setting breakpoint error.");
+    });
   }
 
   // Invoke a POST method to backend to send a data about a set of breakpoint.
