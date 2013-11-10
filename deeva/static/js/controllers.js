@@ -217,25 +217,43 @@ deeva.controller('SimpleController', function ($scope, $http) {
     });
   }
 
-  function printToTerminal($scope, output) {
+  function printToTerminal($scope, output, isErr) {
     if (!output) {
       return;
     }
-    if (output.slice(-1) == "\n") {
+    var lines = output.split("\n");
+    for (index = 0;index<lines.length;index++) {
+      line = lines[index];
+      if (index == lines.length - 1) {
+        $scope.currentPrompt += (line);
+        $scope.terminal.set_prompt($scope.currentPrompt + initial_prompt);
+      } else {
+        var toPrint = $scope.currentPrompt + line;
+        toPrint = isErr ? ("[[;#FF0000;#fff]" + toPrint + "]") : toPrint;
+        $scope.terminal.echo(toPrint);
+        $scope.currentPrompt = initial_prompt;
+        $scope.terminal.set_prompt(initial_prompt + initial_prompt);
+      }
+    }
+    /*if (output.slice(-1) == "\n") {
       output = output.substring(0, output.length - 1);
       var remainedToPrint = $scope.currentPrompt.substring(0, $scope.currentPrompt.length);
-      $scope.terminal.echo(remainedToPrint + output);
+      $scope.terminal.echo(remainedToPrint + output);      
       $scope.terminal.set_prompt(initial_prompt);
     } else {
       $scope.currentPrompt += (output);
       $scope.terminal.set_prompt($scope.currentPrompt + initial_prompt);
-    }
+    }*/
   }
 
   function displayTerminal($scope) {
     $scope.terminal = $('#terminal').terminal(function(input, term) {
       // This function is called whenever the enter is hit.
-      sendInput($scope, input);
+      if (input == "") {
+        printToTerminal($scope, "\n", false);
+      } else {
+        sendInput($scope, input);
+      }
       }, {
         // Initial setup for
         greetings: "",
