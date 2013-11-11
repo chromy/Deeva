@@ -5,8 +5,7 @@
   <title>Deeva </title>
 
   <!-- Common css -->
-  <link rel="stylesheet" href="./d3Trial.css">
-  <link rel="stylesheet" href="../css/bootstrap.css">
+  <link rel="stylesheet" href="./stackHeap.css">
 
   <!-- D3 -->
   <script type="text/javascript" src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
@@ -15,26 +14,34 @@
 
 <body>
     <div id="visual">
-  
+       <table id="stackHeapTable">
+         <tbody>
+           <tr>
+              <td id="stack_td"> </td>
+              <td id="heap_td"> </td>
+           </tr>
+         </tbody>
+       </table>  
     </div>
     
  <script type="text/javascript">
-   var table = d3.selectAll("#visual")
-               .append("table")
-               .attr("id", "stackHeapTable");
+   var primitive_list = ["int", "char", "boolean", "byte", "float", "double", "long", "short"];
+   var all_variables = {"stack": [{type:"int", name:"x", value: "3"},
+                              {type:"char", name:"y", value: "z"},
+                              {type:"string", name:"bob", value: "bob"},
+                              {type:"int[]", name:"array", value: "[]"}
+                             ],
+                    "heap": []
+                   }
+   var variables = all_variables.stack;
 
-   var tbody = table.append("tbody");
-
-   var table_tr = tbody.append("tr");
-
-   var stack_td = table_tr.append("td").attr("id", "stack_id");
-   var heap_id  = table_tr.append("td").attr("id", "heap_id");
-               
+   var stack_td = d3.select("#stack_td");
+   var heap_td  = d3.select("#heap_td");
 
    var global_area = stack_td.append("div").attr("id", "global_area");
    var stack = stack_td.append("div").attr("id", "stack");
 
-   var heap = heap_id.append("div").attr("id", "heap");
+   var heap = heap_td.append("div").attr("id", "heap");
 
    var stackHeader = global_area.append("div")
                                 .attr("id", "stackHeader")
@@ -46,21 +53,50 @@
                               .attr("id", "globals");
 
    var stackFrameHeader = stackFrame.append("div")
-                                    .append("class", "stackFrameHeader")
-                                    .append("id", "globals_header")
-                                    .text("Global Frame");
+                                    .attr("class", "stackFrameHeader")
+                                    .attr("id", "globals_header")
+                                    .text("Main");
 
 
    
    var stackFrameTable = stackFrame.append("table")
                                    .attr("class", "stackFrameVarTable")
                                    .attr("id", "global_table");
+   var stackFrameSel = d3.select(".stackFrameVarTable");
 
+   var globalVariables = stackFrameSel.selectAll("tr")
+                                      .data(variables)
+                                      .enter()
+                                      .append("tr");
+
+   globalVariables.attr("class", "variableTr")
+                  .attr("id", function(d,i){
+                           return "global_"+d.name+"_tr";
+                  });
+ 
+   var variableTr = stackFrameSel.selectAll("tr");
+
+   variableTr.append("td")
+             .attr("class", "stackFrameVar")
+             .text(function(d){
+                    return d.name;
+              });
+
+   variableTr.append("td")
+             .attr("class", "stackFrameValue")
+             .text(function(d){
+                 if(primitive_list.indexOf(d.type) >= 0)
+                    return d.value  
+                 else{
+
+                 }
+              });
 
    var stackFrames = stack.selectAll("div")
                           .append("div") 
                           .data([1,2,3])
                           .enter();
+
    stackFrames.append("div")
               .attr("class", "stackFrame")
               .attr("id", function(d,i){

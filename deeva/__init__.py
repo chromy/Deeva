@@ -37,11 +37,24 @@ def step_return():
     if request.method == 'POST':
         return make_api_response(app.debugger.stepReturn)
 
-@app.route("/setBreakPoint", methods=['POST'])
-def breakPoint():
+@app.route("/setBreakpoint", methods=['POST'])
+def set_breakpoint():
     if request.method == 'POST':
-        app.debugger.setBreakPoint('hello', 12)
-        return jsonify(status=True)
+        breakpoint = request.get_json()
+        print breakpoint
+        clas = breakpoint['clas']
+        line = int(breakpoint['lineNumber'])+1
+        result = app.debugger.setBreakpoint(clas, line)
+        return jsonify(success=result)
+
+@app.route("/unsetBreakpoint", methods=['POST'])
+def unset_breakpoint():
+    if request.method == 'POST':
+        breakpoint = request.get_json()
+        clas = breakpoint['clas']
+        line = int(breakpoint['lineNumber'])+1
+        result = app.debugger.unsetBreakpoint(clas, line)
+        return jsonify(success=result)
 
 @app.route("/run", methods=['POST'])
 def run():
@@ -64,7 +77,9 @@ def get_state():
 
 @app.errorhandler(500)
 def page_not_found(error):
+    import traceback
     print 'Error:', error
+    print traceback.print_exc()
     return "500"
 
 def make_api_response(f, *args, **kargs):
