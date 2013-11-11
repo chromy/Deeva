@@ -1,14 +1,10 @@
 var deeva = angular.module('deeva', []);
 
 var initial_prompt = '';
-var speed = "slow";
-var enable = 1;
-var disable = 0.6;
 
 // Currently is a whole document controller
 deeva.controller('SimpleController', function ($scope, $http) {
-  $scope.prevLine = 0;
-  $scope.currentLine = 1;
+  $scope.currentLine = -1;
   $scope.breakPoints = new Array();
   $scope.showStdIn = true;
   $scope.showArguments = true;
@@ -26,24 +22,18 @@ deeva.controller('SimpleController', function ($scope, $http) {
   displayTagit($scope);
 
   $scope.clickButton = function(destination) {
-    if ($scope.state[destination + "Btn"]) {
-      if (destination == "run") {
+    if (destination == "run") {
         setCurrentState("RUNNING");
-      }
-      if ($scope.currentLine <= $scope.code.length) {
-        $http.post(destination)
-          .success(function(data) {
-            console.log(data);
-            updateState(data)
-          })
-          .error(function(status) {
-            console.log("There is an error on " + destination + "()");
-          });
-      }
-    } else {
-      console.log(destination + " is disabled");
     }
-  }
+    $http.post(destination)
+      .success(function(data) {
+        console.log(data);
+        updateState(data);
+      })
+      .error(function(status) {
+        console.log("There is an error on " + destination + "()");
+      });
+  };
 
   function updateState(data) {
     if (!data) {
@@ -51,21 +41,30 @@ deeva.controller('SimpleController', function ($scope, $http) {
     }
     setCurrentState(data.state);
     if (data.line_number) {
-      $scope.prevLine = $scope.currentLine;
       $scope.currentLine = data.line_number;
-      highLightLine($scope);
       $scope.codeMirror.setCursor($scope.currentLine);
     }
     if (data.stdout) {
       printToTerminal($scope, data.stdout);
     }
   }
-  
+
+  $scope.$watch('currentLine', function (currentLine, prevLine) {
+    console.log(currentLine, prevLine);
+    var BACK_CLASS = "CodeMirror-activeline-background";
+    if (prevLine >= 0) {
+        $scope.codeMirror.removeLineClass(prevLine, "background", BACK_CLASS);
+    }
+    if (currentLine >= 0) {
+        $scope.codeMirror.addLineClass(currentLine, 'background', BACK_CLASS);
+    }
+  });
+
   function setCurrentState(state) {
     $scope.currentState = state;
     setButtonState(state);
   }
-  
+
   function setButtonState(state) {
     if (state) {
       switch (state) {
@@ -98,25 +97,17 @@ deeva.controller('SimpleController', function ($scope, $http) {
           $scope.state.stepReturnBtn = false;
           break;
       }
-      refreshButtonsWithCurrentState();
-      console.log(state)
+      console.log(state);
     }
   }
-  
-  function refreshButtonsWithCurrentState() {
-    for (button in $scope.state) {
-      buttonState = $scope.state[button]? enable : disable;
-      $("#" + button).fadeTo(speed, buttonState);
-    }
-   }
 
   function init($scope, $http) {
     $http.get('getCurrentState')
       .success(function(data) {
-        setCurrentState(data.state);  
+        setCurrentState(data.state);
       })
       .error(function(status) {
-        console.log("There is an error getting ")
+        console.log("There is an error getting state.");
     });
   }
 
@@ -134,7 +125,7 @@ deeva.controller('SimpleController', function ($scope, $http) {
         console.log("There is an error getting json");
         setUpCodeMirror($scope);
     });
-  };
+  }
 
   // Initialze codeMirror and display it
   function setUpCodeMirror($scope) {
@@ -161,16 +152,13 @@ deeva.controller('SimpleController', function ($scope, $http) {
   function setGutterHandler($scope) {
       $scope.codeMirror.on("gutterClick", function(cm, line) {
       var info = cm.lineInfo(line);
-      var breakPoint;
+      // XXX: Horrible hack
+      var clas = $scope.file_name.substring(0, $scope.file_name.indexOf('.'));
       if (info.gutterMarkers) {
-        breakPoint = null;
-        $scope.breakPoints.splice($scope.breakPoints.indexOf(line), 1);
+        tryToUnsetBreakpoint(cm, clas, line);
       } else {
-        breakPoint = makeBreakPoint();
-        $scope.breakPoints.push(line);
+        tryToSetBreakpoint(cm, clas, line);
       }
-      cm.setGutterMarker(line, "breakpoints", breakPoint);
-      setBreakPoints($scope, $http);
     });
   }
 
@@ -180,6 +168,42 @@ deeva.controller('SimpleController', function ($scope, $http) {
     breakPoint.style.color = "#0000FF";
     breakPoint.innerHTML = "●";
     return breakPoint;
+  }
+
+  // Invoke a POST method to backend to send a data about a set of breakpoint.
+  function tryToSetBreakpoint(cm, clas, lineNumber) {
+    console.log("Trying to set breakpoint: " + clas + "@" + lineNumber);
+    $http.post('setBreakpoint', {clas: clas, lineNumber: lineNumber})
+      .success(function(data) {
+        if (data.success) {
+          console.log("Setting breakpoint.");
+          breakPoint = makeBreakPoint();
+          //$scope.breakPoints.push(lineNumber);
+          cm.setGutterMarker(lineNumber, "breakpoints", breakPoint);
+        } else {
+          console.log("Could not set breakpoint.");
+        }
+      })
+      .error(function(data) {
+        console.log("Setting breakpoint error.");
+    });
+  }
+
+  function tryToUnsetBreakpoint(cm, clas, lineNumber) {
+    console.log("Trying to unset breakpoint: " + clas + "@" + lineNumber);
+    $http.post('unsetBreakpoint', {clas: clas, lineNumber: lineNumber})
+      .success(function(data) {
+        if (data.success) {
+          console.log("Unsetting breakpoint.");
+          //$scope.breakPoints.splice($scope.breakPoints.indexOf(lineNumber), 1);
+          cm.setGutterMarker(lineNumber, "breakpoints", null);
+        } else {
+          console.log("Could not unset breakpoint.");
+        }
+      })
+      .error(function(data) {
+        console.log("Setting breakpoint error.");
+    });
   }
 
   // Invoke a POST method to backend to send a data about a set of breakpoint.
@@ -193,32 +217,43 @@ deeva.controller('SimpleController', function ($scope, $http) {
     });
   }
 
-  // High light the current line. The previous line high light is also removed.
-  function highLightLine($scope) {
-    var BACK_CLASS = "CodeMirror-activeline-background";
-    $scope.codeMirror.removeLineClass($scope.prevLine, "background", BACK_CLASS);
-    $scope.codeMirror.addLineClass($scope.currentLine, 'background', BACK_CLASS);
-  };
-
-  function printToTerminal($scope, output) {
+  function printToTerminal($scope, output, isErr) {
     if (!output) {
       return;
     }
-    if (output.slice(-1) == "\n") {
+    var lines = output.split("\n");
+    for (index = 0;index<lines.length;index++) {
+      line = lines[index];
+      if (index == lines.length - 1) {
+        $scope.currentPrompt += (line);
+        $scope.terminal.set_prompt($scope.currentPrompt + initial_prompt);
+      } else {
+        var toPrint = $scope.currentPrompt + line;
+        toPrint = isErr ? ("[[;#FF0000;#fff]" + toPrint + "]") : toPrint;
+        $scope.terminal.echo(toPrint);
+        $scope.currentPrompt = initial_prompt;
+        $scope.terminal.set_prompt(initial_prompt + initial_prompt);
+      }
+    }
+    /*if (output.slice(-1) == "\n") {
       output = output.substring(0, output.length - 1);
       var remainedToPrint = $scope.currentPrompt.substring(0, $scope.currentPrompt.length);
-      $scope.terminal.echo(remainedToPrint + output);
+      $scope.terminal.echo(remainedToPrint + output);      
       $scope.terminal.set_prompt(initial_prompt);
     } else {
       $scope.currentPrompt += (output);
       $scope.terminal.set_prompt($scope.currentPrompt + initial_prompt);
-    }
+    }*/
   }
 
   function displayTerminal($scope) {
     $scope.terminal = $('#terminal').terminal(function(input, term) {
       // This function is called whenever the enter is hit.
-      sendInput($scope, input);
+      if (input == "") {
+        printToTerminal($scope, "\n", false);
+      } else {
+        sendInput($scope, input);
+      }
       }, {
         // Initial setup for
         greetings: "",
@@ -246,5 +281,6 @@ deeva.controller('SimpleController', function ($scope, $http) {
       allowDuplicates: true,
     });
   }
+   
 
 });

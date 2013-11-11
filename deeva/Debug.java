@@ -15,9 +15,13 @@ import java.io.IOException;
 import java.util.concurrent.Semaphore;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.LinkedList;
+import java.util.List;
 
 import deeva.DebugResponseQueue;
 import deeva.WrongStateError;
+import deeva.Breakpoint;
 
 public class Debug extends EventHandlerBase {
     public static enum State {
@@ -38,10 +42,13 @@ public class Debug extends EventHandlerBase {
     private DebugResponseQueue reqQueue;
     private State state;
     private Semaphore sema;
+    private List<Map<String, String>> stack;
+    private Map<Breakpoint, BreakpointRequest> breakpoints;
 
     private StepRequest stepRequest;
     private MethodEntryRequest entryRequest;
     private MethodExitRequest exitRequest;
+
     int line_number = 0;
 
     public Debug(DebugResponseQueue reqQueue) {
@@ -51,6 +58,7 @@ public class Debug extends EventHandlerBase {
     }
 
     public void start(String arg) {
+        breakpoints = new HashMap<Breakpoint, BreakpointRequest>();
         vm = launchTarget(arg);
         EventThread eventThread = new EventThread(vm, excludes, this);
         eventThread.start();
@@ -62,13 +70,117 @@ public class Debug extends EventHandlerBase {
         entryRequest = reqMgr.createMethodEntryRequest();
         for (String ex: excludes) { entryRequest.addClassExclusionFilter (ex); }
         entryRequest.setSuspendPolicy(EventRequest.SUSPEND_ALL);    // suspend so we can examine vars
-        entryRequest.enable();
+        //entryRequest.enable();
 
         exitRequest = reqMgr.createMethodExitRequest();
         for (String ex: excludes) { exitRequest.addClassExclusionFilter (ex); }
         exitRequest.setSuspendPolicy(EventRequest.SUSPEND_ALL);    // suspend so we can examine vars
         //exitRequest.enable();
+        //
+        ClassPrepareRequest prepareRequest = reqMgr.createClassPrepareRequest();
+        for (String ex: excludes) { prepareRequest.addClassExclusionFilter (ex); }
+        prepareRequest.setSuspendPolicy(EventRequest.SUSPEND_ALL);    // suspend so we can examine vars
+        prepareRequest.enable();
 
+    }
+
+    public List<Map<String, String>> getStack(LocatableEvent event)
+    	throws IncompatibleThreadStateException, AbsentInformationException,
+	       ClassNotLoadedException
+    {
+	Map<String, String> stack = new HashMap<String, String>();
+	/* Try to extract stack variables - Hack */
+	/* Get the thread in which we're stepping */
+	ThreadReference threadRef = event.thread();
+
+	/* Get the top most strack frame in the thread that we've stopped in */
+	StackFrame stackFrame = threadRef.frame(0);
+
+	/* We want to create a list of maps */
+	List<Map<String, String>> localVariables = new LinkedList<Map<String, String>>();
+
+	/* List all the variables on the stack */
+	for (LocalVariable var : stackFrame.visibleVariables()) {
+	    Map<String, String> varMap = new HashMap<String, String>();
+
+	    String name = var.name();
+	    Type type = var.type();
+	    String typeString = var.typeName();
+	    Value variableValue = stackFrame.getValue(var);
+	    /*System.err.println("Type string: " + typeString);
+	    System.err.println("Type instance: " + type.getClass().getName());*/
+	    System.err.println("-------------");
+	    System.err.println("Name: " + name);
+	    System.err.println("Type: " + typeString);
+	    System.err.println("ValueType: " + variableValue.type());
+	    Type valueType = variableValue.type();
+
+	    /* Insert local variable meta into a map that will get converted later */
+	    varMap.put("name", var.name());
+	    varMap.put("type", typeString);
+
+	    if (valueType instanceof IntegerType) {
+		System.err.println("Value: " + ((IntegerValue)variableValue).value());
+		Integer value = ((IntegerValue)variableValue).value();
+		varMap.put("value", value.toString());
+	    } else if (valueType instanceof BooleanType) {
+		System.err.println("Value: " + ((BooleanValue)variableValue).value());
+		Boolean value = new Boolean(((BooleanValue)variableValue).value());
+		varMap.put("value", value.toString());
+	    } else if (valueType instanceof ByteType) {
+		System.err.println("Value: " + ((ByteValue)variableValue).value());
+		Byte value = new Byte(((ByteValue)variableValue).value());
+		varMap.put("value", value.toString());
+	    } else if (valueType instanceof CharType) {
+		System.err.println("Value: " + ((CharValue)variableValue).value());
+		Character value = new Character(((CharValue)variableValue).value());
+		varMap.put("value", value.toString());
+	    } else if (valueType instanceof DoubleType) {
+		System.err.println("Value: " + ((DoubleValue)variableValue).value());
+		Double value = new Double(((DoubleValue)variableValue).value());
+		varMap.put("value", value.toString());
+	    } else if (valueType instanceof FloatType) {
+		System.err.println("Value: " + ((FloatValue)variableValue).value());
+		Float value = new Float(((FloatValue)variableValue).value());
+		varMap.put("value", value.toString());
+	    } else if (valueType instanceof LongType) {
+		System.err.println("Value: " + ((LongValue)variableValue).value());
+		Long value = new Long(((LongValue)variableValue).value());
+		varMap.put("value", value.toString());
+	    } else if (valueType instanceof ShortType) {
+		System.err.println("Value: " + ((ShortValue)variableValue).value());
+		Short value = new Short(((ShortValue)variableValue).value());
+		varMap.put("value", value.toString());
+	    } else if (valueType instanceof VoidType) {
+		System.err.println("Value: void");
+		varMap.put("value", "void");
+	    }
+
+	    /* Let's deal with Object references */
+	    else if (variableValue instanceof ObjectReference) {
+		/* This is guaranteed to be unique iff the object hasn't been
+		 * disposed of. Not too sure what the implications of this is
+		 * for us. */
+		Long uniqueID = ((ObjectReference)variableValue).uniqueID();
+		System.err.println("UniqueID: " + uniqueID);
+		varMap.put("refID", uniqueID.toString());
+
+		if (variableValue instanceof StringReference) {
+		    varMap.put("value", ((StringReference)variableValue).value());
+		} else if (variableValue instanceof ArrayReference) {
+		    Integer length = ((ArrayReference)variableValue).length();
+		    varMap.put("length", length.toString());
+		    ArrayType arrType = (ArrayType)valueType;
+		    System.err.println("length: " + length);
+		    System.err.println("component type: " + arrType.componentTypeName());
+		}
+	    }
+
+	    /* Append the local variable to the end of the list (stack) */
+	    localVariables.add(varMap);
+	}
+
+	return localVariables;
     }
 
     public Map<String, Object> run() throws InterruptedException {
@@ -83,6 +195,7 @@ public class Debug extends EventHandlerBase {
         Map<String, Object> result = new HashMap<String, Object>();
         result.put("state", state);
         result.put("line_number", line_number);
+	result.put("stack", stack);
         return result;
     }
 
@@ -114,12 +227,90 @@ public class Debug extends EventHandlerBase {
         return getState();
     }
 
-    public void setBreakPoint(String clas, int lineNum) throws AbsentInformationException {
-        ReferenceType classRef = vm.classesByName(clas).get(0);
-        Location loc = classRef.locationsOfLine(lineNum).get(0);
+    public boolean setBreakpoint(String clas, int lineNum) throws AbsentInformationException {
+        Breakpoint bkpt = new Breakpoint(clas, lineNum);
+        if (breakpoints.keySet().contains(bkpt)) {
+            return true;
+        }
+        List<ReferenceType> classes = vm.classesByName(clas);
+        if (classes.size() < 1) {
+            // Save to set later.
+            System.err.println("No class loaded, saving breakpoint for later.");
+            breakpoints.put(bkpt, null);
+            return true;
+        }
+
+        // XXX: test with emmbeded classes...
+        ReferenceType classRef = classes.get(0);
+        List<Location> locs = classRef.locationsOfLine(lineNum);
+        if (locs.size() < 1) {
+            return false;
+        }
+        Location loc = locs.get(0);
+
         EventRequestManager reqMgr = vm.eventRequestManager();
         BreakpointRequest req = reqMgr.createBreakpointRequest(loc);
+        breakpoints.put(bkpt, req);
+        req.setSuspendPolicy(EventRequest.SUSPEND_ALL);
         req.enable();
+        return true;
+    }
+
+    /*
+    // XXX: extract into class.
+    public void tryToLoadClass(String clasName) {
+        ClassType clas;
+        ObjectReference obj;
+        Method method;
+        clas = getClass("java.lang.ClassLoader");
+        method = clas.methodsByName("getSystemClassLoader").get(0);
+        obj = (ObjectReference)clas.invokeMethod(getThread(), method, new LinkedList<Value>(), 0);
+        clas = (ClassType)obj.referenceType();
+        method = clas.methodsByName("loadClass").get(0);
+        List<Value> args = new LinkedList<Value>();
+        args.push(new ConstStringValue(clasName));
+        obj.invokeMethod(getThread(), method, args, 0);
+    }
+
+    private class ConstStringValue implements StringReference {
+        String s;
+        public ConstStringValue(String s) {
+            this.s = s;
+        }
+
+        List<ObjectReference> referringObjects() {
+            return new LinkedList<ObjectReference>
+        }
+
+        public String value() {
+            return s;
+        }
+    }
+
+    public ClassType getClass(String clas) {
+        List<ClassType> classes = vm.classesByName(clas);
+        if (classes.size() < 1) {
+            return null;
+        }
+        return classes.get(0);
+    }
+    */
+
+    public boolean unsetBreakpoint(String clas, int lineNum) {
+        Breakpoint bkpt = new Breakpoint(clas, lineNum);
+        if (breakpoints.containsKey(bkpt)) {
+            BreakpointRequest req = breakpoints.remove(bkpt);
+            if (req != null) {
+                EventRequestManager mgr = vm.eventRequestManager();
+                mgr.deleteEventRequest(req);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    public Set<Breakpoint> getBreakpoints() {
+        return breakpoints.keySet();
     }
 
     private void step(int depth) {
@@ -135,7 +326,10 @@ public class Debug extends EventHandlerBase {
     }
 
     @Override
-    public void handleEvent(Event e) {
+    public void handleEvent(Event e)
+	throws IncompatibleThreadStateException, AbsentInformationException,
+	       ClassNotLoadedException
+    {
         System.err.println(e.getClass());
         if (e instanceof LocatableEvent) {
             locatableEvent((LocatableEvent)e);
@@ -145,6 +339,33 @@ public class Debug extends EventHandlerBase {
 
     public void locatableEvent(LocatableEvent e) {
         line_number = e.location().lineNumber();
+    }
+
+    @Override
+    public void classPrepareEvent(ClassPrepareEvent e) {
+        for (Breakpoint b : breakpoints.keySet()) {
+            if (breakpoints.get(b) == null && b.getClas().equals(e.referenceType().name())) {
+                System.err.println("Attempting to set saved breakpoint.");
+                try {
+                    List<Location> locs = e.referenceType().locationsOfLine(b.getLineNumber());
+                    if (locs.size() > 0) {
+                        System.err.println("Set saved breakpoint.");
+                        Location loc = locs.get(0);
+                        EventRequestManager reqMgr = vm.eventRequestManager();
+                        BreakpointRequest req = reqMgr.createBreakpointRequest(loc);
+                        breakpoints.remove(b);
+                        breakpoints.put(b, req);
+                        req.setSuspendPolicy(EventRequest.SUSPEND_ALL);
+                        req.enable();
+                    } else {
+                        System.err.println("No lines.");
+                    }
+                } catch (AbsentInformationException error) {
+                    System.err.println("Abstent Information!");
+                }
+            }
+        }
+        vm.resume();
     }
 
     @Override
@@ -161,8 +382,14 @@ public class Debug extends EventHandlerBase {
     }
 
     @Override
-    public void stepEvent(StepEvent event) {
-        System.err.println(event.location().method() + "@" + event.location().lineNumber());
+    public void stepEvent(StepEvent event)
+	throws IncompatibleThreadStateException, AbsentInformationException,
+	       ClassNotLoadedException
+    {
+        System.err.println(event.location().method() + "@" + event.location().lineNumber());       
+
+	stack = getStack(event);
+	/* Delete the request */
         EventRequestManager mgr = vm.eventRequestManager();
         mgr.deleteEventRequest(event.request());
         sema.release();
@@ -177,6 +404,9 @@ public class Debug extends EventHandlerBase {
         //    mgr.deleteEventRequest(stepRequest);
         //    stepRequest = null;
         //}
+
+	/* Try to extract the stack variables */
+
         sema.release();
     }
 
@@ -283,13 +513,5 @@ public class Debug extends EventHandlerBase {
 
         System.out.println("After - con");
         return arguments;
-    }
-
-    public Boolean setBreakPoint() {
-        return true;
-    }
-
-    public static String hello() {
-        return "Hello";
     }
 }

@@ -34,7 +34,10 @@ public class EventThread extends Thread {
             } catch (VMDisconnectedException discExc) {
                 //handleDisconnectedException();
                 break;
-            }
+            } catch (Exception e) {
+		// I'M SO SORRY
+		
+	    }
         }
     }
 }

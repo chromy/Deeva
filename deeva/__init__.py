@@ -7,7 +7,10 @@ app = Flask('deeva')
 
 @app.route("/")
 def index():
-    return app.send_static_file('index.html')
+    try: 
+        return app.send_static_file('index.html')
+    except Exception as e:
+        print "got something here"
 
 @app.route("/breakPoints", methods=['POST'])
 def breakPoints():
@@ -34,11 +37,24 @@ def step_return():
     if request.method == 'POST':
         return make_api_response(app.debugger.stepReturn)
 
-@app.route("/setBreakPoint", methods=['POST'])
-def breakPoint():
+@app.route("/setBreakpoint", methods=['POST'])
+def set_breakpoint():
     if request.method == 'POST':
-        app.debugger.setBreakPoint('hello', 12)
-        return jsonify(status=True)
+        breakpoint = request.get_json()
+        print breakpoint
+        clas = breakpoint['clas']
+        line = int(breakpoint['lineNumber'])+1
+        result = app.debugger.setBreakpoint(clas, line)
+        return jsonify(success=result)
+
+@app.route("/unsetBreakpoint", methods=['POST'])
+def unset_breakpoint():
+    if request.method == 'POST':
+        breakpoint = request.get_json()
+        clas = breakpoint['clas']
+        line = int(breakpoint['lineNumber'])+1
+        result = app.debugger.unsetBreakpoint(clas, line)
+        return jsonify(success=result)
 
 @app.route("/run", methods=['POST'])
 def run():
@@ -61,7 +77,9 @@ def get_state():
 
 @app.errorhandler(500)
 def page_not_found(error):
+    import traceback
     print 'Error:', error
+    print traceback.print_exc()
     return "500"
 
 def make_api_response(f, *args, **kargs):
@@ -76,4 +94,11 @@ def make_api_response(f, *args, **kargs):
         stdout = debug.pop_stdout()
         # XXX: fix
         result['line_number'] -= 1
-        return jsonify(status='ok', stdout=stdout, **result) 
+        st = result['stack']
+
+        # Need to do some sort of recursive converter, so that we don't have
+        # maliciuos strings in Java that will kill our eval/repr etc
+        result2 = {'state' : result['state'], 
+                   'line_number' : result['line_number'], 
+                   'stack' : eval(repr(result['stack']))}
+        return jsonify(status='ok', stdout=stdout, **result2) 
