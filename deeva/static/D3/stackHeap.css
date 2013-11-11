@@ -2,8 +2,8 @@
 .stackFrameVar, .stackFrameValue{
  width: 30px;
  height: 20px;
- border: 1px solid white;
  font-weight: bold;
+ background-color: #F5B142;
 }
 
 .stackFrameValue{
@@ -34,7 +34,6 @@
 }
 
 .stackFrameVarTable{
- background-color: #F5B142;
 }
 
 .stackFrame{
