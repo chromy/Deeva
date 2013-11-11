@@ -76,3 +76,27 @@ body {
 .myButtons:hover {
   box-shadow: 3px 3px 0px 0px #ccc;
 }
+
+li {
+	position: relative;
+	overflow: hidden;
+	white-space: nowrap;
+	background-color: #fff;
+	max-width: 100px;
+	height: 30px;
+	border-radius: 4px 4px 0 0;
+}
+
+li:after {
+	content: "";
+	pointer-events: none;
+	position: absolute;
+	width: 100px;
+	height: 100%;
+	
+	background-image: -webkit-linear-gradient(right, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0));
+	background-image: -moz-linear-gradient(right, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0));
+	background-image: -ms-linear-gradient(right, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0));
+	background-image: -o-linear-gradient(right, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0));
+	background-image: linear-gradient(to left, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0));
+}

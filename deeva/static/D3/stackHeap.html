@@ -6,7 +6,6 @@
 
   <!-- Common css -->
   <link rel="stylesheet" href="./stackHeap.css">
-  <link rel="stylesheet" href="../css/bootstrap.css">
 
   <!-- D3 -->
   <script type="text/javascript" src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
@@ -26,8 +25,15 @@
     </div>
     
  <script type="text/javascript">
-
-   var variables = [["int", "x", "3"], ["char", "y","z"] ];
+   var primitive_list = ["int", "char", "boolean", "byte", "float", "double", "long", "short"];
+   var all_variables = {"stack": [{type:"int", name:"x", value: "3"},
+                              {type:"char", name:"y", value: "z"},
+                              {type:"string", name:"bob", value: "bob"},
+                              {type:"int[]", name:"array", value: "[]"}
+                             ],
+                    "heap": []
+                   }
+   var variables = all_variables.stack;
 
    var stack_td = d3.select("#stack_td");
    var heap_td  = d3.select("#heap_td");
@@ -65,7 +71,7 @@
 
    globalVariables.attr("class", "variableTr")
                   .attr("id", function(d,i){
-                           return "global_"+d[1]+"_tr";
+                           return "global_"+d.name+"_tr";
                   });
  
    var variableTr = stackFrameSel.selectAll("tr");
@@ -73,13 +79,17 @@
    variableTr.append("td")
              .attr("class", "stackFrameVar")
              .text(function(d){
-                    return d[1];
+                    return d.name;
               });
 
    variableTr.append("td")
              .attr("class", "stackFrameValue")
              .text(function(d){
-                    return d[2];
+                 if(primitive_list.indexOf(d.type) >= 0)
+                    return d.value  
+                 else{
+
+                 }
               });
 
    var stackFrames = stack.selectAll("div")

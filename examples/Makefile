@@ -1,4 +1,4 @@
-EXAMPLES = helloworld infinite_helloworld simpleloop throws_error null_pointer
+EXAMPLES = helloworld infinite_helloworld simpleloop throws_exception functions easy_math
 
 .PHONY = make clean
 
@@ -13,5 +13,4 @@ clean:
 	for dir in $(EXAMPLES); do \
 		cd $$dir; rm *.class; cd ..; \
 	done
-	
 
