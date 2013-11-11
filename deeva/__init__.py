@@ -19,7 +19,7 @@ def breakPoints():
         print breakPoints
         for b in breakPoints:
             # XXX: fix line numbers
-            app.debugger.setBreakPoint('SimpleLoop', b+1)
+            app.debugger.setBreakpoint('SimpleLoop', b+1)
         return jsonify(status='ok')
 
 @app.route("/stepOver", methods=['POST'])
