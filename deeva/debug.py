@@ -1,3 +1,4 @@
+import traceback
 from subprocess import Popen, PIPE
 from py4j.java_collections import ListConverter
 from py4j.protocol import Py4JJavaError
@@ -5,7 +6,7 @@ from py4j.java_gateway import JavaGateway, GatewayClient
 from py4j.java_gateway import *
 
 from Queue import Queue, Empty
-import threading
+import threading, traceback
 
 class WrongState(Exception):
     pass
@@ -60,7 +61,7 @@ def create_java_debugger(classpath, prog):
 
         debugger = JavaProxy(gateway.jvm.deeva.Debug(response_queue_callback))
         debugger.start(prog)
-        print str(debugger.getState())
+        print str(debugger.getState()), "state thing"
 
         # debugger.main(empty_string_array)
         return debugger
@@ -79,7 +80,17 @@ class JavaProxy:
                 return getattr(self.__obj, name)(*args, **kargs)
             except Py4JJavaError as e:
                 print e.java_exception
+                print traceback.print_exc()
                 raise WrongState()
+            except AttributeError as e:
+                print "Attribute Error :S"
+                print dir(e)
+                print "args", e.args
+                print "message", e.message
+                print "attr error", e
+                print "----"
+                traceback.print_exc()
+                
         return _missing
 
 def load(name):
