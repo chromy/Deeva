@@ -100,5 +100,5 @@ def make_api_response(f, *args, **kargs):
         # maliciuos strings in Java that will kill our eval/repr etc
         result2 = {'state' : result['state'], 
                    'line_number' : result['line_number'], 
-                   'stack' : eval(repr(result['stack']))}
+                   'stack' : eval(repr(st))}
         return jsonify(status='ok', stdout=stdout, **result2) 

@@ -1,5 +1,7 @@
-function main(){
+function main(all_variables){
+ d3.select("#visual").remove();
  var primitive_list = ["int", "char", "boolean", "byte", "float", "double", "long", "short"];
+/*
    var all_variables = {"stack": [{type:"int", name:"x", value: "3"},
                               {type:"char", name:"y", value: "z"},
                               {type:"string", name:"bob", value: "bob"},
@@ -7,10 +9,11 @@ function main(){
                              ],
                     "heap": []
                    }
+*/
    var variables = all_variables.stack;
 
    var stack_td = d3.select("#stack_td");
-   console.log(stack_td);
+   
    var heap_td  = d3.select("#heap_td");
 
    var global_area = stack_td.append("div").attr("id", "global_area");
@@ -38,7 +41,9 @@ function main(){
                                    .attr("class", "stackFrameVarTable")
                                    .attr("id", "global_table");
    var stackFrameSel = d3.select(".stackFrameVarTable");
-
+ 
+   if(variables != null){
+   console.log(variables);
    var globalVariables = stackFrameSel.selectAll("tr")
                                       .data(variables)
                                       .enter()
@@ -77,6 +82,8 @@ function main(){
               .attr("id", function(d,i){
                             return "stack" + i;  
               });
+
+   }
 
    var heapHeader = heap.append("div")
                         .attr("id", "heapHeader")
