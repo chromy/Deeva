@@ -230,12 +230,6 @@ deeva.controller('SimpleController', function ($scope, $http) {
       allowDuplicates: true,
     });
   }
-
-  var tabs = $('.tabs > li');
-
-  tabs.on("click", function(){
-    tabs.removeClass('active');
-    $(this).addClass('active');
-  });
+   
 
 });
