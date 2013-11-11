@@ -7,7 +7,10 @@ app = Flask('deeva')
 
 @app.route("/")
 def index():
-    return app.send_static_file('index.html')
+    try: 
+        return app.send_static_file('index.html')
+    except Exception as e:
+        print "got something here"
 
 @app.route("/breakPoints", methods=['POST'])
 def breakPoints():
@@ -76,4 +79,11 @@ def make_api_response(f, *args, **kargs):
         stdout = debug.pop_stdout()
         # XXX: fix
         result['line_number'] -= 1
-        return jsonify(status='ok', stdout=stdout, **result) 
+        st = result['stack']
+
+        # Need to do some sort of recursive converter, so that we don't have
+        # maliciuos strings in Java that will kill our eval/repr etc
+        result2 = {'state' : result['state'], 
+                   'line_number' : result['line_number'], 
+                   'stack' : eval(repr(result['stack']))}
+        return jsonify(status='ok', stdout=stdout, **result2) 
