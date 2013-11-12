@@ -70,7 +70,7 @@
             <div id="startBtn">Run</div>
           </div>
         </div>
-
+        <div id="state">{{stateToPresent[currentState]}}</div>
         <div id='buttons_container'>
           <input type="image" class='myButtons' id='runBtn' ng-disabled="!state.runBtn" ng-click="clickButton('run')" src="static/css/images/run.png"></input>
           <input type="image" class='myButtons' id='stopBtn' ng-disabled="!state.stopBtn" ng-click="stop()" src="static/css/images/stop.png"></input>

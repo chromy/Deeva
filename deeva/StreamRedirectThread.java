@@ -17,17 +17,9 @@ class StreamRedirectThread extends Thread {
      * @param in    Stream to copy from
      * @param out   Stream to copy to
      */
-    // StreamRedirectThread(String name, InputStream in, OutputStream out) {
-    //     super(name);
-    //     this.in = new InputStreamReader(in);
-    //     this.out = new OutputStreamWriter(out);
-    //     setPriority(Thread.MAX_PRIORITY-1);
-    // }
-
     StreamRedirectThread(String name, InputStream in, DebugResponseQueue resQueue) {
         super(name);
         this.in = new InputStreamReader(in);
-        //this.out = new OutputStreamWriter(out);
     	this.resQueue = resQueue;
         setPriority(Thread.MAX_PRIORITY-1);
     }
@@ -41,10 +33,8 @@ class StreamRedirectThread extends Thread {
             char[] cbuf = new char[BUFFER_SIZE];
             int count;
             while ((count = in.read(cbuf, 0, BUFFER_SIZE)) >= 0) {
-                //out.write(cbuf, 0, count);
 		        String s = new String(cbuf, 0, count);
-                //System.err.println(s);
-		        resQueue.put(s);
+		        resQueue.put(getName(), s);
             }
         } catch(IOException exc) {
             System.err.println("Child I/O Transfer - " + exc);
