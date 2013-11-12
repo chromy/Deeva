@@ -46,8 +46,6 @@ public class Debug extends EventHandlerBase {
     private Map<Breakpoint, BreakpointRequest> breakpoints;
 
     private StepRequest stepRequest;
-    private MethodEntryRequest entryRequest;
-    private MethodExitRequest exitRequest;
 
     int line_number = 0;
 
@@ -66,17 +64,6 @@ public class Debug extends EventHandlerBase {
         state = State.NO_INFERIOR;
 
         EventRequestManager reqMgr = vm.eventRequestManager();
-
-        //entryRequest = reqMgr.createMethodEntryRequest();
-        //for (String ex: excludes) { entryRequest.addClassExclusionFilter (ex); }
-        //entryRequest.setSuspendPolicy(EventRequest.SUSPEND_ALL);    // suspend so we can examine vars
-        ////entryRequest.enable();
-
-        //exitRequest = reqMgr.createMethodExitRequest();
-        //for (String ex: excludes) { exitRequest.addClassExclusionFilter (ex); }
-        //exitRequest.setSuspendPolicy(EventRequest.SUSPEND_ALL);    // suspend so we can examine vars
-        ////exitRequest.enable();
-        ////
 
         ClassPrepareRequest prepareRequest = reqMgr.createClassPrepareRequest();
         for (String ex: excludes) { prepareRequest.addClassExclusionFilter (ex); }
@@ -221,7 +208,6 @@ public class Debug extends EventHandlerBase {
         if (state != State.STASIS) {
             throw new WrongStateError("Should be in STASIS state.");
         }
-        entryRequest.disable();
         step(StepRequest.STEP_OVER);
         sema.acquire();
         return getState();
@@ -369,19 +355,6 @@ public class Debug extends EventHandlerBase {
     }
 
     @Override
-    public void methodEntryEvent(MethodEntryEvent event) {
-        final Method method = event.method();
-        System.err.println(method.toString());
-        // XXX: hack
-        if (!method.toString().equals("SimpleLoop.main(java.lang.String[])")) {
-            vm.resume();
-        } else {
-            state = State.STASIS;
-            sema.release();
-        }
-    }
-
-    @Override
     public void stepEvent(StepEvent event)
     throws IncompatibleThreadStateException, AbsentInformationException,
            ClassNotLoadedException
@@ -405,21 +378,10 @@ public class Debug extends EventHandlerBase {
         //    stepRequest = null;
         //}
 
-        /* Try to extract the stack variables */
+    /* Try to extract the stack variables */
 
         state = State.STASIS;
         sema.release();
-    }
-
-    @Override
-    public void methodExitEvent(MethodExitEvent event) {
-        System.err.println("METHOD EXIT");
-        //if (stepRequest != null) {
-        //    sema.release();
-        //    EventRequestManager mgr = vm.eventRequestManager();
-        //    mgr.deleteEventRequest(stepRequest);
-        //    stepRequest = null;
-        //}
     }
 
     public void exceptionEvent(ExceptionEvent event) {
