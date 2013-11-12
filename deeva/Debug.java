@@ -187,7 +187,6 @@ public class Debug extends EventHandlerBase {
         vm.resume();
         state = State.RUNNING;
         sema.acquire();
-        state = State.STASIS;
         return getState();
     }
 
@@ -407,6 +406,7 @@ public class Debug extends EventHandlerBase {
 
 	/* Try to extract the stack variables */
 
+        state = State.STASIS;
         sema.release();
     }
 
@@ -423,10 +423,22 @@ public class Debug extends EventHandlerBase {
 
     public void exceptionEvent(ExceptionEvent event) {
         System.err.println("EXCEPTION");
+        cleanUp();
     }
 
     public void vmDeathEvent(VMDeathEvent event) {
         System.err.println("DEATH");
+        cleanUp();
+    }
+
+    private void cleanUp() {
+        try { 
+            errThread.join();
+            outThread.join();
+        } catch (InterruptedException e) {
+            System.err.println("Could not get all output.");
+        }
+        state = State.NO_INFERIOR;
         sema.release();
     }
 
