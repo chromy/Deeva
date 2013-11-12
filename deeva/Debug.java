@@ -39,20 +39,21 @@ public class Debug extends EventHandlerBase {
     private VirtualMachine vm;
     private StreamRedirectThread outThread;
     private StreamRedirectThread errThread;
-    private DebugResponseQueue reqQueue;
+    private StdInRedirectThread inThread;
+    private DebugResponseQueue inQueue;
+    private DebugResponseQueue outQueue;
     private State state;
     private Semaphore sema;
     private List<Map<String, String>> stack;
     private Map<Breakpoint, BreakpointRequest> breakpoints;
 
     private StepRequest stepRequest;
-    private MethodEntryRequest entryRequest;
-    private MethodExitRequest exitRequest;
 
     int line_number = 0;
 
-    public Debug(DebugResponseQueue reqQueue) {
-        this.reqQueue = reqQueue;
+    public Debug(DebugResponseQueue outQueue, DebugResponseQueue inQueue) {
+        this.outQueue = outQueue;
+	this.inQueue = inQueue;
         sema = new Semaphore(0);
         state = State.NO_INFERIOR;
     }
@@ -65,18 +66,7 @@ public class Debug extends EventHandlerBase {
         redirectOutput();
         state = State.NO_INFERIOR;
 
-        EventRequestManager reqMgr = vm.eventRequestManager();
-
-        entryRequest = reqMgr.createMethodEntryRequest();
-        for (String ex: excludes) { entryRequest.addClassExclusionFilter (ex); }
-        entryRequest.setSuspendPolicy(EventRequest.SUSPEND_ALL);    // suspend so we can examine vars
-        //entryRequest.enable();
-
-        exitRequest = reqMgr.createMethodExitRequest();
-        for (String ex: excludes) { exitRequest.addClassExclusionFilter (ex); }
-        exitRequest.setSuspendPolicy(EventRequest.SUSPEND_ALL);    // suspend so we can examine vars
-        //exitRequest.enable();
-        //
+        EventRequestManager reqMgr = getRequestManager();
         ClassPrepareRequest prepareRequest = reqMgr.createClassPrepareRequest();
         for (String ex: excludes) { prepareRequest.addClassExclusionFilter (ex); }
         prepareRequest.setSuspendPolicy(EventRequest.SUSPEND_ALL);    // suspend so we can examine vars
@@ -85,7 +75,7 @@ public class Debug extends EventHandlerBase {
     }
 
     public List<Map<String, String>> getStack(LocatableEvent event)
-    	throws IncompatibleThreadStateException, AbsentInformationException,
+        throws IncompatibleThreadStateException, AbsentInformationException,
 	       ClassNotLoadedException
     {
 	Map<String, String> stack = new HashMap<String, String>();
@@ -108,7 +98,7 @@ public class Debug extends EventHandlerBase {
 	    String typeString = var.typeName();
 	    Value variableValue = stackFrame.getValue(var);
 	    /*System.err.println("Type string: " + typeString);
-	    System.err.println("Type instance: " + type.getClass().getName());*/
+	      System.err.println("Type instance: " + type.getClass().getName());*/
 	    System.err.println("-------------");
 	    System.err.println("Name: " + name);
 	    System.err.println("Type: " + typeString);
@@ -187,7 +177,6 @@ public class Debug extends EventHandlerBase {
         vm.resume();
         state = State.RUNNING;
         sema.acquire();
-        state = State.STASIS;
         return getState();
     }
 
@@ -195,7 +184,7 @@ public class Debug extends EventHandlerBase {
         Map<String, Object> result = new HashMap<String, Object>();
         result.put("state", state);
         result.put("line_number", line_number);
-	result.put("stack", stack);
+        result.put("stack", stack);
         return result;
     }
 
@@ -221,7 +210,6 @@ public class Debug extends EventHandlerBase {
         if (state != State.STASIS) {
             throw new WrongStateError("Should be in STASIS state.");
         }
-        entryRequest.disable();
         step(StepRequest.STEP_OVER);
         sema.acquire();
         return getState();
@@ -256,46 +244,6 @@ public class Debug extends EventHandlerBase {
         return true;
     }
 
-    /*
-    // XXX: extract into class.
-    public void tryToLoadClass(String clasName) {
-        ClassType clas;
-        ObjectReference obj;
-        Method method;
-        clas = getClass("java.lang.ClassLoader");
-        method = clas.methodsByName("getSystemClassLoader").get(0);
-        obj = (ObjectReference)clas.invokeMethod(getThread(), method, new LinkedList<Value>(), 0);
-        clas = (ClassType)obj.referenceType();
-        method = clas.methodsByName("loadClass").get(0);
-        List<Value> args = new LinkedList<Value>();
-        args.push(new ConstStringValue(clasName));
-        obj.invokeMethod(getThread(), method, args, 0);
-    }
-
-    private class ConstStringValue implements StringReference {
-        String s;
-        public ConstStringValue(String s) {
-            this.s = s;
-        }
-
-        List<ObjectReference> referringObjects() {
-            return new LinkedList<ObjectReference>
-        }
-
-        public String value() {
-            return s;
-        }
-    }
-
-    public ClassType getClass(String clas) {
-        List<ClassType> classes = vm.classesByName(clas);
-        if (classes.size() < 1) {
-            return null;
-        }
-        return classes.get(0);
-    }
-    */
-
     public boolean unsetBreakpoint(String clas, int lineNum) {
         Breakpoint bkpt = new Breakpoint(clas, lineNum);
         if (breakpoints.containsKey(bkpt)) {
@@ -316,9 +264,9 @@ public class Debug extends EventHandlerBase {
     private void step(int depth) {
         EventRequestManager reqMgr = vm.eventRequestManager();
         stepRequest = reqMgr.createStepRequest(getThread(),
-                StepRequest.STEP_LINE, depth);
+					       StepRequest.STEP_LINE, depth);
         for (int i=0; i<excludes.length; ++i) {
-             stepRequest.addClassExclusionFilter(excludes[i]);
+	    stepRequest.addClassExclusionFilter(excludes[i]);
         }
         //stepRequest.addCountFilter(1);
         stepRequest.enable();
@@ -351,8 +299,7 @@ public class Debug extends EventHandlerBase {
                     if (locs.size() > 0) {
                         System.err.println("Set saved breakpoint.");
                         Location loc = locs.get(0);
-                        EventRequestManager reqMgr = vm.eventRequestManager();
-                        BreakpointRequest req = reqMgr.createBreakpointRequest(loc);
+                        BreakpointRequest req = getRequestManager().createBreakpointRequest(loc);
                         breakpoints.remove(b);
                         breakpoints.put(b, req);
                         req.setSuspendPolicy(EventRequest.SUSPEND_ALL);
@@ -369,29 +316,14 @@ public class Debug extends EventHandlerBase {
     }
 
     @Override
-    public void methodEntryEvent(MethodEntryEvent event) {
-        final Method method = event.method();
-        System.err.println(method.toString());
-        // XXX: hack
-        if (!method.toString().equals("SimpleLoop.main(java.lang.String[])")) {
-            vm.resume();
-        } else {
-            state = State.STASIS;
-            sema.release();
-        }
-    }
-
-    @Override
     public void stepEvent(StepEvent event)
 	throws IncompatibleThreadStateException, AbsentInformationException,
 	       ClassNotLoadedException
     {
         System.err.println(event.location().method() + "@" + event.location().lineNumber());       
-
-	stack = getStack(event);
-	/* Delete the request */
-        EventRequestManager mgr = vm.eventRequestManager();
-        mgr.deleteEventRequest(event.request());
+        stack = getStack(event);
+        /* Delete the request */
+        getRequestManager().deleteEventRequest(event.request());
         sema.release();
     }
 
@@ -405,28 +337,34 @@ public class Debug extends EventHandlerBase {
         //    stepRequest = null;
         //}
 
-	/* Try to extract the stack variables */
+        /* Try to extract the stack variables */
 
+        state = State.STASIS;
         sema.release();
-    }
-
-    @Override
-    public void methodExitEvent(MethodExitEvent event) {
-        System.err.println("METHOD EXIT");
-        //if (stepRequest != null) {
-        //    sema.release();
-        //    EventRequestManager mgr = vm.eventRequestManager();
-        //    mgr.deleteEventRequest(stepRequest);
-        //    stepRequest = null;
-        //}
     }
 
     public void exceptionEvent(ExceptionEvent event) {
         System.err.println("EXCEPTION");
+        cleanUp();
     }
 
     public void vmDeathEvent(VMDeathEvent event) {
         System.err.println("DEATH");
+        cleanUp();
+    }
+
+    private EventRequestManager getRequestManager() {
+        return vm.eventRequestManager();
+    }
+
+    private void cleanUp() {
+        try { 
+            errThread.join();
+            outThread.join();
+        } catch (InterruptedException e) {
+            System.err.println("Could not get all output.");
+        }
+        state = State.NO_INFERIOR;
         sema.release();
     }
 
@@ -473,16 +411,20 @@ public class Debug extends EventHandlerBase {
         Process process = vm.process();
 
         errThread = new StreamRedirectThread("stderr",
-                process.getErrorStream(),
-                this.reqQueue);
+					     process.getErrorStream(),
+					     this.outQueue);
 
         outThread = new StreamRedirectThread("stdout",
-                process.getInputStream(),
-                this.reqQueue);
+					     process.getInputStream(),
+					     this.outQueue);
+
+	inThread = new StdInRedirectThread("stdin",
+					   process.getOutputStream(),
+					   this.inQueue);
 
         outThread.start();
         errThread.start();
-
+	inThread.start();
         /* Somehow need to capture input i.e. in the other direction */
     }
 
