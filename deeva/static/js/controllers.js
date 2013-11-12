@@ -9,6 +9,9 @@ deeva.controller('SimpleController', function ($scope, $http) {
   $scope.showStdIn = true;
   $scope.showArguments = true;
   $scope.currentPrompt = "";
+  $scope.stateToPresent = {"STASIS" : "Program paused",
+                           "RUNNING" : "Program running",
+                           "NO_INFERIOR" : "Program ended"};
   $scope.currentState = "";
   $scope.state = {"runBtn" : false,
                     "stopBtn" : false,
