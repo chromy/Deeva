@@ -47,11 +47,10 @@ deeva.controller('SimpleController', function ($scope, $http) {
       $scope.currentLine = data.line_number;
       $scope.codeMirror.setCursor($scope.currentLine);
       // refactor - plus fix heap!
-      console.log(data);
       var stack_heap = {'stack' : data.stack, 
 	                'heap' : []
                        }
-//      main(stack_heap);
+      main(stack_heap);
     }
     if (data.stdout) {
       printToTerminal($scope, data.stdout, false);

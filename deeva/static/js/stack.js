@@ -1,15 +1,10 @@
 function main(all_variables){
- d3.select("#visual").remove();
+  d3.selectAll("#global_area").remove();
+  d3.selectAll("#heap").remove();
+  d3.selectAll("#stack").remove();
+
  var primitive_list = ["int", "char", "boolean", "byte", "float", "double", "long", "short"];
-/*
-   var all_variables = {"stack": [{type:"int", name:"x", value: "3"},
-                              {type:"char", name:"y", value: "z"},
-                              {type:"string", name:"bob", value: "bob"},
-                              {type:"int[]", name:"array", value: "[]"}
-                             ],
-                    "heap": []
-                   }
-*/
+
    var variables = all_variables.stack;
 
    var stack_td = d3.select("#stack_td");
