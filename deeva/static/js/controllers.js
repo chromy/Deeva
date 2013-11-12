@@ -48,7 +48,7 @@ deeva.controller('SimpleController', function ($scope, $http) {
       printToTerminal($scope, data.stdout, false);
     }
     if (data.stderr) {
-      printToTerminal($scope, data.stdout, true);
+      printToTerminal($scope, data.stderr, true);
     }
   }
 
