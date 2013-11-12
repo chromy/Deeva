@@ -4,7 +4,7 @@ CLASS_PATH:="$(PY4J_JAR_PATH):$(TOOL_JAR_PATH)"
 
 .PHONY: all build build_examples deploy setup_deploy install test test_long
 
-all: build
+all: build build_examples
 
 build:
 	test $(TOOL_JAR_PATH) || test -f $(TOOL_JAR_PATH)
