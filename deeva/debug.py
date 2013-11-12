@@ -11,8 +11,26 @@ import threading, traceback
 class WrongState(Exception):
     pass
 
+class ResponseQueue(object):
+    def __init__(self):
+        self.response_queue = Queue()
+    def put(self, stream, string):
+        """Add `string' to response queue that will be processed later."""
+        print repr(string)
+        self.response_queue.put((stream, string))
+
+    def get(self):
+        # This call is blocking
+        string = response_queue.get(True)
+        self.response_queue.task_done()
+        return string
+
+    class Java:
+        implements = ['deeva.DebugResponseQueue']
+
 # FIX - SORRY
-response_queue = Queue()
+out_queue = ResponseQueue()
+in_queue = ResponseQueue()
 
 # fix
 def launch_gateway(port=0, jarpath="", classpath="", javaopts=[],
@@ -50,6 +68,8 @@ def create_java_debugger(classpath, prog):
 	out_queue = ResponseQueue()
 	
         debugger = JavaProxy(gateway.jvm.deeva.Debug(out_queue))
+
+#        debugger = JavaProxy(gateway.jvm.deeva.Debug(out_queue, in_queue))
         debugger.start(prog)
 
         return debugger
@@ -90,20 +110,11 @@ def pop_output():
     results = []
     while True:
         try:
-            results.append(response_queue.get(False))
+            results.append(out_queue.response_queue.get(False))
         except Empty:
             break
         else:
-            response_queue.task_done()
+            out_queue.response_queue.task_done()
     stdout = ''.join([msg for stream, msg in results if stream == "stdout"])
     stderr = ''.join([msg for stream, msg in results if stream == "stderr"])
     return stdout, stderr
-
-class ResponseQueue(object):
-    def put(self, stream, string):
-        """Add `string' to response queue that will be processed later."""
-        print repr(string)
-        response_queue.put((stream, string))
-
-    class Java:
-        implements = ['deeva.DebugResponseQueue']

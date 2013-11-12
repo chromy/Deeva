@@ -29,8 +29,6 @@ function main(all_variables){
                                     .attr("class", "stackFrameHeader")
                                     .attr("id", "globals_header")
                                     .text("Main");
-
-
    
    var stackFrameTable = stackFrame.append("table")
                                    .attr("class", "stackFrameVarTable")
@@ -86,7 +84,7 @@ function main(all_variables){
    
    var heapRows = heap.selectAll("table")
                       .append("table")
-                      .data([1,2,3,4,5,6])
+                      .data([1])
                       .enter();
  
    heapRows.append("table")
@@ -112,11 +110,7 @@ function main(all_variables){
                         return "heap_object_" + i; 
                });
            
-  var heapRowObjectElemsSelect = 
-                  d3.select("#heap")
-                    .selectAll(".heapRow")
-                    .selectAll(".toplevelHeapObject")
-                    .selectAll(".heapObject");
+  var heapRowObjectElemsSelect = d3.selectAll(".heapObject");
  
   varheapObjectType = heapRowObjectElemsSelect.append("div")
                                               .attr("class", "typeLabel")
