@@ -1,5 +1,5 @@
 package deeva;
 
 public interface DebugResponseQueue {
-    public void put(String response);
+    public void put(String stream, String response);
 }

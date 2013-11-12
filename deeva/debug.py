@@ -106,22 +106,24 @@ def load(name):
         f.close()
     return source
 
-def pop_stdout():
-    result = ''
+def pop_output():
+    results = []
     while True:
         try:
-            result += response_queue.get(False)
+            results.append(response_queue.get(False))
         except Empty:
             break
         else:
             response_queue.task_done()
-    return result
+    stdout = ''.join([msg for stream, msg in results if stream == "stdout"])
+    stderr = ''.join([msg for stream, msg in results if stream == "stderr"])
+    return stdout, stderr
 
 class ResponseQueue(object):
-    def put(self, string):
+    def put(self, stream, string):
         """Add `string' to response queue that will be processed later."""
         print repr(string)
-        response_queue.put(string)
+        response_queue.put((stream, string))
 
     class Java:
         implements = ['deeva.DebugResponseQueue']

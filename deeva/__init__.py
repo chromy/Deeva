@@ -91,7 +91,7 @@ def make_api_response(f, *args, **kargs):
                 error='Invalid call ' + f.__name__ + ' in this state.'
                 )
     else:
-        stdout = debug.pop_stdout()
+        stdout, stderr = debug.pop_output()
         # XXX: fix
         result['line_number'] -= 1
         st = result['stack']
@@ -101,4 +101,4 @@ def make_api_response(f, *args, **kargs):
         result2 = {'state' : result['state'], 
                    'line_number' : result['line_number'], 
                    'stack' : eval(repr(result['stack']))}
-        return jsonify(status='ok', stdout=stdout, **result2) 
+        return jsonify(status='ok', stdout=stdout, stderr=stderr, **result2) 

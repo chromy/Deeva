@@ -472,11 +472,11 @@ public class Debug extends EventHandlerBase {
     void redirectOutput() {
         Process process = vm.process();
 
-        errThread = new StreamRedirectThread("error reader",
+        errThread = new StreamRedirectThread("stderr",
                 process.getErrorStream(),
                 this.reqQueue);
 
-        outThread = new StreamRedirectThread("output reader",
+        outThread = new StreamRedirectThread("stdout",
                 process.getInputStream(),
                 this.reqQueue);
 
