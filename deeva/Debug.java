@@ -39,7 +39,9 @@ public class Debug extends EventHandlerBase {
     private VirtualMachine vm;
     private StreamRedirectThread outThread;
     private StreamRedirectThread errThread;
-    private DebugResponseQueue reqQueue;
+    private StdInRedirectThread inThread;
+    private DebugResponseQueue inQueue;
+    private DebugResponseQueue outQueue;
     private State state;
     private Semaphore sema;
     private List<Map<String, String>> stack;
@@ -49,8 +51,9 @@ public class Debug extends EventHandlerBase {
 
     int line_number = 0;
 
-    public Debug(DebugResponseQueue reqQueue) {
-        this.reqQueue = reqQueue;
+    public Debug(DebugResponseQueue outQueue, DebugResponseQueue inQueue) {
+        this.outQueue = outQueue;
+	this.inQueue = inQueue;
         sema = new Semaphore(0);
         state = State.NO_INFERIOR;
     }
@@ -73,101 +76,101 @@ public class Debug extends EventHandlerBase {
 
     public List<Map<String, String>> getStack(LocatableEvent event)
         throws IncompatibleThreadStateException, AbsentInformationException,
-           ClassNotLoadedException
+	       ClassNotLoadedException
     {
-    Map<String, String> stack = new HashMap<String, String>();
-    /* Try to extract stack variables - Hack */
-    /* Get the thread in which we're stepping */
-    ThreadReference threadRef = event.thread();
+	Map<String, String> stack = new HashMap<String, String>();
+	/* Try to extract stack variables - Hack */
+	/* Get the thread in which we're stepping */
+	ThreadReference threadRef = event.thread();
 
-    /* Get the top most strack frame in the thread that we've stopped in */
-    StackFrame stackFrame = threadRef.frame(0);
+	/* Get the top most strack frame in the thread that we've stopped in */
+	StackFrame stackFrame = threadRef.frame(0);
 
-    /* We want to create a list of maps */
-    List<Map<String, String>> localVariables = new LinkedList<Map<String, String>>();
+	/* We want to create a list of maps */
+	List<Map<String, String>> localVariables = new LinkedList<Map<String, String>>();
 
-    /* List all the variables on the stack */
-    for (LocalVariable var : stackFrame.visibleVariables()) {
-        Map<String, String> varMap = new HashMap<String, String>();
+	/* List all the variables on the stack */
+	for (LocalVariable var : stackFrame.visibleVariables()) {
+	    Map<String, String> varMap = new HashMap<String, String>();
 
-        String name = var.name();
-        Type type = var.type();
-        String typeString = var.typeName();
-        Value variableValue = stackFrame.getValue(var);
-        /*System.err.println("Type string: " + typeString);
-        System.err.println("Type instance: " + type.getClass().getName());*/
-        System.err.println("-------------");
-        System.err.println("Name: " + name);
-        System.err.println("Type: " + typeString);
-        System.err.println("ValueType: " + variableValue.type());
-        Type valueType = variableValue.type();
+	    String name = var.name();
+	    Type type = var.type();
+	    String typeString = var.typeName();
+	    Value variableValue = stackFrame.getValue(var);
+	    /*System.err.println("Type string: " + typeString);
+	      System.err.println("Type instance: " + type.getClass().getName());*/
+	    System.err.println("-------------");
+	    System.err.println("Name: " + name);
+	    System.err.println("Type: " + typeString);
+	    System.err.println("ValueType: " + variableValue.type());
+	    Type valueType = variableValue.type();
 
-        /* Insert local variable meta into a map that will get converted later */
-        varMap.put("name", var.name());
-        varMap.put("type", typeString);
+	    /* Insert local variable meta into a map that will get converted later */
+	    varMap.put("name", var.name());
+	    varMap.put("type", typeString);
 
-        if (valueType instanceof IntegerType) {
-        System.err.println("Value: " + ((IntegerValue)variableValue).value());
-        Integer value = ((IntegerValue)variableValue).value();
-        varMap.put("value", value.toString());
-        } else if (valueType instanceof BooleanType) {
-        System.err.println("Value: " + ((BooleanValue)variableValue).value());
-        Boolean value = new Boolean(((BooleanValue)variableValue).value());
-        varMap.put("value", value.toString());
-        } else if (valueType instanceof ByteType) {
-        System.err.println("Value: " + ((ByteValue)variableValue).value());
-        Byte value = new Byte(((ByteValue)variableValue).value());
-        varMap.put("value", value.toString());
-        } else if (valueType instanceof CharType) {
-        System.err.println("Value: " + ((CharValue)variableValue).value());
-        Character value = new Character(((CharValue)variableValue).value());
-        varMap.put("value", value.toString());
-        } else if (valueType instanceof DoubleType) {
-        System.err.println("Value: " + ((DoubleValue)variableValue).value());
-        Double value = new Double(((DoubleValue)variableValue).value());
-        varMap.put("value", value.toString());
-        } else if (valueType instanceof FloatType) {
-        System.err.println("Value: " + ((FloatValue)variableValue).value());
-        Float value = new Float(((FloatValue)variableValue).value());
-        varMap.put("value", value.toString());
-        } else if (valueType instanceof LongType) {
-        System.err.println("Value: " + ((LongValue)variableValue).value());
-        Long value = new Long(((LongValue)variableValue).value());
-        varMap.put("value", value.toString());
-        } else if (valueType instanceof ShortType) {
-        System.err.println("Value: " + ((ShortValue)variableValue).value());
-        Short value = new Short(((ShortValue)variableValue).value());
-        varMap.put("value", value.toString());
-        } else if (valueType instanceof VoidType) {
-        System.err.println("Value: void");
-        varMap.put("value", "void");
-        }
+	    if (valueType instanceof IntegerType) {
+		System.err.println("Value: " + ((IntegerValue)variableValue).value());
+		Integer value = ((IntegerValue)variableValue).value();
+		varMap.put("value", value.toString());
+	    } else if (valueType instanceof BooleanType) {
+		System.err.println("Value: " + ((BooleanValue)variableValue).value());
+		Boolean value = new Boolean(((BooleanValue)variableValue).value());
+		varMap.put("value", value.toString());
+	    } else if (valueType instanceof ByteType) {
+		System.err.println("Value: " + ((ByteValue)variableValue).value());
+		Byte value = new Byte(((ByteValue)variableValue).value());
+		varMap.put("value", value.toString());
+	    } else if (valueType instanceof CharType) {
+		System.err.println("Value: " + ((CharValue)variableValue).value());
+		Character value = new Character(((CharValue)variableValue).value());
+		varMap.put("value", value.toString());
+	    } else if (valueType instanceof DoubleType) {
+		System.err.println("Value: " + ((DoubleValue)variableValue).value());
+		Double value = new Double(((DoubleValue)variableValue).value());
+		varMap.put("value", value.toString());
+	    } else if (valueType instanceof FloatType) {
+		System.err.println("Value: " + ((FloatValue)variableValue).value());
+		Float value = new Float(((FloatValue)variableValue).value());
+		varMap.put("value", value.toString());
+	    } else if (valueType instanceof LongType) {
+		System.err.println("Value: " + ((LongValue)variableValue).value());
+		Long value = new Long(((LongValue)variableValue).value());
+		varMap.put("value", value.toString());
+	    } else if (valueType instanceof ShortType) {
+		System.err.println("Value: " + ((ShortValue)variableValue).value());
+		Short value = new Short(((ShortValue)variableValue).value());
+		varMap.put("value", value.toString());
+	    } else if (valueType instanceof VoidType) {
+		System.err.println("Value: void");
+		varMap.put("value", "void");
+	    }
 
-        /* Let's deal with Object references */
-        else if (variableValue instanceof ObjectReference) {
-        /* This is guaranteed to be unique iff the object hasn't been
-         * disposed of. Not too sure what the implications of this is
-         * for us. */
-        Long uniqueID = ((ObjectReference)variableValue).uniqueID();
-        System.err.println("UniqueID: " + uniqueID);
-        varMap.put("refID", uniqueID.toString());
+	    /* Let's deal with Object references */
+	    else if (variableValue instanceof ObjectReference) {
+		/* This is guaranteed to be unique iff the object hasn't been
+		 * disposed of. Not too sure what the implications of this is
+		 * for us. */
+		Long uniqueID = ((ObjectReference)variableValue).uniqueID();
+		System.err.println("UniqueID: " + uniqueID);
+		varMap.put("refID", uniqueID.toString());
 
-        if (variableValue instanceof StringReference) {
-            varMap.put("value", ((StringReference)variableValue).value());
-        } else if (variableValue instanceof ArrayReference) {
-            Integer length = ((ArrayReference)variableValue).length();
-            varMap.put("length", length.toString());
-            ArrayType arrType = (ArrayType)valueType;
-            System.err.println("length: " + length);
-            System.err.println("component type: " + arrType.componentTypeName());
-        }
-        }
+		if (variableValue instanceof StringReference) {
+		    varMap.put("value", ((StringReference)variableValue).value());
+		} else if (variableValue instanceof ArrayReference) {
+		    Integer length = ((ArrayReference)variableValue).length();
+		    varMap.put("length", length.toString());
+		    ArrayType arrType = (ArrayType)valueType;
+		    System.err.println("length: " + length);
+		    System.err.println("component type: " + arrType.componentTypeName());
+		}
+	    }
 
-        /* Append the local variable to the end of the list (stack) */
-        localVariables.add(varMap);
-    }
+	    /* Append the local variable to the end of the list (stack) */
+	    localVariables.add(varMap);
+	}
 
-    return localVariables;
+	return localVariables;
     }
 
     public Map<String, Object> run() throws InterruptedException {
@@ -261,9 +264,9 @@ public class Debug extends EventHandlerBase {
     private void step(int depth) {
         EventRequestManager reqMgr = vm.eventRequestManager();
         stepRequest = reqMgr.createStepRequest(getThread(),
-                StepRequest.STEP_LINE, depth);
+					       StepRequest.STEP_LINE, depth);
         for (int i=0; i<excludes.length; ++i) {
-             stepRequest.addClassExclusionFilter(excludes[i]);
+	    stepRequest.addClassExclusionFilter(excludes[i]);
         }
         //stepRequest.addCountFilter(1);
         stepRequest.enable();
@@ -272,8 +275,8 @@ public class Debug extends EventHandlerBase {
 
     @Override
     public void handleEvent(Event e)
-    throws IncompatibleThreadStateException, AbsentInformationException,
-           ClassNotLoadedException
+	throws IncompatibleThreadStateException, AbsentInformationException,
+	       ClassNotLoadedException
     {
         System.err.println(e.getClass());
         if (e instanceof LocatableEvent) {
@@ -314,8 +317,8 @@ public class Debug extends EventHandlerBase {
 
     @Override
     public void stepEvent(StepEvent event)
-    throws IncompatibleThreadStateException, AbsentInformationException,
-           ClassNotLoadedException
+	throws IncompatibleThreadStateException, AbsentInformationException,
+	       ClassNotLoadedException
     {
         System.err.println(event.location().method() + "@" + event.location().lineNumber());       
         stack = getStack(event);
@@ -408,16 +411,20 @@ public class Debug extends EventHandlerBase {
         Process process = vm.process();
 
         errThread = new StreamRedirectThread("stderr",
-                process.getErrorStream(),
-                this.reqQueue);
+					     process.getErrorStream(),
+					     this.outQueue);
 
         outThread = new StreamRedirectThread("stdout",
-                process.getInputStream(),
-                this.reqQueue);
+					     process.getInputStream(),
+					     this.outQueue);
+
+	inThread = new StdInRedirectThread("stdin",
+					   process.getOutputStream(),
+					   this.inQueue);
 
         outThread.start();
         errThread.start();
-
+	inThread.start();
         /* Somehow need to capture input i.e. in the other direction */
     }
 

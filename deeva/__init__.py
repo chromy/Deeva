@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, render_template, request, g, make_response, redirect, url_for
 import debug
-from debug import load, WrongState
+from debug import load, WrongState, in_queue
 import os
 
 app = Flask('deeva')
@@ -74,6 +74,11 @@ def get_code(name):
 @app.route("/getCurrentState")
 def get_state():
     return make_api_response(app.debugger.getState)
+
+@app.route("/pushStdIn/<count>")
+def push_stdin(count):
+    in_queue.response_queue.put(str(count))
+    return (count)
 
 @app.errorhandler(500)
 def page_not_found(error):
