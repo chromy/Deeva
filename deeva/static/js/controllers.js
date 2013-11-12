@@ -9,6 +9,9 @@ deeva.controller('SimpleController', function ($scope, $http) {
   $scope.showStdIn = true;
   $scope.showArguments = true;
   $scope.currentPrompt = "";
+  $scope.stateToPresent = {"STASIS" : "Program paused",
+                           "RUNNING" : "Program running",
+                           "NO_INFERIOR" : "Program ended"};
   $scope.currentState = "";
   $scope.state = {"runBtn" : false,
                     "stopBtn" : false,
@@ -51,7 +54,10 @@ deeva.controller('SimpleController', function ($scope, $http) {
 //      main(stack_heap);
     }
     if (data.stdout) {
-      printToTerminal($scope, data.stdout);
+      printToTerminal($scope, data.stdout, false);
+    }
+    if (data.stderr) {
+      printToTerminal($scope, data.stderr, true);
     }
   }
 
@@ -128,7 +134,7 @@ deeva.controller('SimpleController', function ($scope, $http) {
       .error(function(status) {
         $scope.file_name = "Can not load Java code";
         $scope.code = [];
-        console.log("There is an error getting json");
+        console.log("There is an error main class");
         setUpCodeMirror($scope);
     });
   }
