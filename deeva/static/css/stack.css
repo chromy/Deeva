@@ -1,0 +1,49 @@
+
+.stackFrameVar, .stackFrameValue{
+ min-width: 50px;
+ height: 30px;
+ font-weight: bold;
+ font-size: 15px;
+ background-color: #F5B142;
+ border: 2px solid white;
+}
+
+.stackFrameValue{
+ text-align: center;
+}
+
+#stack_td{
+
+ width: 400px;
+ height: 300px;
+}
+
+#heap_td{
+ width: 800px;
+ height: 300px;
+}
+
+#stackHeader, #heapHeader{
+ font-weight: bold;
+ font-size: 30px;
+}
+
+.stackFrameHeader{
+ font-weight: bold;
+ font-size: 20px;
+ padding-top: 15px;
+ padding-bottom: 10px;
+ 
+}
+
+.stackFrameVarTable{
+
+}
+
+.stackFrame{
+ padding-left: 70px;
+}
+#heap{
+ padding-top:50px;
+}
+

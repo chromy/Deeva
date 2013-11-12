@@ -20,7 +20,7 @@ class StreamRedirectThread extends Thread {
     StreamRedirectThread(String name, InputStream in, DebugResponseQueue resQueue) {
         super(name);
         this.in = new InputStreamReader(in);
-    	this.resQueue = resQueue;
+        this.resQueue = resQueue;
         setPriority(Thread.MAX_PRIORITY-1);
     }
 
@@ -33,8 +33,8 @@ class StreamRedirectThread extends Thread {
             char[] cbuf = new char[BUFFER_SIZE];
             int count;
             while ((count = in.read(cbuf, 0, BUFFER_SIZE)) >= 0) {
-		        String s = new String(cbuf, 0, count);
-		        resQueue.put(getName(), s);
+		String s = new String(cbuf, 0, count);
+		resQueue.put(getName(), s);
             }
         } catch(IOException exc) {
             System.err.println("Child I/O Transfer - " + exc);

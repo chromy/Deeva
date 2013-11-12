@@ -11,8 +11,26 @@ import threading, traceback
 class WrongState(Exception):
     pass
 
+class ResponseQueue(object):
+    def __init__(self):
+        self.response_queue = Queue()
+    def put(self, stream, string):
+        """Add `string' to response queue that will be processed later."""
+        print repr(string)
+        self.response_queue.put((stream, string))
+
+    def get(self):
+        # This call is blocking
+        string = response_queue.get(True)
+        self.response_queue.task_done()
+        return string
+
+    class Java:
+        implements = ['deeva.DebugResponseQueue']
+
 # FIX - SORRY
-response_queue = Queue()
+out_queue = ResponseQueue()
+in_queue = ResponseQueue()
 
 # fix
 def launch_gateway(port=0, jarpath="", classpath="", javaopts=[],
@@ -40,30 +58,20 @@ def launch_gateway(port=0, jarpath="", classpath="", javaopts=[],
     return (_port, proc)
 
 def create_java_debugger(classpath, prog):
-        print "CLASSPATH", classpath
-        port, proc = launch_gateway(classpath=classpath, die_on_exit=True)
+        port, _ = launch_gateway(classpath=classpath, die_on_exit=True)
         gateway_client = GatewayClient(port=port)
-        gateway = JavaGateway(gateway_client, auto_convert=True,
+        gateway = JavaGateway(gateway_client,
+                              auto_convert=True,
                               auto_field=True,
                               start_callback_server=True)
-        print port, proc, classpath, prog
 
-        # Setup Response Queue callback
-        response_queue_callback = ResponseQueue()
+# TODO It's old stuff
+#	out_queue = ResponseQueue()
+#        debugger = JavaProxy(gateway.jvm.deeva.Debug(out_queue))
 
-        # Start the Response Queue listener
-        #response_queue_handler = Thread(target=response_queue_method)
-        #response_queue_handler.daemon = True
-        #response_queue_handler.start()
-
-        #string_class = gateway.jvm.java.lang.String
-        #empty_string_array = gateway.new_array(string_class, 0)
-
-        debugger = JavaProxy(gateway.jvm.deeva.Debug(response_queue_callback))
+        debugger = JavaProxy(gateway.jvm.deeva.Debug(out_queue, in_queue))
         debugger.start(prog)
-        print str(debugger.getState()), "state thing"
 
-        # debugger.main(empty_string_array)
         return debugger
 
 class JavaProxy:
@@ -102,28 +110,11 @@ def pop_output():
     results = []
     while True:
         try:
-            results.append(response_queue.get(False))
+            results.append(out_queue.response_queue.get(False))
         except Empty:
             break
         else:
-            response_queue.task_done()
+            out_queue.response_queue.task_done()
     stdout = ''.join([msg for stream, msg in results if stream == "stdout"])
     stderr = ''.join([msg for stream, msg in results if stream == "stderr"])
     return stdout, stderr
-
-class ResponseQueue(object):
-    def put(self, stream, string):
-        """Add `string' to response queue that will be processed later."""
-        print repr(string)
-        response_queue.put((stream, string))
-
-    class Java:
-        implements = ['deeva.DebugResponseQueue']
-
-def response_queue_method():
-    while True:
-        pass
-        #debuggee_string = response_queue.get()
-        # Put this out to Flask or do stuff with it
-        #print 'Debuggee output:', debuggee_string
-        #response_queue.task_done()

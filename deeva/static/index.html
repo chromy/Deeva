@@ -9,6 +9,10 @@
   <link rel="stylesheet" href="static/css/deeva.css">
   <link rel="stylesheet" href="static/css/bootstrap.min.css">
   <link rel="stylesheet" href="static/css/bootstrap-theme.min.css">
+  <link rel="stylesheet" href="static/css/stack.css">
+
+  <!-- D3 -->
+  <script type="text/javascript" src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 
   <!-- AngularJS -->
   <script src="static/lib/angular/angular.min.js"></script>
@@ -36,6 +40,9 @@
 
   <!-- Controller -->
   <script src="static/js/controllers.js"></script>
+
+  <!-- Stack -->
+  <script src="static/js/stack.js"></script>
 </head>
 
 <body>
@@ -45,7 +52,6 @@
     </div>
     <div class="row">
       <div class="col-md-6">
-        <!-- populate with a CodeMirror instance -->
         <ul class="nav nav-tabs">
             <li data-toggle="tooltip" data-placement="top" data-original-title="Tooltip on top"><a href="#" data-toggle="tab" class="myTabs">{{file_name}}</a></li>
         </ul>
@@ -53,6 +59,7 @@
           <!-- Tab panes -->
         <div class="tab-content">
             <div class="tab-pane active" id="home">
+                <!-- populate with a CodeMirror instance -->
                 <div id="codeInputPane" class=outer-circle></div>
             </div>
         </div>
@@ -86,9 +93,22 @@
       </div>
     </div>
     <div class="row">
-      Stack&Heap
+        <div id="visual">
+         <table id="stackHeapTable">
+          <tbody>
+            <tr>
+              <td id="stack_td"> </td>
+              <td id="heap_td"> </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
+
+<script>
+</script>
+
 </body>
 
 </html>
