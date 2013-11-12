@@ -293,5 +293,8 @@ deeva.controller('SimpleController', function ($scope, $http) {
     });
   }
    
-
+   $('.myButtons').tooltip('toggle');
+   $(document).ready(function() {
+    $('.myButtons').tooltip('hide');
+});
 });

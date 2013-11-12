@@ -35,7 +35,6 @@
   <!-- tag-it -->
   <script src="static/lib/tag-it/tag-it.min.js"></script>
   <link href="static/css/jquery.tagit.css" rel="stylesheet">
-
   <!-- Bootstrap tab.js -->
   <script src="static/js/bootstrap.js"></script>
 
@@ -48,25 +47,29 @@
 
 <body>
   <div class="container">
-    <div class="jumbotron" id="header">
+    <div class="jumbotron"id="header">
         <h1>Deeva</h1>
     </div>
     <div class="row">
       <div class="col-md-6">
-        <!-- populate with a CodeMirror instance -->
         <ul class="nav nav-tabs">
             <li data-toggle="tooltip" data-placement="top" data-original-title="Tooltip on top"><a href="#" data-toggle="tab" class="myTabs">{{file_name}}</a></li>
-            <!--<li><a href="#" data-toggle="tab">...</a></li>-->
         </ul>
 
           <!-- Tab panes -->
         <div class="tab-content">
             <div class="tab-pane active" id="home">
+                <!-- populate with a CodeMirror instance -->
                 <div id="codeInputPane" class=outer-circle></div>
             </div>
         </div>
       </div>
-        
+      <div class="tooltip">
+        <div class="tooltip-inner">
+          Tooltip!
+        </div>
+        <div class="tooltip-arrow"></div>
+      </div>
       <div class="col-md-6">
         <p id='arg-btn'>Arguments</p>
         <div class="row">
@@ -74,16 +77,16 @@
             <ul id="arguments" ng-show="showArguments"></ul>
           </div>
           <div class="col-md-2">
-            <div id="startBtn">Run</div>
+            <div id="startBtn" class='myButtons' title="Run Program">Run</div>
           </div>
         </div>
         <div id="state">{{stateToPresent[currentState]}}</div>
         <div id='buttons_container'>
-          <input type="image" class='myButtons' id='runBtn' ng-disabled="!state.runBtn" ng-click="clickButton('run')" src="static/css/images/run.png"></input>
-          <input type="image" class='myButtons' id='stopBtn' ng-disabled="!state.stopBtn" ng-click="stop()" src="static/css/images/stop.png"></input>
-          <input type="image" class='myButtons' id='stepOverBtn' ng-disabled="!state.stepOverBtn" ng-click="clickButton('stepOver')" src="static/css/images/step_over.png"></input>
-          <input type="image" class='myButtons' id='stepIntoBtn' ng-disabled="!state.stepIntoBtn" ng-click="clickButton('stepInto')" src="static/css/images/Step_into.png"></input>
-          <input type="image" class='myButtons' id='stepReturnBtn' ng-disabled="!state.stepReturnBtn" ng-click="clickButton('stepReturn')" src="static/css/images/step_return.png"></input>
+          <input type="image" class='myButtons' id='runBtn' ng-disabled="!state.runBtn" ng-click="clickButton('run')" src="static/css/images/run.png" trigger="hover" title="Continue"></input>
+          <input type="image" class='myButtons' id='stopBtn' ng-disabled="!state.stopBtn" ng-click="stop()" src="static/css/images/stop.png" title="Stop"></input>
+          <input type="image" class='myButtons' id='stepOverBtn' ng-disabled="!state.stepOverBtn" ng-click="clickButton('stepOver')" src="static/css/images/step_over.png" title="Next"></input>
+          <input type="image" class='myButtons' id='stepIntoBtn' ng-disabled="!state.stepIntoBtn" ng-click="clickButton('stepInto')" src="static/css/images/Step_into.png" title="Step Into"></input>
+          <input type="image" class='myButtons' id='stepReturnBtn' ng-disabled="!state.stepReturnBtn" ng-click="clickButton('stepReturn')" src="static/css/images/step_return.png" title="Step Out"></input>
         </div>
         <p id='console-btn' ng-click="showStdIn=!showStdIn">Console</p>
         <div ng-show="showStdIn" id="terminal"></div>
