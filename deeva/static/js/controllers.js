@@ -45,7 +45,10 @@ deeva.controller('SimpleController', function ($scope, $http) {
       $scope.codeMirror.setCursor($scope.currentLine);
     }
     if (data.stdout) {
-      printToTerminal($scope, data.stdout);
+      printToTerminal($scope, data.stdout, false);
+    }
+    if (data.stderr) {
+      printToTerminal($scope, data.stdout, true);
     }
   }
 
@@ -122,7 +125,7 @@ deeva.controller('SimpleController', function ($scope, $http) {
       .error(function(status) {
         $scope.file_name = "Can not load Java code";
         $scope.code = [];
-        console.log("There is an error getting json");
+        console.log("There is an error main class");
         setUpCodeMirror($scope);
     });
   }

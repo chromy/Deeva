@@ -67,7 +67,7 @@ def create_java_debugger(classpath, prog):
         return debugger
 
 class JavaProxy:
-    """Translates py4j Java exceptions into Python exceptions. 
+    """Translates py4j Java exceptions into Python exceptions.
     Supports only function calls -- not attributes."""
     def __init__(self, obj):
         self.__obj = obj
@@ -82,15 +82,7 @@ class JavaProxy:
                 print e.java_exception
                 print traceback.print_exc()
                 raise WrongState()
-            except AttributeError as e:
-                print "Attribute Error :S"
-                print dir(e)
-                print "args", e.args
-                print "message", e.message
-                print "attr error", e
-                print "----"
-                traceback.print_exc()
-                
+
         return _missing
 
 def load(name):
