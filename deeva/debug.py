@@ -40,30 +40,16 @@ def launch_gateway(port=0, jarpath="", classpath="", javaopts=[],
     return (_port, proc)
 
 def create_java_debugger(classpath, prog):
-        print "CLASSPATH", classpath
-        port, proc = launch_gateway(classpath=classpath, die_on_exit=True)
+        port, _ = launch_gateway(classpath=classpath, die_on_exit=True)
         gateway_client = GatewayClient(port=port)
-        gateway = JavaGateway(gateway_client, auto_convert=True,
+        gateway = JavaGateway(gateway_client,
+                              auto_convert=True,
                               auto_field=True,
                               start_callback_server=True)
-        print port, proc, classpath, prog
-
-        # Setup Response Queue callback
-        response_queue_callback = ResponseQueue()
-
-        # Start the Response Queue listener
-        #response_queue_handler = Thread(target=response_queue_method)
-        #response_queue_handler.daemon = True
-        #response_queue_handler.start()
-
-        #string_class = gateway.jvm.java.lang.String
-        #empty_string_array = gateway.new_array(string_class, 0)
 
         debugger = JavaProxy(gateway.jvm.deeva.Debug(response_queue_callback))
         debugger.start(prog)
-        print str(debugger.getState()), "state thing"
 
-        # debugger.main(empty_string_array)
         return debugger
 
 class JavaProxy:
@@ -119,11 +105,3 @@ class ResponseQueue(object):
 
     class Java:
         implements = ['deeva.DebugResponseQueue']
-
-def response_queue_method():
-    while True:
-        pass
-        #debuggee_string = response_queue.get()
-        # Put this out to Flask or do stuff with it
-        #print 'Debuggee output:', debuggee_string
-        #response_queue.task_done()

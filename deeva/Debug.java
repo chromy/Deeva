@@ -63,8 +63,7 @@ public class Debug extends EventHandlerBase {
         redirectOutput();
         state = State.NO_INFERIOR;
 
-        EventRequestManager reqMgr = vm.eventRequestManager();
-
+        EventRequestManager reqMgr = getRequestManager();
         ClassPrepareRequest prepareRequest = reqMgr.createClassPrepareRequest();
         for (String ex: excludes) { prepareRequest.addClassExclusionFilter (ex); }
         prepareRequest.setSuspendPolicy(EventRequest.SUSPEND_ALL);    // suspend so we can examine vars
@@ -182,7 +181,7 @@ public class Debug extends EventHandlerBase {
         Map<String, Object> result = new HashMap<String, Object>();
         result.put("state", state);
         result.put("line_number", line_number);
-    result.put("stack", stack);
+        result.put("stack", stack);
         return result;
     }
 
@@ -242,46 +241,6 @@ public class Debug extends EventHandlerBase {
         return true;
     }
 
-    /*
-    // XXX: extract into class.
-    public void tryToLoadClass(String clasName) {
-        ClassType clas;
-        ObjectReference obj;
-        Method method;
-        clas = getClass("java.lang.ClassLoader");
-        method = clas.methodsByName("getSystemClassLoader").get(0);
-        obj = (ObjectReference)clas.invokeMethod(getThread(), method, new LinkedList<Value>(), 0);
-        clas = (ClassType)obj.referenceType();
-        method = clas.methodsByName("loadClass").get(0);
-        List<Value> args = new LinkedList<Value>();
-        args.push(new ConstStringValue(clasName));
-        obj.invokeMethod(getThread(), method, args, 0);
-    }
-
-    private class ConstStringValue implements StringReference {
-        String s;
-        public ConstStringValue(String s) {
-            this.s = s;
-        }
-
-        List<ObjectReference> referringObjects() {
-            return new LinkedList<ObjectReference>
-        }
-
-        public String value() {
-            return s;
-        }
-    }
-
-    public ClassType getClass(String clas) {
-        List<ClassType> classes = vm.classesByName(clas);
-        if (classes.size() < 1) {
-            return null;
-        }
-        return classes.get(0);
-    }
-    */
-
     public boolean unsetBreakpoint(String clas, int lineNum) {
         Breakpoint bkpt = new Breakpoint(clas, lineNum);
         if (breakpoints.containsKey(bkpt)) {
@@ -337,8 +296,7 @@ public class Debug extends EventHandlerBase {
                     if (locs.size() > 0) {
                         System.err.println("Set saved breakpoint.");
                         Location loc = locs.get(0);
-                        EventRequestManager reqMgr = vm.eventRequestManager();
-                        BreakpointRequest req = reqMgr.createBreakpointRequest(loc);
+                        BreakpointRequest req = getRequestManager().createBreakpointRequest(loc);
                         breakpoints.remove(b);
                         breakpoints.put(b, req);
                         req.setSuspendPolicy(EventRequest.SUSPEND_ALL);
@@ -360,11 +318,9 @@ public class Debug extends EventHandlerBase {
            ClassNotLoadedException
     {
         System.err.println(event.location().method() + "@" + event.location().lineNumber());       
-
-    stack = getStack(event);
-    /* Delete the request */
-        EventRequestManager mgr = vm.eventRequestManager();
-        mgr.deleteEventRequest(event.request());
+        stack = getStack(event);
+        /* Delete the request */
+        getRequestManager().deleteEventRequest(event.request());
         sema.release();
     }
 
@@ -378,7 +334,7 @@ public class Debug extends EventHandlerBase {
         //    stepRequest = null;
         //}
 
-    /* Try to extract the stack variables */
+        /* Try to extract the stack variables */
 
         state = State.STASIS;
         sema.release();
@@ -392,6 +348,10 @@ public class Debug extends EventHandlerBase {
     public void vmDeathEvent(VMDeathEvent event) {
         System.err.println("DEATH");
         cleanUp();
+    }
+
+    private EventRequestManager getRequestManager() {
+        return vm.eventRequestManager();
     }
 
     private void cleanUp() {
