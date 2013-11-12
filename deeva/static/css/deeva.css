@@ -42,11 +42,11 @@ body {
 }
 
 #header {
-  color: black;
   background-color: rgb(255, 153, 0);
-  margin-top: 10px;
-  margin-bottom: 10px;
-  border-radius: 20px;
+  border-radius: 10px;
+}
+#header h1 {
+	
 }
 
 #buttons_container {

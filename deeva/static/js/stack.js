@@ -61,7 +61,7 @@ function main(all_variables){
                  if(primitive_list.indexOf(d.type) >= 0)
                     return d.value  
                  else{
-
+                   //connect_to_heap(d3.select(this)); 
                  }
               });
 
@@ -132,4 +132,11 @@ function main(all_variables){
   var objectEntriesSel = objectElementsSelection.select(".value");
   var objectEntriesIndiceSel = objectElementsSelection.select(".indice");
   
+
+
 }
+
+  function connect_to_heap(selection){
+     var new_div = selection.append("div");
+         new_div.text("aaaaaaaaaaaa");
+  }
