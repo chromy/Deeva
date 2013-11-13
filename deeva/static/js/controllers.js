@@ -1,6 +1,7 @@
 var deeva = angular.module('deeva', []);
 
 var initial_prompt = '';
+var code = 
 
 // Currently is a whole document controller
 deeva.controller('SimpleController', function ($scope, $http) {
@@ -18,6 +19,8 @@ deeva.controller('SimpleController', function ($scope, $http) {
                     "stepOverBtn" : false,
                     "stepIntoBtn" : false,
                     "stepReturnBtn" : false};
+
+  $scope.files = {};
 
   init($scope, $http);
   displayCodeMirror($scope, $http);
@@ -126,15 +129,40 @@ deeva.controller('SimpleController', function ($scope, $http) {
   function displayCodeMirror($scope, $http) {
     $http.get('./main_class.json')
       .success(function(data) {
+        if (!data.file_name) {
+          alert("Can not load main class please try again");
+        }
+        if (!data.code) {
+          data.code = ["There is an error getting main class code"];
+        }
         $scope.file_name = data.file_name;
-        $scope.code = data.code;
+        $scope.files[data.file_name] = CodeMirror.Doc(data.code.join(''), 'text/x-java');
         setUpCodeMirror($scope);
+        $scope.codeMirror.swapDoc($scope.files[data.file_name]);
       })
       .error(function(status) {
-        $scope.file_name = "Can not load Java code";
-        $scope.code = [];
         console.log("There is an error main class");
         setUpCodeMirror($scope);
+    });
+  }
+
+  // Given a file name, this function will get a code from backend and stroe it in files
+  function getFile($scope, $http, fileName) {
+    if (!fileName) {
+      console.log("There is an error getting a file of " + fileName);
+    }
+    $http.get('./file/' + fileName + '.json')
+      .success(function(data) {
+        if (!data.file_name) {
+          alert("Can not load file " + fileName);
+        }
+        if (!data.code) {
+          data.code = ["There is an error getting code"];
+        }
+        $scope.files[fileName] = CodeMirror.Doc(data.code.join(''), 'text/x-java');
+      })
+      .error(function(status) {
+        console.log("There is an error getting file " + fileName);
     });
   }
 
@@ -150,11 +178,7 @@ deeva.controller('SimpleController', function ($scope, $http) {
       readOnly: "nocursor",
       gutters: ["CodeMirror-linenumbers", "breakpoints"],
     });
-    // Load an input file to be display in codeMirror
-    for (index = 0;index < $scope.code.length;index++) {
-      $scope.codeMirror.setLine(index, $scope.code[index]);
-    }
-    $scope.codeMirror.setCursor($scope.codeMirror.firstLine());
+    //$scope.codeMirror.setCursor($scope.codeMirror.firstLine());
     setGutterHandler($scope);
   }
 
