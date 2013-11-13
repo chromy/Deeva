@@ -1,7 +1,6 @@
 /* deeva css stylesheet */
 
 body {
-  background-image:url('images/geometry.png');
 }
 .row {
   height: 100%;
@@ -81,6 +80,10 @@ body {
 }
 
 #state {
-	text-align: center;
-	font-size: 25px;
+  text-align: center;
+  font-size: 25px;
+}
+
+#heap_stack {
+  margin-top: 10px;
 }

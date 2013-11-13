@@ -13,14 +13,10 @@
 }
 
 #stack_td{
-
- width: 400px;
- height: 300px;
+  margin-left: 20%;
 }
 
 #heap_td{
- width: 800px;
- height: 300px;
 }
 
 #stackHeader, #heapHeader{
@@ -36,12 +32,8 @@
  
 }
 
-.stackFrameVarTable{
-
-}
-
 .stackFrame{
- padding-left: 70px;
+
 }
 #heap{
  padding-top:50px;

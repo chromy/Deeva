@@ -90,16 +90,14 @@
         <div ng-show="showStdIn" id="terminal"></div>
       </div>
     </div>
-    <div class="row">
-        <div id="visual">
-         <table id="stackHeapTable">
-          <tbody>
-            <tr>
-              <td id="stack_td"> </td>
-              <td id="heap_td"> </td>
-            </tr>
-          </tbody>
-        </table>
+    <div class="row" id="heap_stack">
+      <div id="visual">
+        <div class="col-md-4">
+           <div id="stack_td"></div>
+        </div>
+        <div class="col-md-8">
+           <td id="heap_td"></td>
+        </div>
       </div>
     </div>
   </div>
