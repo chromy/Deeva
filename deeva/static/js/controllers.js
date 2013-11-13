@@ -22,10 +22,10 @@ deeva.controller('SimpleController', function ($scope, $http) {
 
   $scope.files = {};
 
-  init($scope, $http);
-  displayCodeMirror($scope, $http);
-  displayTerminal($scope);
-  displayTagit($scope);
+  init();
+  displayCodeMirror();
+  displayTerminal();
+  displayTagit();
 
   $scope.clickButton = function(destination) {
     if (destination == "run") {
@@ -56,10 +56,10 @@ deeva.controller('SimpleController', function ($scope, $http) {
       main(stack_heap);
     }
     if (data.stdout) {
-      printToTerminal($scope, data.stdout, false);
+      printToTerminal(data.stdout, false);
     }
     if (data.stderr) {
-      printToTerminal($scope, data.stderr, true);
+      printToTerminal(data.stderr, true);
     }
   }
 
@@ -115,7 +115,7 @@ deeva.controller('SimpleController', function ($scope, $http) {
     }
   }
 
-  function init($scope, $http) {
+  function init() {
     $http.get('getCurrentState')
       .success(function(data) {
         setCurrentState(data.state);
@@ -126,7 +126,7 @@ deeva.controller('SimpleController', function ($scope, $http) {
   }
 
   // Invoke a GET method to ask for Java code.
-  function displayCodeMirror($scope, $http) {
+  function displayCodeMirror() {
     $http.get('./main_class.json')
       .success(function(data) {
         if (!data.file_name) {
@@ -137,17 +137,17 @@ deeva.controller('SimpleController', function ($scope, $http) {
         }
         $scope.currentFileName = data.file_name;
         $scope.files[data.file_name] = {"code" : CodeMirror.Doc(data.code.join(''), 'text/x-java')};
-        setUpCodeMirror($scope);
+        setUpCodeMirror();
         $scope.codeMirror.swapDoc($scope.files[data.file_name].code);
       })
       .error(function(status) {
         console.log("There is an error main class");
-        setUpCodeMirror($scope);
+        setUpCodeMirror();
     });
   }
 
   // Given a file name, this function will get a code from backend and stroe it in files
-  function getFile($scope, $http, fileName) {
+  function getFile(fileName) {
     if (!fileName) {
       console.log("There is an error getting a file of " + fileName);
     }
@@ -167,7 +167,7 @@ deeva.controller('SimpleController', function ($scope, $http) {
   }
 
   // Initialze codeMirror and display it
-  function setUpCodeMirror($scope) {
+  function setUpCodeMirror() {
     //Initialize codeMirror
     $scope.codeMirror = CodeMirror(document.getElementById('codeInputPane'), {
       mode: 'text/x-java',
@@ -178,12 +178,12 @@ deeva.controller('SimpleController', function ($scope, $http) {
       readOnly: "nocursor",
       gutters: ["CodeMirror-linenumbers", "breakpoints"],
     });
-    setGutterHandler($scope);
+    setGutterHandler();
   }
 
   // Set an event handler when the gutter is clicked
   // which update frontend as well ass invoke a method setBreakPoints
-  function setGutterHandler($scope) {
+  function setGutterHandler() {
       $scope.codeMirror.on("gutterClick", function(cm, line) {
       var info = cm.lineInfo(line);
       // XXX: Horrible hack
@@ -254,7 +254,7 @@ deeva.controller('SimpleController', function ($scope, $http) {
   }
 
   // Invoke a POST method to backend to send a data about a set of breakpoint.
-  function setBreakPoints($scope, $http) {
+  function setBreakPoints() {
     $http.post('breakPoints', $scope.breakPoints)
       .success(function(data) {
         //console.log(data.status);
@@ -264,7 +264,7 @@ deeva.controller('SimpleController', function ($scope, $http) {
     });
   }
 
-  function printToTerminal($scope, output, isErr) {
+  function printToTerminal(output, isErr) {
     if (!output) {
       return;
     }
@@ -284,11 +284,11 @@ deeva.controller('SimpleController', function ($scope, $http) {
     }
   }
 
-  function displayTerminal($scope) {
+  function displayTerminal() {
     $scope.terminal = $('#terminal').terminal(function(input, term) {
       // This function is called whenever the enter is hit.
       if (input == "") {
-        printToTerminal($scope, "\n", false);
+        printToTerminal("\n", false);
       } else {
         sendInput($scope, input);
       }
@@ -302,7 +302,7 @@ deeva.controller('SimpleController', function ($scope, $http) {
     );
   }
 
-  function sendInput($scope, input) {
+  function sendInput(input) {
     $scope.terminal.set_prompt(initial_prompt);
     $http.post('input', input)
       .success(function(data) {
@@ -312,7 +312,7 @@ deeva.controller('SimpleController', function ($scope, $http) {
     });
   }
 
-  function displayTagit($scope) {
+  function displayTagit() {
     //Use the function below to get all arguments
     //console.log($scope.arguments.tagit("assignedTags"));
     $scope.arguments = $("#arguments").tagit({
