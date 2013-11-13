@@ -135,10 +135,10 @@ deeva.controller('SimpleController', function ($scope, $http) {
         if (!data.code) {
           data.code = ["There is an error getting main class code"];
         }
-        $scope.file_name = data.file_name;
-        $scope.files[data.file_name] = CodeMirror.Doc(data.code.join(''), 'text/x-java');
+        $scope.currentFileName = data.file_name;
+        $scope.files[data.file_name] = {"code" : CodeMirror.Doc(data.code.join(''), 'text/x-java')};
         setUpCodeMirror($scope);
-        $scope.codeMirror.swapDoc($scope.files[data.file_name]);
+        $scope.codeMirror.swapDoc($scope.files[data.file_name].code);
       })
       .error(function(status) {
         console.log("There is an error main class");
@@ -178,7 +178,6 @@ deeva.controller('SimpleController', function ($scope, $http) {
       readOnly: "nocursor",
       gutters: ["CodeMirror-linenumbers", "breakpoints"],
     });
-    //$scope.codeMirror.setCursor($scope.codeMirror.firstLine());
     setGutterHandler($scope);
   }
 
@@ -188,7 +187,7 @@ deeva.controller('SimpleController', function ($scope, $http) {
       $scope.codeMirror.on("gutterClick", function(cm, line) {
       var info = cm.lineInfo(line);
       // XXX: Horrible hack
-      var clas = $scope.file_name.substring(0, $scope.file_name.indexOf('.'));
+      var clas = $scope.currentFileName.substring(0, $scope.currentFileName.indexOf('.'));
       if (info.gutterMarkers) {
         tryToUnsetBreakpoint(cm, clas, line);
       } else {
@@ -215,6 +214,12 @@ deeva.controller('SimpleController', function ($scope, $http) {
           breakPoint = makeBreakPoint();
           //$scope.breakPoints.push(lineNumber);
           cm.setGutterMarker(lineNumber, "breakpoints", breakPoint);
+          //These are need to store breakpoint to corresponding file
+          if (!$scope.files[clas+".java"].breakpoints) {
+            $scope.files[clas+".java"].breakpoints = new Array();
+          }
+          var breakPoints = $scope.files[clas+".java"].breakpoints;
+          breakPoints.push(lineNumber);
         } else {
           console.log("Could not set breakpoint.");
         }
@@ -232,6 +237,13 @@ deeva.controller('SimpleController', function ($scope, $http) {
           console.log("Unsetting breakpoint.");
           //$scope.breakPoints.splice($scope.breakPoints.indexOf(lineNumber), 1);
           cm.setGutterMarker(lineNumber, "breakpoints", null);
+          //These are need to store breakpoint to corresponding file
+          $scope.files[clas+".java"].breakpoints = new Array();
+          var breakPoints = $scope.files[clas+".java"].breakpoints;
+          var index = breakPoints.indexOf(lineNumber);
+          if (index > -1) {
+            breakpoints.splice(index, 1);
+          }
         } else {
           console.log("Could not unset breakpoint.");
         }
@@ -270,15 +282,6 @@ deeva.controller('SimpleController', function ($scope, $http) {
         $scope.terminal.set_prompt(initial_prompt + initial_prompt);
       }
     }
-    /*if (output.slice(-1) == "\n") {
-      output = output.substring(0, output.length - 1);
-      var remainedToPrint = $scope.currentPrompt.substring(0, $scope.currentPrompt.length);
-      $scope.terminal.echo(remainedToPrint + output);      
-      $scope.terminal.set_prompt(initial_prompt);
-    } else {
-      $scope.currentPrompt += (output);
-      $scope.terminal.set_prompt($scope.currentPrompt + initial_prompt);
-    }*/
   }
 
   function displayTerminal($scope) {
