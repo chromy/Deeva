@@ -87,3 +87,8 @@ body {
 #heap_stack {
   margin-top: 10px;
 }
+
+.myTabs {
+  overflow: hidden;
+  max-width: 100px;
+}
