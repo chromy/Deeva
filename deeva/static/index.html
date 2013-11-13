@@ -51,9 +51,9 @@
         <h1>Deeva</h1>
     </div>
     <div class="row">
-      <div class="col-md-6">
+      <div class="col-md-6" style="max-width:{{cmMaxWidth}}px">
         <ul class="nav nav-tabs">
-            <li class="myTabs" data-toggle="tooltip" title="{{file_name}}"><a href="#" data-toggle="tab">{{file_name}}</a></li>
+            <li class="myTabs" data-toggle="tooltip" title="{{currentFileName}}"><a href="#" data-toggle="tab">{{file_name}}</a></li>
         </ul>
           <!-- Tab panes -->
         <div class="tab-content">
@@ -74,16 +74,16 @@
             <ul id="arguments" ng-show="showArguments"></ul>
           </div>
           <div class="col-md-2">
-            <div id="startBtn" title="Click here to run program">Run</div>
+            <div id="startBtn" class='myButtons' title="Click here to run program">Run</div>
           </div>
         </div>
         <div id="state">{{stateToPresent[currentState]}}</div>
         <div id='buttons_container'>
-          <input type="image" class="myButtons" id='runBtn' ng-disabled="!state.runBtn" ng-click="clickButton('run')" src="static/css/images/run.png" title="Continue"></input>
-          <input type="image" class="myButtons tooltippable" id='stopBtn' ng-disabled="!state.stopBtn" ng-click="stop()" src="static/css/images/stop.png" title="Stop"></input>
-          <input type="image" class="myButtons" id='stepOverBtn' ng-disabled="!state.stepOverBtn" ng-click="clickButton('stepOver')" src="static/css/images/step_over.png" title="Next"></input>
-          <input type="image" class="myButtons" id='stepIntoBtn' ng-disabled="!state.stepIntoBtn" ng-click="clickButton('stepInto')" src="static/css/images/Step_into.png" title="Step Into"></input>
-          <input type="image" class="myButtons" id='stepReturnBtn' ng-disabled="!state.stepReturnBtn" ng-click="clickButton('stepReturn')" src="static/css/images/step_return.png" title="Step Out"></input>
+          <input type="image" class='myButtons' id='runBtn' ng-disabled="!state.runBtn" ng-click="clickButton('run')" src="static/css/images/run.png" title="Continue"></input>
+          <input type="image" class='myButtons' id='stopBtn' ng-disabled="!state.stopBtn" ng-click="stop()" src="static/css/images/stop.png" title="Stop"></input>
+          <input type="image" class='myButtons' id='stepOverBtn' ng-disabled="!state.stepOverBtn" ng-click="clickButton('stepOver')" src="static/css/images/step_over.png" title="Next"></input>
+          <input type="image" class='myButtons' id='stepIntoBtn' ng-disabled="!state.stepIntoBtn" ng-click="clickButton('stepInto')" src="static/css/images/Step_into.png" title="Step Into"></input>
+          <input type="image" class='myButtons' id='stepReturnBtn' ng-disabled="!state.stepReturnBtn" ng-click="clickButton('stepReturn')" src="static/css/images/step_return.png" title="Step Out"></input>
         </div>
         <p id='console-btn' ng-click="showStdIn=!showStdIn">Console</p>
         <div ng-show="showStdIn" id="terminal"></div>
