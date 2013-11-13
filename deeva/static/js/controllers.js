@@ -179,6 +179,8 @@ deeva.controller('SimpleController', function ($scope, $http) {
       gutters: ["CodeMirror-linenumbers", "breakpoints"],
     });
     setGutterHandler();
+    console.log($scope.codeMirror.defaultCharWidth());
+    $scope.cmMaxWidth = (80 + 3) * ($scope.codeMirror.defaultCharWidth() + 1 );
   }
 
   // Set an event handler when the gutter is clicked
