@@ -3,10 +3,13 @@
 body {
   background-image:url('images/geometry.png');
 }
+.row {
+  height: 100%;
+}
 
 #myContainer {
-  margin-left: auto;
-  margin-right: auto;
+  display:table;
+  width: 100%;
 }
 
 #code {
