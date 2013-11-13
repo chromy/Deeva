@@ -1,0 +1,85 @@
+/* deeva css stylesheet */
+
+body {
+  background-image:url('images/geometry.png');
+}
+.row {
+  height: 100%;
+}
+
+#myContainer {
+  display:table;
+  width: 100%;
+}
+
+#code {
+  position: relative;
+  width: 50%;
+
+}
+
+#startBtn {
+	width: 38px;
+	height: 38px;
+	background: orange;
+	border-radius: 7px;
+	box-shadow: 5px 5px 0px 0px #ccc;
+	margin-right: 5px;
+	text-align: center;
+	line-height: 2.5;
+	color: black;
+	font-size: 15px;
+	font-weight: bolder;
+	cursor: pointer;
+}
+
+#console-btn {
+  color: orange;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+#arg-btn {
+  color: orange;
+  font-size: 20px;
+}
+
+#header {
+  background-color: rgb(255, 153, 0);
+  border-radius: 10px;
+}
+#header h1 {
+	
+}
+
+#buttons_container {
+  margin-top: 75px;
+  margin-bottom: 10px;
+}
+
+.myButtons[disabled="disabled"] {
+    opacity: 0.6;
+}
+
+.myButtons {
+  width: 50px;
+  height: 50px;
+  background: orange;
+  border-radius: 7px;
+  box-shadow: 5px 5px 0px 0px #ccc;
+  margin-right: 5px;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.myButtons[disabled="disabled"]:hover {
+  box-shadow: 5px 5px 0px 0px #ccc;
+}
+
+.myButtons:hover {
+  box-shadow: 3px 3px 0px 0px #ccc;
+}
+
+#state {
+	text-align: center;
+	font-size: 25px;
+}
