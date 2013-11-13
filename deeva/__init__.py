@@ -59,7 +59,13 @@ def unset_breakpoint():
 @app.route("/run", methods=['POST'])
 def run():
     if request.method == 'POST':
-        return make_api_response(app.debugger.run)
+        if app.debugger.getStateName() == "NO_INFERIOR":
+            print 'Starting program...'
+            app.debugger.start(app.program)
+            return make_api_response(app.debugger.run)
+        else:
+            print 'Continuing program...'
+            return make_api_response(app.debugger.run)
 
 @app.route("/main_class.json")
 def get_main_class():

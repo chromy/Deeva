@@ -52,19 +52,20 @@ public class Debug extends EventHandlerBase {
     int line_number = 0;
 
     public Debug(DebugResponseQueue outQueue, DebugResponseQueue inQueue) {
+        breakpoints = new HashMap<Breakpoint, BreakpointRequest>();
         this.outQueue = outQueue;
-	this.inQueue = inQueue;
+        this.inQueue = inQueue;
         sema = new Semaphore(0);
         state = State.NO_INFERIOR;
     }
 
     public void start(String arg) {
-        breakpoints = new HashMap<Breakpoint, BreakpointRequest>();
+        //sema.drainPermits();
         vm = launchTarget(arg);
         EventThread eventThread = new EventThread(vm, excludes, this);
         eventThread.start();
         redirectOutput();
-        state = State.NO_INFERIOR;
+        state = State.STASIS;
 
         EventRequestManager reqMgr = getRequestManager();
         ClassPrepareRequest prepareRequest = reqMgr.createClassPrepareRequest();
@@ -72,6 +73,7 @@ public class Debug extends EventHandlerBase {
         prepareRequest.setSuspendPolicy(EventRequest.SUSPEND_ALL);    // suspend so we can examine vars
         prepareRequest.enable();
 
+        attemptToSetWaitingBreakpoints();
     }
 
     public List<Map<String, String>> getStack(LocatableEvent event)
@@ -217,31 +219,33 @@ public class Debug extends EventHandlerBase {
 
     public boolean setBreakpoint(String clas, int lineNum) throws AbsentInformationException {
         Breakpoint bkpt = new Breakpoint(clas, lineNum);
+
+        // If the breakpoint exists return true.
         if (breakpoints.keySet().contains(bkpt)) {
             return true;
         }
-        List<ReferenceType> classes = vm.classesByName(clas);
-        if (classes.size() < 1) {
-            // Save to set later.
+
+        try {
+            BreakpointRequest req = attemptToSetBreakpoint(clas, lineNum);
+            breakpoints.put(bkpt, req);
+            return true;
+        } catch (NoVMException error) {
+            System.err.println("No vm loaded, saving breakpoint for later.");
+            breakpoints.put(bkpt, null);
+            return true;
+        } catch (NoLoadedClassException error) {
             System.err.println("No class loaded, saving breakpoint for later.");
             breakpoints.put(bkpt, null);
             return true;
-        }
-
-        // XXX: test with emmbeded classes...
-        ReferenceType classRef = classes.get(0);
-        List<Location> locs = classRef.locationsOfLine(lineNum);
-        if (locs.size() < 1) {
+        } catch (NoLocationException error) {
+            // The VM exists and the class was loaded but we can't set a 
+            // breakpoint here.
+            return false;
+        } catch (AbsentInformationException error) {
+            System.err.println("Absent Information!");
+            // XXX: Handle this case better.
             return false;
         }
-        Location loc = locs.get(0);
-
-        EventRequestManager reqMgr = vm.eventRequestManager();
-        BreakpointRequest req = reqMgr.createBreakpointRequest(loc);
-        breakpoints.put(bkpt, req);
-        req.setSuspendPolicy(EventRequest.SUSPEND_ALL);
-        req.enable();
-        return true;
     }
 
     public boolean unsetBreakpoint(String clas, int lineNum) {
@@ -291,28 +295,55 @@ public class Debug extends EventHandlerBase {
 
     @Override
     public void classPrepareEvent(ClassPrepareEvent e) {
+        attemptToSetWaitingBreakpoints();
+        vm.resume();
+    }
+
+    private void attemptToSetWaitingBreakpoints() {
         for (Breakpoint b : breakpoints.keySet()) {
-            if (breakpoints.get(b) == null && b.getClas().equals(e.referenceType().name())) {
+            if (breakpoints.get(b) == null) {
                 System.err.println("Attempting to set saved breakpoint.");
                 try {
-                    List<Location> locs = e.referenceType().locationsOfLine(b.getLineNumber());
-                    if (locs.size() > 0) {
-                        System.err.println("Set saved breakpoint.");
-                        Location loc = locs.get(0);
-                        BreakpointRequest req = getRequestManager().createBreakpointRequest(loc);
-                        breakpoints.remove(b);
-                        breakpoints.put(b, req);
-                        req.setSuspendPolicy(EventRequest.SUSPEND_ALL);
-                        req.enable();
-                    } else {
-                        System.err.println("No lines.");
-                    }
+                    BreakpointRequest req = attemptToSetBreakpoint(b.getClas(), b.getLineNumber());
+                    breakpoints.put(b, req);
+                } catch (NoVMException error) {
+                    System.err.println("1");
+                    // Ignore.
+                } catch (NoLoadedClassException error) {
+                    System.err.println("2");
+                    // Ignore.
+                } catch (NoLocationException error) {
+                    System.err.println("3");
+                    // Ignore this.
                 } catch (AbsentInformationException error) {
                     System.err.println("Abstent Information!");
                 }
             }
         }
-        vm.resume();
+    }
+
+    private BreakpointRequest attemptToSetBreakpoint(String clas, int lineNum) throws
+                NoVMException,
+                AbsentInformationException,
+                NoLoadedClassException,
+                NoLocationException
+            {
+        if (state == State.NO_INFERIOR) { throw new NoVMException(); }
+
+        List<ReferenceType> classes = vm.classesByName(clas);
+        if (classes.size() < 1) { throw new NoLoadedClassException(); }
+        // XXX: test with emmbeded classes...
+        ReferenceType classRef = classes.get(0);
+
+        List<Location> locs = classRef.locationsOfLine(lineNum);
+        if (locs.size() < 1) { throw new NoLocationException(); }
+        Location loc = locs.get(0);
+        EventRequestManager reqMgr = vm.eventRequestManager();
+
+        BreakpointRequest req = reqMgr.createBreakpointRequest(loc);
+        //req.setSuspendPolicy(EventRequest.SUSPEND_ALL);
+        req.enable();
+        return req;
     }
 
     @Override
@@ -320,7 +351,7 @@ public class Debug extends EventHandlerBase {
 	throws IncompatibleThreadStateException, AbsentInformationException,
 	       ClassNotLoadedException
     {
-        System.err.println(event.location().method() + "@" + event.location().lineNumber());       
+        System.err.println(event.location().method() + "@" + event.location().lineNumber());
         stack = getStack(event);
         /* Delete the request */
         getRequestManager().deleteEventRequest(event.request());
@@ -343,11 +374,19 @@ public class Debug extends EventHandlerBase {
         sema.release();
     }
 
+    @Override
     public void exceptionEvent(ExceptionEvent event) {
         System.err.println("EXCEPTION");
         cleanUp();
     }
 
+    @Override
+    public void threadDeathEvent(ThreadDeathEvent event) {
+        System.err.println("THREAD_DEATH");
+        cleanUp();
+    }
+
+    @Override
     public void vmDeathEvent(VMDeathEvent event) {
         System.err.println("DEATH");
         cleanUp();
@@ -358,7 +397,11 @@ public class Debug extends EventHandlerBase {
     }
 
     private void cleanUp() {
-        try { 
+        for (Breakpoint b : breakpoints.keySet()) {
+            breakpoints.put(b, null);
+        }
+
+        try {
             errThread.join();
             outThread.join();
         } catch (InterruptedException e) {
@@ -368,8 +411,8 @@ public class Debug extends EventHandlerBase {
         sema.release();
     }
 
-    public State getStateName() {
-        return state;
+    public String getStateName() {
+        return state.toString();
     }
 
     private ThreadReference getThread() {
@@ -424,7 +467,7 @@ public class Debug extends EventHandlerBase {
 
         outThread.start();
         errThread.start();
-	inThread.start();
+        inThread.start();
         /* Somehow need to capture input i.e. in the other direction */
     }
 
