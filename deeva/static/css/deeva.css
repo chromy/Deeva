@@ -9,6 +9,7 @@ body {
 #myContainer {
   display:table;
   width: 100%;
+  margin-bottom: 20px;
 }
 
 #code {
@@ -47,14 +48,13 @@ body {
   background-color: rgb(255, 153, 0);
   border-radius: 10px;
 }
-#header h1 {
-	
-}
 
 #buttons_container {
   margin-top: 10px;
   margin-bottom: 10px;
   text-align: center;
+  height: 50px;
+  padding-left: 35%;
 }
 
 .myButtons[disabled="disabled"] {
@@ -67,8 +67,11 @@ body {
   background: orange;
   border-radius: 7px;
   box-shadow: 5px 5px 0px 0px #ccc;
-  margin-right: 5px;
   transition: opacity 0.5s ease-in-out;
+  float: left;
+  margin-right: 8px;
+  z-index:0;
+  position:relative;
 }
 
 .myButtons[disabled="disabled"]:hover {
@@ -91,4 +94,37 @@ body {
 .myTabs {
   overflow: hidden;
   max-width: 100px;
+}
+
+#innerRunBtn {
+  border-top: 15px solid transparent;
+  border-bottom: 15px solid transparent;
+  border-left: 24px solid green;
+  position: absolute;
+  top: 20%;
+  left: 28%;
+  cursor: pointer;
+}
+
+#innerStopBtn {
+  position: absolute;
+  background-color: red;
+  height: 50%;
+  width: 50%;
+  border-radius: 4px;
+  top: 26%;
+  left: 25%;
+  cursor: pointer;
+}
+
+#stepOverBtn { 
+  content:url("images/step_over.png");
+}
+
+#stepIntoBtn {
+  content:url("images/Step_into.png");
+}
+
+#stepReturnBtn {
+  content:url("images/step_return.png");
 }

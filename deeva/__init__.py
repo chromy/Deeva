@@ -8,7 +8,7 @@ app = Flask('deeva')
 @app.route("/")
 def index():
     try: 
-        return app.send_static_file('index.html') #or 'index_2ndEd.html' for second edition
+        return app.send_static_file('index.html')
     except Exception as e:
         print "got something here"
 

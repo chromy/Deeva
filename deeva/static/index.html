@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Deeva - {{file_name}}</title>
+  <title>Deeva - {{currentFileName}}</title>
 
   <!-- Common css -->
   <link rel="stylesheet" href="static/css/deeva.css">
@@ -52,9 +52,18 @@
     </div>
     <div class="row">
       <div class="col-md-6" style="max-width:{{cmMaxWidth}}px">
+         <ul id="arguments" ng-show="showArguments"></ul>
+         <div id='buttons_container'>
+             <div type="image" class='myButtons' id='runBtn' ng-click="clickButton('run')" title="Continue"><div id="innerRunBtn"></div></div>
+            <div type="image" class='myButtons' id='stopBtn' ng-disabled="!state.stopBtn" ng-click="stop()" title="Stop"><div id="innerStopBtn"></div></div>
+            <div type="image" class='myButtons' id='stepOverBtn' ng-disabled="!state.stepOverBtn" ng-click="clickButton('stepOver')" title="Next"></div>
+            <div type="image" class='myButtons' id='stepIntoBtn' ng-disabled="!state.stepIntoBtn" ng-click="clickButton('stepInto')" title="Step Into"></div>
+            <div type="image" class='myButtons' id='stepReturnBtn' ng-disabled="!state.stepReturnBtn" ng-click="clickButton('stepReturn')" title="Step Out"></div>
+          </div>
         <ul class="nav nav-tabs">
-            <li class="myTabs" data-toggle="tooltip" title="{{currentFileName}}"><a href="#" data-toggle="tab">{{file_name}}</a></li>
+            <li class="myTabs" data-toggle="tooltip" title="{{currentFileName}}"><a href="#" data-toggle="tab">{{currentFileName}}</a></li>
         </ul>
+
           <!-- Tab panes -->
         <div class="tab-content">
             <div class="tab-pane active" id="home">
@@ -62,47 +71,33 @@
                 <div id="codeInputPane" class=outer-circle></div>
             </div>
         </div>
-      </div>
+      </div> <!-- End of Col 6 -->
       <div class="tooltip">
-        <div class="tooltip-inner"></div>
+        <div class="tooltip-inner">
+          Tooltip!
+        </div>
         <div class="tooltip-arrow"></div>
       </div>
       <div class="col-md-6">
-        <p id='arg-btn'>Arguments</p>
-        <div class="row">
-          <div class="col-md-10">
-            <ul id="arguments" ng-show="showArguments"></ul>
-          </div>
-          <div class="col-md-2">
-            <div id="startBtn" class='myButtons' title="Click here to run program">Run</div>
-          </div>
-        </div>
         <div id="state">{{stateToPresent[currentState]}}</div>
-        <div id='buttons_container'>
-          <input type="image" class='myButtons' id='runBtn' ng-disabled="!state.runBtn" ng-click="clickButton('run')" src="static/css/images/run.png" title="Continue"></input>
-          <input type="image" class='myButtons' id='stopBtn' ng-disabled="!state.stopBtn" ng-click="stop()" src="static/css/images/stop.png" title="Stop"></input>
-          <input type="image" class='myButtons' id='stepOverBtn' ng-disabled="!state.stepOverBtn" ng-click="clickButton('stepOver')" src="static/css/images/step_over.png" title="Next"></input>
-          <input type="image" class='myButtons' id='stepIntoBtn' ng-disabled="!state.stepIntoBtn" ng-click="clickButton('stepInto')" src="static/css/images/Step_into.png" title="Step Into"></input>
-          <input type="image" class='myButtons' id='stepReturnBtn' ng-disabled="!state.stepReturnBtn" ng-click="clickButton('stepReturn')" src="static/css/images/step_return.png" title="Step Out"></input>
-        </div>
         <p id='console-btn' ng-click="showStdIn=!showStdIn">Console</p>
         <div ng-show="showStdIn" id="terminal"></div>
-      </div>
-    </div>
-    <div class="row" id="heap_stack">
-      <div id="visual">
-        <div class="col-md-4">
-           <div id="stack_td"></div>
+
+        <div class="row" id="heap_stack">
+          <div id="visual">
+            <div class="col-md-4">
+              <div id="stack_td"></div>
+            </div>
+            <div class="col-md-8">
+              <td id="heap_td"></td>
+            </div>
+          </div>
         </div>
-        <div class="col-md-8">
-           <td id="heap_td"></td>
-        </div>
+
+
       </div>
     </div>
   </div>
-
-<script>
-</script>
 
 </body>
 
