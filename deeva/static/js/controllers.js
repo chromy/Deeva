@@ -78,11 +78,16 @@ deeva.controller('SimpleController', function ($scope, $http) {
     $scope.currentState = state;
     setButtonState(state);
   }
+  
+  function switchRunToContinue() {
+    
+  }
 
   function setButtonState(state) {
     if (state) {
       switch (state) {
         case "STASIS" :
+          $('#runBtn').attr("src", "");
           $scope.state.runBtn = true;
           $scope.state.stopBtn = false;
           $scope.state.stepOverBtn = true;
@@ -97,6 +102,8 @@ deeva.controller('SimpleController', function ($scope, $http) {
           $scope.state.stepReturnBtn = false;
           break;
         case "NO_INFERIOR" :
+          $('#runBtn').attr("src", "");
+          $('#runBtn').innerHTML = "Run";
           $scope.state.runBtn = true;
           $scope.state.stopBtn = false;
           $scope.state.stepOverBtn = false;
@@ -319,6 +326,7 @@ deeva.controller('SimpleController', function ($scope, $http) {
     //console.log($scope.arguments.tagit("assignedTags"));
     $scope.arguments = $("#arguments").tagit({
       allowDuplicates: true,
+      placeholderText: "Input argument(s) here"
     });
   }
 });
