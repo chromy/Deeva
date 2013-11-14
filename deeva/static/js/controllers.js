@@ -1,7 +1,7 @@
 var deeva = angular.module('deeva', []);
 
-var initial_prompt = '';
-var code = 
+var INITIAL_PROMPT = '';
+var CHS_PER_LINE = 80;
 
 // Currently is a whole document controller
 deeva.controller('SimpleController', function ($scope, $http) {
@@ -186,8 +186,7 @@ deeva.controller('SimpleController', function ($scope, $http) {
       gutters: ["CodeMirror-linenumbers", "breakpoints"],
     });
     setGutterHandler();
-    console.log($scope.codeMirror.defaultCharWidth());
-    $scope.cmMaxWidth = (80 + 3) * ($scope.codeMirror.defaultCharWidth() + 1 );
+    $scope.cmMaxWidth = (80) * ($scope.codeMirror.defaultCharWidth()) + 74;
   }
 
   // Set an event handler when the gutter is clicked
@@ -282,13 +281,13 @@ deeva.controller('SimpleController', function ($scope, $http) {
       line = lines[index];
       if (index == lines.length - 1) {
         $scope.currentPrompt += (line);
-        $scope.terminal.set_prompt($scope.currentPrompt + initial_prompt);
+        $scope.terminal.set_prompt($scope.currentPrompt + INITIAL_PROMPT);
       } else {
         var toPrint = $scope.currentPrompt + line;
         toPrint = isErr ? ("[[;#FF0000;#fff]" + toPrint + "]") : toPrint;
         $scope.terminal.echo(toPrint);
-        $scope.currentPrompt = initial_prompt;
-        $scope.terminal.set_prompt(initial_prompt + initial_prompt);
+        $scope.currentPrompt = INITIAL_PROMPT;
+        $scope.terminal.set_prompt(INITIAL_PROMPT);
       }
     }
   }
@@ -306,13 +305,13 @@ deeva.controller('SimpleController', function ($scope, $http) {
         greetings: "",
         height: 200,
         width: "100%",
-        prompt: initial_prompt,
+        prompt: INITIAL_PROMPT,
       }
     );
   }
 
   function sendInput(input) {
-    $scope.terminal.set_prompt(initial_prompt);
+    $scope.terminal.set_prompt(INITIAL_PROMPT);
     $http.post('input', input)
       .success(function(data) {
       })
