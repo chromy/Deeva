@@ -96,6 +96,13 @@ body {
   max-width: 100px;
 }
 
+#runBtn {
+  line-height: 52px;
+  font-size: 22px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
 #innerRunBtn {
   border-top: 15px solid transparent;
   border-bottom: 15px solid transparent;

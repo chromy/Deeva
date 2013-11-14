@@ -76,18 +76,26 @@ deeva.controller('SimpleController', function ($scope, $http) {
 
   function setCurrentState(state) {
     $scope.currentState = state;
+    switchRunToContinue(state);
     setButtonState(state);
   }
   
-  function switchRunToContinue() {
-    
+  function switchRunToContinue(state) {
+    if (state) {
+      if (state != "NO_INFERIOR") {
+          $('#innerRunBtn').show();
+          $('#innerRunBtnText').hide();
+      } else {
+          $('#innerRunBtn').hide();
+          $('#innerRunBtnText').show();
+      }
+    }
   }
 
   function setButtonState(state) {
     if (state) {
       switch (state) {
         case "STASIS" :
-          $('#runBtn').attr("src", "");
           $scope.state.runBtn = true;
           $scope.state.stopBtn = false;
           $scope.state.stepOverBtn = true;
@@ -102,8 +110,6 @@ deeva.controller('SimpleController', function ($scope, $http) {
           $scope.state.stepReturnBtn = false;
           break;
         case "NO_INFERIOR" :
-          $('#runBtn').attr("src", "");
-          $('#runBtn').innerHTML = "Run";
           $scope.state.runBtn = true;
           $scope.state.stopBtn = false;
           $scope.state.stepOverBtn = false;

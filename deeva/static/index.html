@@ -54,7 +54,7 @@
       <div class="col-md-6" style="max-width:{{cmMaxWidth}}px">
          <ul id="arguments" ng-show="showArguments"></ul>
          <div id='buttons_container'>
-             <div type="image" class='myButtons' id='runBtn' ng-click="clickButton('run')" title="Continue"><div id="innerRunBtn"></div></div>
+             <div type="image" class='myButtons' id='runBtn' ng-click="clickButton('run')" title="Continue"><div id="innerRunBtn"></div><div id="innerRunBtnText">Run</div></div>
             <div type="image" class='myButtons' id='stopBtn' ng-disabled="!state.stopBtn" ng-click="stop()" title="Stop"><div id="innerStopBtn"></div></div>
             <div type="image" class='myButtons' id='stepOverBtn' ng-disabled="!state.stepOverBtn" ng-click="clickButton('stepOver')" title="Next"></div>
             <div type="image" class='myButtons' id='stepIntoBtn' ng-disabled="!state.stepIntoBtn" ng-click="clickButton('stepInto')" title="Step Into"></div>
