@@ -72,6 +72,7 @@ body {
   margin-right: 8px;
   z-index:0;
   position:relative;
+  cursor: pointer;
 }
 
 .myButtons[disabled="disabled"]:hover {
@@ -100,7 +101,6 @@ body {
   line-height: 52px;
   font-size: 22px;
   font-weight: bold;
-  cursor: pointer;
 }
 
 #innerRunBtn {
