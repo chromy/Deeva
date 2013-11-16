@@ -1,6 +1,7 @@
 #!/bin/bash
 
 main() {
+    make -s build
     print_runtime > /dev/null
     print_runtime
 }
@@ -15,8 +16,10 @@ print_runtime() {
 
 start_server() {
     export DEEVA_OPEN_BROWSER='False'
-    ./run_deeva.py example/helloworld/HelloWorld >/dev/null 2>&1 &
+    pushd examples/helloworld 1>/dev/null
+    ../../run_deeva.py HelloWorld 1>/dev/null &
     echo $!
+    popd 1>/dev/null
 }
 
 time_command() {
