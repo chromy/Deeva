@@ -94,7 +94,7 @@ body {
 
 .myTabs {
   overflow: hidden;
-  max-width: 100px;
+  max-width: 100%;
 }
 
 #runBtn {
