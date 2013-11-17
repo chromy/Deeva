@@ -3,6 +3,14 @@ Deeva
 
 [![Build Status](https://travis-ci.org/chromy/Deeva.png?branch=master)](https://travis-ci.org/chromy/Deeva)
 
+Deploy
+------
+```bash
+$ git clone https://github.com/chromy/Deeva.git
+$ make deploy
+$ ln -s start_deeva [somewhere on your path]/deeva
+```
+
 Building
 --------
 ```bash
