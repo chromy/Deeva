@@ -43,6 +43,10 @@
 
   <!-- Stack -->
   <script src="static/js/stack.js"></script>
+  
+  <!-- jsPlumber -->
+  <script src="static/lib/jsplumber/jquery.jsPlumb-1.5.3.js"></script>
+
 </head>
 
 <body>
@@ -61,7 +65,7 @@
             <div type="image" class='myButtons' id='stepReturnBtn' ng-disabled="!state.stepReturnBtn" ng-click="clickButton('stepReturn')" title="Step Out"></div>
           </div>
         <ul class="nav nav-tabs">
-            <li class="myTabs" data-toggle="tooltip" title="{{currentFileName}}"><a href="#" data-toggle="tab">{{currentFileName}}</a></li>
+            <li class="myTabs active" data-toggle="tooltip" title="{{currentFileName}}"><a href="#" data-toggle="tab">{{currentFileName}}</a></li>
         </ul>
           <!-- Tab panes -->
         <div class="tab-content">

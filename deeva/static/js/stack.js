@@ -57,6 +57,10 @@ function main(all_variables){
 
    variableTr.append("td")
              .attr("class", "stackFrameValue")
+             .attr("id", function(d) {
+                    //TODO: must have different 
+                    return "stackFrameValue_" + d.name;
+             })
              .text(function(d){
                  if(primitive_list.indexOf(d.type) >= 0)
                     return d.value  
@@ -131,9 +135,16 @@ function main(all_variables){
   
   var objectEntriesSel = objectElementsSelection.select(".value");
   var objectEntriesIndiceSel = objectElementsSelection.select(".indice");
-  
 
-
+  /*
+  if ($("#stackFrameValue_j") && $("#stackFrameValue_s")) {
+  //TODO: Testing Plumber will need to be delete
+  //var one = jsPlumb.addEndpoint("stackFrameValue_j");
+  //var two = jsPlumb.addEndpoint("stackFrameValue_s");
+  var one = $("#stackFrameValue_j");
+  var two = $("#stackFrameValue_s");
+  jsPlumb.connect({scource:one,target:two,connector:[ "Bezier", { curviness:100 }]});
+  }*/
 }
 
   function connect_to_heap(selection){
