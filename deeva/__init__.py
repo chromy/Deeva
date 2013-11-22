@@ -83,7 +83,7 @@ def get_state():
 
 @app.route("/pushStdIn/<count>")
 def push_stdin(count):
-    in_queue.response_queue.put(str(count))
+    app.debugger.putStdInMessage(str(count)+ '\nTesting123\n')
     return (count)
 
 @app.errorhandler(500)

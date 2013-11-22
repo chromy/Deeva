@@ -13,6 +13,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -40,7 +42,7 @@ public class Debug extends EventHandlerBase {
     private StreamRedirectThread outThread;
     private StreamRedirectThread errThread;
     private StdInRedirectThread inThread;
-    private DebugResponseQueue inQueue;
+    private BlockingQueue<String> inQueue;
     private DebugResponseQueue outQueue;
     private State state;
     private Semaphore sema;
@@ -54,7 +56,7 @@ public class Debug extends EventHandlerBase {
     public Debug(DebugResponseQueue outQueue, DebugResponseQueue inQueue) {
         breakpoints = new HashMap<Breakpoint, BreakpointRequest>();
         this.outQueue = outQueue;
-        this.inQueue = inQueue;
+	this.inQueue = new LinkedBlockingQueue<String>();
         sema = new Semaphore(0);
         state = State.NO_INFERIOR;
     }
@@ -69,11 +71,19 @@ public class Debug extends EventHandlerBase {
 
         EventRequestManager reqMgr = getRequestManager();
         ClassPrepareRequest prepareRequest = reqMgr.createClassPrepareRequest();
-        for (String ex: excludes) { prepareRequest.addClassExclusionFilter (ex); }
+        for (String ex : excludes) { prepareRequest.addClassExclusionFilter (ex); }
         prepareRequest.setSuspendPolicy(EventRequest.SUSPEND_ALL);    // suspend so we can examine vars
         prepareRequest.enable();
 
         attemptToSetWaitingBreakpoints();
+    }
+
+    public void putStdInMessage(String msg) throws InterruptedException {
+	/* Possibly more validation if necessary */
+
+	/* Pushes given string msg, on to the inQueue that will be fed
+	 * into the debuggee stdin */
+	this.inQueue.put(msg);
     }
 
     public List<Map<String, String>> getStack(LocatableEvent event)
