@@ -39,7 +39,7 @@ def main(prog):
         webbrowser.open('http://localhost:5000')
 
     # Start Flask
-    app.run('0.0.0.0')
+    app.run('0.0.0.0', threaded=True)
 
 if __name__ == "__main__":
     import argparse

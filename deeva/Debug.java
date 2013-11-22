@@ -13,6 +13,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -40,7 +42,7 @@ public class Debug extends EventHandlerBase {
     private StreamRedirectThread outThread;
     private StreamRedirectThread errThread;
     private StdInRedirectThread inThread;
-    private DebugResponseQueue inQueue;
+    private BlockingQueue<String> inQueue;
     private DebugResponseQueue outQueue;
     private State state;
     private Semaphore sema;
@@ -53,7 +55,7 @@ public class Debug extends EventHandlerBase {
 
     public Debug(DebugResponseQueue outQueue, DebugResponseQueue inQueue) {
         this.outQueue = outQueue;
-	this.inQueue = inQueue;
+	this.inQueue = new LinkedBlockingQueue<String>();
         sema = new Semaphore(0);
         state = State.NO_INFERIOR;
     }
@@ -68,10 +70,18 @@ public class Debug extends EventHandlerBase {
 
         EventRequestManager reqMgr = getRequestManager();
         ClassPrepareRequest prepareRequest = reqMgr.createClassPrepareRequest();
-        for (String ex: excludes) { prepareRequest.addClassExclusionFilter (ex); }
+        for (String ex : excludes) { prepareRequest.addClassExclusionFilter (ex); }
         prepareRequest.setSuspendPolicy(EventRequest.SUSPEND_ALL);    // suspend so we can examine vars
         prepareRequest.enable();
 
+    }
+
+    public void putStdInMessage(String msg) throws InterruptedException {
+	/* Possibly more validation if necessary */
+
+	/* Pushes given string msg, on to the inQueue that will be fed
+	 * into the debuggee stdin */
+	this.inQueue.put(msg);
     }
 
     public List<Map<String, String>> getStack(LocatableEvent event)
@@ -210,8 +220,12 @@ public class Debug extends EventHandlerBase {
         if (state != State.STASIS) {
             throw new WrongStateError("Should be in STASIS state.");
         }
+	System.err.println("before step");
         step(StepRequest.STEP_OVER);
+	this.putStdInMessage("This is a test\n123\n");
+	System.err.println("after step, before acquire");	
         sema.acquire();
+	System.err.println("after acquire");
         return getState();
     }
 
