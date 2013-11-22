@@ -60,7 +60,10 @@ function main(all_variables){
              .attr("id", function(d) {
                     //TODO: must have different 
                     return "stackFrameValue_" + d.name;
-             })
+             });
+   var stackFrameValues = variableTr.selectAll(".stackFrameValue"); 
+   populate_values(stackFrameValues);
+/*
              .text(function(d){
                  if(primitive_list.indexOf(d.type) >= 0)
                     return d.value  
@@ -68,7 +71,7 @@ function main(all_variables){
                    //connect_to_heap(d3.select(this)); 
                  }
               });
-
+*/
    var stackFrames = stack.selectAll("div")
                           .append("div") 
                           .data([1,2,3])
@@ -145,9 +148,55 @@ function main(all_variables){
   var two = $("#stackFrameValue_s");
   jsPlumb.connect({scource:one,target:two,connector:[ "Bezier", { curviness:100 }]});
   }*/
-}
+
+  function create_arrows(selection){
+    selection.append("div")
+             .attr("class", "_jsPlumb_endpoint")
+             .attr("style", "position: absolute")
+             .style("position", "absolute")
+             .style("height", "6px")
+             .style("width", "6px");
+ 
+   selection.append("svg")
+            .attr("id", "arrow"); 
+
+   var endpoints = selection.selectAll("._jsPlumb_endpoint");
+   endpoints.append("svg")
+            .style({position: "absolute", width: "6", height: "6" })
+            .attr("pointer-events", "none")
+            .attr("version", "1.1")
+            .attr("class", "_jsPlumb_connector")
+            .attr("xmlns", "http://www.w3.org/1999/xhtml");
+
+   var svg_arrow = selection.selectAll("#arrow");
+ 
+   jsPlumb.bind("ready", function(){
+
+   var e0 = jsPlumb.addEndpoint("global_a_tr");
+   var e1 = jsPlumb.addEndpoint("global_b_tr");
+   
+   jsPlumb.connect({source: e0, target: e1});
+   });
+  }
+
+  function populate_values(selection){
+      var primitives = selection.filter(function(d){
+         return primitive_list.indexOf(d.type) >= 0;
+      });
+
+      var objects = selection.filter(function(d){
+         return primitive_list.indexOf(d.type) < 0;
+      });
+
+      primitives.append("span")
+                .attr("class","primitives")
+                .text(function(d){
+                    return d.value;
+                });
+      create_arrows(objects);
+  }
 
   function connect_to_heap(selection){
      var new_div = selection.append("div");
          new_div.text("aaaaaaaaaaaa");
-  }
+ } }
