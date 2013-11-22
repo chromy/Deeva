@@ -1,6 +1,7 @@
 var deeva = angular.module('deeva', []);
 
-var initial_prompt = '';
+var INITIAL_PROMPT = '';
+var CHS_PER_LINE = 80;
 
 // Currently is a whole document controller
 deeva.controller('SimpleController', function ($scope, $http) {
@@ -19,10 +20,12 @@ deeva.controller('SimpleController', function ($scope, $http) {
                     "stepIntoBtn" : false,
                     "stepReturnBtn" : false};
 
-  init($scope, $http);
-  displayCodeMirror($scope, $http);
-  displayTerminal($scope);
-  displayTagit($scope);
+  $scope.files = {};
+
+  init();
+  displayCodeMirror();
+  displayTerminal();
+  displayTagit();
 
   $scope.clickButton = function(destination) {
     if (destination == "run") {
@@ -47,17 +50,16 @@ deeva.controller('SimpleController', function ($scope, $http) {
       $scope.currentLine = data.line_number;
       $scope.codeMirror.setCursor($scope.currentLine);
       // refactor - plus fix heap!
-      console.log(data);
       var stack_heap = {'stack' : data.stack, 
 	                'heap' : []
                        }
-//      main(stack_heap);
+      main(stack_heap);
     }
     if (data.stdout) {
-      printToTerminal($scope, data.stdout, false);
+      printToTerminal(data.stdout, false);
     }
     if (data.stderr) {
-      printToTerminal($scope, data.stderr, true);
+      printToTerminal(data.stderr, true);
     }
   }
 
@@ -74,7 +76,20 @@ deeva.controller('SimpleController', function ($scope, $http) {
 
   function setCurrentState(state) {
     $scope.currentState = state;
+    switchRunToContinue(state);
     setButtonState(state);
+  }
+  
+  function switchRunToContinue(state) {
+    if (state) {
+      if (state != "NO_INFERIOR") {
+          $('#innerRunBtn').show();
+          $('#innerRunBtnText').hide();
+      } else {
+          $('#innerRunBtn').hide();
+          $('#innerRunBtnText').show();
+      }
+    }
   }
 
   function setButtonState(state) {
@@ -113,7 +128,7 @@ deeva.controller('SimpleController', function ($scope, $http) {
     }
   }
 
-  function init($scope, $http) {
+  function init() {
     $http.get('getCurrentState')
       .success(function(data) {
         setCurrentState(data.state);
@@ -124,23 +139,48 @@ deeva.controller('SimpleController', function ($scope, $http) {
   }
 
   // Invoke a GET method to ask for Java code.
-  function displayCodeMirror($scope, $http) {
+  function displayCodeMirror() {
     $http.get('./main_class.json')
       .success(function(data) {
-        $scope.file_name = data.file_name;
-        $scope.code = data.code;
-        setUpCodeMirror($scope);
+        if (!data.file_name) {
+          alert("Can not load main class please try again");
+        }
+        if (!data.code) {
+          data.code = ["There is an error getting main class code"];
+        }
+        $scope.currentFileName = data.file_name;
+        $scope.files[data.file_name] = {"code" : CodeMirror.Doc(data.code.join(''), 'text/x-java')};
+        setUpCodeMirror();
+        $scope.codeMirror.swapDoc($scope.files[data.file_name].code);
       })
       .error(function(status) {
-        $scope.file_name = "Can not load Java code";
-        $scope.code = [];
         console.log("There is an error main class");
-        setUpCodeMirror($scope);
+        setUpCodeMirror();
+    });
+  }
+
+  // Given a file name, this function will get a code from backend and stroe it in files
+  function getFile(fileName) {
+    if (!fileName) {
+      console.log("There is an error getting a file of " + fileName);
+    }
+    $http.get('./file/' + fileName + '.json')
+      .success(function(data) {
+        if (!data.file_name) {
+          alert("Can not load file " + fileName);
+        }
+        if (!data.code) {
+          data.code = ["There is an error getting code"];
+        }
+        $scope.files[fileName] = CodeMirror.Doc(data.code.join(''), 'text/x-java');
+      })
+      .error(function(status) {
+        console.log("There is an error getting file " + fileName);
     });
   }
 
   // Initialze codeMirror and display it
-  function setUpCodeMirror($scope) {
+  function setUpCodeMirror() {
     //Initialize codeMirror
     $scope.codeMirror = CodeMirror(document.getElementById('codeInputPane'), {
       mode: 'text/x-java',
@@ -151,21 +191,17 @@ deeva.controller('SimpleController', function ($scope, $http) {
       readOnly: "nocursor",
       gutters: ["CodeMirror-linenumbers", "breakpoints"],
     });
-    // Load an input file to be display in codeMirror
-    for (index = 0;index < $scope.code.length;index++) {
-      $scope.codeMirror.setLine(index, $scope.code[index]);
-    }
-    $scope.codeMirror.setCursor($scope.codeMirror.firstLine());
-    setGutterHandler($scope);
+    setGutterHandler();
+    $scope.cmMaxWidth = (80) * ($scope.codeMirror.defaultCharWidth()) + 74;
   }
 
   // Set an event handler when the gutter is clicked
   // which update frontend as well ass invoke a method setBreakPoints
-  function setGutterHandler($scope) {
+  function setGutterHandler() {
       $scope.codeMirror.on("gutterClick", function(cm, line) {
       var info = cm.lineInfo(line);
       // XXX: Horrible hack
-      var clas = $scope.file_name.substring(0, $scope.file_name.indexOf('.'));
+      var clas = $scope.currentFileName.substring(0, $scope.currentFileName.indexOf('.'));
       if (info.gutterMarkers) {
         tryToUnsetBreakpoint(cm, clas, line);
       } else {
@@ -192,6 +228,12 @@ deeva.controller('SimpleController', function ($scope, $http) {
           breakPoint = makeBreakPoint();
           //$scope.breakPoints.push(lineNumber);
           cm.setGutterMarker(lineNumber, "breakpoints", breakPoint);
+          //These are need to store breakpoint to corresponding file
+          if (!$scope.files[clas+".java"].breakpoints) {
+            $scope.files[clas+".java"].breakpoints = new Array();
+          }
+          var breakPoints = $scope.files[clas+".java"].breakpoints;
+          breakPoints.push(lineNumber);
         } else {
           console.log("Could not set breakpoint.");
         }
@@ -209,6 +251,13 @@ deeva.controller('SimpleController', function ($scope, $http) {
           console.log("Unsetting breakpoint.");
           //$scope.breakPoints.splice($scope.breakPoints.indexOf(lineNumber), 1);
           cm.setGutterMarker(lineNumber, "breakpoints", null);
+          //These are need to store breakpoint to corresponding file
+          $scope.files[clas+".java"].breakpoints = new Array();
+          var breakPoints = $scope.files[clas+".java"].breakpoints;
+          var index = breakPoints.indexOf(lineNumber);
+          if (index > -1) {
+            breakpoints.splice(index, 1);
+          }
         } else {
           console.log("Could not unset breakpoint.");
         }
@@ -219,7 +268,7 @@ deeva.controller('SimpleController', function ($scope, $http) {
   }
 
   // Invoke a POST method to backend to send a data about a set of breakpoint.
-  function setBreakPoints($scope, $http) {
+  function setBreakPoints() {
     $http.post('breakPoints', $scope.breakPoints)
       .success(function(data) {
         //console.log(data.status);
@@ -229,7 +278,7 @@ deeva.controller('SimpleController', function ($scope, $http) {
     });
   }
 
-  function printToTerminal($scope, output, isErr) {
+  function printToTerminal(output, isErr) {
     if (!output) {
       return;
     }
@@ -238,31 +287,22 @@ deeva.controller('SimpleController', function ($scope, $http) {
       line = lines[index];
       if (index == lines.length - 1) {
         $scope.currentPrompt += (line);
-        $scope.terminal.set_prompt($scope.currentPrompt + initial_prompt);
+        $scope.terminal.set_prompt($scope.currentPrompt + INITIAL_PROMPT);
       } else {
         var toPrint = $scope.currentPrompt + line;
         toPrint = isErr ? ("[[;#FF0000;#fff]" + toPrint + "]") : toPrint;
         $scope.terminal.echo(toPrint);
-        $scope.currentPrompt = initial_prompt;
-        $scope.terminal.set_prompt(initial_prompt + initial_prompt);
+        $scope.currentPrompt = INITIAL_PROMPT;
+        $scope.terminal.set_prompt(INITIAL_PROMPT);
       }
     }
-    /*if (output.slice(-1) == "\n") {
-      output = output.substring(0, output.length - 1);
-      var remainedToPrint = $scope.currentPrompt.substring(0, $scope.currentPrompt.length);
-      $scope.terminal.echo(remainedToPrint + output);      
-      $scope.terminal.set_prompt(initial_prompt);
-    } else {
-      $scope.currentPrompt += (output);
-      $scope.terminal.set_prompt($scope.currentPrompt + initial_prompt);
-    }*/
   }
 
-  function displayTerminal($scope) {
+  function displayTerminal() {
     $scope.terminal = $('#terminal').terminal(function(input, term) {
       // This function is called whenever the enter is hit.
       if (input == "") {
-        printToTerminal($scope, "\n", false);
+        printToTerminal("\n", false);
       } else {
         sendInput($scope, input);
       }
@@ -271,13 +311,13 @@ deeva.controller('SimpleController', function ($scope, $http) {
         greetings: "",
         height: 200,
         width: "100%",
-        prompt: initial_prompt,
+        prompt: INITIAL_PROMPT,
       }
     );
   }
 
-  function sendInput($scope, input) {
-    $scope.terminal.set_prompt(initial_prompt);
+  function sendInput(input) {
+    $scope.terminal.set_prompt(INITIAL_PROMPT);
     $http.post('input', input)
       .success(function(data) {
       })
@@ -286,13 +326,12 @@ deeva.controller('SimpleController', function ($scope, $http) {
     });
   }
 
-  function displayTagit($scope) {
+  function displayTagit() {
     //Use the function below to get all arguments
     //console.log($scope.arguments.tagit("assignedTags"));
     $scope.arguments = $("#arguments").tagit({
       allowDuplicates: true,
+      placeholderText: "Input argument(s) here"
     });
   }
-   
-
 });

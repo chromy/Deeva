@@ -1,15 +1,10 @@
 function main(all_variables){
- d3.select("#visual").remove();
+  d3.selectAll("#global_area").remove();
+  d3.selectAll("#heap").remove();
+  d3.selectAll("#stack").remove();
+
  var primitive_list = ["int", "char", "boolean", "byte", "float", "double", "long", "short"];
-/*
-   var all_variables = {"stack": [{type:"int", name:"x", value: "3"},
-                              {type:"char", name:"y", value: "z"},
-                              {type:"string", name:"bob", value: "bob"},
-                              {type:"int[]", name:"array", value: "[]"}
-                             ],
-                    "heap": []
-                   }
-*/
+
    var variables = all_variables.stack;
 
    var stack_td = d3.select("#stack_td");
@@ -34,8 +29,6 @@ function main(all_variables){
                                     .attr("class", "stackFrameHeader")
                                     .attr("id", "globals_header")
                                     .text("Main");
-
-
    
    var stackFrameTable = stackFrame.append("table")
                                    .attr("class", "stackFrameVarTable")
@@ -64,11 +57,15 @@ function main(all_variables){
 
    variableTr.append("td")
              .attr("class", "stackFrameValue")
+             .attr("id", function(d) {
+                    //TODO: must have different 
+                    return "stackFrameValue_" + d.name;
+             })
              .text(function(d){
                  if(primitive_list.indexOf(d.type) >= 0)
                     return d.value  
                  else{
-
+                   //connect_to_heap(d3.select(this)); 
                  }
               });
 
@@ -91,7 +88,7 @@ function main(all_variables){
    
    var heapRows = heap.selectAll("table")
                       .append("table")
-                      .data([1,2,3,4,5,6])
+                      .data([1])
                       .enter();
  
    heapRows.append("table")
@@ -117,11 +114,7 @@ function main(all_variables){
                         return "heap_object_" + i; 
                });
            
-  var heapRowObjectElemsSelect = 
-                  d3.select("#heap")
-                    .selectAll(".heapRow")
-                    .selectAll(".toplevelHeapObject")
-                    .selectAll(".heapObject");
+  var heapRowObjectElemsSelect = d3.selectAll(".heapObject");
  
   varheapObjectType = heapRowObjectElemsSelect.append("div")
                                               .attr("class", "typeLabel")
@@ -142,5 +135,19 @@ function main(all_variables){
   
   var objectEntriesSel = objectElementsSelection.select(".value");
   var objectEntriesIndiceSel = objectElementsSelection.select(".indice");
-  
+
+  /*
+  if ($("#stackFrameValue_j") && $("#stackFrameValue_s")) {
+  //TODO: Testing Plumber will need to be delete
+  //var one = jsPlumb.addEndpoint("stackFrameValue_j");
+  //var two = jsPlumb.addEndpoint("stackFrameValue_s");
+  var one = $("#stackFrameValue_j");
+  var two = $("#stackFrameValue_s");
+  jsPlumb.connect({scource:one,target:two,connector:[ "Bezier", { curviness:100 }]});
+  }*/
 }
+
+  function connect_to_heap(selection){
+     var new_div = selection.append("div");
+         new_div.text("aaaaaaaaaaaa");
+  }
