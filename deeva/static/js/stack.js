@@ -150,24 +150,10 @@ function main(all_variables){
   }*/
 
   function create_arrows(selection){
-    selection.append("div")
-             .attr("class", "_jsPlumb_endpoint")
-             .attr("style", "position: absolute")
-             .style("position", "absolute")
-             .style("height", "6px")
-             .style("width", "6px");
- 
    selection.append("svg")
             .attr("id", "arrow"); 
 
    var endpoints = selection.selectAll("._jsPlumb_endpoint");
-   endpoints.append("svg")
-            .style({position: "absolute", width: "6", height: "6" })
-            .attr("pointer-events", "none")
-            .attr("version", "1.1")
-            .attr("class", "_jsPlumb_connector")
-            .attr("xmlns", "http://www.w3.org/1999/xhtml");
-
    var svg_arrow = selection.selectAll("#arrow");
  
    jsPlumb.bind("ready", function(){
@@ -195,8 +181,4 @@ function main(all_variables){
                 });
       create_arrows(objects);
   }
-
-  function connect_to_heap(selection){
-     var new_div = selection.append("div");
-         new_div.text("aaaaaaaaaaaa");
- } }
+}
