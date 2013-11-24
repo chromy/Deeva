@@ -48,6 +48,7 @@ public class Debug extends EventHandlerBase {
     private Semaphore sema;
     private List<Map<String, String>> stack;
     private Map<Breakpoint, BreakpointRequest> breakpoints;
+    private LocatableEvent lastLocatableEvent;
 
     private StepRequest stepRequest;
 
@@ -84,6 +85,46 @@ public class Debug extends EventHandlerBase {
 	/* Pushes given string msg, on to the inQueue that will be fed
 	 * into the debuggee stdin */
 	this.inQueue.put(msg);
+    }
+
+    public Object getHeapObject(Long uniqueRefID, String refType) {
+	/* We can assume that the class would be loaded, since we're not
+	 * allowing arbitrary introspection */
+
+	/* If we're stopped we need to look at the last location, if we're not
+	 * stopped we need to ignore this or throw an exception. */
+
+	System.err.println("Printing Heap");
+        List<ReferenceType> matchingClasses = vm.classesByName(refType);
+	ObjectReference objectFound = null;
+
+	/* Go through each matching class and look for unique ID */
+	for (ReferenceType matchingClass : matchingClasses) {
+	    /* Go through all the instance of this class and look for the id */
+	    List<ObjectReference> instances = matchingClass.instances(0);
+	    for (ObjectReference instance : instances) {
+		if (instance.uniqueID() == uniqueRefID) {
+		    objectFound = instance;
+		    break;
+		}
+	    }
+
+	    if (objectFound != null) {
+		break;
+	    }
+	}
+
+	if (objectFound == null) {
+	    System.err.println("Can't find object with given ID, either class unloaded or wrong ID");
+	    return null;
+	}
+
+	/* If we find the object that we're looking for, switch on type of
+	 * object */ 
+	
+
+	System.err.println("Finished Printing Heap");
+	return null;
     }
 
     public List<Map<String, String>> getStack(LocatableEvent event)
@@ -181,7 +222,7 @@ public class Debug extends EventHandlerBase {
 	    /* Append the local variable to the end of the list (stack) */
 	    localVariables.add(varMap);
 	}
-
+	getHeapObject(null, null);
 	return localVariables;
     }
 
@@ -300,7 +341,9 @@ public class Debug extends EventHandlerBase {
     }
 
     public void locatableEvent(LocatableEvent e) {
-        line_number = e.location().lineNumber();
+        this.line_number = e.location().lineNumber();
+	/* Save the last locatable event, for heap inspection */
+	this.lastLocatableEvent = e;
     }
 
     @Override
