@@ -19,6 +19,7 @@ public class SimpleLoop {
       int l = 345;
       boolean m = true;
       String s = "Hello123";
+      System.out.println(s);
       SimpleLoop sl = new SimpleLoop();
       EnumTest et = EnumTest.SUNDAY;
       String[] hello = {"Felix is cool!", "Felix is way too cool!"};            //
@@ -26,6 +27,9 @@ public class SimpleLoop {
       for (int i=0; i<10; i++) {
         System.out.println("i = " + i);
       }
+
+      sl.testFunc();
+      System.out.println("We have reached the end of this `very' simple loop.");
   }
 
 }

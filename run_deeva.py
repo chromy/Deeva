@@ -29,6 +29,8 @@ def main(prog):
     findjava_script = os.path.join(deeva_cp, 'findjava.sh')
     jdi_cp = subprocess.check_output(findjava_script, shell=True).replace('\n', '')
     classpath = deeva_cp + ":" + jdi_cp
+
+    print deeva_cp, jdi_cp, classpath
     app.debugger = debug.create_java_debugger(classpath, prog)
 
     # Save the program name
