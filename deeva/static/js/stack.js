@@ -8,7 +8,7 @@ function main(all_variables){
    var stack_variables = all_variables.stack;
   // var heap_objects = all_variables.heap;
    var heap_objects = [1,2,3];
-       
+   var heap_objects_value = [[19,12,11],[],[11]];       
 
    var stack_td = d3.select("#stack_td");
    
@@ -90,93 +90,64 @@ function main(all_variables){
 
    function append_heap(heap_selection){
      var heap = heap_selection.append("div").attr("id", "heap");
-
      var heapHeader = heap.append("div")
                           .attr("id", "heapHeader")
                           .text("Objects");   
-        
+
+     // create a table row for each object   
      var heapRows = heap.selectAll("table")
+                        .data(heap_objects_value)
+                        .enter()
                         .append("table")
-                        .data(heap_objects)
-                        .enter();
+                        .attr("class", "heapRow");
 
-   heapRows.append("table")
-           .attr("class", "heapRow");
+     var heapRow = heapRows.append("td")
+                           .attr("class", "toplevelHeapObject")
+                           .attr("id", function(d,i){
+                              return "toplevel_heap_object_" + i; 
+                           });
 
-   var heapRow = d3.select("#heap")
-                   .selectAll(".heapRow")
-                   .append("td");
-
-   heapRow.attr("class", "toplevelHeapObject")
-          .attr("id", function(d,i){
-                        return "toplevel_heap_object_" + i; 
-          });
-
-   }
-/*
-   var heapHeader = heap.append("div")
-                        .attr("id", "heapHeader")
-                        .text("Objects");   
    
-   var heapRows = heap.selectAll("table")
-                      .append("table")
-                      .data([1])
-                      .enter();
- 
-   heapRows.append("table")
-           .attr("class", "heapRow");
-
-   var heapRow = d3.select("#heap")
-                   .selectAll(".heapRow")
-                   .append("td");
-
-   heapRow.attr("class", "toplevelHeapObject")
-          .attr("id", function(d,i){
-                        return "toplevel_heap_object_" + i; 
-          });
-*/
   // on heapRowObjects will all the JsPlumb be added !!!
-  var heapRowObject = d3.select("#heap")
-                        .selectAll(".heapRow")
-                        .selectAll(".toplevelHeapObject")
-                        .append("div");
-
-  heapRowObject.attr("class", "heapObject")
-               .attr("id", function(d,i){
-                        return "heap_object_" + i; 
-               });
+  var heapRowObject = heapRow.append("div")
+                             .attr("class", "heapObject")
+                             .attr("id", function(d,i){
+                                 return "heap_object_" + i; 
+                             });
            
-  var heapRowObjectElemsSelect = d3.selectAll(".heapObject");
+  var heapObjectType = heapRowObject.append("div")
+                                   .attr("class", "typeLabel")
+                                   .text(function(d,i){
+                                       return "label"+i;
+                                   });
  
-  varheapObjectType = heapRowObjectElemsSelect.append("div")
-                                              .attr("class", "typeLabel")
-                                              .text("label");
- 
-  var objectArray = heapRowObjectElemsSelect.append("table")
-                                            .attr("class", "array");
+  var objectArray = heapRowObject.append("table")
+                                 .attr("class", "array");
+
+  var objectArrayTable = objectArray.append("tbody");  
+  var indices = objectArrayTable.append("tr").attr("id", "indice");
+  var indices_entries = indices.selectAll("td")
+                               .data(function(d){
+                                   return d;
+                               })
+                               .enter()
+                               .append("td")
+                               .text(function(d,i){
+                                   return i;
+                               });
+  var values = objectArrayTable.append("tr").attr("id", "value");
+  var values_entries = values.selectAll("td")
+                               .data(function(d){
+                                   return d;
+                               })
+                               .enter()
+                               .append("td")
+                               .text(function(d,i){
+                                   return d;
+                               });
   
-  var objectArraySelection = heapRowObjectElemsSelect.selectAll("table")
-                                                     .append("tbody");
+}
 
-  var objectElementsSelection = heapRowObjectElemsSelect.selectAll("table")
-                                                        .select("tbody");
-
-  var objectEntries = objectElementsSelection.append("tr").attr("id", "value");
-  var objectEntriesIndice = objectElementsSelection.append("tr")
-                                                   .attr("id", "indice");
-  
-  var objectEntriesSel = objectElementsSelection.select(".value");
-  var objectEntriesIndiceSel = objectElementsSelection.select(".indice");
-
-  /*
-  if ($("#stackFrameValue_j") && $("#stackFrameValue_s")) {
-  //TODO: Testing Plumber will need to be delete
-  //var one = jsPlumb.addEndpoint("stackFrameValue_j");
-  //var two = jsPlumb.addEndpoint("stackFrameValue_s");
-  var one = $("#stackFrameValue_j");
-  var two = $("#stackFrameValue_s");
-  jsPlumb.connect({scource:one,target:two,connector:[ "Bezier", { curviness:100 }]});
-  }*/
 
   function create_arrows(selection){
    selection.append("svg")
