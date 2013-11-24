@@ -5,16 +5,27 @@ function main(all_variables){
 
  var primitive_list = ["int", "char", "boolean", "byte", "float", "double", "long", "short"];
 
-   var variables = all_variables.stack;
+   var stack_variables = all_variables.stack;
+  // var heap_objects = all_variables.heap;
+   var heap_objects = [1,2,3];
+       
 
    var stack_td = d3.select("#stack_td");
    
    var heap_td  = d3.select("#heap_td");
 
+//   append_global_stack();
+
+//   append_other_stacks();
+
+   append_heap(heap_td);
+
+
+
    var global_area = stack_td.append("div").attr("id", "global_area");
    var stack = stack_td.append("div").attr("id", "stack");
 
-   var heap = heap_td.append("div").attr("id", "heap");
+  // var heap = heap_td.append("div").attr("id", "heap");
 
    var stackHeader = global_area.append("div")
                                 .attr("id", "stackHeader")
@@ -35,10 +46,10 @@ function main(all_variables){
                                    .attr("id", "global_table");
    var stackFrameSel = d3.select(".stackFrameVarTable");
  
-   if(variables != null){
-   console.log(variables);
+   if(stack_variables != null){
+   console.log(stack_variables);
    var globalVariables = stackFrameSel.selectAll("tr")
-                                      .data(variables)
+                                      .data(stack_variables)
                                       .enter()
                                       .append("tr");
 
@@ -63,18 +74,10 @@ function main(all_variables){
              });
    var stackFrameValues = variableTr.selectAll(".stackFrameValue"); 
    populate_values(stackFrameValues);
-/*
-             .text(function(d){
-                 if(primitive_list.indexOf(d.type) >= 0)
-                    return d.value  
-                 else{
-                   //connect_to_heap(d3.select(this)); 
-                 }
-              });
-*/
+
    var stackFrames = stack.selectAll("div")
                           .append("div") 
-                          .data([1,2,3])
+                          .data([1])
                           .enter();
 
    stackFrames.append("div")
@@ -85,6 +88,32 @@ function main(all_variables){
 
    }
 
+   function append_heap(heap_selection){
+     var heap = heap_selection.append("div").attr("id", "heap");
+
+     var heapHeader = heap.append("div")
+                          .attr("id", "heapHeader")
+                          .text("Objects");   
+        
+     var heapRows = heap.selectAll("table")
+                        .append("table")
+                        .data(heap_objects)
+                        .enter();
+
+   heapRows.append("table")
+           .attr("class", "heapRow");
+
+   var heapRow = d3.select("#heap")
+                   .selectAll(".heapRow")
+                   .append("td");
+
+   heapRow.attr("class", "toplevelHeapObject")
+          .attr("id", function(d,i){
+                        return "toplevel_heap_object_" + i; 
+          });
+
+   }
+/*
    var heapHeader = heap.append("div")
                         .attr("id", "heapHeader")
                         .text("Objects");   
@@ -105,7 +134,7 @@ function main(all_variables){
           .attr("id", function(d,i){
                         return "toplevel_heap_object_" + i; 
           });
-
+*/
   // on heapRowObjects will all the JsPlumb be added !!!
   var heapRowObject = d3.select("#heap")
                         .selectAll(".heapRow")
