@@ -86,6 +86,21 @@ def push_stdin(count):
     app.debugger.putStdInMessage(str(count)+ '\nTesting123\n')
     return (count)
 
+@app.route("/getHeapObject")
+def get_heap_object():
+    args = request.get_json()
+    print args
+
+    unique_id = args.get('unique_id')
+    typestr = args.get('type_str')
+
+    # Need to check that the debugger is alive and is in stasis mode
+    # as this request is asynchronous
+
+    heap_object = app.debugger.getHeapObject(unique_id, typestr)
+    print heap_object
+    return jsonify(heap_object)
+
 @app.errorhandler(500)
 def page_not_found(error):
     import traceback
@@ -108,7 +123,7 @@ def make_api_response(f, *args, **kargs):
         st = result['stack']
 
         # Need to do some sort of recursive converter, so that we don't have
-        # maliciuos strings in Java that will kill our eval/repr etc
+        # malicious strings in Java that will kill our eval/repr etc
         result2 = {'state' : result['state'], 
                    'line_number' : result['line_number'], 
                    'stack' : eval(repr(st))}

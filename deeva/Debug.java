@@ -100,13 +100,15 @@ public class Debug extends EventHandlerBase {
 
 	/* Go through each matching class and look for unique ID */
 	for (ReferenceType matchingClass : matchingClasses) {
+	    System.err.println("Found class");
 	    /* Go through all the instance of this class and look for the id */
 	    List<ObjectReference> instances = matchingClass.instances(0);
-	    for (ObjectReference instance : instances) {
+	    for (ObjectReference instance : instances) {   
 		if (instance.uniqueID() == uniqueRefID) {
 		    objectFound = instance;
+		    System.err.println("Found instance! :D");
 		    break;
-		}
+		}		
 	    }
 
 	    if (objectFound != null) {
@@ -222,7 +224,7 @@ public class Debug extends EventHandlerBase {
 	    /* Append the local variable to the end of the list (stack) */
 	    localVariables.add(varMap);
 	}
-	getHeapObject(null, null);
+
 	return localVariables;
     }
 
