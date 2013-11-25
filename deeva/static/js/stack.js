@@ -1,3 +1,4 @@
+
 function main(all_variables){
   d3.selectAll("#global_area").remove();
   d3.selectAll("#heap").remove();
