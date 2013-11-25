@@ -6,10 +6,16 @@ function main(all_variables){
  var primitive_list = ["int", "char", "boolean", "byte", "float", "double", "long", "short"];
 
    var stack_variables = all_variables.stack;
-  // var heap_objects = all_variables.heap;
-   var heap_objects = [1,2,3];
-   var heap_objects_value = [[19,12,11],[],[11]];       
+   console.log(stack_variables);
+   var heap_objects = [{type: 'T', object_type: 'Object', unique_id: '786' }, {type: 'T', object_type: 'Object', unique_id: '686' },  {type: 'T', object_type: 'Array', unique_id: '86', array: [11,12,13,14]}, {type:'T', string:'aha', unique_id:'486', object_type: 'String'}]; 
+  console.log(heap_objects);
 
+  var arrays = filter_heap(heap_objects, 'Array');
+  var strings= filter_heap(heap_objects, 'String');
+  var objects = filter_heap(heap_objects, 'Object');
+
+   var arrows_id = [86];
+ 
    var stack_td = d3.select("#stack_td");
    
    var heap_td  = d3.select("#heap_td");
@@ -70,7 +76,10 @@ function main(all_variables){
              .attr("class", "stackFrameValue")
              .attr("id", function(d) {
                     //TODO: must have different 
-                    return "stackFrameValue_" + d.name;
+                    if(d.refID)
+                      return "stackFrameValue_heap_" + d.refID;
+                    else  
+                      return "stackFrameValue_" + d.name;
              });
    var stackFrameValues = variableTr.selectAll(".stackFrameValue"); 
    populate_values(stackFrameValues);
@@ -88,6 +97,7 @@ function main(all_variables){
 
    }
 
+  // Creates the heap and the objects in it.
    function append_heap(heap_selection){
      var heap = heap_selection.append("div").attr("id", "heap");
      var heapHeader = heap.append("div")
@@ -96,7 +106,7 @@ function main(all_variables){
 
      // create a table row for each object   
      var heapRows = heap.selectAll("table")
-                        .data(heap_objects_value)
+                        .data(heap_objects)
                         .enter()
                         .append("table")
                         .attr("class", "heapRow");
@@ -112,23 +122,29 @@ function main(all_variables){
   var heapRowObject = heapRow.append("div")
                              .attr("class", "heapObject")
                              .attr("id", function(d,i){
-                                 return "heap_object_" + i; 
+                                 return "heap_object_" + d.unique_id; 
                              });
            
   var heapObjectType = heapRowObject.append("div")
                                    .attr("class", "typeLabel")
                                    .text(function(d,i){
-                                       return "label"+i;
+                                       return d.object_type;
                                    });
  
+
   var objectArray = heapRowObject.append("table")
                                  .attr("class", "array");
-
+  
   var objectArrayTable = objectArray.append("tbody");  
   var indices = objectArrayTable.append("tr").attr("id", "indice");
   var indices_entries = indices.selectAll("td")
                                .data(function(d){
-                                   return d;
+                                   if(is_of_type(d, 'Array'))
+                                      return d.array;
+                                   if(is_of_type(d, 'String'))
+                                      return d.string;
+                                   if(is_of_type(d,'Object'))
+                                      return [];
                                })
                                .enter()
                                .append("td")
@@ -138,14 +154,18 @@ function main(all_variables){
   var values = objectArrayTable.append("tr").attr("id", "value");
   var values_entries = values.selectAll("td")
                                .data(function(d){
-                                   return d;
+                                   if(is_of_type(d, 'Array'))
+                                      return d.array;
+                                   if(is_of_type(d, 'String'))
+                                      return d.string;
+                                   if(is_of_type(d, 'Object'))
+                                      return [];
                                })
                                .enter()
                                .append("td")
                                .text(function(d,i){
-                                   return d;
+                                  return d;
                                });
-  
 }
 
 
@@ -157,11 +177,20 @@ function main(all_variables){
    var svg_arrow = selection.selectAll("#arrow");
  
    jsPlumb.bind("ready", function(){
-
-   var e0 = jsPlumb.addEndpoint("global_a_tr");
-   var e1 = jsPlumb.addEndpoint("global_b_tr");
-   
-   jsPlumb.connect({source: e0, target: e1});
+      jsPlumb.Defaults.Container = "heap_stack";
+      for(var i=0; i<arrows_id.length;i++){
+        var source = jsPlumb.addEndpoint("stackFrameValue_heap_"+arrows_id[i]); 
+        var target = jsPlumb.addEndpoint("heap_object_"+arrows_id[i]); 
+           
+        jsPlumb.connect({source: source, 
+                         target: target,
+                         anchor:[ "TopRight", "TopLeft"],
+                         paintStyle:{lineWidth:7,strokeStyle:'black'},
+                         endpointStype: { radius: 8},
+                         endpoint: "Circle",
+                         connector: "Straight"
+                        });
+      }
    });
   }
 
@@ -182,3 +211,16 @@ function main(all_variables){
       create_arrows(objects);
   }
 }
+
+/* Utility functions */
+
+ function filter_heap(heap_objects, type){ 
+   heap_objects.filter(function(d){
+      return d.object_type == type;
+    });
+ }
+
+ function is_of_type(heap_element, type){
+   return heap_element.object_type == type;
+ }
+

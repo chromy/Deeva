@@ -1,28 +1,25 @@
 Object
 {
-  'name' : <name>, # name of the variable, may not be essential, identify by id instead
   'type' : <type>, # Returns the actual type of the object, most probably fully qualified
-  'object_type' : <Object|Array|String>, # This distinguishes itself betweeen the three, no need to check the qualified type
+  'object_type' : Object, # This distinguishes itself betweeen the three, no need to check the qualified type
   'fields' : [<field>], # This won't be present if we're just getting an `overview' of the object
   'unique_id' : <unique_id> # The unique ID relating to the object, don't let this get too old, if the object tied to this key gets garbage collected, whatever we find may not be what we're looking for.
 }
 
 Array
 {
-  'name' : <name>, # Same as above
   'type' : <type>, # Same as above
   'component_type' : <component_type> # The type of the array elements, fully qualified java type
   'array' : [<array_object : <component_type>>], # Returns you `overview' descriptions of the array elements
-  'object_type' : <Object|Array|String>, # Same as above
+  'object_type' : Array, # Same as above
   'unique_id' : <unique_id>, # Same as above
   'length' : <length> # Specifies the length of the array
 }
 
 String
 {
-  'name' : <name>, # Same as above
   'type' : <type>, # Same as above
   'string' : <string>, # The actual string
   'unique_id' : <unique_id>, # Same as above
-  'object_type' : <Object|Array|String>, # Same as above
+  'object_type' : String, # Same as above
 }
