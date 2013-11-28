@@ -12,7 +12,7 @@ def index():
     except Exception as e:
         print "got something here"
 
-@app.route("/breakPoints", methods=['POST'])
+@app.route("/breakPoints", methods=['POST', 'GET'])
 def breakPoints():
     if request.method == 'POST':
         breakPoints = request.get_json()
@@ -23,7 +23,8 @@ def breakPoints():
         return jsonify(status='ok')
     else:
         bkpts = app.debugger.getBreakpoints()
-        return [{'clas':b.getClas(), 'line':b.getLineNumber()} for b in bkpts]
+        data = [{'clas':b.getClas(), 'line':b.getLineNumber()} for b in bkpts]
+        return jsonify(break_points=data)
 
 
 @app.route("/stepOver", methods=['POST'])
