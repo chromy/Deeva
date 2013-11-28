@@ -21,6 +21,10 @@ def breakPoints():
             # XXX: fix line numbers
             app.debugger.setBreakpoint('SimpleLoop', b+1)
         return jsonify(status='ok')
+    else:
+        bkpts = app.debugger.getBreakpoints()
+        return [{'clas':b.getClas(), 'line':b.getLineNumber()} for b in bkpts]
+
 
 @app.route("/stepOver", methods=['POST'])
 def step_over():
