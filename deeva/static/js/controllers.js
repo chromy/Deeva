@@ -352,7 +352,6 @@ deeva.controller('SimpleController', function ($scope, $http) {
   }
 
   $scope.loadFileOnPage = function(fileName) {
-      console.log("Im here");
       var tempFile = $scope.currentFileName;
       var index = $scope.javaFiles.indexOf(fileName);
       $scope.currentFileName = fileName;
