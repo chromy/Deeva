@@ -108,6 +108,12 @@ def page_not_found(error):
     print traceback.print_exc()
     return "500"
 
+# Sending list of files to the front end by JSon
+@app.route("/javaFiles.json")
+def javaFiles():
+    files =["HelloWorld.java", "Foo.java", "Main.java"]
+    return jsonify(javaFiles=files)
+
 def make_api_response(f, *args, **kargs):
     try:
         result = f(*args, **kargs)

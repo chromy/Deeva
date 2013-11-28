@@ -63,10 +63,22 @@
             <div type="image" class='myButtons' id='stepOverBtn' ng-disabled="!state.stepOverBtn" ng-click="clickButton('stepOver')" title="Next"></div>
             <div type="image" class='myButtons' id='stepIntoBtn' ng-disabled="!state.stepIntoBtn" ng-click="clickButton('stepInto')" title="Step Into"></div>
             <div type="image" class='myButtons' id='stepReturnBtn' ng-disabled="!state.stepReturnBtn" ng-click="clickButton('stepReturn')" title="Step Out"></div>
-          </div>
-        <ul class="nav nav-tabs">
+         </div>
+                
+            
+        <ul class="nav nav-tabs" id="tab_bar">
             <li class="myTabs active" data-toggle="tooltip" title="{{currentFileName}}"><a href="#" data-toggle="tab">{{currentFileName}}</a></li>
+            <div class="btn-group" id="openFileBtn">
+                <div type="image" id='openFile' class="dropdown-toggle" ng-click="getJavaFiles()" title="get more files" data-toggle="dropdown">+</div>
+                <ul class="dropdown-menu">
+                  <li ng-repeat="file in javaFiles">
+                    <a href="#">{{file}}</a>
+                    
+                  </li>
+                </ul>
+            </div>
         </ul>
+        
           <!-- Tab panes -->
         <div class="tab-content">
             <div class="tab-pane active" id="home">

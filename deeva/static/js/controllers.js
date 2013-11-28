@@ -21,6 +21,7 @@ deeva.controller('SimpleController', function ($scope, $http) {
                     "stepReturnBtn" : false};
 
   $scope.files = {};
+  $scope.javaFiles = {};
 
   init();
   displayCodeMirror();
@@ -334,4 +335,18 @@ deeva.controller('SimpleController', function ($scope, $http) {
       placeholderText: "Input argument(s) here"
     });
   }
+
+  $scope.getJavaFiles = function() {
+    $http.get('./javaFiles.json')
+      .success(function(data) {
+        if (!data.javaFiles) {
+          alert("Can not load file " + javaFiles);
+        }
+        $scope.javaFiles = data.javaFiles;
+        console.log($scope.javaFiles);
+      })
+      .error(function(status) {
+        console.log("There is an error getting files ");
+    });  
+  } 
 });
