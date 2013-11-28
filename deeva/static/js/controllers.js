@@ -27,6 +27,7 @@ deeva.controller('SimpleController', function ($scope, $http) {
   displayCodeMirror();
   displayTerminal();
   displayTagit();
+  getJavaFiles();
 
   $scope.clickButton = function(destination) {
     if (destination == "run") {
@@ -336,7 +337,7 @@ deeva.controller('SimpleController', function ($scope, $http) {
     });
   }
 
-  $scope.getJavaFiles = function() {
+  function getJavaFiles() {
     $http.get('./javaFiles.json')
       .success(function(data) {
         if (!data.javaFiles) {
@@ -348,5 +349,13 @@ deeva.controller('SimpleController', function ($scope, $http) {
       .error(function(status) {
         console.log("There is an error getting files ");
     });  
-  } 
+  }
+
+  $scope.loadFileOnPage = function(fileName) {
+      console.log("Im here");
+      var tempFile = $scope.currentFileName;
+      var index = $scope.javaFiles.indexOf(fileName);
+      $scope.currentFileName = fileName;
+      $scope.javaFiles[index] = tempFile;
+  }
 });
