@@ -75,7 +75,7 @@ def run():
 
 @app.route("/main_class.json")
 def get_main_class():
-    return get_code(app.program)
+    return get_code(app.program+".java")
 
 @app.route("/file/")
 def get_files():
@@ -84,7 +84,6 @@ def get_files():
 
 @app.route("/file/<name>.json")
 def get_code(name):
-    name = name + '.java'
     code = load(name)
     return jsonify(file_name=name, code=code)
 
