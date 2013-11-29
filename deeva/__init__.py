@@ -1,7 +1,8 @@
+import os
 from flask import Flask, jsonify, render_template, request, g, make_response, redirect, url_for
 import debug
 from debug import load, WrongState, in_queue
-import os
+from search import get_source_files
 
 app = Flask('deeva')
 
@@ -76,6 +77,11 @@ def run():
 def get_main_class():
     return get_code(app.program)
 
+@app.route("/file/")
+def get_files():
+    files = get_source_files(os.getcwd())
+    return jsonify(files=files)
+
 @app.route("/file/<name>.json")
 def get_code(name):
     name = name + '.java'
@@ -112,12 +118,6 @@ def page_not_found(error):
     print 'Error:', error
     print traceback.print_exc()
     return "500"
-
-# Sending list of files to the front end by JSon
-@app.route("/javaFiles.json")
-def javaFiles():
-    files =["HelloWorld.java", "Foo.java", "Main.java"]
-    return jsonify(javaFiles=files)
 
 def make_api_response(f, *args, **kargs):
     try:

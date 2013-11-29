@@ -21,13 +21,13 @@ deeva.controller('SimpleController', function ($scope, $http) {
                     "stepReturnBtn" : false};
 
   $scope.files = {};
-  $scope.javaFiles = {};
+  $scope.sourceFiles = {};
 
   init();
   displayCodeMirror();
   displayTerminal();
   displayTagit();
-  getJavaFiles();
+  getSourceFiles();
 
   $scope.clickButton = function(destination) {
     if (destination == "run") {
@@ -337,14 +337,14 @@ deeva.controller('SimpleController', function ($scope, $http) {
     });
   }
 
-  function getJavaFiles() {
-    $http.get('./javaFiles.json')
+  function getSourceFiles() {
+    $http.get('./file/')
       .success(function(data) {
-        if (!data.javaFiles) {
-          alert("Can not load file " + javaFiles);
+        if (!data.files) {
+          console.error("Server did not return files.");
         }
-        $scope.javaFiles = data.javaFiles;
-        console.log($scope.javaFiles);
+        $scope.sourceFiles = data.files;
+        console.log($scope.sourceFiles);
       })
       .error(function(status) {
         console.log("There is an error getting files ");
@@ -353,8 +353,8 @@ deeva.controller('SimpleController', function ($scope, $http) {
 
   $scope.loadFileOnPage = function(fileName) {
       var tempFile = $scope.currentFileName;
-      var index = $scope.javaFiles.indexOf(fileName);
+      var index = $scope.sourceFiles.indexOf(fileName);
       $scope.currentFileName = fileName;
-      $scope.javaFiles[index] = tempFile;
+      $scope.sourceFiles[index] = tempFile;
   }
 });
