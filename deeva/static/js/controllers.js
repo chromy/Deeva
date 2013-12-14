@@ -361,6 +361,8 @@ deeva.controller('SimpleController', function ($scope, $http) {
           console.error("Server did not return files.");
         }
         $scope.sourceFiles = data.files;
+        //var index = $scope.sourceFiles.indexOf(data.file_name);
+        //$scope.sourceFiles.splice(index, 1);
         console.log($scope.sourceFiles);
         // XXX: Change to load on damand
         for (i=0; i<data.files.length; i++) {
@@ -368,6 +370,7 @@ deeva.controller('SimpleController', function ($scope, $http) {
             var file = data.files[i];
             getFile(file);
         }
+        $scope.tabWidth = $scope.cmMaxWidth/Object.keys($scope.sourceFiles).length;
       })
       .error(function(status) {
         console.log("There is an error getting files ");
@@ -375,8 +378,14 @@ deeva.controller('SimpleController', function ($scope, $http) {
   }
 
   $scope.loadFileOnPage = function(fileName) {
-      var tempFile = $scope.currentFileName;
-      var index = $scope.sourceFiles.indexOf(fileName);
       $scope.currentFileName = fileName;
+      console.log($scope.tabWidth);
   };
+
+  //$scope.loadFileOnPage = function(fileName) {
+  //    var tempFile = $scope.currentFileName;
+  //    var index = $scope.sourceFiles.indexOf(fileName);
+  //    $scope.currentFileName = fileName;
+  //    $scope.sourceFiles[index] = tempFile;
+ // };
 });
