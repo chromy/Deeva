@@ -7,8 +7,7 @@ import com.sun.jdi.connect.LaunchingConnector;
 import com.sun.jdi.connect.VMStartException;
 import com.sun.jdi.event.*;
 import com.sun.jdi.request.*;
-import deeva.processor.OverviewProcessor;
-import sun.jvm.hotspot.asm.sparc.SPARCV9FMOVrInstruction;
+import deeva.processor.ValueProcessor;
 
 import java.io.IOException;
 import java.util.*;
@@ -145,7 +144,7 @@ public class Debug extends EventHandlerBase {
             System.err.println("Type: " + type.name());
 
             /* Get an overview for the variable */
-            Map<String, String> varMap = OverviewProcessor.processVariable(var, variableValue);
+            Map<String, String> varMap = ValueProcessor.processVariable(var, variableValue);
             localVariables.add(varMap);
         }
 

@@ -8,8 +8,8 @@ import com.sun.jdi.event.*;
 public class EventHandlerBase implements EventHandler {
 
     public void handleEvent(Event event)
-	throws IncompatibleThreadStateException, AbsentInformationException, 
-	       ClassNotLoadedException 
+            throws IncompatibleThreadStateException, AbsentInformationException,
+            ClassNotLoadedException
     {
         if (event instanceof ExceptionEvent) {
             exceptionEvent((ExceptionEvent)event);
@@ -43,12 +43,12 @@ public class EventHandlerBase implements EventHandler {
     public void fieldWatchEvent(ModificationWatchpointEvent event) {}
     public void methodEntryEvent(MethodEntryEvent event) {}
     public void methodExitEvent(MethodExitEvent event) {}
-    public void stepEvent(StepEvent event) throws 
-	IncompatibleThreadStateException, AbsentInformationException, 
-	ClassNotLoadedException {}
+    public void stepEvent(StepEvent event) throws
+            IncompatibleThreadStateException, AbsentInformationException,
+            ClassNotLoadedException {}
     public void breakpointEvent(BreakpointEvent event) throws ClassNotLoadedException, AbsentInformationException, IncompatibleThreadStateException {
-	// when we get a breakpoint event what does one do?
-	System.out.println("We have a breakpoint.");
+        // when we get a breakpoint event what does one do?
+        System.out.println("We have a breakpoint.");
     }
     public void threadDeathEvent(ThreadDeathEvent event) {}
     public void classPrepareEvent(ClassPrepareEvent event) {}

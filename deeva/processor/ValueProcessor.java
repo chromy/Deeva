@@ -3,25 +3,27 @@ package deeva.processor;
 import com.sun.jdi.*;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
-public class OverviewProcessor {
+public class ValueProcessor {
     public static Map<String, String> processVariable(LocalVariable localVariable, Value variableValue) {
         if (localVariable == null) {
             return null;
         }
-        
+
         Map<String, String> localVarMap = new HashMap<String, String>();
         localVarMap.put("name", localVariable.name());
 
         /* Now process the actual variable value */
-        Map<String, String> varMapOverview = OverviewProcessor.processValue(variableValue);
+        Map<String, String> varMapOverview = ValueProcessor.processValue(variableValue, ProcessDepth.OVERVIEW);
         localVarMap.putAll(varMapOverview);
 
         return localVarMap;
     }
 
-    public static Map<String, String> processValue(Value variableValue) {
+    public static Map<String, String> processValue(Value variableValue, ProcessDepth processDepth) {
         Map<String, String> varMap = new HashMap<String, String>();
 
         Type valueType = variableValue.type();
@@ -29,28 +31,28 @@ public class OverviewProcessor {
 
         /* We deal with primitive types */
         if (valueType instanceof IntegerType) {
-            Integer value = ((IntegerValue)variableValue).value();
+            Integer value = ((IntegerValue) variableValue).value();
             varMap.put("value", value.toString());
         } else if (valueType instanceof BooleanType) {
-            Boolean value = ((BooleanValue)variableValue).value();
+            Boolean value = ((BooleanValue) variableValue).value();
             varMap.put("value", value.toString());
         } else if (valueType instanceof ByteType) {
-            Byte value = ((ByteValue)variableValue).value();
+            Byte value = ((ByteValue) variableValue).value();
             varMap.put("value", value.toString());
         } else if (valueType instanceof CharType) {
-            Character value = ((CharValue)variableValue).value();
+            Character value = ((CharValue) variableValue).value();
             varMap.put("value", value.toString());
         } else if (valueType instanceof DoubleType) {
-            Double value = ((DoubleValue)variableValue).value();
+            Double value = ((DoubleValue) variableValue).value();
             varMap.put("value", value.toString());
         } else if (valueType instanceof FloatType) {
-            Float value = ((FloatValue)variableValue).value();
+            Float value = ((FloatValue) variableValue).value();
             varMap.put("value", value.toString());
         } else if (valueType instanceof LongType) {
-            Long value = ((LongValue)variableValue).value();
+            Long value = ((LongValue) variableValue).value();
             varMap.put("value", value.toString());
         } else if (valueType instanceof ShortType) {
-            Short value = ((ShortValue)variableValue).value();
+            Short value = ((ShortValue) variableValue).value();
             varMap.put("value", value.toString());
         } else if (valueType instanceof VoidType) {
             varMap.put("value", "void");
@@ -80,6 +82,28 @@ public class OverviewProcessor {
                 /* Get the length */
                 Integer length = arrRef.length();
                 varMap.put("length", length.toString());
+
+                /* If we're inspecting a single depth then get the overview of
+                   each element in the array */
+
+                if (processDepth.equals(ProcessDepth.SINGLE_DEPTH)) {
+                    List<Map<String, String>> arrayList = new
+                            LinkedList<Map<String, String>>();
+
+                    List<Value> arrRefList = arrRef.getValues();
+
+                    /* Get overview of each of the values */
+                    for (Value val : arrRefList) {
+                        arrayList.add(ValueProcessor.processValue(val,
+                                ProcessDepth.OVERVIEW));
+                    }
+                }
+
+            } else if (processDepth.equals(ProcessDepth.SINGLE_DEPTH)) {
+                /*  We're just some object, with fields and methods that we wish
+                    to explore n.b. single_depth */
+                ClassType classType = (ClassType) objRef.type();
+                
             }
         }
 
