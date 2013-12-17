@@ -6,6 +6,7 @@ var CHS_PER_LINE = 80;
 // Currently is a whole document controller
 deeva.controller('SimpleController', function ($scope, $http) {
   $scope.currentLine = -1;
+  $scope.currentFileName = "";
   $scope.breakPoints = new Array();
   $scope.showStdIn = true;
   $scope.showArguments = true;
@@ -21,11 +22,13 @@ deeva.controller('SimpleController', function ($scope, $http) {
                     "stepReturnBtn" : false};
 
   $scope.files = {};
+  $scope.sourceFiles = {};
 
   init();
   displayCodeMirror();
   displayTerminal();
   displayTagit();
+  getSourceFiles();
 
   $scope.clickButton = function(destination) {
     if (destination == "run") {
@@ -73,6 +76,23 @@ deeva.controller('SimpleController', function ($scope, $http) {
         $scope.codeMirror.addLineClass(currentLine, 'background', BACK_CLASS);
     }
   });
+
+  $scope.$watch('currentFileName', function (currentFile, prevFile) {
+    if (currentFile === "") {
+        return;
+    }
+    console.log("Switching to: " + currentFile);
+    if ($scope.files[currentFile]) {
+        codeMirrorSwapTo(currentFile);
+    } else {
+        console.error("File " + currentFile + " not loaded.");
+        console.error($scope.files);
+    }
+  });
+
+  function codeMirrorSwapTo(fileName) {
+    $scope.codeMirror.swapDoc($scope.files[fileName].code);
+  }
 
   function setCurrentState(state) {
     $scope.currentState = state;
@@ -140,6 +160,7 @@ deeva.controller('SimpleController', function ($scope, $http) {
 
   // Invoke a GET method to ask for Java code.
   function displayCodeMirror() {
+    setUpCodeMirror();
     $http.get('./main_class.json')
       .success(function(data) {
         if (!data.file_name) {
@@ -147,15 +168,13 @@ deeva.controller('SimpleController', function ($scope, $http) {
         }
         if (!data.code) {
           data.code = ["There is an error getting main class code"];
-        }
-        $scope.currentFileName = data.file_name;
+        };
         $scope.files[data.file_name] = {"code" : CodeMirror.Doc(data.code.join(''), 'text/x-java')};
-        setUpCodeMirror();
-        $scope.codeMirror.swapDoc($scope.files[data.file_name].code);
+        console.log(data.file_name);
+        $scope.currentFileName = data.file_name;
       })
       .error(function(status) {
         console.log("There is an error main class");
-        setUpCodeMirror();
     });
   }
 
@@ -172,7 +191,7 @@ deeva.controller('SimpleController', function ($scope, $http) {
         if (!data.code) {
           data.code = ["There is an error getting code"];
         }
-        $scope.files[fileName] = CodeMirror.Doc(data.code.join(''), 'text/x-java');
+        $scope.files[fileName] = {'code':CodeMirror.Doc(data.code.join(''), 'text/x-java')};
       })
       .error(function(status) {
         console.log("There is an error getting file " + fileName);
@@ -334,4 +353,39 @@ deeva.controller('SimpleController', function ($scope, $http) {
       placeholderText: "Input argument(s) here"
     });
   }
+
+  function getSourceFiles() {
+    $http.get('./file/')
+      .success(function(data) {
+        if (!data.files) {
+          console.error("Server did not return files.");
+        }
+        $scope.sourceFiles = data.files;
+        //var index = $scope.sourceFiles.indexOf(data.file_name);
+        //$scope.sourceFiles.splice(index, 1);
+        console.log($scope.sourceFiles);
+        // XXX: Change to load on damand
+        for (i=0; i<data.files.length; i++) {
+            // XXX: hack
+            var file = data.files[i];
+            getFile(file);
+        }
+        $scope.tabWidth = $scope.cmMaxWidth/Object.keys($scope.sourceFiles).length;
+      })
+      .error(function(status) {
+        console.log("There is an error getting files ");
+    });
+  }
+
+  $scope.loadFileOnPage = function(fileName) {
+      $scope.currentFileName = fileName;
+      console.log($scope.tabWidth);
+  };
+
+  //$scope.loadFileOnPage = function(fileName) {
+  //    var tempFile = $scope.currentFileName;
+  //    var index = $scope.sourceFiles.indexOf(fileName);
+  //    $scope.currentFileName = fileName;
+  //    $scope.sourceFiles[index] = tempFile;
+ // };
 });

@@ -1,8 +1,10 @@
+import os
 from flask import Flask, jsonify, render_template, request, g, make_response, redirect, url_for
 import debug
 from debug import load, WrongState, in_queue
 import os
 import pprint
+from search import get_source_files
 
 app = Flask('deeva')
 
@@ -13,7 +15,7 @@ def index():
     except Exception as e:
         print "got something here"
 
-@app.route("/breakPoints", methods=['POST'])
+@app.route("/breakPoints", methods=['POST', 'GET'])
 def breakPoints():
     if request.method == 'POST':
         breakPoints = request.get_json()
@@ -22,6 +24,11 @@ def breakPoints():
             # XXX: fix line numbers
             app.debugger.setBreakpoint('SimpleLoop', b+1)
         return jsonify(status='ok')
+    else:
+        bkpts = app.debugger.getBreakpoints()
+        data = [{'clas':b.getClas(), 'line':b.getLineNumber()} for b in bkpts]
+        return jsonify(break_points=data)
+
 
 @app.route("/stepOver", methods=['POST'])
 def step_over():
@@ -70,11 +77,15 @@ def run():
 
 @app.route("/main_class.json")
 def get_main_class():
-    return get_code(app.program)
+    return get_code(app.program+".java")
+
+@app.route("/file/")
+def get_files():
+    files = get_source_files(os.getcwd())
+    return jsonify(files=files)
 
 @app.route("/file/<name>.json")
 def get_code(name):
-    name = name + '.java'
     code = load(name)
     return jsonify(file_name=name, code=code)
 

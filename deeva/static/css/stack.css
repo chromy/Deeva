@@ -32,10 +32,26 @@
  
 }
 
-.stackFrame{
-
+.stackFrameVar{
+ font-size: 22px;
 }
+
 #heap{
  padding-top:50px;
 }
+#indice td, #value td{
+  min-width: 30px;
+  border: 1px solid black;
+  text-align: center;
+  background-color: yellow;
+}
 
+#indice {
+  min-height: 10px;
+  font-size: 10px;
+}
+
+#value{
+  min-height: 22px;
+  font-size: 22px;
+}
