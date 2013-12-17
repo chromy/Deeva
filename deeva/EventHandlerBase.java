@@ -1,11 +1,9 @@
 package deeva;
 
-import com.sun.jdi.*;
-import com.sun.jdi.connect.*;
-import com.sun.jdi.request.*;
+import com.sun.jdi.AbsentInformationException;
+import com.sun.jdi.ClassNotLoadedException;
+import com.sun.jdi.IncompatibleThreadStateException;
 import com.sun.jdi.event.*;
-
-import deeva.EventHandler;
 
 public class EventHandlerBase implements EventHandler {
 
