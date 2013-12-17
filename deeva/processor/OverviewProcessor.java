@@ -76,6 +76,10 @@ public class OverviewProcessor {
                 /* Get the component type */
                 ArrayType arrType = (ArrayType) arrRef.type();
                 varMap.put("component_type", arrType.componentTypeName());
+
+                /* Get the length */
+                Integer length = arrRef.length();
+                varMap.put("length", length.toString());
             }
         }
 
