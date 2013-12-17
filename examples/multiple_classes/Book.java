@@ -1,4 +1,4 @@
-package multiple_classes;
+package examples.multiple_classes;
 
 public class Book {
     private double DEFAULT_PRICE;

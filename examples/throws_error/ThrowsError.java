@@ -1,3 +1,5 @@
+package examples.throws_error;
+
 public class ThrowsError {
 
     public static void throwAnError() {

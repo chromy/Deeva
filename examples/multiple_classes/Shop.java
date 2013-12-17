@@ -1,4 +1,4 @@
-package multiple_classes;
+package examples.multiple_classes;
 
 public class Shop {
     public static void main(String args[]) {

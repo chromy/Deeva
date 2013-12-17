@@ -1,3 +1,5 @@
+package examples.simpleloop;
+
 public class SimpleLoop {
     int field_int;
     boolean field_bool;

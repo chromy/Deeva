@@ -1,3 +1,5 @@
+package examples.demo;
+
 public class Demo {
 
     public static int add(int a, int b) {
