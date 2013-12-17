@@ -2,12 +2,13 @@ from flask import Flask, jsonify, render_template, request, g, make_response, re
 import debug
 from debug import load, WrongState, in_queue
 import os
+import pprint
 
 app = Flask('deeva')
 
 @app.route("/")
 def index():
-    try: 
+    try:
         return app.send_static_file('index.html')
     except Exception as e:
         print "got something here"
@@ -62,10 +63,10 @@ def run():
         if app.debugger.getStateName() == "NO_INFERIOR":
             print 'Starting program...'
             app.debugger.start(app.program)
-            return make_api_response(app.debugger.run)
         else:
             print 'Continuing program...'
-            return make_api_response(app.debugger.run)
+
+        return make_api_response(app.debugger.run)
 
 @app.route("/main_class.json")
 def get_main_class():
@@ -124,8 +125,8 @@ def make_api_response(f, *args, **kargs):
 
         # Need to do some sort of recursive converter, so that we don't have
         # malicious strings in Java that will kill our eval/repr etc
-        result2 = {'state' : result['state'], 
-                   'line_number' : result['line_number'], 
+        result2 = {'state' : result['state'],
+                   'line_number' : result['line_number'],
                    'stack' : eval(repr(st))}
-        print result2['stack'], "stack"
-        return jsonify(status='ok', stdout=stdout, stderr=stderr, **result2) 
+        pprint.pprint(result2['stack']);
+        return jsonify(status='ok', stdout=stdout, stderr=stderr, **result2)

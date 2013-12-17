@@ -46,7 +46,7 @@ public class EventHandlerBase implements EventHandler {
     public void stepEvent(StepEvent event) throws 
 	IncompatibleThreadStateException, AbsentInformationException, 
 	ClassNotLoadedException {}
-    public void breakpointEvent(BreakpointEvent event) {
+    public void breakpointEvent(BreakpointEvent event) throws ClassNotLoadedException, AbsentInformationException, IncompatibleThreadStateException {
 	// when we get a breakpoint event what does one do?
 	System.out.println("We have a breakpoint.");
     }

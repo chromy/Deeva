@@ -7,6 +7,8 @@ import com.sun.jdi.connect.LaunchingConnector;
 import com.sun.jdi.connect.VMStartException;
 import com.sun.jdi.event.*;
 import com.sun.jdi.request.*;
+import deeva.processor.OverviewProcessor;
+import sun.jvm.hotspot.asm.sparc.SPARCV9FMOVrInstruction;
 
 import java.io.IOException;
 import java.util.*;
@@ -134,80 +136,16 @@ public class Debug extends EventHandlerBase {
 
         /* List all the variables on the stack */
         for (LocalVariable var : stackFrame.visibleVariables()) {
-            Map<String, String> varMap = new HashMap<String, String>();
-
             String name = var.name();
             Type type = var.type();
-            String typeString = var.typeName();
+
             Value variableValue = stackFrame.getValue(var);
             System.err.println("-------------");
             System.err.println("Name: " + name);
-            System.err.println("Type: " + typeString);
-            System.err.println("ValueType: " + variableValue.type());
-            Type valueType = variableValue.type();
+            System.err.println("Type: " + type.name());
 
-            /* Insert local variable meta into a map that will get converted later */
-            varMap.put("name", var.name());
-            varMap.put("type", typeString);
-
-            if (valueType instanceof IntegerType) {
-                System.err.println("Value: " + ((IntegerValue)variableValue).value());
-                Integer value = ((IntegerValue)variableValue).value();
-                varMap.put("value", value.toString());
-            } else if (valueType instanceof BooleanType) {
-                System.err.println("Value: " + ((BooleanValue)variableValue).value());
-                Boolean value = new Boolean(((BooleanValue)variableValue).value());
-                varMap.put("value", value.toString());
-            } else if (valueType instanceof ByteType) {
-                System.err.println("Value: " + ((ByteValue)variableValue).value());
-                Byte value = new Byte(((ByteValue)variableValue).value());
-                varMap.put("value", value.toString());
-            } else if (valueType instanceof CharType) {
-                System.err.println("Value: " + ((CharValue)variableValue).value());
-                Character value = new Character(((CharValue)variableValue).value());
-                varMap.put("value", value.toString());
-            } else if (valueType instanceof DoubleType) {
-                System.err.println("Value: " + ((DoubleValue)variableValue).value());
-                Double value = new Double(((DoubleValue)variableValue).value());
-                varMap.put("value", value.toString());
-            } else if (valueType instanceof FloatType) {
-                System.err.println("Value: " + ((FloatValue)variableValue).value());
-                Float value = new Float(((FloatValue)variableValue).value());
-                varMap.put("value", value.toString());
-            } else if (valueType instanceof LongType) {
-                System.err.println("Value: " + ((LongValue)variableValue).value());
-                Long value = new Long(((LongValue)variableValue).value());
-                varMap.put("value", value.toString());
-            } else if (valueType instanceof ShortType) {
-                System.err.println("Value: " + ((ShortValue)variableValue).value());
-                Short value = new Short(((ShortValue)variableValue).value());
-                varMap.put("value", value.toString());
-            } else if (valueType instanceof VoidType) {
-                System.err.println("Value: void");
-                varMap.put("value", "void");
-            }
-
-        /* Let's deal with Object references */
-            else if (variableValue instanceof ObjectReference) {
-        /* This is guaranteed to be unique iff the object hasn't been
-         * disposed of. Not too sure what the implications of this is
-         * for us. */
-                Long uniqueID = ((ObjectReference)variableValue).uniqueID();
-                System.err.println("UniqueID: " + uniqueID);
-                varMap.put("refID", uniqueID.toString());
-
-                if (variableValue instanceof StringReference) {
-                    varMap.put("value", ((StringReference)variableValue).value());
-                } else if (variableValue instanceof ArrayReference) {
-                    Integer length = ((ArrayReference)variableValue).length();
-                    varMap.put("length", length.toString());
-                    ArrayType arrType = (ArrayType)valueType;
-                    System.err.println("length: " + length);
-                    System.err.println("component type: " + arrType.componentTypeName());
-                }
-            }
-
-            /* Append the local variable to the end of the list (stack) */
+            /* Get an overview for the variable */
+            Map<String, String> varMap = OverviewProcessor.processVariable(var, variableValue);
             localVariables.add(varMap);
         }
 
@@ -330,7 +268,7 @@ public class Debug extends EventHandlerBase {
 
     public void locatableEvent(LocatableEvent e) {
         this.line_number = e.location().lineNumber();
-    /* Save the last locatable event, for heap inspection */
+        /* Save the last locatable event, for heap inspection */
         this.lastLocatableEvent = e;
     }
 
@@ -400,7 +338,7 @@ public class Debug extends EventHandlerBase {
     }
 
     @Override
-    public void breakpointEvent(BreakpointEvent event) {
+    public void breakpointEvent(BreakpointEvent event) throws ClassNotLoadedException, AbsentInformationException, IncompatibleThreadStateException {
         System.err.println(event.location().method() + "@" + event.location().lineNumber());
         // XXX: What to do on step?
         //if (stepRequest != null) {
@@ -412,6 +350,7 @@ public class Debug extends EventHandlerBase {
         /* Try to extract the stack variables */
 
         state = State.STASIS;
+        stack = getStack(event);
         sema.release();
     }
 
