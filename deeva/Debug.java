@@ -8,7 +8,6 @@ import com.sun.jdi.connect.VMStartException;
 import com.sun.jdi.event.*;
 import com.sun.jdi.request.*;
 import deeva.processor.OverviewProcessor;
-import sun.jvm.hotspot.asm.sparc.SPARCV9FMOVrInstruction;
 
 import java.io.IOException;
 import java.util.*;
