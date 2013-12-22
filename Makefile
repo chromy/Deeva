@@ -9,8 +9,7 @@ all: build build_examples
 
 build:
 	test $(TOOL_JAR_PATH) || test -f $(TOOL_JAR_PATH)
-	cd deeva; javac *.java -classpath $(CLASS_PATH)
-	cd deeva/processor; javac *.java -classpath $(CLASS_PATH)
+	javac deeva/*.java deeva/processor/*.java -classpath $(CLASS_PATH)
 
 build_examples:
 	 $(MAKE) -C examples
