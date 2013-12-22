@@ -20,7 +20,7 @@ def config(app):
     app.config['OPEN_BROWSER'] = bool_arg(os.environ.get('DEEVA_OPEN_BROWSER', 'True'))
     app.config['TESTING'] = bool_arg(os.environ.get('DEEVA_TESTING', 'False'))
 
-def main(prog):
+def main(prog, cp):
     # Read config vars
     config(app)
 
@@ -46,7 +46,13 @@ def main(prog):
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument("prog", help="the program you want to debug")
+    parser.add_argument("class", help="Path to the java class you want to debug")
+    parser.add_argument("-cp", help="Java Class path")
+    parser.add_argument("--source_cp", help="Path to the source files, in classpath format, default is the current directory",
+                        default=".")
     args = parser.parse_args()
-    main(args.prog)
+    if not args.cp:
+        args.cp = "."
+
+    main(args.prog, args.cp)
 

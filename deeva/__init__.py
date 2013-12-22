@@ -69,6 +69,7 @@ def run():
     if request.method == 'POST':
         if app.debugger.getStateName() == "NO_INFERIOR":
             print 'Starting program...'
+            # TODO Pass in the actual class path to the *debuggee program* here
             app.debugger.start(app.program)
         else:
             print 'Continuing program...'

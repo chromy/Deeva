@@ -103,7 +103,7 @@ public class ValueProcessor {
                 /*  We're just some object, with fields and methods that we wish
                     to explore n.b. single_depth */
                 ClassType classType = (ClassType) objRef.type();
-                
+
             }
         }
 

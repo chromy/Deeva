@@ -65,10 +65,6 @@ def create_java_debugger(classpath, prog):
                               auto_field=True,
                               start_callback_server=True)
 
-# TODO It's old stuff
-#	out_queue = ResponseQueue()
-#        debugger = JavaProxy(gateway.jvm.deeva.Debug(out_queue))
-
         debugger = JavaProxy(gateway.jvm.deeva.Debug(out_queue, in_queue))
         debugger.start(prog)
 
