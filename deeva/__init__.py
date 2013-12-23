@@ -97,7 +97,7 @@ def get_state():
 @app.route("/pushStdIn/<count>")
 def push_stdin(count):
     app.debugger.putStdInMessage(str(count)+ '\nTesting123\n')
-    return (count)
+    return count
 
 @app.route("/getHeapObject")
 def get_heap_object():

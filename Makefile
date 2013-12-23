@@ -36,4 +36,4 @@ coverage:
 	nosetests --with-coverage --cover-package=deeva
 
 clean:
-	rm -f deeva/*.class
+	rm -f deeva/*.class deeva/processor/*.class deeva/utils/*.class

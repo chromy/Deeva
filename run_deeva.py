@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 
-import os, webbrowser, subprocess 
+import os, webbrowser, subprocess
 from deeva import app, debug
 
 class ConfigError(Exception):
@@ -46,7 +46,7 @@ def main(prog, cp):
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument("class", help="Path to the java class you want to debug")
+    parser.add_argument("java_class", help="Path to the java class you want to debug")
     parser.add_argument("-cp", help="Java Class path")
     parser.add_argument("--source_cp", help="Path to the source files, in classpath format, default is the current directory",
                         default=".")
@@ -54,5 +54,4 @@ if __name__ == "__main__":
     if not args.cp:
         args.cp = "."
 
-    main(args.prog, args.cp)
-
+    main(args.java_class, args.cp)

@@ -58,11 +58,16 @@ public class Debug extends EventHandlerBase {
         EventThread eventThread = new EventThread(vm, excludes, this);
         eventThread.start();
         redirectOutput();
+
         state = State.STASIS;
 
         EventRequestManager reqMgr = getRequestManager();
         ClassPrepareRequest prepareRequest = reqMgr.createClassPrepareRequest();
-        for (String ex : excludes) { prepareRequest.addClassExclusionFilter (ex); }
+
+        for (String ex : excludes) {
+            prepareRequest.addClassExclusionFilter (ex);
+        }
+
         prepareRequest.setSuspendPolicy(EventRequest.SUSPEND_ALL);    // suspend so we can examine vars
         prepareRequest.enable();
 
@@ -111,10 +116,6 @@ public class Debug extends EventHandlerBase {
             return null;
         }
 
-        /* If we find the object that we're looking for, switch on type of
-        * object */
-
-        System.err.println("Finished Printing Heap");
         return null;
     }
 
@@ -418,6 +419,7 @@ public class Debug extends EventHandlerBase {
         LaunchingConnector connector = findLaunchingConnector();
         Map<String, Connector.Argument> arguments = connectorArguments(connector, mainArgs);
         System.out.println("launch");
+        
         try {
             return connector.launch(arguments);
         } catch (IOException exc) {
