@@ -419,7 +419,7 @@ public class Debug extends EventHandlerBase {
         LaunchingConnector connector = findLaunchingConnector();
         Map<String, Connector.Argument> arguments = connectorArguments(connector, mainArgs);
         System.out.println("launch");
-        
+
         try {
             return connector.launch(arguments);
         } catch (IOException exc) {
