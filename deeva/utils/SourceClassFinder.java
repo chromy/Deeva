@@ -9,9 +9,8 @@ import java.util.*;
 public class SourceClassFinder {
     private final List<File> classPaths;
     private final List<File> sourcePaths;
-    private Set<String> possibleSourceNames = new HashSet<String>();
-    private Map<String, String> classes = null;
-    private Map<String, String> sources = null;
+    private Map<String, SourceClassMeta> sourceClassMetas;
+    private Map<String, String> sources;
 
     /* Maybe abstract out? who knows :S :S definitely in need of refactor at
     some point */
@@ -57,8 +56,9 @@ public class SourceClassFinder {
      *  Do sym-links need to be dealt with?
      *
      */
-    private Map<String, String> findClasses(File directory, String packageName) {
-        Map<String, String> foundClasses = new HashMap<String, String>();
+    private Map<String, SourceClassMeta> findClasses(File directory, String packageName) {
+        Map<String, SourceClassMeta> foundClasses = new HashMap<String, SourceClassMeta>();
+        Map<String, String> nestedClasses = new HashMap<String, String>();
 
         if (!directory.exists()) {
             return foundClasses;
@@ -84,61 +84,89 @@ public class SourceClassFinder {
                         file.getName().length() - 6);
 
                 String fullClassName = packagePrepend + className;
-                String classDirectory = file.getParent();
-                foundClasses.put(fullClassName, classDirectory);
 
-                /* Add to possible source files - exclude nested classes */
-                if (!className.contains("$")) {
-                    this.possibleSourceNames.add(className + ".java");
+                // If we find a nested class, deal with it later,
+                // as its parent class may not have been added yet
+                int sentinelIndex = className.indexOf('$');
+                if (sentinelIndex != -1) {
+                    String hostingClass = className.substring(0, sentinelIndex);
+                    nestedClasses.put(className, hostingClass);
+                    continue;
                 }
+                SourceClassMeta meta = new SourceClassMeta(fullClassName,
+                        file);
+                foundClasses.put(fullClassName, meta);
             }
         }
+
+        /* Deal with nested classes */
+        for (String nestedClass : nestedClasses.keySet()) {
+            String hostingClass = nestedClasses.get(nestedClass);
+
+            SourceClassMeta meta = foundClasses.get(hostingClass);
+            if (meta == null) {
+                continue;
+            }
+
+            meta.addNestedClass(nestedClass);
+            foundClasses.put(nestedClass, meta);
+        }
+
         return foundClasses;
     }
 
-    private Map<String, String> findSources(File directory) {
-        Map<String, String> foundSources = new HashMap<String, String>();
+    private void findSources(File directory, String packageName) {
+        //Map<String, String> foundSources = new HashMap<String, String>();
 
         if (!directory.exists()) {
-            return foundSources;
+            return;
         }
 
         File[] files = directory.listFiles();
         for (File file : files) {
+            String packagePrepend = packageName.equals("") ? "" : packageName + '.';
             String fileName = file.getName();
             if (file.isDirectory()) {
+                /* Only process a directory once i.e. if contained within
+                classpath */
                 if (this.sourcePaths.contains(file)) {
                     continue;
                 }
 
+                assert !fileName.contains(".");
+
                 /* Find sources in all the folders */
-                foundSources.putAll(findSources(file));
+                findSources(file, packagePrepend + fileName);
 
-            } else if (fileName.endsWith(".java") && this.possibleSourceNames
-                    .contains(fileName)) {
-                /* We've found a source file that has a corresponding class
-                that we're planning to load */
+            } else if (fileName.endsWith(".java")) {
 
-                foundSources.put(fileName, file.getPath());
+                String className = packagePrepend + fileName.substring(0,
+                        fileName.length() - 5);
+
+                /* We've found a source file with a corresponding class */
+                if (this.sourceClassMetas.containsKey(className)) {
+                    SourceClassMeta meta = this.sourceClassMetas.get(className);
+                    meta.setSourceFile(file);
+                }
               }
         }
 
-        return foundSources;
+        return;
     }
 
-    public Map<String, String> getAllClasses() {
+    public Map<String, SourceClassMeta> getAllClasses() {
         /* Get the cached result */
-        if (this.classes != null) {
-            return this.classes;
+        if (this.sourceClassMetas != null) {
+            return this.sourceClassMetas;
         }
 
-        this.classes = new HashMap<String, String>();
+        this.sourceClassMetas = new HashMap<String, SourceClassMeta>();
         /* For each class path we find the classes within it */
         for (File classPath : this.classPaths) {
-            this.classes.putAll(findClasses(classPath, ""));
+            this.sourceClassMetas.putAll(findClasses(classPath, ""));
         }
 
-        return this.classes;
+        return this.sourceClassMetas;
     }
 
     public Map<String, String> getAllSources() {
@@ -155,13 +183,21 @@ public class SourceClassFinder {
             return this.sources;
         }
 
-        /* Get all the classes first */
-        this.getAllClasses();
-
         this.sources = new HashMap<String, String>();
 
+        /* Get all the classes first */
+        Map<String, SourceClassMeta> classes = this.getAllClasses();
+
+        /* Find all the sources */
         for (File sourcePath : this.sourcePaths) {
-            this.sources.putAll(findSources(sourcePath));
+            findSources(sourcePath, "");
+        }
+
+        for (String className : classes.keySet()) {
+            //System.out.println(className);
+            SourceClassMeta meta = classes.get(className);
+            String fileName = meta.getSourceFileName();
+            this.sources.put(className, fileName);
         }
 
         return this.sources;
@@ -169,25 +205,14 @@ public class SourceClassFinder {
 
     public static void main(String[] args) {
         List<String> cps = new LinkedList<String>();
-        cps.add("./examples");
-        SourceClassFinder finder = new SourceClassFinder(cps, null);
 
-
-        Map<String, String> classes = finder.getAllClasses();
-
-        System.out.println("--------");
-
-        for (String sourceName : finder.possibleSourceNames) {
-            System.out.println("--------");
-            System.out.println("Name: " + sourceName);
-        }
-        System.out.println("--------");
+        SourceClassFinder finder = new SourceClassFinder(null, null);
 
         Map<String, String> sources = finder.getAllSources();
 
         for (String source : sources.keySet()) {
             System.out.println("--------");
-            System.out.println("Name: " + source);
+            System.out.println("ClassName: " + source);
             System.out.println("Location: " + sources.get(source));
         }
         System.out.println("--------");
