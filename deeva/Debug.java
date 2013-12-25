@@ -8,6 +8,7 @@ import com.sun.jdi.connect.VMStartException;
 import com.sun.jdi.event.*;
 import com.sun.jdi.request.*;
 import deeva.processor.ValueProcessor;
+import deeva.utils.SourceClassFinder;
 
 import java.io.IOException;
 import java.util.*;
@@ -39,17 +40,25 @@ public class Debug extends EventHandlerBase {
     private List<Map<String, String>> stack;
     private Map<Breakpoint, BreakpointRequest> breakpoints;
     private LocatableEvent lastLocatableEvent;
+    private SourceClassFinder finder;
 
     private StepRequest stepRequest;
 
     int line_number = 0;
 
-    public Debug(DebugResponseQueue outQueue, DebugResponseQueue inQueue) {
+    public Debug(DebugResponseQueue outQueue, DebugResponseQueue inQueue,
+                 List<String> classPaths, List<String> sourcePaths) {
         breakpoints = new HashMap<Breakpoint, BreakpointRequest>();
         this.outQueue = outQueue;
         this.inQueue = new LinkedBlockingQueue<String>();
         sema = new Semaphore(0);
         state = State.NO_INFERIOR;
+        finder = new SourceClassFinder(classPaths, sourcePaths);
+        /*  Generate all the classes and their relevant sources the debuggee
+            may need
+         */
+        finder.getAllClasses();
+        finder.getAllSources();
     }
 
     public void start(String arg) {
@@ -72,6 +81,10 @@ public class Debug extends EventHandlerBase {
         prepareRequest.enable();
 
         attemptToSetWaitingBreakpoints();
+    }
+
+    public Map<String, String> getSources() {
+        return this.finder.getAllSources();
     }
 
     public void putStdInMessage(String msg) throws InterruptedException {
@@ -146,6 +159,9 @@ public class Debug extends EventHandlerBase {
 
             /* Get an overview for the variable */
             Map<String, String> varMap = ValueProcessor.processVariable(var, variableValue);
+            if (varMap.containsKey("unique_id")) {
+                System.err.println(varMap.get("unique_id"));
+            }
             localVariables.add(varMap);
         }
 

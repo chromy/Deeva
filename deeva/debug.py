@@ -57,7 +57,7 @@ def launch_gateway(port=0, jarpath="", classpath="", javaopts=[],
     _port = int(proc.stdout.readline())
     return (_port, proc)
 
-def create_java_debugger(classpath, prog):
+def create_java_debugger(classpath, prog, debuggee_classpaths, debuggee_sourcepaths):
         port, _ = launch_gateway(classpath=classpath, die_on_exit=True)
         gateway_client = GatewayClient(port=port)
         gateway = JavaGateway(gateway_client,
@@ -65,7 +65,12 @@ def create_java_debugger(classpath, prog):
                               auto_field=True,
                               start_callback_server=True)
 
-        debugger = JavaProxy(gateway.jvm.deeva.Debug(out_queue, in_queue))
+        classpaths = ListConverter().convert(debuggee_classpaths, gateway._gateway_client)
+        sourcepaths = ListConverter().convert(debuggee_sourcepaths, gateway._gateway_client)
+
+        debugger = JavaProxy(gateway.jvm.deeva.Debug(out_queue, in_queue,
+                                                     classpaths, sourcepaths))
+        sources = debugger.getSources()
         debugger.start(prog)
 
         return debugger
