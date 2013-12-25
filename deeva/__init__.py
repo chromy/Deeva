@@ -80,9 +80,38 @@ def run():
 def get_main_class():
     return get_code(app.program+".java")
 
+def form_package_dict(sources):
+    package_dict = { 'default': {} }
+    for source in sources:
+        parts = source.split('.')
+        packages = parts[:-1]
+        className = parts[-1:][0]
+
+        current = package_dict
+
+        if not packages:
+            current = package_dict['default']
+
+        for package in packages:
+            if not current.get(package):
+                current[package] = {}
+
+            current = current[package]
+
+        if not current.get('$sources'):
+            current['$sources'] = {}
+
+        current['$sources'][className] = {'location' : sources[source],
+                                          'className': source }
+
+    return package_dict
+
 @app.route("/file/")
 def get_files():
     files = get_source_files(os.getcwd())
+    #sources = app.debugger.getSources()
+    #package_dir = form_package_dict(sources)
+
     return jsonify(files=files)
 
 @app.route("/file/<name>.json")
