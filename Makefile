@@ -9,14 +9,14 @@ all: build build_examples
 
 build:
 	test $(TOOL_JAR_PATH) || test -f $(TOOL_JAR_PATH)
-	javac deeva/*.java deeva/processor/*.java -classpath $(CLASS_PATH)
+	javac deeva/*.java deeva/processor/*.java deeva/utils/*.java -classpath $(CLASS_PATH)
 
 build_examples:
 	 $(MAKE) -C examples
 
 setup_deploy:
 	test -d .env || virtualenv .env
-	source .env/bin/activate; pip install -r requirements.txt; 
+	source .env/bin/activate; pip install -r requirements.txt;
 	source .env/bin/activate; cd deeva; javac *.java -classpath $(CLASS_PATH)
 	echo '#!/bin/bash' > start_deeva
 	echo 'DIR=$$(dirname "$$(readlink -f "$$0")")' >> start_deeva
