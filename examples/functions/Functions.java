@@ -1,3 +1,5 @@
+package examples.functions;
+
 public class Functions {
 
     public static String add(String a, String b) {

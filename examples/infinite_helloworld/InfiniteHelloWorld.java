@@ -1,3 +1,5 @@
+package examples.infinite_helloworld;
+
 public class InfiniteHelloWorld {
 
     public static void main(String[] args) {

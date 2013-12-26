@@ -50,10 +50,10 @@
 </head>
 
 <body>
+  <div id="header">
+      <h1>Deeva</h1>
+  </div>
   <div class="container" id="myContainer">
-    <div class="jumbotron"id="header">
-        <h1>Deeva</h1>
-    </div>
     <div class="row">
       <div class="col-md-6" style="max-width:{{cmMaxWidth}}px">
          <ul id="arguments" ng-show="showArguments"></ul>
@@ -63,10 +63,22 @@
             <div type="image" class='myButtons' id='stepOverBtn' ng-disabled="!state.stepOverBtn" ng-click="clickButton('stepOver')" title="Next"></div>
             <div type="image" class='myButtons' id='stepIntoBtn' ng-disabled="!state.stepIntoBtn" ng-click="clickButton('stepInto')" title="Step Into"></div>
             <div type="image" class='myButtons' id='stepReturnBtn' ng-disabled="!state.stepReturnBtn" ng-click="clickButton('stepReturn')" title="Step Out"></div>
-          </div>
-        <ul class="nav nav-tabs">
-            <li class="myTabs active" data-toggle="tooltip" title="{{currentFileName}}"><a href="#" data-toggle="tab">{{currentFileName}}</a></li>
+         </div>
+            
+            <ul class="nav nav-tabs" id="tab_bar" style="max-width:{{cmMaxWidth}}px">
+                <!--<li class="myTabs active" data-toggle="tooltip" title="{{currentFileName}}"><a href="#" data-toggle="tab">{{currentFileName}}</a></li>-->
+                <li class="myTabs" style="max-width:{{tabWidth}}px" ng-repeat="file in sourceFiles" data-toggle="tooltip" title="{{file}}" ng-click='loadFileOnPage(file)'><a href="#" data-toggle="tab">{{file}}</a></li>
+
+                <div class="btn-group" id="openFileBtn">
+                    <div type="image" id='openFile' class="dropdown-toggle" title="get more files" data-toggle="dropdown">+</div>
+                    <ul class="dropdown-menu">
+                      <li ng-repeat="file in sourceFiles">
+                        <a ng-click='loadFileOnPage(file)' href="#">{{file}}</a>
+                      </li>
+                    </ul>
+                </div>
         </ul>
+        
           <!-- Tab panes -->
         <div class="tab-content">
             <div class="tab-pane active" id="home">

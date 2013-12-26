@@ -1,18 +1,21 @@
+import os
 from flask import Flask, jsonify, render_template, request, g, make_response, redirect, url_for
 import debug
 from debug import load, WrongState, in_queue
 import os
+import pprint
+from search import get_source_files
 
 app = Flask('deeva')
 
 @app.route("/")
 def index():
-    try: 
+    try:
         return app.send_static_file('index.html')
     except Exception as e:
         print "got something here"
 
-@app.route("/breakPoints", methods=['POST'])
+@app.route("/breakPoints", methods=['POST', 'GET'])
 def breakPoints():
     if request.method == 'POST':
         breakPoints = request.get_json()
@@ -21,6 +24,11 @@ def breakPoints():
             # XXX: fix line numbers
             app.debugger.setBreakpoint('SimpleLoop', b+1)
         return jsonify(status='ok')
+    else:
+        bkpts = app.debugger.getBreakpoints()
+        data = [{'clas':b.getClas(), 'line':b.getLineNumber()} for b in bkpts]
+        return jsonify(break_points=data)
+
 
 @app.route("/stepOver", methods=['POST'])
 def step_over():
@@ -61,19 +69,24 @@ def run():
     if request.method == 'POST':
         if app.debugger.getStateName() == "NO_INFERIOR":
             print 'Starting program...'
+            # TODO Pass in the actual class path to the *debuggee program* here
             app.debugger.start(app.program)
-            return make_api_response(app.debugger.run)
         else:
             print 'Continuing program...'
-            return make_api_response(app.debugger.run)
+
+        return make_api_response(app.debugger.run)
 
 @app.route("/main_class.json")
 def get_main_class():
-    return get_code(app.program)
+    return get_code(app.program+".java")
+
+@app.route("/file/")
+def get_files():
+    files = get_source_files(os.getcwd())
+    return jsonify(files=files)
 
 @app.route("/file/<name>.json")
 def get_code(name):
-    name = name + '.java'
     code = load(name)
     return jsonify(file_name=name, code=code)
 
@@ -84,7 +97,7 @@ def get_state():
 @app.route("/pushStdIn/<count>")
 def push_stdin(count):
     app.debugger.putStdInMessage(str(count)+ '\nTesting123\n')
-    return (count)
+    return count
 
 @app.route("/getHeapObject")
 def get_heap_object():
@@ -124,8 +137,8 @@ def make_api_response(f, *args, **kargs):
 
         # Need to do some sort of recursive converter, so that we don't have
         # malicious strings in Java that will kill our eval/repr etc
-        result2 = {'state' : result['state'], 
-                   'line_number' : result['line_number'], 
+        result2 = {'state' : result['state'],
+                   'line_number' : result['line_number'],
                    'stack' : eval(repr(st))}
-        print result2['stack'], "stack"
-        return jsonify(status='ok', stdout=stdout, stderr=stderr, **result2) 
+        pprint.pprint(result2['stack']);
+        return jsonify(status='ok', stdout=stdout, stderr=stderr, **result2)

@@ -1,3 +1,5 @@
+package examples.null_pointer;
+
 public class Adder {
 
     public Adder() {

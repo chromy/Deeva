@@ -1,3 +1,5 @@
+package examples.runtime_exception;
+
 public class Exception {
     public static void main(String[] args) {
         // this one will be caught

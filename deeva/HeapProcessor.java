@@ -1,8 +1,9 @@
 package deeva;
 
-import com.sun.jdi.*;
+import com.sun.jdi.ArrayReference;
+import com.sun.jdi.ObjectReference;
+import com.sun.jdi.StringReference;
 
-import java.util.List;
 import java.util.HashMap;
 
 class HeapProcessor {

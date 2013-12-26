@@ -1,3 +1,5 @@
+package examples.easy_math;
+
 public class EasyMath {
     public static void main(String[] args) {
 	int a = 1;
