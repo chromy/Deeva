@@ -41,11 +41,20 @@
 }
 #indice td, #value td{
   min-width: 30px;
-  border: 1px solid black;
   text-align: center;
-  background-color: yellow;
 }
 
+table.String{
+  background-color: #F3F781;
+  border-radius: 7px;
+}
+
+table.Array{
+  background-color: yellow;
+}
+table.Array td{
+  border: 1px solid black;
+}
 #indice {
   min-height: 10px;
   font-size: 10px;

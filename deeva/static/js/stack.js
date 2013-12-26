@@ -135,7 +135,9 @@ function main(all_variables){
  
 
       var objectArray = heapRowObject.append("table")
-                                 .attr("class", "array");
+                                 .attr("class", function(d,i){
+                                       return d.object_type;
+                                 });
   
       var objectArrayTable = objectArray.append("tbody");  
       var values = objectArrayTable.append("tr").attr("id", "value");
