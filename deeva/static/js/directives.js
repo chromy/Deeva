@@ -69,6 +69,11 @@ directives.directive('deevaPackage', ['PackageService', function(PackageService)
             /* Event handler for when a source file in the dropdown is clicked */
             scope.selectSource = function(index, short_classname, full_classname) {
                 var new_breadcrumb = scope.breadcrumb.slice(0, index);
+
+		/* If there are no packages, we select the default package */
+		if (new_breadcrumb == []) {
+		    new_breadcrumb.push('(default)');
+		}
                 new_breadcrumb.push(short_classname);
 
                 /* Delegate method to caller */
@@ -77,11 +82,26 @@ directives.directive('deevaPackage', ['PackageService', function(PackageService)
                 });
             }
 
+            scope.isCurrentClass = function() {
+                if (scope.currentClass.indexOf(".") < 0) {
+                    return scope.breadcrumb[scope.breadcrumb.length - 1] == scope.currentClass;
+                }
+
+                return scope.breadcrumb.join(".") == currentClass;
+            };
+
             scope.selectCurrentClass = function() {
-                var breadcrumb = scope.currentClass.split(".");
-                var last_index = breadcrumb.length - 1
-                var short_classname = breadcrumb[last_index];
-                scope.breadcrumb = breadcrumb;
+
+                var new_breadcrumb = scope.currentClass.split(".");
+                var last_index = new_breadcrumb.length - 1;
+                var short_classname = new_breadcrumb[last_index];
+
+                if (new_breadcrumb.slice(0, last_index).length == 0) {
+                    new_breadcrumb = ['(default)'].concat([new_breadcrumb[last_index]]);
+                    last_index++;
+                }
+
+                scope.breadcrumb = new_breadcrumb;
                 scope.selectSource(last_index, short_classname, scope.currentClass);
             }
         },

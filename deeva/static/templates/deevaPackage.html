@@ -8,7 +8,7 @@
         </a>
 
         <!-- Associated Dropdown Menu -->
-        <ul class="dropdown-menu" ng-init="bcIndex = $index">
+        <ul class="dropdown-menu">
           <!-- Packages - do a ng-show on the header..-->
           <li role="presentation" class="dropdown-header" ng-show="!isEmpty(getPackages(crumb, $index))">Packages</li>
 
@@ -17,7 +17,7 @@
               ng-repeat="(package_name, package_contents) in getPackages(crumb, $index)"
               ng-class="{disabled: package_name == crumb}">
             <a role="menuitem" tabindex="-1" href="#"
-               ng-click="selectPackage(bcIndex, package_name)"
+               ng-click="selectPackage($parent.$index, package_name)"
                ng-class="{selected: package_name == crumb}">
               {{package_name}}
             </a>
@@ -36,7 +36,7 @@
               ng-repeat="(source_name, source_data) in getSources(crumb, $index)"
               ng-class="{disabled: source_name == crumb}">
             <a role="menuitem" tabindex="-1" href="#"
-               ng-click="selectSource(bcIndex, source_name, source_data.className)"
+               ng-click="selectSource($parent.$index, source_name, source_data.className)"
                ng-class="{selected: source_name == crumb}">
               {{source_name}}
             </a>
@@ -47,7 +47,7 @@
   </div> <!-- col-md-9 -->
   <div class="col-md-3 select-current-class">
     <a href="#" ng-click="selectCurrentClass()"
-       ng-class="{disabled: currentClass == breadcrumb.join('.')}">
+       ng-class="{disabled: isCurrentClass()}">
       Goto current class
     </a>
   </div> <!-- col-md-3-->

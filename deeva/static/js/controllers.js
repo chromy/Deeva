@@ -18,7 +18,7 @@ deeva.controller('SimpleController', ['$scope', '$http', 'FileService', 'MiscSer
                              "RUNNING" : "Program running",
                              "NO_INFERIOR" : "Program ended"};
     $scope.currentState = "";
-    $scope.breadcrumb = ['(default)']; /* Set to be the default package */
+    $scope.breadcrumb = ['(default)', 'Select package or source file']; /* Set to be the default package */
     $scope.package_dir = {};
 
     FileService.getPackages(function(package_dir) {
@@ -61,9 +61,13 @@ deeva.controller('SimpleController', ['$scope', '$http', 'FileService', 'MiscSer
         if (data.line_number && data.current_class) {
             /* Set the breadcrumb (if need be) */
             var new_breadcrumb = data.current_class.split(".");
+            var last_index = new_breadcrumb.length - 1;
+            if (new_breadcrumb.slice(0, last_index).length == 0) {
+                console.log("We're in a default");
+                new_breadcrumb = ['(default)'].concat([new_breadcrumb[last_index]]);
+            }
 
-            $scope.breadcrumb =
-                !angular.equals(new_breadcrumb, $scope.breadcrumb) ? new_breadcrumb : $scope.breadcrumb;
+            $scope.breadcrumb = new_breadcrumb;
 
             /* Update the current class */
             $scope.current_class = data.current_class;
