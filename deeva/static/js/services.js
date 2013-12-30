@@ -21,18 +21,18 @@ services.service('PackageService', [function() {
 
     /* Returns the sources from a package directory */
     function sources(pkg_dir) {
-	return pkg_dir && pkg_dir['&sources'] ? pkg_dir['&sources'] : {};
+        return pkg_dir && pkg_dir['&sources'] ? pkg_dir['&sources'] : {};
     }
 
     /* Navigates within a package directory to a certain package */
     function navigate(package_dir, package_location) {
-	if (package_dir == null || package_location == null) {
-	    return null;
-	}
+        if (package_dir == null || package_location == null) {
+            return null;
+        }
 
-	/* Navigate to given package location */
-	var current_location = package_dir;
-	for (var i = 0; i < package_location.length; i++) {
+        /* Navigate to given package location */
+        var current_location = package_dir;
+        for (var i = 0; i < package_location.length; i++) {
             var pkg_name = package_location[i];
             if (pkg_name.indexOf("&") != -1) {
                 return null;
@@ -75,7 +75,8 @@ services.service('FileService', ['$http', 'PackageService', function($http, Pack
         callback = callback || MiscService.nullFunction;
         /* Get cached result */
         if (package_dir != null) {
-            return package_dir;
+            callback(package_dir);
+            return;
         }
 
         /* Send request to get the package directory structure */
@@ -103,9 +104,12 @@ services.service('FileService', ['$http', 'PackageService', function($http, Pack
         callback = callback || MiscService.nullFunction;
 
         /* Get cached result */
+        console.log(files);
         if (files[classname] != undefined && !forced) {
+            console.log("Getting cached result");
             /* Call the callback when we're done */
             callback(files[classname]);
+            return;
         }
 
         /* Retrieve file either for the first time or if forced */
@@ -145,20 +149,20 @@ services.service('FileService', ['$http', 'PackageService', function($http, Pack
             .error(function(status) {
                 var message = "Error getting: " + classname;
                 console.error(message);
-	    });
+            });
     }
 
     function breakpoints (classname, callback) {
-	callback = callback || MiscService.nullFunction;
-	getFile(classname, function(classdata) {
-	    var breakpoints = classdata.breakpoints;
-	    callback(breakpoints);
-	});
+        callback = callback || MiscService.nullFunction;
+        getFile(classname, function(classdata) {
+            var breakpoints = classdata.breakpoints;
+            callback(breakpoints);
+        });
     }
 
     return {
-	'getPackages' : getPackages,
-	'getFile' : getFile,
-	'breakpoints' : breakpoints
+        'getPackages' : getPackages,
+        'getFile' : getFile,
+        'breakpoints' : breakpoints
     };
 }]);

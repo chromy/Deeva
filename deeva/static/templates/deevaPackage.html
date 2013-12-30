@@ -12,28 +12,28 @@
 
       <!-- TODO: need to apply class for the active menu -->
       <li role="presentation"
-	  ng-repeat="(package_name, package_contents) in getPackages(crumb, $index)"
-	  ng-class="{disabled: package_name == crumb}">
-	<a role="menuitem" tabindex="-1" href="#"
-	   ng-click="selectPackage(bcIndex, package_name)"
-	   ng-class="{selected: package_name == crumb}">
-	  {{package_name}}
-	</a>
+          ng-repeat="(package_name, package_contents) in getPackages(crumb, $index)"
+          ng-class="{disabled: package_name == crumb}">
+        <a role="menuitem" tabindex="-1" href="#"
+           ng-click="selectPackage(bcIndex, package_name)"
+           ng-class="{selected: package_name == crumb}">
+          {{package_name}}
+        </a>
       </li>
 
       <!-- Divider -->
       <li role="presentation" class="divider"
-	  ng-show="!isEmpty(getPackages(crumb, $index)) && !isEmpty(getSources(crumb, $index))" ></li>
+          ng-show="!isEmpty(getPackages(crumb, $index)) && !isEmpty(getSources(crumb, $index))" ></li>
       <li role="presentation" class="dropdown-header"
-	  ng-show="isEmpty(getPackages(crumb, $index)) && isEmpty(getSources(crumb, $index))">None</li>
+          ng-show="isEmpty(getPackages(crumb, $index)) && isEmpty(getSources(crumb, $index))">None</li>
 
       <!-- Source Files -->
       <li role="presentation" class="dropdown-header"
-	  ng-show="!isEmpty(getSources(crumb, $index))">Source Files</li>
+          ng-show="!isEmpty(getSources(crumb, $index))">Source Files</li>
       <li role="presentation"
-	  ng-repeat="(source_name, source_data) in getSources(crumb, $index)">
-	<a role="menuitem" tabindex="-1" href="#"
-	   ng-click="selectSource(source_data.className)"
+          ng-repeat="(source_name, source_data) in getSources(crumb, $index)">
+        <a role="menuitem" tabindex="-1" href="#"
+           ng-click="selectSource(bcIndex, source_name, source_data.className)"
 	   ng-class="{selected: source_name == crumb}">
 	  {{source_name}}
 	</a>
