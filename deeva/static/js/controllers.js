@@ -286,4 +286,14 @@ function ($scope, $http, FileService, MiscService) {
             callback();
         });
     };
+
+    $scope.getObj = function(unique_id, typestring) {
+        $http.post('/getHeapObject', {'unique_id': parseInt(unique_id), 'typestring': typestring})
+            .success(function(data) {
+                console.log(data);
+            })
+            .error(function() {
+                console.error("Error getting object");
+            });
+    };
 }]);

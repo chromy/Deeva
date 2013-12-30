@@ -79,10 +79,6 @@ def run():
 
         return make_api_response(app.debugger.run)
 
-@app.route("/main_class.json")
-def get_main_class():
-    return get_code(app.program+".java")
-
 def form_package_dict(sources):
     # Get cached version of the package_dict, we only need to do this once
     if not app.package_dict:
@@ -129,13 +125,8 @@ def get_files():
 
     return jsonify(package_dir=package_dir)
 
-@app.route("/file/<name>.json")
-def get_code(name):
-    code = load(name)
-    return jsonify(file_name=name, code=code)
-
 @app.route("/file/<classname>")
-def get_code2(classname):
+def get_code(classname):
     if not app.source_code.get(classname):
         sources = get_sources()
         location = sources.get(classname)
@@ -161,20 +152,22 @@ def push_stdin(count):
     app.debugger.putStdInMessage(str(count)+ '\nTesting123\n')
     return count
 
-@app.route("/getHeapObject")
+@app.route("/getHeapObject", methods=["POST"])
 def get_heap_object():
     args = request.get_json()
-    print args
 
     unique_id = args.get('unique_id')
-    typestr = args.get('type_str')
+    typestr = args.get('typestring').encode('ascii', 'ignore')
+
+    print unique_id
 
     # Need to check that the debugger is alive and is in stasis mode
     # as this request is asynchronous
 
     heap_object = app.debugger.getHeapObject(unique_id, typestr)
     print heap_object
-    return jsonify(heap_object)
+    # YYY: Horrible Hack, fix soon, or maybe leave :P
+    return jsonify(data=eval(repr(heap_object)))
 
 @app.errorhandler(500)
 def page_not_found(error):

@@ -23,6 +23,7 @@ public class SimpleLoop {
       String s = "Hello123";
       System.out.println(s);
       SimpleLoop sl = new SimpleLoop();
+      sl.field_int = 110793;
       EnumTest et = EnumTest.SUNDAY;
       String[] hello = {"Felix is cool!", "Felix is way too cool!"};            //
 

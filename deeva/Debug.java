@@ -47,7 +47,6 @@ public class Debug extends EventHandlerBase {
     private StepRequest stepRequest;
 
 
-
     public Debug(DebugResponseQueue outQueue, DebugResponseQueue inQueue,
                  List<String> classPaths, List<String> sourcePaths,
                  String mainClass) {
@@ -74,17 +73,14 @@ public class Debug extends EventHandlerBase {
         redirectOutput();
 
         state = State.STASIS;
-
         EventRequestManager reqMgr = getRequestManager();
         ClassPrepareRequest prepareRequest = reqMgr.createClassPrepareRequest();
-
         for (String ex : excludes) {
             prepareRequest.addClassExclusionFilter (ex);
         }
 
         prepareRequest.setSuspendPolicy(EventRequest.SUSPEND_ALL);    // suspend so we can examine vars
         prepareRequest.enable();
-
         attemptToSetWaitingBreakpoints();
     }
 
@@ -100,7 +96,8 @@ public class Debug extends EventHandlerBase {
         this.inQueue.put(msg);
     }
 
-    public Object getHeapObject(Long uniqueRefID, String refType) {
+    public Map<String, ? extends Object> getHeapObject(Long uniqueRefID,
+                                                       String refType) {
         /* We can assume that the class would be loaded, since we're not
          * allowing arbitrary introspection */
 
@@ -108,7 +105,10 @@ public class Debug extends EventHandlerBase {
          * stopped we need to ignore this or throw an exception. */
 
         System.err.println("Printing Heap");
+        System.err.println("uniqueRefID: " + uniqueRefID);
+        System.err.println("refType: " + refType);
         List<ReferenceType> matchingClasses = vm.classesByName(refType);
+
         ObjectReference objectFound = null;
 
         /* Go through each matching class and look for unique ID */
@@ -134,7 +134,12 @@ public class Debug extends EventHandlerBase {
             return null;
         }
 
-        return null;
+        /* Process the heap object*/
+        Set<String> classes = finder.getAllClasses().keySet();
+        Map<String, ? extends Object> processedObject
+                = ValueProcessor.processValueSingleDepth(objectFound, classes);
+
+        return processedObject;
     }
 
     public List<Map<String, String>> getStack(LocatableEvent event)
@@ -163,7 +168,8 @@ public class Debug extends EventHandlerBase {
             System.err.println("Type: " + type.name());
 
             /* Get an overview for the variable */
-            Map<String, String> varMap = ValueProcessor.processVariable(var, variableValue);
+            Map<String, String> varMap = ValueProcessor.processVariable(var,
+                    variableValue, finder.getAllSources());
             if (varMap.containsKey("unique_id")) {
                 System.err.println(varMap.get("unique_id"));
             }
@@ -441,11 +447,12 @@ public class Debug extends EventHandlerBase {
     }
 
     VirtualMachine launchTarget(String mainArgs) {
+        System.err.println("finding launching connector");
         LaunchingConnector connector = findLaunchingConnector();
         Map<String, Connector.Argument> arguments = connectorArguments(connector, mainArgs);
-        System.out.println("launch");
 
         try {
+            System.err.println("beginning lanuch");
             return connector.launch(arguments);
         } catch (IOException exc) {
             throw new Error("Unable to launch target VM: " + exc);
@@ -467,13 +474,13 @@ public class Debug extends EventHandlerBase {
                 process.getInputStream(),
                 this.outQueue);
 
-        inThread = new StdInRedirectThread("stdin",
+        /*inThread = new StdInRedirectThread("stdin",
                 process.getOutputStream(),
-                this.inQueue);
+                this.inQueue);*/
 
         outThread.start();
         errThread.start();
-        inThread.start();
+        //inThread.start();
         /* Somehow need to capture input i.e. in the other direction */
     }
 
