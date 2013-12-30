@@ -88,13 +88,12 @@ services.service('FileService', ['$http', 'PackageService', function($http, Pack
                 }
 
                 package_dir = data.package_dir;
-                console.log("Package Dir:", package_dir);
 
                 /* Call the callback when we're done retrieving the package directory */
                 callback(package_dir);
             })
             .error(function(status) {
-                console.log("Error getting package directory");
+                console.error("Error getting package directory");
             });
     }
 
@@ -104,9 +103,7 @@ services.service('FileService', ['$http', 'PackageService', function($http, Pack
         callback = callback || MiscService.nullFunction;
 
         /* Get cached result */
-        console.log(files);
         if (files[classname] != undefined && !forced) {
-            console.log("Getting cached result");
             /* Call the callback when we're done */
             callback(files[classname]);
             return;
@@ -129,7 +126,7 @@ services.service('FileService', ['$http', 'PackageService', function($http, Pack
 
                 if (!data.code) {
                     var message = "There was an error getting the code";
-                    console.log(message);
+                    console.error(message);
                     data.code = [message];
                     mime_type = 'text/x-markdown';
                     errorneous = true;

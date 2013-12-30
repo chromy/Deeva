@@ -44,7 +44,7 @@ deeva.controller('SimpleController', ['$scope', '$http', 'FileService', 'MiscSer
                 updateState(data);
             })
             .error(function(status) {
-                console.log("There is an error on " + destination + "()");
+                console.error("There is an error on " + destination + "()");
             });
     };
 
@@ -116,11 +116,10 @@ deeva.controller('SimpleController', ['$scope', '$http', 'FileService', 'MiscSer
     function init() {
         $http.get('getCurrentState')
             .success(function(data) {
-                console.log(data);
                 updateState(data);
             })
             .error(function(status) {
-                console.log("There is an error getting state.");
+                console.error("There is an error getting state.");
             });
     }
 
@@ -178,11 +177,11 @@ deeva.controller('SimpleController', ['$scope', '$http', 'FileService', 'MiscSer
                         breakpoints.push(lineNumber);
                     });
                 } else {
-                    console.log("Could not set breakpoint.");
+                    console.error("Could not set breakpoint.");
                 }
             })
             .error(function(data) {
-                console.log("Setting breakpoint error.");
+                console.error("Setting breakpoint error.");
             });
     }
 
@@ -205,11 +204,11 @@ deeva.controller('SimpleController', ['$scope', '$http', 'FileService', 'MiscSer
                         }
                     });
                 } else {
-                    console.log("Could not unset breakpoint.");
+                    console.error("Could not unset breakpoint.");
                 }
             })
             .error(function(data) {
-                console.log("Setting breakpoint error.");
+                console.error("Setting breakpoint error.");
             });
     }
 
@@ -257,7 +256,7 @@ deeva.controller('SimpleController', ['$scope', '$http', 'FileService', 'MiscSer
             .success(function(data) {
             })
             .error(function(data) {
-                console.log("There is an error sending input " + data.status);
+                console.error("There is an error sending input " + data.status);
             });
     }
 
@@ -272,14 +271,11 @@ deeva.controller('SimpleController', ['$scope', '$http', 'FileService', 'MiscSer
     /* Refactoring of loading file on page, refactor again somewhere */
     $scope.loadFileOnPage2 = function(className, callback) {
         callback = callback || MiscService.nullFunction;
-        console.log("Selecting source: ", className);
         if (className === "") {
             return;
         }
 
         /* Get the file, any errors associated with getting the file will be displayed in code*/
-        console.log("Switching to: " + className);
-
         FileService.getFile(className, function(classdata) {
             $scope.codeMirror.swapDoc(classdata.code);
             /* Execute the callback so the directive can complete any actions it needs to */

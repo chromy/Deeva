@@ -13,6 +13,7 @@ directives.directive('deevaPackage', ['PackageService', function(PackageService)
             packageDir: '=',
             breadcrumb: '=',
             sourceClick: '=', /* Callback for when source is clicked */
+            currentClass: '='
         },
 
         link: function(scope, element, attrs) {
@@ -74,6 +75,14 @@ directives.directive('deevaPackage', ['PackageService', function(PackageService)
                 scope.sourceClick(full_classname, function() {
                     scope.breadcrumb = new_breadcrumb;
                 });
+            }
+
+            scope.selectCurrentClass = function() {
+                var breadcrumb = scope.currentClass.split(".");
+                var last_index = breadcrumb.length - 1
+                var short_classname = breadcrumb[last_index];
+                scope.breadcrumb = breadcrumb;
+                scope.selectSource(last_index, short_classname, scope.currentClass);
             }
         },
     }
