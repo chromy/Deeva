@@ -8,29 +8,29 @@ directives.directive('deevaPackage', ['PackageService', function(PackageService)
 
     return {
 	restrict: 'E',
-	templateUrl: 'templates/partials/deevaPackage.html',
-	scope: {
-	    packageDir: '=',
-	    breadcrumb: '=',
-	    sourceClick: '=', /* Callback for when source is clicked */
-	},
+	templateUrl: 'static/templates/deevaPackage.html',
+        scope: {
+            packageDir: '=',
+            breadcrumb: '=',
+            sourceClick: '=', /* Callback for when source is clicked */
+        },
 
-	link: function(scope, element, attrs) {
-	    /* Given a package directory, and an index into the
-	     * breadcrumb, get the packages situated at the last but one
-	     * package in the breadcrumb */
-	    scope.getPackages = function(dir, index) {
-		var current_pkg_path = scope.breadcrumb.slice(0, index);
-		var current_pkg = navigate(scope.packageDir, current_pkg_path);
-		return PackageService.show_packages(current_pkg);
-	    },
+        link: function(scope, element, attrs) {
+            /* Given a package directory, and an index into the
+             * breadcrumb, get the packages situated at the last but one
+             * package in the breadcrumb */
+            scope.getPackages = function(dir, index) {
+                var current_pkg_path = scope.breadcrumb.slice(0, index);
+                var current_pkg = PackageService.navigate(scope.packageDir, current_pkg_path);
+                return PackageService.show_packages(current_pkg);
+            },
 
 	    /* Given a package directory, and an index into the
 	     * breadcrumb, get the sources situated at the last but one
 	     * package in the breadcrumb */
 	    scope.getSources = function(dir, index) {
 		var current_pkg_path = scope.breadcrumb.slice(0, index);
-		var current_pkg = navigate(scope.packageDir, current_pkg_path);
+		var current_pkg = PackageService.navigate(scope.packageDir, current_pkg_path);
 		return PackageService.show_sources(current_pkg);
 	    },
 
@@ -70,6 +70,7 @@ directives.directive('deevaPackage', ['PackageService', function(PackageService)
 		var new_breadcrumb = scope.breadcrumb.slice(0, index);
 		new_breadcrumb.push(source_name);
 		/* Delegate method to caller */
+		// TODO: Wrap this in a callback thing
 		scope.sourceClick(index, source_name, source_data);
 		scope.breadcrumb = new_breadcrumb;
 	    }

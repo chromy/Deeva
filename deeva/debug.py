@@ -69,7 +69,7 @@ def create_java_debugger(classpath, prog, debuggee_classpaths, debuggee_sourcepa
         sourcepaths = ListConverter().convert(debuggee_sourcepaths, gateway._gateway_client)
 
         debugger = JavaProxy(gateway.jvm.deeva.Debug(out_queue, in_queue,
-                                                     classpaths, sourcepaths))
+                                                     classpaths, sourcepaths, prog))
         sources = debugger.getSources()
         debugger.start(prog)
 

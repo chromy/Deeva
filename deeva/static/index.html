@@ -1,117 +1,127 @@
 <!doctype html>
 <html ng-app="deeva" ng-controller="SimpleController">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Deeva - {{currentFileName}}</title>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deeva - {{currentFileName}}</title>
 
-  <!-- Common css -->
-  <link rel="stylesheet" href="static/css/deeva.css">
-  <link rel="stylesheet" href="static/css/bootstrap.min.css">
-  <link rel="stylesheet" href="static/css/bootstrap-theme.min.css">
-  <link rel="stylesheet" href="static/css/stack.css">
+    <!-- Common css -->
+    <link rel="stylesheet" href="static/css/deeva.css">
+    <link rel="stylesheet" href="static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="static/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="static/css/stack.css">
+    <link rel="stylesheet" href="static/css/package.css">
 
-  <!-- D3 -->
-  <script type="text/javascript" src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <!-- D3 -->
+    <script type="text/javascript" src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 
-  <!-- AngularJS -->
-  <script src="static/lib/angular/angular.min.js"></script>
+    <!-- AngularJS -->
+    <script src="static/lib/angular/angular.min.js"></script>
 
-  <!-- codemirror.net online code editor -->
-  <script src="static/lib/jquery/jquery-1.10.2.min.js"></script>
-  <script src="static/lib/codemirror/codemirror-compressed.js"></script>
-  <script src="static/lib/codemirror/clike.js"></script>
-  <link href="static/css/codemirror.css" rel="stylesheet">
+    <!-- codemirror.net online code editor -->
+    <script src="static/lib/jquery/jquery-1.10.2.min.js"></script>
+    <script src="static/lib/codemirror/codemirror-compressed.js"></script>
+    <script src="static/lib/codemirror/clike.js"></script>
+    <link href="static/css/codemirror.css" rel="stylesheet">
 
-  <!-- jquery-terminal -->
-  <script src="static/lib/jquery-terminal/jquery.mousewheel-min.js"></script>
-  <script src="static/lib/jquery-terminal/jquery.terminal-0.7.7.min.js"></script>
-  <link href="static/css/jquery.terminal.css" rel="stylesheet">
+    <!-- jquery-terminal -->
+    <script src="static/lib/jquery-terminal/jquery.mousewheel-min.js"></script>
+    <script src="static/lib/jquery-terminal/jquery.terminal-0.7.7.min.js"></script>
+    <link href="static/css/jquery.terminal.css" rel="stylesheet">
 
-  <!-- jquery-ui -->
-  <script src="static/lib/jquery-ui/jquery-ui-1.10.3.custom.min.js"></script>
-  <link href="static/css/jquery-ui-1.10.3.custom.min.css" rel="stylesheet">
+    <!-- jquery-ui -->
+    <script src="static/lib/jquery-ui/jquery-ui-1.10.3.custom.min.js"></script>
+    <link href="static/css/jquery-ui-1.10.3.custom.min.css" rel="stylesheet">
 
-  <!-- tag-it -->
-  <script src="static/lib/tag-it/tag-it.min.js"></script>
-  <link href="static/css/jquery.tagit.css" rel="stylesheet">
-  <!-- Bootstrap tab.js -->
-  <script src="static/js/bootstrap.js"></script>
+    <!-- tag-it -->
+    <script src="static/lib/tag-it/tag-it.min.js"></script>
+    <link href="static/css/jquery.tagit.css" rel="stylesheet">
+    <!-- Bootstrap tab.js -->
+    <script src="static/js/bootstrap.js"></script>
 
-  <!-- Controller -->
-  <script src="static/js/controllers.js"></script>
+    <!-- Controller, Directives, Services-->
+    <script src="static/js/controllers.js"></script>
+    <script src="static/js/directives.js"></script>
+    <script src="static/js/services.js"></script>
 
-  <!-- Stack -->
-  <script src="static/js/stack.js"></script>
-  
-  <!-- jsPlumber -->
-  <script src="static/lib/jsplumber/jquery.jsPlumb-1.5.3.js"></script>
+    <!-- Stack -->
+    <script src="static/js/stack.js"></script>
 
-</head>
+    <!-- jsPlumber -->
+    <script src="static/lib/jsplumber/jquery.jsPlumb-1.5.3.js"></script>
 
-<body>
-  <div id="header">
+  </head>
+
+  <body>
+    <div id="header">
       <h1>Deeva</h1>
-  </div>
-  <div class="container" id="myContainer">
-    <div class="row">
-      <div class="col-md-6" style="max-width:{{cmMaxWidth}}px">
-         <ul id="arguments" ng-show="showArguments"></ul>
-         <div id='buttons_container'>
-             <div type="image" class='myButtons' id='runBtn' ng-click="clickButton('run')" title="Continue"><div id="innerRunBtn"></div><div id="innerRunBtnText">Run</div></div>
-            <div type="image" class='myButtons' id='stopBtn' ng-disabled="!state.stopBtn" ng-click="stop()" title="Stop"><div id="innerStopBtn"></div></div>
-            <div type="image" class='myButtons' id='stepOverBtn' ng-disabled="!state.stepOverBtn" ng-click="clickButton('stepOver')" title="Next"></div>
-            <div type="image" class='myButtons' id='stepIntoBtn' ng-disabled="!state.stepIntoBtn" ng-click="clickButton('stepInto')" title="Step Into"></div>
-            <div type="image" class='myButtons' id='stepReturnBtn' ng-disabled="!state.stepReturnBtn" ng-click="clickButton('stepReturn')" title="Step Out"></div>
-         </div>
-            
-            <ul class="nav nav-tabs" id="tab_bar" style="max-width:{{cmMaxWidth}}px">
-                <!--<li class="myTabs active" data-toggle="tooltip" title="{{currentFileName}}"><a href="#" data-toggle="tab">{{currentFileName}}</a></li>-->
-                <li class="myTabs" style="max-width:{{tabWidth}}px" ng-repeat="file in sourceFiles" data-toggle="tooltip" title="{{file}}" ng-click='loadFileOnPage(file)'><a href="#" data-toggle="tab">{{file}}</a></li>
-
-                <div class="btn-group" id="openFileBtn">
-                    <div type="image" id='openFile' class="dropdown-toggle" title="get more files" data-toggle="dropdown">+</div>
-                    <ul class="dropdown-menu">
-                      <li ng-repeat="file in sourceFiles">
-                        <a ng-click='loadFileOnPage(file)' href="#">{{file}}</a>
-                      </li>
-                    </ul>
-                </div>
-        </ul>
-        
-          <!-- Tab panes -->
-        <div class="tab-content">
-            <div class="tab-pane active" id="home">
-                <!-- populate with a CodeMirror instance -->
-                <div id="codeInputPane" class=outer-circle></div>
-            </div>
-        </div>
-      </div>
-      <div class="tooltip">
-        <div class="tooltip-inner"></div>
-        <div class="tooltip-arrow"></div>
-      </div>
-      <div class="col-md-6">
-        <div id="state">{{stateToPresent[currentState]}}</div>
-        <p id='console-btn' ng-click="showStdIn=!showStdIn">Console</p>
-        <div ng-show="showStdIn" id="terminal"></div>
-
-        <div class="row" id="heap_stack">
-          <div id="visual">
-            <div class="col-md-4">
-              <div id="stack_td"></div>
-            </div>
-            <div class="col-md-8">
-              <div id="heap_td"></div>
-            </div>
-          </div>
-        </div>
-
-
-      </div>
     </div>
-  </div>
+    <div class="container" id="myContainer">
+      <div class="row">
+        <div class="col-md-6" style="max-width:{{cmMaxWidth}}px">
+	  <!-- Arguments -->
+          <ul id="arguments" ng-show="showArguments"></ul>
 
-</body>
+	  <!-- Buttons Container -->
+          <div id="buttons_container">
+            <div type="image" class="myButtons" id="runBtn"
+                 ng-click="clickButton('run')" title="Continue">
+              <div id="innerRunBtn" ng-show="currentState != 'NO_INFERIOR'"></div>
+              <div id="innerRunBtnText" ng-show="currentState == 'NO_INFERIOR'">Run</div>
+            </div>
+            <div type="image" class="myButtons" id="stopBtn"
+                 ng-disabled="!(state.stopBtn.indexOf(currentState) > -1)"
+		 ng-click="stop()" title="Stop">
+              <div id="innerStopBtn"></div>
+            </div>
+            <div type="image" class="myButtons" id="stepOverBtn"
+                 ng-disabled="!(state.stepOverBtn.indexOf(currentState) > -1)"
+		 ng-click="clickButton('stepOver')" title="Next">
+            </div>
+            <div type="image" class="myButtons" id="stepIntoBtn"
+                 ng-disabled="!(state.stepIntoBtn.indexOf(currentState) > -1)"
+		 ng-click="clickButton('stepInto')" title="Step Into">
+            </div>
+            <div type="image" class="myButtons" id="stepReturnBtn"
+                 ng-disabled="!(state.stepReturnBtn.indexOf(currentState) > -1)"
+                 ng-click="clickButton('stepReturn')" title="Step Out">
+            </div>
+          </div> <!-- end buttons container -->
+
+	  <!-- Package directive -->
+	  <deeva-package breadcrumb="breadcrumb" package-dir="package_dir" source-click="loadFileOnPage2"></deeva-package>
+	  <!-- CodeMirror Instance -->
+	  <div id="codeInputPane" class="outer-circle"></div>
+        </div> <!-- end col-md-6 -->
+
+
+        <div class="tooltip">
+          <div class="tooltip-inner"></div>
+          <div class="tooltip-arrow"></div>
+        </div>
+
+	<!-- Begin Stack/Heap section, bring this into a new controller, easier to separate -->
+        <div class="col-md-6">
+          <div id="state">{{stateToPresent[currentState]}}</div>
+          <p id="console-btn" ng-click="showStdIn=!showStdIn">Console</p>
+          <div ng-show="showStdIn" id="terminal"></div>
+
+          <div class="row" id="heap_stack">
+            <div id="visual">
+              <div class="col-md-4">
+                <div id="stack_td"></div>
+              </div>
+              <div class="col-md-8">
+                <div id="heap_td"></div>
+              </div>
+            </div>
+          </div> <!-- end heap/stack div -->
+
+
+        </div> <!-- end Stack/Heap... section -->
+      </div> <!-- end row -->
+    </div> <!-- end container -->
+
+  </body>
 
 </html>

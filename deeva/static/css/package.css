@@ -1,0 +1,9 @@
+.unselected { font-style:italic; }
+.breadcrumb.packages > li.ng-scope + li:before {
+    content: "\00a0/";
+}
+
+.breadcrumb.packages ul.dropdown-menu a.selected {
+    background-color: rgba(200,200,200,0.7);
+    color: #333333;
+}

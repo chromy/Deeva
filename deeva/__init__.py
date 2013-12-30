@@ -7,6 +7,9 @@ import pprint
 from search import get_source_files
 
 app = Flask('deeva')
+app.package_dict = {}
+app.sources = {}
+app.source_code = {}
 
 @app.route("/")
 def index():
@@ -81,43 +84,73 @@ def get_main_class():
     return get_code(app.program+".java")
 
 def form_package_dict(sources):
-    package_dict = { 'default': {} }
-    for source in sources:
-        parts = source.split('.')
-        packages = parts[:-1]
-        className = parts[-1:][0]
+    # Get cached version of the package_dict, we only need to do this once
+    if not app.package_dict:
 
-        current = package_dict
+        package_dict = { '(default)': {}, '&sources': {}}
+        for source in sources:
+            parts = source.split('.')
+            packages = parts[:-1]
+            className = parts[-1:][0]
 
-        if not packages:
-            current = package_dict['default']
+            current = package_dict
 
-        for package in packages:
-            if not current.get(package):
-                current[package] = {}
+            if not packages:
+                current = package_dict['(default)']
 
-            current = current[package]
+            for package in packages:
+                if not current.get(package):
+                    current[package] = {'&sources':{}}
 
-        if not current.get('$sources'):
-            current['$sources'] = {}
+                current = current[package]
 
-        current['$sources'][className] = {'location' : sources[source],
-                                          'className': source }
+            if not current.get('&sources'):
+                current['&sources'] = {}
 
-    return package_dict
+            current['&sources'][className] = {
+                'className': source,
+            }
 
-@app.route("/file/")
+        # Save the package dict
+        app.package_dict = package_dict
+
+    return app.package_dict
+
+def get_sources():
+    if not app.sources:
+        app.sources = app.debugger.getSources()
+
+    return app.sources
+
+@app.route("/files")
 def get_files():
-    files = get_source_files(os.getcwd())
-    #sources = app.debugger.getSources()
-    #package_dir = form_package_dict(sources)
+    sources = get_sources()
+    package_dir = form_package_dict(sources)
 
-    return jsonify(files=files)
+    return jsonify(package_dir=package_dir)
 
 @app.route("/file/<name>.json")
 def get_code(name):
     code = load(name)
     return jsonify(file_name=name, code=code)
+
+@app.route("/file/<classname>")
+def get_code2(classname):
+    if not app.source_code.get(classname):
+        sources = get_sources()
+        location = sources.get(classname)
+
+        print "retrieving source code for class:", classname
+        print "location:", location
+
+        if not location:
+            return jsonify({})
+
+        app.source_code[classname] = load(location)
+
+    response = {'classname' : classname, 'code' : app.source_code[classname]}
+
+    return jsonify(response)
 
 @app.route("/getCurrentState")
 def get_state():
@@ -166,8 +199,11 @@ def make_api_response(f, *args, **kargs):
 
         # Need to do some sort of recursive converter, so that we don't have
         # malicious strings in Java that will kill our eval/repr etc
-        result2 = {'state' : result['state'],
-                   'line_number' : result['line_number'],
-                   'stack' : eval(repr(st))}
+        result2 = {
+            'state' : result['state'],
+            'line_number' : result['line_number'],
+            'stack' : eval(repr(st)),
+            'current_class' : result['current_class']
+        }
         pprint.pprint(result2['stack']);
         return jsonify(status='ok', stdout=stdout, stderr=stderr, **result2)

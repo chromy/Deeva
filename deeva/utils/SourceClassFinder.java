@@ -194,6 +194,8 @@ public class SourceClassFinder {
             findSources(sourcePath, "");
         }
 
+        /* For all the sources found, create an entry in the map for its
+        location */
         for (String className : classes.keySet()) {
             SourceClassMeta meta = classes.get(className);
             String fileName = meta.getSourceFileName();

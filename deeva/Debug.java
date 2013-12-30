@@ -41,19 +41,24 @@ public class Debug extends EventHandlerBase {
     private Map<Breakpoint, BreakpointRequest> breakpoints;
     private LocatableEvent lastLocatableEvent;
     private SourceClassFinder finder;
+    private String currentClass;
+    private int line_number = 0;
 
     private StepRequest stepRequest;
 
-    int line_number = 0;
+
 
     public Debug(DebugResponseQueue outQueue, DebugResponseQueue inQueue,
-                 List<String> classPaths, List<String> sourcePaths) {
+                 List<String> classPaths, List<String> sourcePaths,
+                 String mainClass) {
         breakpoints = new HashMap<Breakpoint, BreakpointRequest>();
         this.outQueue = outQueue;
         this.inQueue = new LinkedBlockingQueue<String>();
         sema = new Semaphore(0);
         state = State.NO_INFERIOR;
         finder = new SourceClassFinder(classPaths, sourcePaths);
+        currentClass = mainClass;
+
         /*  Generate all the classes and their relevant sources the debuggee
             may need
          */
@@ -180,6 +185,7 @@ public class Debug extends EventHandlerBase {
         result.put("state", state);
         result.put("line_number", line_number);
         result.put("stack", stack);
+        result.put("current_class", currentClass);
         return result;
     }
 
@@ -283,7 +289,10 @@ public class Debug extends EventHandlerBase {
     }
 
     public void locatableEvent(LocatableEvent e) {
-        this.line_number = e.location().lineNumber();
+        Location location = e.location();
+        this.line_number = location.lineNumber();
+        this.currentClass = location.declaringType().name();
+
         /* Save the last locatable event, for heap inspection */
         this.lastLocatableEvent = e;
     }
