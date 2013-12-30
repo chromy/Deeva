@@ -6,7 +6,7 @@ from lettuce import step, world, before, after
 @step(r'I have a "(.*)" Java program')
 def java_program(step, directory):
     path = os.path.join(world.old_cwd, 'examples', directory)
-    os.chdir(path)
+    #os.chdir(path)
 
 @step(r'I run the command "(.*)"')
 def run_the_command(step, cmd):
