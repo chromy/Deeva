@@ -87,7 +87,7 @@ directives.directive('deevaPackage', ['PackageService', function(PackageService)
                     return scope.breadcrumb[scope.breadcrumb.length - 1] == scope.currentClass;
                 }
 
-                return scope.breadcrumb.join(".") == currentClass;
+                return scope.breadcrumb.join(".") == scope.currentClass;
             };
 
             scope.selectCurrentClass = function() {

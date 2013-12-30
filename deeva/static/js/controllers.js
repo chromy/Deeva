@@ -8,7 +8,7 @@ var BACK_CLASS = "CodeMirror-activeline-background";
 
 // Currently is a whole document controller
 deeva.controller('SimpleController', ['$scope', '$http', 'FileService', 'MiscService',
-                                      function ($scope, $http, FileService, MiscService) {
+function ($scope, $http, FileService, MiscService) {
     $scope.currentLine = -1;
     $scope.breakPoints = new Array();
     $scope.showStdIn = true;

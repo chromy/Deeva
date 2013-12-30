@@ -12,7 +12,7 @@ Feature: Deeva should be runnable
        Given I have a "helloworld" Java program
         When I run the command "run_deeva.py examples.helloworld.HelloWorld"
         Then I see deeva running
-         And I see "class HelloWorld"
+         And I should see "class HelloWorld" within 10 seconds
 
     Scenario: Deeva gives useful error message
         When I run the command "run_deeva.py"
