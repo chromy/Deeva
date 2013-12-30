@@ -146,13 +146,14 @@ public class Debug extends EventHandlerBase {
             throws IncompatibleThreadStateException, AbsentInformationException,
             ClassNotLoadedException
     {
-        Map<String, String> stack = new HashMap<String, String>();
         /* Try to extract stack variables - Hack */
         /* Get the thread in which we're stepping */
         ThreadReference threadRef = event.thread();
 
         /* Get the top most stack frame in the thread that we've stopped in */
         StackFrame stackFrame = threadRef.frame(0);
+        System.err.println("-------------");
+        System.err.println("Number of Frames: " + threadRef.frameCount());
 
         /* We want to create a list of maps */
         List<Map<String, String>> localVariables = new LinkedList<Map<String, String>>();

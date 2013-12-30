@@ -2,11 +2,17 @@ package examples.simpleloop;
 
 public class SimpleLoop {
     int field_int;
-    boolean field_bool;
-    short field_short;
+    private boolean field_bool;
+    protected short field_short;
+    final long field_long;
+    SimpleLoop sl;
 
     public enum EnumTest {
       SUNDAY, MONDAY, TUESDAY;
+    }
+
+    public SimpleLoop() {
+        field_long = 12345;
     }
 
     public void testFunc() {

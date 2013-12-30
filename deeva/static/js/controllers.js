@@ -69,6 +69,9 @@ function ($scope, $http, FileService, MiscService) {
 
             $scope.breadcrumb = new_breadcrumb;
 
+            /* Remove the line highlights */
+            $scope.codeMirror.removeLineClass($scope.currentLine, "background", BACK_CLASS);
+
             /* Update the current class */
             $scope.current_class = data.current_class;
 
@@ -79,9 +82,9 @@ function ($scope, $http, FileService, MiscService) {
                 var current_line = data.line_number;
 
                 $scope.currentLine = current_line;
-                if (prev_line >= 0) {
+                /*if (prev_line >= 0) {
                     $scope.codeMirror.removeLineClass(prev_line, "background", BACK_CLASS);
-                }
+                }*/
 
                 if (current_line >= 0) {
                     $scope.codeMirror.addLineClass(current_line, 'background', BACK_CLASS);

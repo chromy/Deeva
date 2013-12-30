@@ -87,8 +87,12 @@ public class ValueProcessor {
 
                     /* Process the value */
                     Value value = objRef.getValue(field);
+
                     Map<String, String> processedValue =
                             ValueProcessor.processValueOverview(value);
+                    if (value == null) {
+                        processedValue.put("type", field.typeName());
+                    }
 
                     Boolean isFinal = field.isFinal();
                     Boolean isStatic = field.isStatic();
@@ -125,6 +129,12 @@ public class ValueProcessor {
 
     public static Map<String, String> processValueOverview(Value variableValue) {
         Map<String, String> varMap = new HashMap<String, String>();
+
+        /* Handle null objects */
+        if (variableValue == null) {
+            varMap.put("value", "null");
+            return varMap;
+        }
 
         Type valueType = variableValue.type();
         varMap.put("type", valueType.name());
