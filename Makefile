@@ -7,12 +7,15 @@ CLASS_PATH:="$(PY4J_JAR_PATH):$(TOOL_JAR_PATH)"
 
 all: build build_examples
 
-build:
+build: clean
 	test $(TOOL_JAR_PATH) || test -f $(TOOL_JAR_PATH)
 	javac deeva/*.java deeva/processor/*.java deeva/utils/*.java -classpath $(CLASS_PATH)
 
-build_examples:
+build_examples: clean_examples
 	 $(MAKE) -C examples
+
+clean_examples:
+	$(MAKE) -C examples clean
 
 setup_deploy:
 	test -d .env || virtualenv .env

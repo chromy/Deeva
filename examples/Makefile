@@ -11,6 +11,5 @@ make:
 
 clean:
 	for dir in $(EXAMPLES); do \
-		cd $$dir; rm *.class; cd ..; \
+		cd $$dir; rm -f *.class; cd ..; \
 	done
-
