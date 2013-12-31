@@ -1,9 +1,7 @@
 package deeva;
 
-import deeva.utils.ProcessOutputStreamGetter;
-
-import java.io.*;
-import java.rmi.server.ServerRef;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.concurrent.BlockingQueue;
 
 class StdInRedirectThread extends Thread {

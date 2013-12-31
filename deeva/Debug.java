@@ -8,7 +8,6 @@ import com.sun.jdi.connect.VMStartException;
 import com.sun.jdi.event.*;
 import com.sun.jdi.request.*;
 import deeva.processor.ValueProcessor;
-import deeva.utils.ProcessOutputStreamGetter;
 import deeva.utils.SourceClassFinder;
 
 import java.io.IOException;
