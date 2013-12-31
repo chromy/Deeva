@@ -246,7 +246,7 @@ function ($scope, $http, FileService, MiscService) {
             if (input == "") {
                 printToTerminal("\n", false);
             } else {
-                sendInput($scope, input);
+                sendInput(input);
             }
         }, {
             // Initial setup for terminal
@@ -258,12 +258,14 @@ function ($scope, $http, FileService, MiscService) {
     }
 
     function sendInput(input) {
+        console.log(input);
         $scope.terminal.set_prompt(INITIAL_PROMPT);
-        $http.post('input', input)
+        $http.post('pushInput', {message:input+'\n'})
             .success(function(data) {
+                console.log(data)
             })
-            .error(function(data) {
-                console.error("There is an error sending input " + data.status);
+            .error(function(status) {
+                console.error("There is an error sending input " + status);
             });
     }
 

@@ -147,10 +147,15 @@ def get_code(classname):
 def get_state():
     return make_api_response(app.debugger.getState)
 
-@app.route("/pushStdIn/<count>")
-def push_stdin(count):
-    app.debugger.putStdInMessage(str(count)+ '\nTesting123\n')
-    return count
+@app.route("/pushInput", methods=["POST"])
+def push_input():
+    args = request.get_json()
+    message = args.get('message')
+
+    print "PYTHON -", message
+
+    app.debugger.putStdInMessage(message)
+    return jsonify(success=True)
 
 @app.route("/getHeapObject", methods=["POST"])
 def get_heap_object():
