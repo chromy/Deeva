@@ -1,4 +1,4 @@
-EXAMPLES = helloworld infinite_helloworld simpleloop runtime_exception functions easy_math multiple_classes demo
+EXAMPLES = helloworld infinite_helloworld simpleloop runtime_exception functions easy_math multiple_classes demo stdin
 
 .PHONY = make clean
 
