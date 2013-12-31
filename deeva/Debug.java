@@ -8,6 +8,7 @@ import com.sun.jdi.connect.VMStartException;
 import com.sun.jdi.event.*;
 import com.sun.jdi.request.*;
 import deeva.processor.ValueProcessor;
+import deeva.utils.ProcessOutputStreamGetter;
 import deeva.utils.SourceClassFinder;
 
 import java.io.IOException;
@@ -475,13 +476,12 @@ public class Debug extends EventHandlerBase {
                 process.getInputStream(),
                 this.outQueue);
 
-        /*inThread = new StdInRedirectThread("stdin",
-                process.getOutputStream(),
-                this.inQueue);*/
+        inThread = new StdInRedirectThread("stdin",
+                process.getOutputStream(), this.inQueue);
 
         outThread.start();
         errThread.start();
-        //inThread.start();
+        inThread.start();
         /* Somehow need to capture input i.e. in the other direction */
     }
 

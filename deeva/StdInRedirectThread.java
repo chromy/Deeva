@@ -1,41 +1,57 @@
 package deeva;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
+import deeva.utils.ProcessOutputStreamGetter;
+
+import java.io.*;
+import java.rmi.server.ServerRef;
 import java.util.concurrent.BlockingQueue;
 
 class StdInRedirectThread extends Thread {
     private final BlockingQueue<String> resQueue;
-    private final OutputStreamWriter out;
+    private final PrintStream out;
 
-    StdInRedirectThread(String name, OutputStream out,
-			BlockingQueue<String> resQueue)
+    StdInRedirectThread(String name, OutputStream os,
+                        BlockingQueue<String> resQueue)
     {
-	super(name);
-	this.out = new OutputStreamWriter(out);
-	//this.out = new PrintStream(out);
-	this.resQueue = resQueue;
-	setPriority(Thread.MAX_PRIORITY-1);
+        super(name);
+        this.out = new PrintStream(os);
+        this.resQueue = resQueue;
+        setPriority(Thread.MAX_PRIORITY-1);
     }
 
     @Override
     public void run() {
-	try {
-	    /* We want to write to the OutputStream (which is
-	     * connected to the vm process's stdin */
-	    /* We only get Strings from the queue, let PrintStream
-	     * handle buffering etc. */
-	    while (true) {
-		String s = resQueue.take();
-		System.err.println("STDINREDTHREAD: " + s);
-		//this.out.print(s);
-		this.out.write('c');
-	    }
-	} catch (InterruptedException exc) {
-	    System.err.println("Child Interrupted Exception - " + exc);
-	} catch (IOException e) {
+        System.err.println("Running STDINREDTHREAD");
 
-	}
+        try {
+            /* We want to write to the OutputStream (which is
+             * connected to the vm process's stdin */
+            /* We only get Strings from the queue, let PrintStream
+             * handle buffering etc. */
+
+            while (true) {
+                try {
+                    /* Get next string off the queue - Blocking */
+                    System.err.println("STDINTHREAD: Getting item off queue");
+                    String s = resQueue.take();
+                    System.err.println("STDINTHREAD: Item retrieved");
+
+                    /* Write to the debuggee's stdin */
+                    out.print(s);
+
+                    //TODO: Remove later
+                    System.err.println("STDINTHREAD: " + s);
+
+                    /* Force this to be pushed to `stdin' */
+                    out.flush();
+                } catch (InterruptedException e) {
+
+                }
+            }
+        } finally {
+
+        }
+
+
     }
 }
