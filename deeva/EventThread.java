@@ -37,9 +37,8 @@ public class EventThread extends Thread {
                 //handleDisconnectedException();
                 break;
             } catch (Exception e) {
-		// I'M SO SORRY
-		
-	    }
+                // I'M SO SORRY
+            }
         }
     }
 }

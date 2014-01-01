@@ -154,8 +154,7 @@ def push_input():
 
     print "PYTHON -", message
 
-    app.debugger.putStdInMessage(message)
-    return jsonify(success=True)
+    return make_api_response(app.debugger.putStdInMessage, message)
 
 @app.route("/getHeapObject", methods=["POST"])
 def get_heap_object():
@@ -191,6 +190,17 @@ def make_api_response(f, *args, **kargs):
                 )
     else:
         stdout, stderr = debug.pop_output()
+
+        # If we're awaiting IO, the vm is not a suspended, so just dump stdin
+        # and stderr and the state. We can't inspect variables etc.
+
+        # Alternatively if we're just inputting data, when debuggee program not
+        # expecting, we similarly dump stdout, stderr and status, as the vm is
+        # not in a suspend state.
+
+        if result['state'] == "AWAITING_IO" or result.get('non_sema'):
+            return jsonify(stdout=stdout, stderr=stderr, state=result['state'])
+
         # XXX: fix
         result['line_number'] -= 1
         st = result['stack']

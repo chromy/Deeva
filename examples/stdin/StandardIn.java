@@ -18,8 +18,8 @@ class StandardIn {
             System.out.println("Hi " + name + ", now enter your age: ");
             String age = br.readLine();
             System.out.println("So you, " + name + " are " + age + " years old");
-        } catch (Exception e) {
-
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
         System.out.println("Done with BufferedReader! :D");
@@ -42,7 +42,7 @@ class StandardIn {
         int number = sc.nextInt();
         System.out.println("Your favourite number is: " + number);
 
-        System.out.println("Done wtih Scanner! :D");
+        System.out.println("Done with Scanner! :D");
 
         System.out.println("Goodbye, I think we're done here");
     }

@@ -16,10 +16,21 @@ function ($scope, $http, FileService, MiscService) {
     $scope.currentPrompt = "";
     $scope.stateToPresent = {"STASIS" : "Program paused",
                              "RUNNING" : "Program running",
-                             "NO_INFERIOR" : "Program ended"};
+                             "NO_INFERIOR" : "Program ended",
+                             "AWAITING_IO" : "Awaiting I/O"};
     $scope.currentState = "";
     $scope.breadcrumb = ['(default)', 'Select package or source file']; /* Set to be the default package */
     $scope.package_dir = {};
+
+    // ZZZ: Maybe should be in a directive thing somewhere
+    $scope.state = {
+        runBtn :['STASIS', 'NO_INFERIOR'],
+        stopBtn : ['RUNNING', 'AWAITING_IO'],
+        stepOverBtn : ['STASIS'],
+        stepIntoBtn : ['STASIS'],
+        stepReturnBtn : ['STASIS', 'NO_INFERIOR']
+    }
+
 
     FileService.getPackages(function(package_dir) {
         $scope.package_dir = package_dir;
@@ -55,6 +66,10 @@ function ($scope, $http, FileService, MiscService) {
 
         /* Set state of buttons */
         $scope.currentState = data.state;
+
+        if (data.state == 'AWAITING_IO') {
+            $scope.terminal.focus(true);
+        }
 
         /* Update the codemirror instance and the stack/heap visuals */
         /* TODO: Need a button in the package directive to allow us to go back to current class */
@@ -108,15 +123,6 @@ function ($scope, $http, FileService, MiscService) {
         if (data.stderr) {
             printToTerminal(data.stderr, true);
         }
-    }
-
-    // ZZZ: Maybe should be in a directive thing somewhere
-    $scope.state = {
-        runBtn :['STASIS', 'NO_INFERIOR'],
-        stopBtn : ['RUNNING'],
-        stepOverBtn : ['STASIS'],
-        stepIntoBtn : ['STASIS'],
-        stepReturnBtn : ['STASIS', 'NO_INFERIOR']
     }
 
     /* Gets the current state of the debugger */
@@ -242,7 +248,7 @@ function ($scope, $http, FileService, MiscService) {
 
     function displayTerminal() {
         $scope.terminal = $('#terminal').terminal(function(input, term) {
-            // This function is called whenever the enter is hit.
+            /*This function is called whenever the return button is hit. */
             if (input == "") {
                 printToTerminal("\n", false);
             } else {
@@ -263,6 +269,7 @@ function ($scope, $http, FileService, MiscService) {
         $http.post('pushInput', {message:input+'\n'})
             .success(function(data) {
                 console.log(data)
+                updateState(data);
             })
             .error(function(status) {
                 console.error("There is an error sending input " + status);

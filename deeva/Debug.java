@@ -20,7 +20,8 @@ public class Debug extends EventHandlerBase {
     public static enum State {
         NO_INFERIOR,
         STASIS,
-        RUNNING;
+        RUNNING,
+        AWAITING_IO;
 
         public String __html__() {
             return this.toString();
@@ -43,6 +44,9 @@ public class Debug extends EventHandlerBase {
     private SourceClassFinder finder;
     private String currentClass;
     private int line_number = 0;
+    private ObjectReference systemInObj;
+    private Method sysInReadMethod;
+    private Method sysInAvailableMethod;
 
     private StepRequest stepRequest;
 
@@ -79,6 +83,31 @@ public class Debug extends EventHandlerBase {
             prepareRequest.addClassExclusionFilter (ex);
         }
 
+        /* Find system.in which is part of the bootstrap classloading,
+        maybe put in a new class or something */
+        List<ReferenceType> classes = vm.classesByName("java.lang.System");
+        ReferenceType systemClass = classes.get(0);
+        Field sysInField = systemClass.fieldByName("in");
+        this.systemInObj = (ObjectReference) systemClass.getValue(sysInField);
+        ReferenceType sysInRefType = this.systemInObj.referenceType();
+        List<Method> readMethods = sysInRefType.methodsByName("read");
+        this.sysInAvailableMethod = sysInRefType.methodsByName("available").get(0);
+
+        /* Get the read method we're interested in */
+        this.sysInReadMethod = null;
+        for (Method method : readMethods) {
+            if (method.argumentTypeNames().size() == 3) {
+                this.sysInReadMethod = method;
+            }
+        }
+
+        /* Listen for method entry requests in the systemInObj instance */
+        MethodEntryRequest mer = reqMgr.createMethodEntryRequest();
+        mer.addClassFilter(sysInRefType);
+
+        mer.setSuspendPolicy(EventRequest.SUSPEND_ALL);
+        mer.enable();
+
         prepareRequest.setSuspendPolicy(EventRequest.SUSPEND_ALL);    // suspend so we can examine vars
         prepareRequest.enable();
         attemptToSetWaitingBreakpoints();
@@ -88,12 +117,30 @@ public class Debug extends EventHandlerBase {
         return this.finder.getAllSources();
     }
 
-    public void putStdInMessage(String msg) throws InterruptedException {
+    public Map<String, Object> putStdInMessage(String msg) throws
+            InterruptedException {
         /* Possibly more validation if necessary */
 
         /* Pushes given string msg, on to the inQueue that will be fed
          * into the debuggee stdin */
         this.inQueue.put(msg);
+
+        Map<String, Object> ioStatusMap = new HashMap<String, Object>();
+        ioStatusMap.put("input_received", Boolean.TRUE);
+
+        if (state == State.AWAITING_IO) {
+            state = State.RUNNING;
+            sema.acquire();
+            Map<String, Object> stateMap = getState();
+
+            stateMap.putAll(ioStatusMap);
+            return stateMap;
+        }
+
+        ioStatusMap.put("state", state);
+        ioStatusMap.put("non_sema", Boolean.TRUE);
+
+        return ioStatusMap;
     }
 
     public Map<String, ? extends Object> getHeapObject(Long uniqueRefID,
@@ -289,7 +336,7 @@ public class Debug extends EventHandlerBase {
             ClassNotLoadedException
     {
         System.err.println(e.getClass());
-        if (e instanceof LocatableEvent) {
+        if (e instanceof LocatableEvent && !(e instanceof MethodEntryEvent)) {
             locatableEvent((LocatableEvent)e);
         }
         super.handleEvent(e);
@@ -384,6 +431,80 @@ public class Debug extends EventHandlerBase {
         state = State.STASIS;
         stack = getStack(event);
         sema.release();
+    }
+
+    @Override
+    public void methodEntryEvent(MethodEntryEvent event) {
+        /* Tailored towards the other thing, refactor later (observer) */
+        //System.err.println("method name entering: " + event.method().name());
+
+        try {
+            Method method = event.method();
+
+            final ThreadReference thread = event.thread();
+            System.err.println("Threadname: " + thread.name());
+            final ObjectReference bisRef = thread.frame(0).thisObject();
+
+            /* Skip any method we're not interested in i.e. read */
+            if (!method.equals(this.sysInReadMethod)
+                    || !bisRef.equals(this.systemInObj)) {
+                vm.resume();
+                return;
+            }
+
+            System.err.println("Reading");
+            final Method availableMethod = this.sysInAvailableMethod;
+
+            /* See if we need to get more data from the user */
+
+            Runnable vmInvoker = new Runnable() {
+                /* This should run in a new thread to avoid deadlock,
+                i.e. let the event handler finish its loop and go back to
+                expecting the next event. This is described in more detail in
+                 the JDI spec */
+                @Override
+                public void run() {
+                    IntegerValue available;
+                    try {
+                        available = (IntegerValue)bisRef
+                                .invokeMethod(thread, availableMethod,
+                                        new LinkedList<Value>(), 0);
+                        int bytesAvailable = available.value();
+                        System.err.println("JDI - Available Bytes: " +
+                                bytesAvailable);
+
+                        if (bytesAvailable == 0) {
+                            /* Change the state that we're in */
+                            state = State.AWAITING_IO;
+                            /* Release the semaphore that is being held */
+                            sema.release();
+                        }
+
+                    } catch (InvalidTypeException e) {
+                        System.err.println("EXCEPTION: ite");
+                        e.printStackTrace();
+                    } catch (ClassNotLoadedException e) {
+                        System.err.println("EXCEPTION: cnl");
+                        e.printStackTrace();
+                    } catch (IncompatibleThreadStateException e) {
+                        System.err.println("EXCEPTION: its");
+                        e.printStackTrace();
+                    } catch (InvocationException e) {
+                        System.err.println("EXCEPTION: i");
+                        e.printStackTrace();
+                    }
+
+                    vm.resume();
+                }
+            };
+
+            /* Start this in a new thread */
+            Thread t = new Thread(vmInvoker);
+            t.start();
+        } catch (IncompatibleThreadStateException e) {
+            System.err.println(e);
+            vm.resume();
+        }
     }
 
     @Override
