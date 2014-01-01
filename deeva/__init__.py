@@ -21,6 +21,7 @@ def index():
 @app.route("/breakPoints", methods=['POST', 'GET'])
 def breakPoints():
     if request.method == 'POST':
+        # Possibly old code?
         breakPoints = request.get_json()
         print breakPoints
         for b in breakPoints:
@@ -35,49 +36,43 @@ def breakPoints():
 
 @app.route("/stepOver", methods=['POST'])
 def step_over():
-    if request.method == 'POST':
-        return make_api_response(app.debugger.stepOver)
+    return make_api_response(app.debugger.stepOver)
 
 @app.route("/stepInto", methods=['POST'])
 def step_into():
-    if request.method == 'POST':
-        return make_api_response(app.debugger.stepInto)
+    return make_api_response(app.debugger.stepInto)
 
 @app.route("/stepReturn", methods=['POST'])
 def step_return():
-    if request.method == 'POST':
-        return make_api_response(app.debugger.stepReturn)
+    return make_api_response(app.debugger.stepReturn)
 
 @app.route("/setBreakpoint", methods=['POST'])
 def set_breakpoint():
-    if request.method == 'POST':
-        breakpoint = request.get_json()
-        print breakpoint
-        clas = breakpoint['clas']
-        line = int(breakpoint['lineNumber'])+1
-        result = app.debugger.setBreakpoint(clas, line)
-        return jsonify(success=result)
+    breakpoint = request.get_json()
+    print breakpoint
+    clas = breakpoint['clas']
+    line = int(breakpoint['lineNumber'])+1
+    result = app.debugger.setBreakpoint(clas, line)
+    return jsonify(success=result)
 
 @app.route("/unsetBreakpoint", methods=['POST'])
 def unset_breakpoint():
-    if request.method == 'POST':
-        breakpoint = request.get_json()
-        clas = breakpoint['clas']
-        line = int(breakpoint['lineNumber'])+1
-        result = app.debugger.unsetBreakpoint(clas, line)
-        return jsonify(success=result)
+    breakpoint = request.get_json()
+    clas = breakpoint['clas']
+    line = int(breakpoint['lineNumber'])+1
+    result = app.debugger.unsetBreakpoint(clas, line)
+    return jsonify(success=result)
 
 @app.route("/run", methods=['POST'])
 def run():
-    if request.method == 'POST':
-        if app.debugger.getStateName() == "NO_INFERIOR":
-            print 'Starting program...'
-            # TODO Pass in the actual class path to the *debuggee program* here
-            app.debugger.start(app.program)
-        else:
-            print 'Continuing program...'
+    if app.debugger.getStateName() == "NO_INFERIOR":
+        print 'Starting program...'
+        # TODO Pass in the actual class path to the *debuggee program* here
+        app.debugger.start(app.program)
+    else:
+        print 'Continuing program...'
 
-        return make_api_response(app.debugger.run)
+    return make_api_response(app.debugger.run)
 
 def form_package_dict(sources):
     # Get cached version of the package_dict, we only need to do this once

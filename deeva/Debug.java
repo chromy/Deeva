@@ -160,13 +160,11 @@ public class Debug extends EventHandlerBase {
 
         /* Go through each matching class and look for unique ID */
         for (ReferenceType matchingClass : matchingClasses) {
-            System.err.println("Found class");
-            /* Go through all the instance of this class and look for the id */
+            /* Go through all instances of this class and look for the id */
             List<ObjectReference> instances = matchingClass.instances(0);
             for (ObjectReference instance : instances) {
                 if (instance.uniqueID() == uniqueRefID) {
                     objectFound = instance;
-                    System.err.println("Found instance! :D");
                     break;
                 }
             }
@@ -442,7 +440,6 @@ public class Debug extends EventHandlerBase {
             Method method = event.method();
 
             final ThreadReference thread = event.thread();
-            System.err.println("Threadname: " + thread.name());
             final ObjectReference bisRef = thread.frame(0).thisObject();
 
             /* Skip any method we're not interested in i.e. read */
@@ -574,7 +571,7 @@ public class Debug extends EventHandlerBase {
         Map<String, Connector.Argument> arguments = connectorArguments(connector, mainArgs);
 
         try {
-            System.err.println("beginning lanuch");
+            System.err.println("beginning launch");
             return connector.launch(arguments);
         } catch (IOException exc) {
             throw new Error("Unable to launch target VM: " + exc);
@@ -585,7 +582,7 @@ public class Debug extends EventHandlerBase {
         }
     }
 
-    void redirectOutput() {
+    private void redirectOutput() {
         Process process = vm.process();
 
         errThread = new StreamRedirectThread("stderr",

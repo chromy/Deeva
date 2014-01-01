@@ -20,7 +20,7 @@ function ($scope, $http, FileService, MiscService) {
     $scope.currentPrompt = "";
     $scope.stateToPresent = {"STASIS" : "Program paused",
                              "RUNNING" : "Program running",
-                             "NO_INFERIOR" : "Program ended",
+                             "NO_INFERIOR" : "Program not running",
                              "AWAITING_IO" : "Awaiting I/O"};
     $scope.currentState = "";
     $scope.breadcrumb = ['(default)', 'Select package or source file']; /* Set to be the default package */
@@ -31,7 +31,7 @@ function ($scope, $http, FileService, MiscService) {
     /* Define what states that the given button is allowed to be enabled in */
     $scope.state = {
         runBtn :['STASIS', 'NO_INFERIOR'],
-        stopBtn : ['RUNNING', 'AWAITING_IO'],
+        stopBtn : ['RUNNING', 'AWAITING_IO', 'STASIS'],
         stepOverBtn : ['STASIS'],
         stepIntoBtn : ['STASIS'],
         stepReturnBtn : ['STASIS', 'NO_INFERIOR']
@@ -71,12 +71,12 @@ function ($scope, $http, FileService, MiscService) {
         /* Set state of buttons */
         $scope.currentState = data.state;
 
+        /* Focus input on terminal if we're awaiting I/O */
         if (data.state == 'AWAITING_IO') {
             $scope.terminal.focus(true);
         }
 
         /* Update the codemirror instance and the stack/heap visuals */
-        /* TODO: Need a button in the package directive to allow us to go back to current class */
         if (data.line_number && data.current_class) {
             /* Set the breadcrumb (if need be) */
             var new_breadcrumb = data.current_class.split(".");
@@ -140,7 +140,7 @@ function ($scope, $http, FileService, MiscService) {
             });
     }
 
-    // Initialze codeMirror and display it
+    /* Initialze codeMirror and display it */
     /* YYY: Should be in its own directive controller thing */
     function setUpCodeMirror() {
         //Initialize codeMirror
@@ -157,8 +157,8 @@ function ($scope, $http, FileService, MiscService) {
         $scope.cmMaxWidth = (80) * ($scope.codeMirror.defaultCharWidth()) + 74;
     }
 
-    // Set an event handler when the gutter is clicked
-    // which update frontend as well ass invoke a method setBreakPoints
+    /* Set an event handler when the gutter is clicked
+       which updates frontend as well as invokthe the method setBreakPoints */
     function setGutterHandler() {
         $scope.codeMirror.on("gutterClick", function(cm, line) {
             var info = cm.lineInfo(line);
