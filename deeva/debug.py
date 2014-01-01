@@ -116,6 +116,7 @@ def pop_output():
             break
         else:
             out_queue.response_queue.task_done()
+
     stdout = ''.join([msg for stream, msg in results if stream == "stdout"])
     stderr = ''.join([msg for stream, msg in results if stream == "stderr"])
     return stdout, stderr

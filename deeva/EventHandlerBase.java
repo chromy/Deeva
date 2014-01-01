@@ -5,7 +5,7 @@ import com.sun.jdi.ClassNotLoadedException;
 import com.sun.jdi.IncompatibleThreadStateException;
 import com.sun.jdi.event.*;
 
-
+public class EventHandlerBase implements EventHandler {
     public void handleEvent(Event event)
             throws IncompatibleThreadStateException, AbsentInformationException,
             ClassNotLoadedException

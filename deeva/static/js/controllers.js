@@ -9,6 +9,10 @@ var BACK_CLASS = "CodeMirror-activeline-background";
 // Currently is a whole document controller
 deeva.controller('SimpleController', ['$scope', '$http', 'FileService', 'MiscService',
 function ($scope, $http, FileService, MiscService) {
+    /*
+     * Initialise scope variables
+     */
+
     $scope.currentLine = -1;
     $scope.breakPoints = new Array();
     $scope.showStdIn = true;
@@ -21,8 +25,10 @@ function ($scope, $http, FileService, MiscService) {
     $scope.currentState = "";
     $scope.breadcrumb = ['(default)', 'Select package or source file']; /* Set to be the default package */
     $scope.package_dir = {};
+    $scope.current_class = "";
 
     // ZZZ: Maybe should be in a directive thing somewhere
+    /* Define what states that the given button is allowed to be enabled in */
     $scope.state = {
         runBtn :['STASIS', 'NO_INFERIOR'],
         stopBtn : ['RUNNING', 'AWAITING_IO'],
@@ -35,8 +41,6 @@ function ($scope, $http, FileService, MiscService) {
     FileService.getPackages(function(package_dir) {
         $scope.package_dir = package_dir;
     });
-
-    $scope.current_class = "";
 
     init();
     /* ZZZ: These lines should be handled by directives containing the separate ui elements */
@@ -91,7 +95,7 @@ function ($scope, $http, FileService, MiscService) {
             $scope.current_class = data.current_class;
 
             /* Update the current code mirror instance */
-            $scope.loadFileOnPage2(data.current_class, function() {
+            $scope.loadFile(data.current_class, function() {
                 /* Update cm */
                 var prev_line = $scope.currentLine;
                 var current_line = data.line_number;
@@ -285,7 +289,7 @@ function ($scope, $http, FileService, MiscService) {
     }
 
     /* Refactoring of loading file on page, refactor again somewhere */
-    $scope.loadFileOnPage2 = function(className, callback) {
+    $scope.loadFile = function(className, callback) {
         callback = callback || MiscService.nullFunction;
         if (className === "") {
             return;
