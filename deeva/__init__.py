@@ -4,7 +4,6 @@ import debug
 from debug import load, WrongState
 import os
 import pprint
-from search import get_source_files
 
 app = Flask('deeva')
 app.package_dict = {}
