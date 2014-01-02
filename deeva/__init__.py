@@ -68,6 +68,7 @@ def run():
     if app.debugger.getStateName() == "NO_INFERIOR":
         print 'Starting program...'
         # TODO Pass in the actual class path to the *debuggee program* here
+        # Aswell as any other arguments e.g. -ea -cp asdf, commandline arguments
         app.debugger.start(app.program)
     else:
         print 'Continuing program...'

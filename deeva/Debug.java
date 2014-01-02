@@ -40,16 +40,12 @@ public class Debug extends EventHandlerBase {
     private Semaphore sema;
     private List<Map<String, String>> stack;
     private Map<Breakpoint, BreakpointRequest> breakpoints;
-    private LocatableEvent lastLocatableEvent;
     private SourceClassFinder finder;
     private String currentClass;
     private int line_number = 0;
     private ObjectReference systemInObj;
     private Method sysInReadMethod;
     private Method sysInAvailableMethod;
-
-    private StepRequest stepRequest;
-
 
     public Debug(DebugResponseQueue outQueue, DebugResponseQueue inQueue,
                  List<String> classPaths, List<String> sourcePaths,
@@ -318,12 +314,13 @@ public class Debug extends EventHandlerBase {
 
     private void step(int depth) {
         EventRequestManager reqMgr = vm.eventRequestManager();
-        stepRequest = reqMgr.createStepRequest(getThread(),
+        StepRequest stepRequest = reqMgr.createStepRequest(getThread(),
                 StepRequest.STEP_LINE, depth);
-        for (int i=0; i<excludes.length; ++i) {
-            stepRequest.addClassExclusionFilter(excludes[i]);
+
+        /* Don't step into excluded files i.e. system library */
+        for (String exclude : excludes) {
+            stepRequest.addClassExclusionFilter(exclude);
         }
-        //stepRequest.addCountFilter(1);
         stepRequest.enable();
         vm.resume();
     }
@@ -340,13 +337,10 @@ public class Debug extends EventHandlerBase {
         super.handleEvent(e);
     }
 
-    public void locatableEvent(LocatableEvent e) {
+    private void locatableEvent(LocatableEvent e) {
         Location location = e.location();
         this.line_number = location.lineNumber();
         this.currentClass = location.declaringType().name();
-
-        /* Save the last locatable event, for heap inspection */
-        this.lastLocatableEvent = e;
     }
 
     @Override
@@ -565,7 +559,7 @@ public class Debug extends EventHandlerBase {
         }
     }
 
-    VirtualMachine launchTarget(String mainArgs) {
+    private VirtualMachine launchTarget(String mainArgs) {
         System.err.println("finding launching connector");
         LaunchingConnector connector = findLaunchingConnector();
         Map<String, Connector.Argument> arguments = connectorArguments(connector, mainArgs);
