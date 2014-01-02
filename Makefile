@@ -2,8 +2,8 @@ SHELL := /bin/bash
 PY4J_JAR_PATH:=$(shell python -c "import py4j.java_gateway; print py4j.java_gateway.find_jar_path()")
 TOOL_JAR_PATH:=$(shell ./findjava.sh)
 CLASS_PATH:="$(PY4J_JAR_PATH):$(TOOL_JAR_PATH)"
-SOURCE_FILE:= $(shell mktemp -t sources)
-EXAMPLE_SOURCE_FILE:= $(shell mktemp -t classes)
+SOURCE_FILE:= $(shell mktemp -t sources.XXXXXX)
+EXAMPLE_SOURCE_FILE:= $(shell mktemp -t classes.XXXXXX)
 
 
 .PHONY: all build build_examples deploy setup_deploy install test test_long examples clean_examples clean
