@@ -9,7 +9,8 @@ before_install:
 # command to install dependencies
 install:
     - pip install -r requirements.txt --use-mirrors
-    - make all
+    - make build
+    - make examples
 
 # command to run tests
 script:
