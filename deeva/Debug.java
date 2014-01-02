@@ -7,8 +7,11 @@ import com.sun.jdi.connect.LaunchingConnector;
 import com.sun.jdi.connect.VMStartException;
 import com.sun.jdi.event.*;
 import com.sun.jdi.request.*;
-import deeva.processor.ValueProcessor;
-import deeva.utils.SourceClassFinder;
+import deeva.breakpoint.Breakpoint;
+import deeva.exception.*;
+import deeva.io.StdInRedirectThread;
+import deeva.io.StreamRedirectThread;
+import deeva.sourceutil.SourceClassFinder;
 
 import java.io.IOException;
 import java.util.*;
@@ -47,7 +50,7 @@ public class Debug extends EventHandlerBase {
     private Method sysInReadMethod;
     private Method sysInAvailableMethod;
 
-    public Debug(DebugResponseQueue outQueue, DebugResponseQueue inQueue,
+    public Debug(DebugResponseQueue outQueue,
                  List<String> classPaths, List<String> sourcePaths,
                  String mainClass) {
         breakpoints = new HashMap<Breakpoint, BreakpointRequest>();

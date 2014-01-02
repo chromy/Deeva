@@ -1,4 +1,4 @@
-package deeva.utils;
+package deeva.sourceutil;
 
 /*
   Adapted from http://dzone.com/snippets/get-all-classes-within-package

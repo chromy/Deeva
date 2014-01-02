@@ -1,29 +1,31 @@
-package deeva;
+package deeva.io;
+
+import deeva.DebugResponseQueue;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 
-class StreamRedirectThread extends Thread {
-
-    private final Reader in;
-    //private final Writer out;
-    private final DebugResponseQueue resQueue;
+public class StreamRedirectThread extends Thread {
 
     private static final int BUFFER_SIZE = 2048;
+    private final Reader in;
+    private final DebugResponseQueue resQueue;
 
     /**
      * Set up for copy.
-     * @param name  Name of the thread
-     * @param in    Stream to copy from
-     * @param out   Stream to copy to
+     *
+     * @param name     Name of the thread
+     * @param in       Stream to copy from
+     * @param resQueue Output queue that we're pushing stdout/err to.
      */
-    StreamRedirectThread(String name, InputStream in, DebugResponseQueue resQueue) {
+    public StreamRedirectThread(String name, InputStream in,
+                                DebugResponseQueue resQueue) {
         super(name);
         this.in = new InputStreamReader(in);
         this.resQueue = resQueue;
-        setPriority(Thread.MAX_PRIORITY-1);
+        setPriority(Thread.MAX_PRIORITY - 1);
     }
 
     /**
@@ -35,10 +37,10 @@ class StreamRedirectThread extends Thread {
             char[] cbuf = new char[BUFFER_SIZE];
             int count;
             while ((count = in.read(cbuf, 0, BUFFER_SIZE)) >= 0) {
-		String s = new String(cbuf, 0, count);
-		resQueue.put(getName(), s);
+                String s = new String(cbuf, 0, count);
+                resQueue.put(getName(), s);
             }
-        } catch(IOException exc) {
+        } catch (IOException exc) {
             System.err.println("Child I/O Transfer - " + exc);
         }
     }

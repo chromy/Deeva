@@ -1,4 +1,4 @@
-package deeva;
+package deeva.exception;
 
 public class WrongStateError extends RuntimeException {
     public WrongStateError() { super(); }

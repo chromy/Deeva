@@ -1,7 +1,7 @@
 import os
 from flask import Flask, jsonify, render_template, request, g, make_response, redirect, url_for
 import debug
-from debug import load, WrongState, in_queue
+from debug import load, WrongState
 import os
 import pprint
 from search import get_source_files

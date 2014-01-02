@@ -1,14 +1,14 @@
-package deeva;
+package deeva.io;
 
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.concurrent.BlockingQueue;
 
-class StdInRedirectThread extends Thread {
+public class StdInRedirectThread extends Thread {
     private final BlockingQueue<String> resQueue;
     private final PrintStream out;
 
-    StdInRedirectThread(String name, OutputStream os,
+    public StdInRedirectThread(String name, OutputStream os,
                         BlockingQueue<String> resQueue)
     {
         super(name);
@@ -36,7 +36,8 @@ class StdInRedirectThread extends Thread {
                     /* Force this to be pushed to `stdin' */
                 out.flush();
             } catch (InterruptedException e) {
-
+                System.err.println("Blocking Queue Interrupted");
+                e.printStackTrace();
             }
         }
     }

@@ -1,4 +1,4 @@
-package deeva.processor;
+package deeva;
 
 import com.sun.jdi.*;
 

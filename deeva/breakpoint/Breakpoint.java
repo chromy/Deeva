@@ -1,4 +1,4 @@
-package deeva;
+package deeva.breakpoint;
 
 public class Breakpoint {
     private String clas;
