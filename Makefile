@@ -22,7 +22,7 @@ build_examples: clean_examples
 	javac @$(SOURCE_FILE)
 
 clean_examples:
-	find examples -name "*.class" -print0 | xargs -0 rm
+	find examples -name "*.class" -print0 | xargs -0 rm -f
 
 setup_deploy:
 	test -d .env || virtualenv .env
@@ -46,5 +46,5 @@ coverage:
 	nosetests --with-coverage --cover-package=deeva
 
 clean:
-	find deeva -name "*.class" -print0 | xargs -0 rm
-	find . -name "*.pyc" -print0 | xargs -0 rm
+	find deeva -name "*.class" -print0 | xargs -0 rm -f
+	find . -name "*.pyc" -print0 | xargs -0 rm -f
