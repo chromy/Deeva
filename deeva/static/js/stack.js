@@ -175,7 +175,6 @@ function main(all_variables){
    selection.append("svg")
             .attr("id", "arrow");
 
-<<<<<<< HEAD
    //var endpoints = selection.selectAll("._jsPlumb_endpoint");
    //var svg_arrow = selection.selectAll("#arrow");
  
