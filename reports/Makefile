@@ -1,7 +1,7 @@
 EXTRA_SRC = 
 TEX = pdflatex
 
-all: PlaningReport.pdf
+all: FinalReport.pdf
 
 .phony: all clean
 
