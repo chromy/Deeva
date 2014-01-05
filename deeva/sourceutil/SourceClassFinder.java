@@ -1,4 +1,4 @@
-package deeva.utils;
+package deeva.sourceutil;
 
 /*
   Adapted from http://dzone.com/snippets/get-all-classes-within-package
@@ -74,7 +74,10 @@ public class SourceClassFinder {
                     continue;
                 }
 
-                assert !file.getName().contains(".");
+                /* Skip directories with dots in, malformed */
+                if (file.getName().contains(".")) {
+                    continue;
+                }
 
                 String newPackageName = packagePrepend + file.getName();
                 foundClasses.putAll(findClasses(file, newPackageName));
@@ -133,8 +136,6 @@ public class SourceClassFinder {
                     continue;
                 }
 
-                assert !fileName.contains(".");
-
                 /* Find sources in all the folders */
                 findSources(file, packagePrepend + fileName);
 
@@ -148,7 +149,7 @@ public class SourceClassFinder {
                     SourceClassMeta meta = this.sourceClassMetas.get(className);
                     meta.setSourceFile(file);
                 }
-              }
+            }
         }
 
         return;
@@ -193,8 +194,9 @@ public class SourceClassFinder {
             findSources(sourcePath, "");
         }
 
+        /* For all the sources found, create an entry in the map for its
+        location */
         for (String className : classes.keySet()) {
-            //System.out.println(className);
             SourceClassMeta meta = classes.get(className);
             String fileName = meta.getSourceFileName();
             this.sources.put(className, fileName);

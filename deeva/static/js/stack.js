@@ -8,16 +8,16 @@ function main(all_variables){
   var primitive_list = ["int", "char", "boolean", "byte", "float", "double", "long", "short"];
 
   var stack_variables = all_variables.stack;
-  var heap_objects = [{type: 'T', object_type: 'Object', unique_id: '786' }, {type: 'T', object_type: 'Object', unique_id: '686' },  {type: 'T', object_type: 'Array', unique_id: '86', array: [11,12,13,14]}, {type:'T', string:'aha', unique_id:'486', object_type: 'String'}]; 
+  var heap_objects = [{type: 'T', object_type: 'Object', unique_id: '786' }, {type: 'T', object_type: 'Object', unique_id: '686' },  {type: 'T', object_type: 'Array', unique_id: '86', array: [11,12,13,14]}, {type:'T', string:'aha', unique_id:'486', object_type: 'String'}];
 
   var arrays = filter_heap(heap_objects, 'Array');
   var strings = filter_heap(heap_objects, 'String');
   var objects = filter_heap(heap_objects, 'Object');
 
   var arrows_id = [67];
- 
+
   var stack_td = d3.select("#stack_td");
-   
+
   var heap_td  = d3.select("#heap_td");
 
 //   append_global_stack();
@@ -35,9 +35,9 @@ function main(all_variables){
 
    var stackHeader = global_area.append("div")
                                 .attr("id", "stackHeader")
-                                .text("Stacks");   
- 
-   // Global stack 
+                                .text("Stacks");
+
+   // Global stack
    var stackFrame = global_area.append("div")
                               .attr("class", "stackFrame")
                               .attr("id", "globals");
@@ -46,12 +46,12 @@ function main(all_variables){
                                     .attr("class", "stackFrameHeader")
                                     .attr("id", "globals_header")
                                     .text("Main");
-   
+
    var stackFrameTable = stackFrame.append("table")
                                    .attr("class", "stackFrameVarTable")
                                    .attr("id", "global_table");
    var stackFrameSel = d3.select(".stackFrameVarTable");
- 
+
    if(stack_variables != null){
    console.log(stack_variables);
    var globalVariables = stackFrameSel.selectAll("tr")
@@ -63,7 +63,7 @@ function main(all_variables){
                   .attr("id", function(d,i){
                            return "global_"+d.name+"_tr";
                   });
- 
+
    var variableTr = stackFrameSel.selectAll("tr");
 
    variableTr.append("td")
@@ -75,24 +75,24 @@ function main(all_variables){
    variableTr.append("td")
              .attr("class", "stackFrameValue")
              .attr("id", function(d) {
-                    //TODO: must have different 
+                    //TODO: must have different
                     if(d.refID)
                       return "stackFrameValue_heap_" + d.refID;
-                    else  
+                    else
                       return "stackFrameValue_" + d.name;
              });
-   var stackFrameValues = variableTr.selectAll(".stackFrameValue"); 
+   var stackFrameValues = variableTr.selectAll(".stackFrameValue");
    populate_values(stackFrameValues);
 
    var stackFrames = stack.selectAll("div")
-                          .append("div") 
+                          .append("div")
                           .data([1])
                           .enter();
 
    stackFrames.append("div")
               .attr("class", "stackFrame")
               .attr("id", function(d,i){
-                            return "stack" + i;  
+                            return "stack" + i;
               });
 
    }
@@ -104,9 +104,9 @@ function main(all_variables){
      var heap = heap_selection.append("div").attr("id", "heap");
      var heapHeader = heap.append("div")
                           .attr("id", "heapHeader")
-                          .text("Heap");   
+                          .text("Heap");
 
-     // create a table row for each object   
+     // create a table row for each object
       var heapRows = heap.selectAll("table")
                         .data(heap_objects)
                         .enter()
@@ -116,30 +116,28 @@ function main(all_variables){
       var heapRow = heapRows.append("td")
                            .attr("class", "toplevelHeapObject")
                            .attr("id", function(d,i){
-                              return "toplevel_heap_object_" + i; 
+                              return "toplevel_heap_object_" + i;
                            });
 
-   
       // on heapRowObjects will all the JsPlumb be added !!!
       var heapRowObject = heapRow.append("div")
                              .attr("class", "heapObject")
                              .attr("id", function(d,i){
-                                 return "heap_object_" + d.unique_id; 
+                                 return "heap_object_" + d.unique_id;
                              });
-           
+
       var heapObjectType = heapRowObject.append("div")
                                    .attr("class", "typeLabel")
                                    .text(function(d,i){
                                        return d.object_type;
                                    });
- 
 
       var objectArray = heapRowObject.append("table")
                                  .attr("class", function(d,i){
                                        return d.object_type;
                                  });
-  
-      var objectArrayTable = objectArray.append("tbody");  
+
+      var objectArrayTable = objectArray.append("tbody");
       var values = objectArrayTable.append("tr").attr("id", "value");
       var values_entries = values.selectAll("td")
                                .data(function(d){
@@ -175,8 +173,9 @@ function main(all_variables){
 
   function create_arrows(selection){
    selection.append("svg")
-            .attr("id", "arrow"); 
+            .attr("id", "arrow");
 
+<<<<<<< HEAD
    //var endpoints = selection.selectAll("._jsPlumb_endpoint");
    //var svg_arrow = selection.selectAll("#arrow");
  
@@ -214,14 +213,13 @@ function main(all_variables){
                 .text(function(d){
                     return d.value;
                 });
-      create_arrows(objects);
+      //create_arrows(objects);
   }
 }
 
 /* Utility functions */
-
  // Returns a set of all the objects of type 'type'.
- function filter_heap(heap_objects, type){ 
+ function filter_heap(heap_objects, type){
    heap_objects.filter(function(d){
       return d.object_type == type;
     });
@@ -231,4 +229,3 @@ function main(all_variables){
  function is_of_type(heap_element, type){
    return heap_element.object_type == type;
  }
-

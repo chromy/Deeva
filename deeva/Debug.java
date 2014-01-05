@@ -7,7 +7,11 @@ import com.sun.jdi.connect.LaunchingConnector;
 import com.sun.jdi.connect.VMStartException;
 import com.sun.jdi.event.*;
 import com.sun.jdi.request.*;
-import deeva.processor.ValueProcessor;
+import deeva.breakpoint.Breakpoint;
+import deeva.exception.*;
+import deeva.io.StdInRedirectThread;
+import deeva.io.StreamRedirectThread;
+import deeva.sourceutil.SourceClassFinder;
 
 import java.io.IOException;
 import java.util.*;
@@ -19,7 +23,8 @@ public class Debug extends EventHandlerBase {
     public static enum State {
         NO_INFERIOR,
         STASIS,
-        RUNNING;
+        RUNNING,
+        AWAITING_IO;
 
         public String __html__() {
             return this.toString();
@@ -38,18 +43,29 @@ public class Debug extends EventHandlerBase {
     private Semaphore sema;
     private List<Map<String, String>> stack;
     private Map<Breakpoint, BreakpointRequest> breakpoints;
-    private LocatableEvent lastLocatableEvent;
+    private SourceClassFinder finder;
+    private String currentClass;
+    private int line_number = 0;
+    private ObjectReference systemInObj;
+    private Method sysInReadMethod;
+    private Method sysInAvailableMethod;
 
-    private StepRequest stepRequest;
-
-    int line_number = 0;
-
-    public Debug(DebugResponseQueue outQueue, DebugResponseQueue inQueue) {
+    public Debug(DebugResponseQueue outQueue,
+                 List<String> classPaths, List<String> sourcePaths,
+                 String mainClass) {
         breakpoints = new HashMap<Breakpoint, BreakpointRequest>();
         this.outQueue = outQueue;
         this.inQueue = new LinkedBlockingQueue<String>();
         sema = new Semaphore(0);
         state = State.NO_INFERIOR;
+        finder = new SourceClassFinder(classPaths, sourcePaths);
+        currentClass = mainClass;
+
+        /*  Generate all the classes and their relevant sources the debuggee
+            may need
+         */
+        finder.getAllClasses();
+        finder.getAllSources();
     }
 
     public void start(String arg) {
@@ -60,29 +76,74 @@ public class Debug extends EventHandlerBase {
         redirectOutput();
 
         state = State.STASIS;
-
         EventRequestManager reqMgr = getRequestManager();
         ClassPrepareRequest prepareRequest = reqMgr.createClassPrepareRequest();
-
         for (String ex : excludes) {
             prepareRequest.addClassExclusionFilter (ex);
         }
 
+        /* Find system.in which is part of the bootstrap classloading,
+        maybe put in a new class or something */
+        List<ReferenceType> classes = vm.classesByName("java.lang.System");
+        ReferenceType systemClass = classes.get(0);
+        Field sysInField = systemClass.fieldByName("in");
+        this.systemInObj = (ObjectReference) systemClass.getValue(sysInField);
+        ReferenceType sysInRefType = this.systemInObj.referenceType();
+        List<Method> readMethods = sysInRefType.methodsByName("read");
+        this.sysInAvailableMethod = sysInRefType.methodsByName("available").get(0);
+
+        /* Get the read method we're interested in */
+        this.sysInReadMethod = null;
+        for (Method method : readMethods) {
+            if (method.argumentTypeNames().size() == 3) {
+                this.sysInReadMethod = method;
+            }
+        }
+
+        /* Listen for method entry requests in the systemInObj instance */
+        MethodEntryRequest mer = reqMgr.createMethodEntryRequest();
+        mer.addClassFilter(sysInRefType);
+
+        mer.setSuspendPolicy(EventRequest.SUSPEND_ALL);
+        mer.enable();
+
         prepareRequest.setSuspendPolicy(EventRequest.SUSPEND_ALL);    // suspend so we can examine vars
         prepareRequest.enable();
-
         attemptToSetWaitingBreakpoints();
     }
 
-    public void putStdInMessage(String msg) throws InterruptedException {
+    public Map<String, String> getSources() {
+        return this.finder.getAllSources();
+    }
+
+    public Map<String, Object> putStdInMessage(String msg) throws
+            InterruptedException {
         /* Possibly more validation if necessary */
 
         /* Pushes given string msg, on to the inQueue that will be fed
          * into the debuggee stdin */
         this.inQueue.put(msg);
+
+        Map<String, Object> ioStatusMap = new HashMap<String, Object>();
+        ioStatusMap.put("input_received", Boolean.TRUE);
+
+        if (state == State.AWAITING_IO) {
+            state = State.RUNNING;
+            sema.acquire();
+            Map<String, Object> stateMap = getState();
+
+            stateMap.putAll(ioStatusMap);
+            return stateMap;
+        }
+
+        ioStatusMap.put("state", state);
+        ioStatusMap.put("non_sema", Boolean.TRUE);
+
+        return ioStatusMap;
     }
 
-    public Object getHeapObject(Long uniqueRefID, String refType) {
+    public Map<String, ? extends Object> getHeapObject(Long uniqueRefID,
+                                                       String refType) {
         /* We can assume that the class would be loaded, since we're not
          * allowing arbitrary introspection */
 
@@ -90,18 +151,19 @@ public class Debug extends EventHandlerBase {
          * stopped we need to ignore this or throw an exception. */
 
         System.err.println("Printing Heap");
+        System.err.println("uniqueRefID: " + uniqueRefID);
+        System.err.println("refType: " + refType);
         List<ReferenceType> matchingClasses = vm.classesByName(refType);
+
         ObjectReference objectFound = null;
 
         /* Go through each matching class and look for unique ID */
         for (ReferenceType matchingClass : matchingClasses) {
-            System.err.println("Found class");
-            /* Go through all the instance of this class and look for the id */
+            /* Go through all instances of this class and look for the id */
             List<ObjectReference> instances = matchingClass.instances(0);
             for (ObjectReference instance : instances) {
                 if (instance.uniqueID() == uniqueRefID) {
                     objectFound = instance;
-                    System.err.println("Found instance! :D");
                     break;
                 }
             }
@@ -116,20 +178,26 @@ public class Debug extends EventHandlerBase {
             return null;
         }
 
-        return null;
+        /* Process the heap object*/
+        Set<String> classes = finder.getAllClasses().keySet();
+        Map<String, ? extends Object> processedObject
+                = ValueProcessor.processValueSingleDepth(objectFound, classes);
+
+        return processedObject;
     }
 
     public List<Map<String, String>> getStack(LocatableEvent event)
             throws IncompatibleThreadStateException, AbsentInformationException,
             ClassNotLoadedException
     {
-        Map<String, String> stack = new HashMap<String, String>();
         /* Try to extract stack variables - Hack */
         /* Get the thread in which we're stepping */
         ThreadReference threadRef = event.thread();
 
         /* Get the top most stack frame in the thread that we've stopped in */
         StackFrame stackFrame = threadRef.frame(0);
+        System.err.println("-------------");
+        System.err.println("Number of Frames: " + threadRef.frameCount());
 
         /* We want to create a list of maps */
         List<Map<String, String>> localVariables = new LinkedList<Map<String, String>>();
@@ -145,7 +213,11 @@ public class Debug extends EventHandlerBase {
             System.err.println("Type: " + type.name());
 
             /* Get an overview for the variable */
-            Map<String, String> varMap = ValueProcessor.processVariable(var, variableValue);
+            Map<String, String> varMap = ValueProcessor.processVariable(var,
+                    variableValue, finder.getAllSources());
+            if (varMap.containsKey("unique_id")) {
+                System.err.println(varMap.get("unique_id"));
+            }
             localVariables.add(varMap);
         }
 
@@ -164,6 +236,7 @@ public class Debug extends EventHandlerBase {
         result.put("state", state);
         result.put("line_number", line_number);
         result.put("stack", stack);
+        result.put("current_class", currentClass);
         return result;
     }
 
@@ -244,12 +317,13 @@ public class Debug extends EventHandlerBase {
 
     private void step(int depth) {
         EventRequestManager reqMgr = vm.eventRequestManager();
-        stepRequest = reqMgr.createStepRequest(getThread(),
+        StepRequest stepRequest = reqMgr.createStepRequest(getThread(),
                 StepRequest.STEP_LINE, depth);
-        for (int i=0; i<excludes.length; ++i) {
-            stepRequest.addClassExclusionFilter(excludes[i]);
+
+        /* Don't step into excluded files i.e. system library */
+        for (String exclude : excludes) {
+            stepRequest.addClassExclusionFilter(exclude);
         }
-        //stepRequest.addCountFilter(1);
         stepRequest.enable();
         vm.resume();
     }
@@ -260,16 +334,16 @@ public class Debug extends EventHandlerBase {
             ClassNotLoadedException
     {
         System.err.println(e.getClass());
-        if (e instanceof LocatableEvent) {
+        if (e instanceof LocatableEvent && !(e instanceof MethodEntryEvent)) {
             locatableEvent((LocatableEvent)e);
         }
         super.handleEvent(e);
     }
 
-    public void locatableEvent(LocatableEvent e) {
-        this.line_number = e.location().lineNumber();
-        /* Save the last locatable event, for heap inspection */
-        this.lastLocatableEvent = e;
+    private void locatableEvent(LocatableEvent e) {
+        Location location = e.location();
+        this.line_number = location.lineNumber();
+        this.currentClass = location.declaringType().name();
     }
 
     @Override
@@ -355,6 +429,79 @@ public class Debug extends EventHandlerBase {
     }
 
     @Override
+    public void methodEntryEvent(MethodEntryEvent event) {
+        /* Tailored towards the other thing, refactor later (observer) */
+        //System.err.println("method name entering: " + event.method().name());
+
+        try {
+            Method method = event.method();
+
+            final ThreadReference thread = event.thread();
+            final ObjectReference bisRef = thread.frame(0).thisObject();
+
+            /* Skip any method we're not interested in i.e. read */
+            if (!method.equals(this.sysInReadMethod)
+                    || !bisRef.equals(this.systemInObj)) {
+                vm.resume();
+                return;
+            }
+
+            System.err.println("Reading");
+            final Method availableMethod = this.sysInAvailableMethod;
+
+            /* See if we need to get more data from the user */
+
+            Runnable vmInvoker = new Runnable() {
+                /* This should run in a new thread to avoid deadlock,
+                i.e. let the event handler finish its loop and go back to
+                expecting the next event. This is described in more detail in
+                 the JDI spec */
+                @Override
+                public void run() {
+                    IntegerValue available;
+                    try {
+                        available = (IntegerValue)bisRef
+                                .invokeMethod(thread, availableMethod,
+                                        new LinkedList<Value>(), 0);
+                        int bytesAvailable = available.value();
+                        System.err.println("JDI - Available Bytes: " +
+                                bytesAvailable);
+
+                        if (bytesAvailable == 0) {
+                            /* Change the state that we're in */
+                            state = State.AWAITING_IO;
+                            /* Release the semaphore that is being held */
+                            sema.release();
+                        }
+
+                    } catch (InvalidTypeException e) {
+                        System.err.println("EXCEPTION: ite");
+                        e.printStackTrace();
+                    } catch (ClassNotLoadedException e) {
+                        System.err.println("EXCEPTION: cnl");
+                        e.printStackTrace();
+                    } catch (IncompatibleThreadStateException e) {
+                        System.err.println("EXCEPTION: its");
+                        e.printStackTrace();
+                    } catch (InvocationException e) {
+                        System.err.println("EXCEPTION: i");
+                        e.printStackTrace();
+                    }
+
+                    vm.resume();
+                }
+            };
+
+            /* Start this in a new thread */
+            Thread t = new Thread(vmInvoker);
+            t.start();
+        } catch (IncompatibleThreadStateException e) {
+            System.err.println(e);
+            vm.resume();
+        }
+    }
+
+    @Override
     public void exceptionEvent(ExceptionEvent event) {
         System.err.println("EXCEPTION");
         cleanUp();
@@ -415,12 +562,13 @@ public class Debug extends EventHandlerBase {
         }
     }
 
-    VirtualMachine launchTarget(String mainArgs) {
+    private VirtualMachine launchTarget(String mainArgs) {
+        System.err.println("finding launching connector");
         LaunchingConnector connector = findLaunchingConnector();
         Map<String, Connector.Argument> arguments = connectorArguments(connector, mainArgs);
-        System.out.println("launch");
 
         try {
+            System.err.println("beginning launch");
             return connector.launch(arguments);
         } catch (IOException exc) {
             throw new Error("Unable to launch target VM: " + exc);
@@ -431,7 +579,7 @@ public class Debug extends EventHandlerBase {
         }
     }
 
-    void redirectOutput() {
+    private void redirectOutput() {
         Process process = vm.process();
 
         errThread = new StreamRedirectThread("stderr",
@@ -443,8 +591,7 @@ public class Debug extends EventHandlerBase {
                 this.outQueue);
 
         inThread = new StdInRedirectThread("stdin",
-                process.getOutputStream(),
-                this.inQueue);
+                process.getOutputStream(), this.inQueue);
 
         outThread.start();
         errThread.start();

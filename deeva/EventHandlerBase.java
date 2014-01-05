@@ -6,7 +6,6 @@ import com.sun.jdi.IncompatibleThreadStateException;
 import com.sun.jdi.event.*;
 
 public class EventHandlerBase implements EventHandler {
-
     public void handleEvent(Event event)
             throws IncompatibleThreadStateException, AbsentInformationException,
             ClassNotLoadedException
@@ -33,7 +32,6 @@ public class EventHandlerBase implements EventHandler {
             vmDeathEvent((VMDeathEvent)event);
         } else if (event instanceof VMDisconnectEvent) {
             vmDisconnectEvent((VMDisconnectEvent)event);
-
         } else {
             throw new Error("Unexpected event type");
         }

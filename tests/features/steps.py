@@ -6,7 +6,7 @@ from lettuce import step, world, before, after
 @step(r'I have a "(.*)" Java program')
 def java_program(step, directory):
     path = os.path.join(world.old_cwd, 'examples', directory)
-    os.chdir(path)
+    #os.chdir(path)
 
 @step(r'I run the command "(.*)"')
 def run_the_command(step, cmd):
@@ -17,13 +17,13 @@ def run_the_command(step, cmd):
     cmd = cmd.split()
     cmd[0] = os.path.join(world.old_cwd, cmd[0])
     world.p = subprocess.Popen(cmd, env=my_env, stderr=subprocess.PIPE)
-    time.sleep(5.0)
+    time.sleep(15)
     assert world.p.returncode is None
 
 @step(u'I see deeva running')
 def is_deeva_up(step):
     step.given('I go to "http://localhost:5000"')
-    step.then('I should see "Deeva"')
+    step.then('I should see "Deeva" within 10 seconds')
 
 @step(u'I see "(.*)" on stderr')
 def content_in_stderr(step, content):

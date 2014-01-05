@@ -10,6 +10,7 @@ before_install:
 install:
     - pip install -r requirements.txt --use-mirrors
     - make build
+    - make examples
 
 # command to run tests
 script:

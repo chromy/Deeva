@@ -1,0 +1,26 @@
+.unselected { font-style:italic; }
+.breadcrumb.packages > li.ng-scope + li:before {
+    content: "\00a0/";
+}
+
+.breadcrumb.packages ul.dropdown-menu a.selected {
+    background-color: rgba(200,200,200,0.7);
+    color: #333333;
+}
+
+.select-current-class {
+    background-color: #f5f5f5;
+    border-radius: 4px;
+    padding: 8px 15px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.select-current-class > a.disabled {
+    color: #999;
+}
+
+.select-current-class > a.disabled:hover {
+    cursor: not-allowed;
+    text-decoration: none;
+}

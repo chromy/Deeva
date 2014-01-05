@@ -20,7 +20,7 @@ def config(app):
     app.config['OPEN_BROWSER'] = bool_arg(os.environ.get('DEEVA_OPEN_BROWSER', 'True'))
     app.config['TESTING'] = bool_arg(os.environ.get('DEEVA_TESTING', 'False'))
 
-def main(prog, cp):
+def main(prog, args):
     # Read config vars
     config(app)
 
@@ -30,8 +30,10 @@ def main(prog, cp):
     jdi_cp = subprocess.check_output(findjava_script, shell=True).replace('\n', '')
     classpath = deeva_cp + ":" + jdi_cp
 
-    print deeva_cp, jdi_cp, classpath
-    app.debugger = debug.create_java_debugger(classpath, prog)
+    debuggee_classpaths = args.cp.split(':')
+    debuggee_sourcepaths = args.source_cp.split(':')
+
+    app.debugger = debug.create_java_debugger(classpath, prog, debuggee_classpaths, debuggee_sourcepaths)
 
     # Save the program name
     app.program = prog
@@ -47,11 +49,11 @@ if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument("java_class", help="Path to the java class you want to debug")
-    parser.add_argument("-cp", help="Java Class path")
-    parser.add_argument("--source_cp", help="Path to the source files, in classpath format, default is the current directory",
+    parser.add_argument("-ea", help="Enable Assertions", action='store_true')
+    parser.add_argument("-cp", help="Class path string for ", default=".")
+    # Add here small subset of java commands we wish to pass on..
+    parser.add_argument("--source_cp",
+                        help="Path to the source files, in classpath format, default is the current directory",
                         default=".")
     args = parser.parse_args()
-    if not args.cp:
-        args.cp = "."
-
-    main(args.java_class, args.cp)
+    main(args.java_class, args)

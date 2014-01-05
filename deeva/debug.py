@@ -30,7 +30,6 @@ class ResponseQueue(object):
 
 # FIX - SORRY
 out_queue = ResponseQueue()
-in_queue = ResponseQueue()
 
 # fix
 def launch_gateway(port=0, jarpath="", classpath="", javaopts=[],
@@ -57,18 +56,23 @@ def launch_gateway(port=0, jarpath="", classpath="", javaopts=[],
     _port = int(proc.stdout.readline())
     return (_port, proc)
 
-def create_java_debugger(classpath, prog):
-        port, _ = launch_gateway(classpath=classpath, die_on_exit=True)
-        gateway_client = GatewayClient(port=port)
-        gateway = JavaGateway(gateway_client,
-                              auto_convert=True,
-                              auto_field=True,
-                              start_callback_server=True)
+def create_java_debugger(classpath, prog, debuggee_classpaths,
+                         debuggee_sourcepaths, debuggee_args=None):
+    port, _ = launch_gateway(classpath=classpath, die_on_exit=True)
+    gateway_client = GatewayClient(port=port)
+    gateway = JavaGateway(gateway_client,
+                          auto_convert=True,
+                          auto_field=True,
+                          start_callback_server=True)
 
-        debugger = JavaProxy(gateway.jvm.deeva.Debug(out_queue, in_queue))
-        debugger.start(prog)
+    classpaths = ListConverter().convert(debuggee_classpaths, gateway._gateway_client)
+    sourcepaths = ListConverter().convert(debuggee_sourcepaths, gateway._gateway_client)
 
-        return debugger
+    debugger = JavaProxy(gateway.jvm.deeva.Debug(out_queue, classpaths, sourcepaths, prog))
+
+    sources = debugger.getSources()
+    debugger.start(prog)
+    return debugger
 
 class JavaProxy:
     """Translates py4j Java exceptions into Python exceptions.
@@ -111,6 +115,7 @@ def pop_output():
             break
         else:
             out_queue.response_queue.task_done()
+
     stdout = ''.join([msg for stream, msg in results if stream == "stdout"])
     stderr = ''.join([msg for stream, msg in results if stream == "stderr"])
     return stdout, stderr
