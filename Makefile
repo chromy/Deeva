@@ -6,20 +6,20 @@ SOURCE_FILE:= $(shell mktemp -t sources.XXXXXX)
 EXAMPLE_SOURCE_FILE:= $(shell mktemp -t classes.XXXXXX)
 
 
-.PHONY: all build build_examples deploy setup_deploy install test test_long examples clean_examples clean
+.PHONY: all build build_examples deploy setup_deploy install test test_long examples clean_examples clean clean_all
 
 all: build build_examples
 
 build: clean
 	test $(TOOL_JAR_PATH) || test -f $(TOOL_JAR_PATH)
-	find deeva -name "*.java" >> $(SOURCE_FILE)
-	javac @$(SOURCE_FILE) -classpath $(CLASS_PATH)
+	find deeva -name "*.java" > $(SOURCE_FILE)
+	javac -g @$(SOURCE_FILE) -classpath $(CLASS_PATH)
 
 examples: build_examples
 
 build_examples: clean_examples
-	find examples -name "*.java" >> $(SOURCE_FILE)
-	javac @$(SOURCE_FILE)
+	find examples -name "*.java" > $(SOURCE_FILE)
+	javac -g @$(SOURCE_FILE)
 
 clean_examples:
 	find examples -name "*.class" -print0 | xargs -0 rm -f
@@ -48,3 +48,6 @@ coverage:
 clean:
 	find deeva -name "*.class" -print0 | xargs -0 rm -f
 	find . -name "*.pyc" -print0 | xargs -0 rm -f
+
+clean_all: clean clean_examples
+	echo "Everything cleaned"

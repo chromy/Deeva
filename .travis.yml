@@ -5,12 +5,12 @@ python:
 before_install:
   - export DISPLAY=:99.0
   - sh -e /etc/init.d/xvfb start
+  - make clean_all
 
 # command to install dependencies
 install:
     - pip install -r requirements.txt --use-mirrors
-    - make build
-    - make examples
+    - make all
 
 # command to run tests
 script:

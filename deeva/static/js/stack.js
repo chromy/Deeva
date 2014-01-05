@@ -175,27 +175,29 @@ function main(all_variables){
    selection.append("svg")
             .attr("id", "arrow");
 
-   var endpoints = selection.selectAll("._jsPlumb_endpoint");
-   var svg_arrow = selection.selectAll("#arrow");
-
+   //var endpoints = selection.selectAll("._jsPlumb_endpoint");
+   //var svg_arrow = selection.selectAll("#arrow");
+ 
    jsPlumb.bind("ready", function(){
       jsPlumb.Defaults.Container = "heap_stack";
       for(var i=0; i<arrows_id.length;i++){
-        var source = jsPlumb.addEndpoint("stackFrameValue_heap_"+arrows_id[i]);
-        var target = jsPlumb.addEndpoint("heap_object_"+arrows_id[i]);
-
-        jsPlumb.connect({source: source,
+        var source = jsPlumb.addEndpoint("stackFrameValue_heap_"+arrows_id[i]); 
+        var target = jsPlumb.addEndpoint("heap_object_86");
+           
+        jsPlumb.connect({source: source, 
                          target: target,
-                         anchor:[ "TopRight", "TopLeft"],
-                         paintStyle:{lineWidth:7,strokeStyle:'black'},
-                         endpointStype: { radius: 8},
-                         endpoint: "Circle",
+                         anchor:[ "Top", "Top"],
+                         //paintStyle:{lineWidth:7,strokeStyle:'black'},
+                         //endpointStype: { radius: 8},
+                         //endpoint: "Circle",
                          connector: "Straight"
                         });
       }
    });
   }
 
+  /* Populates the stack with the values(the actual value for primitive types
+     and with arrows for objects). */ 
   function populate_values(selection){
       var primitives = selection.filter(function(d){
          return primitive_list.indexOf(d.type) >= 0;
