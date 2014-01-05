@@ -288,7 +288,7 @@ public class Debug extends EventHandlerBase {
             breakpoints.put(bkpt, null);
             return true;
         } catch (NoLocationException error) {
-            // The VM exists and the class was loaded but we can't set a 
+            // The VM exists and the class was loaded but we can't set a
             // breakpoint here.
             return false;
         } catch (AbsentInformationException error) {
@@ -607,8 +607,6 @@ public class Debug extends EventHandlerBase {
         }
 
         mainArg.setValue(mainArgs);
-
-        //((Connector.Argument)(arguments.get("suspend"))).setValue("true");
 
         System.out.println("After - con");
         return arguments;
