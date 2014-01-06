@@ -100,6 +100,72 @@ A strong mental model of programming basics are highly predictive of eventual ac
 \section{Design}
 \section{Implementation}
 \section{Project Management}
+
+To ensure effective development of the product, weekly supervisor meetings were scheduled.
+In these meetings, quality assurance was the main aim, making sure we were on the right track with our development, delivering correct features. 
+This avoided unnecessary misunderstandings and extra time spent on creating unneeded features for the product. 
+
+Further to the supervisor meetings, weekly group meetings ensured that all group members are in sync about the progress and direction of the project. 
+During these meetings, the information gathered from the supervisor meetings would be recapped and the targets for the upcoming week would be set. 
+Thus, tasks could be divided among group members, with everyone knowing what their colleagues are working on in this week, making group and individual efforts significantly more effective.
+\begin{figure}[h!]
+\centering
+\includegraphics[height=80mm,width=130mm]{estimation.jpg}
+\end{figure}
+
+To aid the management of the project on a holistic and timely perspective, several tools were used, which will be outlined in the following section.
+
+\subsection{Tools}
+\begin{description}
+
+\item[Trello] \hfill \\
+\begin{figure}[h!]
+\centering
+\includegraphics[height=80mm,width=130mm]{Trello.png}
+\end{figure}
+
+We used Trello as our project management tool and as an Information Radiator\footnote{\tt{https://www.atlassian.com/wallboards/information-radiators.jsp}}.
+It also allows us to track our progress and average velocity. 
+We decided to use Trello as it fulfills most of the key features required for such a tool: it is easy to use and update, relatively flexible and allows for communications between members without too much interruption. 
+We decided to use an electronic version as they are a more manageable alternative to physical boards. 
+We also found it extremely useful when it came to keeping everyone informed on the general progress and keeping all the information in one compact environment.
+
+A Trello board was created for a better project management process. 
+There are several different swimlanes on the board: ``Proposed'', which allows all members to throw in ideas; ``In Analysis'', where people talk about their ideas and have a discussion with group members to see if the story is feasible. 
+If it is, the card will be then moved to ``In Estimation'' where we would use Planning Poker to assign the story with a complexity points.
+Otherwise, the story will be moved to ``Discarded''.
+The reason why we want to keep track of what we have discarded is that we might have thought we would not have time for it, but in reality we may have time at the end.
+We might want to move it back and reconsider it. 
+After ``In Estimation'', the card will be assigned to group members with a set due date and be moved into ``In Development'' on the Trello board. 
+Once the development is complete, the card should be moved into ``In Review''. 
+This is when we meet as a group and review our code to improve our style and pattern-usage.
+
+\item[Planing Poker] \hfill \\
+\begin{figure}[h!]
+\centering
+\includegraphics[height=80mm,width=130mm]{planningPokers.jpg}
+\end{figure}
+
+We are using Planning Poker in order to estimate stories in each cycle of development. 
+This method is known to avoid anchoring and will produce more accurate, less optimistic story point estimations\footnote{\tt{http://en.wikipedia.org/wiki/Planning\_poker\#Planning\_poker\_benefits}}. This technique takes some time to get used to because initially the story point bared little meaning to us.
+As we estimated more tasks, the story points became more meaningful hence the poker game proved to be a very efficient method.
+
+For example, it helped determine when people aren't really talking about the same scope for a certain task.
+Frequently we have a task like ``Set up the back end." and one person gives a task a 2 while another gives it an 8.
+The first person thinks the task title means ``Write some stubs so the middleware can integrate." while the second thinks it means ``Implement the backend up to the minimal specification.". 
+So using planing poker has already helped us make sure we're all on the same page.
+One of our group members hand-made a set of poker cards just for estimation.
+It contains the Fibonacci numbers up to 13 including 0 and infinity - if the task was unfeasible in the time given, as well as ``coffee time'' if we think we needed a break. 
+
+\item[Facebook group] \hfill \\
+Creating a Facebook group proved very efficient for communicating meeting times and general enquiries that were too conversational for Trello.  
+
+\item[Google Docs] \hfill \\
+We used Google Docs for collaborative editing on reports, plans and meeting summaries in real time.
+  
+\item[Github and Travis CI] \hfill \\
+Github is a hosted source control which somebody else manages and is easily accessible from anywhere and also plays nicely with the hosted Continuous Integration tool - Travis CI\footnote{\tt{http://travis-ci.com/}}.
+\end{description}
 \section{Extensions}
 \section{Conclusion}
 
