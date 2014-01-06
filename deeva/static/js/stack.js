@@ -8,7 +8,7 @@ function main(all_variables){
   var primitive_list = ["int", "char", "boolean", "byte", "float", "double", "long", "short"];
 
   var stack_variables = all_variables.stack;
-  var heap_objects = [{type: 'T', object_type: 'Object', unique_id: '786' }, {type: 'T', object_type: 'Object', unique_id: '686' },  {type: 'T', object_type: 'Array', unique_id: '71', array: [11,12,13,14]}, {type:'T', string:'aha', unique_id:'486', object_type: 'String'}];
+  var heap_objects = [{type: 'T', object_type: 'Object', unique_id: '71' }, {type: 'T', object_type: 'Object', unique_id: '686' },  {type: 'T', object_type: 'Array', unique_id: '71', array: [11,12,13,14]}, {type:'T', string:'aha', unique_id:'486', object_type: 'String'}];
 
   var arrays = filter_heap(heap_objects, 'Array');
   var strings = filter_heap(heap_objects, 'String');
@@ -170,8 +170,11 @@ function main(all_variables){
                                });
       var objects = heap_td.selectAll(".Object").selectAll("#value");
       console.log("bb" + objects);
-      objects.append("span")
-             .attr("class", "glyhicon glyphicon-plus");
+      var objects_button = objects.append("button")
+                                 .attr("type", "button")
+                                 .attr("class", "btn btn-default"); 
+      objects_button.append("span")
+                    .attr("class", "glyhicon glyphicon-plus");
 }
 
 
@@ -201,7 +204,7 @@ function main(all_variables){
         jsPlumb.connect({source: source, 
                          target: target,
                          overlays: [["Arrow", {width:10,length:20,location:1}]],
-                         Connector : ["State Machine", {proximityLimit:10}],
+                         Connector : ["State Machine", {proximityLimit:1}],
                          cssClass: "connectLine"
                         });
       }
