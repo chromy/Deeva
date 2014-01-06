@@ -64,3 +64,12 @@ table.Array td{
   min-height: 22px;
   font-size: 22px;
 }
+
+svg.connectLine path{
+  stroke: black;
+  stroke-width: 1;
+}
+
+.stackPoint svg circle{
+  fill: black;
+}
