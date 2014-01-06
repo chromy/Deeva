@@ -69,7 +69,6 @@ public class Debug extends EventHandlerBase {
     }
 
     public void start(String arg) {
-        //sema.drainPermits();
         vm = launchTarget(arg);
         EventThread eventThread = new EventThread(vm, excludes, this);
         eventThread.start();
@@ -103,6 +102,7 @@ public class Debug extends EventHandlerBase {
         /* Listen for method entry requests in the systemInObj instance */
         MethodEntryRequest mer = reqMgr.createMethodEntryRequest();
         mer.addClassFilter(sysInRefType);
+        mer.addInstanceFilter(this.systemInObj);
 
         mer.setSuspendPolicy(EventRequest.SUSPEND_ALL);
         mer.enable();
@@ -186,7 +186,7 @@ public class Debug extends EventHandlerBase {
         return processedObject;
     }
 
-    public List<Map<String, String>> getStack(LocatableEvent event)
+    private List<Map<String, String>> getStack(LocatableEvent event)
             throws IncompatibleThreadStateException, AbsentInformationException,
             ClassNotLoadedException
     {
@@ -288,7 +288,7 @@ public class Debug extends EventHandlerBase {
             breakpoints.put(bkpt, null);
             return true;
         } catch (NoLocationException error) {
-            // The VM exists and the class was loaded but we can't set a 
+            // The VM exists and the class was loaded but we can't set a
             // breakpoint here.
             return false;
         } catch (AbsentInformationException error) {
@@ -324,6 +324,7 @@ public class Debug extends EventHandlerBase {
         for (String exclude : excludes) {
             stepRequest.addClassExclusionFilter(exclude);
         }
+
         stepRequest.enable();
         vm.resume();
     }
@@ -414,15 +415,8 @@ public class Debug extends EventHandlerBase {
     @Override
     public void breakpointEvent(BreakpointEvent event) throws ClassNotLoadedException, AbsentInformationException, IncompatibleThreadStateException {
         System.err.println(event.location().method() + "@" + event.location().lineNumber());
-        // XXX: What to do on step?
-        //if (stepRequest != null) {
-        //    EventRequestManager mgr = vm.eventRequestManager();
-        //    mgr.deleteEventRequest(stepRequest);
-        //    stepRequest = null;
-        //}
 
         /* Try to extract the stack variables */
-
         state = State.STASIS;
         stack = getStack(event);
         sema.release();
@@ -431,8 +425,6 @@ public class Debug extends EventHandlerBase {
     @Override
     public void methodEntryEvent(MethodEntryEvent event) {
         /* Tailored towards the other thing, refactor later (observer) */
-        //System.err.println("method name entering: " + event.method().name());
-
         try {
             Method method = event.method();
 
@@ -446,7 +438,6 @@ public class Debug extends EventHandlerBase {
                 return;
             }
 
-            System.err.println("Reading");
             final Method availableMethod = this.sysInAvailableMethod;
 
             /* See if we need to get more data from the user */
@@ -476,15 +467,19 @@ public class Debug extends EventHandlerBase {
 
                     } catch (InvalidTypeException e) {
                         System.err.println("EXCEPTION: ite");
+                        System.err.println(e.getMessage());
                         e.printStackTrace();
                     } catch (ClassNotLoadedException e) {
                         System.err.println("EXCEPTION: cnl");
+                        System.err.println(e.getMessage());
                         e.printStackTrace();
                     } catch (IncompatibleThreadStateException e) {
                         System.err.println("EXCEPTION: its");
+                        System.err.println(e.getMessage());
                         e.printStackTrace();
                     } catch (InvocationException e) {
                         System.err.println("EXCEPTION: i");
+                        System.err.println(e.getMessage());
                         e.printStackTrace();
                     }
 
@@ -554,14 +549,6 @@ public class Debug extends EventHandlerBase {
 
     // XXX: Refactor beneath this line... and above this line...
 
-    void printOutArguments(Map<String, Connector.Argument> arguments) {
-        /* Find out arguments */
-        System.err.println("Arguments");
-        for (String arg : arguments.keySet()) {
-            System.err.println(arg + ":" + arguments.get(arg));
-        }
-    }
-
     private VirtualMachine launchTarget(String mainArgs) {
         System.err.println("finding launching connector");
         LaunchingConnector connector = findLaunchingConnector();
@@ -596,7 +583,6 @@ public class Debug extends EventHandlerBase {
         outThread.start();
         errThread.start();
         inThread.start();
-        /* Somehow need to capture input i.e. in the other direction */
     }
 
     LaunchingConnector findLaunchingConnector() {
@@ -621,8 +607,6 @@ public class Debug extends EventHandlerBase {
         }
 
         mainArg.setValue(mainArgs);
-
-        //((Connector.Argument)(arguments.get("suspend"))).setValue("true");
 
         System.out.println("After - con");
         return arguments;

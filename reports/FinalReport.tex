@@ -4,10 +4,17 @@
 \usepackage{subfigure}
 \usepackage{graphicx}
 \usepackage{titling}
-\usepackage[margin=1.8cm, includefoot]{geometry}
+% \usepackage[margin=1.8cm, includefoot]{geometry}
 \usepackage{parskip}
 \setlength{\parindent}{0cm}
 \usepackage{titlesec}
+
+% Select what to do with todonotes: 
+% \usepackage[disable]{todonotes} % notes not showed
+\usepackage[draft]{todonotes}   % notes showed
+
+\newlength\longest
+
 \titlespacing\section{0pt}{6pt plus 2pt minus 2pt}{0pt plus 0pt minus 2pt}
 \titlespacing\subsection{0pt}{4pt plus 2pt minus 2pt}{0pt plus 0pt minus 2pt}
 \newcommand{\subtitle}[1]{
@@ -18,6 +25,8 @@
 }
 
 \setlength{\droptitle}{-4em}
+
+\newcommand{\cmd}[1]{{\tt #1}}
 
 \begin{document}
 
@@ -33,10 +42,80 @@
 % Push after every commit.
 % ONLY EDIT ONE SECTION BEFORE COMMITTING.
 
+
+
+% Three main goals:
+% 1. Fill a tool hole for first year Java course
+% 2. Foster a strong mental model of imperative programming
+% 3. Introduction to debugging
+
+% Introduction 
+%   Set the scene (‘motivation’) 
+%   State the problem you are trying to solve (‘objective(s)’) 
+%   Summarise what you achieved (‘contributions’) 
+% Design & implementation 
+%   Detail your design (why did you do it this way?) 
+%   Summarise key implementation details (how did you do it? what tools did you use?) 
+% Evaluation 
+%   Summarise testing procedures (+ relevant testing results) 
+%   Evaluate your deliverables, e.g. in terms of performance, usability, usefulness… 
+%   (how successful was the project?) 
+% Conclusion and future extensions 
+%   Say what you’ve concluded from doing the work and how you’d build on it 
+% Project management 
+%   Planning, group organisation, breakdown + task allocation etc
+
+
 \section{Executive Summary}
-THIS IS THE ULTIMATE REPORT OF ULTIMATE DESTINY
-GOOD GUYS, BAD GUYS, AND EXPLOSIONS AS FAR AS THE EYE CAN SEE
-AND ONLY ONE WILL SURVIVE, I WONDER WHO IT WILL BE
-THIS IS THE ULTIMATE REPORT OF ULTIMATE DESTINY
+
+% One line summary:
+Deeva is a simple Java debugger for teaching which allows graphical introspection of a running program.
+
+% What is a debugger?
+``Bugs'' are a type of software defect typically introduced though a mismatch between the programmers mental model of the system and the system itself.
+A ``debugger'' then is a program that allows programmers to inspect the state and flow of a running system so they can understand the mismatch and hence fix the defect.
+
+% Why have we built one?
+In the first year introductory Java course many students are encountering imperative programming for the first time so there is a strong desire \todo{``by course leaders"?} to minimise `magic' particularly in the form of complex IDEs.
+
+Specifically students are encouraged to use a text editor (like \cmd{vim} or \cmd{emacs}) and invoke the Java compiler (\cmd{javac}) and virtual machine (\cmd{java}) directly in order develop a deeper and more transferable understanding of programming.
+Unfortunately this attempt is hamstrung by the absence of a good Java debugger decoupled from an IDE.
+Without a strategy to fix broken programs students quickly discover bad habits ranging from the awful, shotgun debugging, to the merely poor, print statements.
+
+We built Deeva to chiefly to fill this hole in the Java ecosystem and Lab infrastructure but it was designed with two additional goals in mind:
+first to use Deeva to help foster a strong mental model of imperative programming and to introduce students to powerful introspection of software systems.
+
+% Summary of report content:
+In this report we will first make the case for the necessity of a tool like Deeva then enumerate our goals and evaluate how well Deeva meets these goals before moving on to discuss the design, implementation and management of the project. 
+Lastly we conclude with our final evaluation of the project and directions for future work.
+
+\section{Motivation}
+Despite the existence of powerful tools to introspect running programs many programmers continue to debug programs using print statements.
+Since 
+Over half of first year computing students at Imperial have no previous experience of imperative programing
+A strong mental model of programming basics are highly predictive of eventual achievement.
+
+\section{Objectives}
+\section{Contributions}
+\section{Design}
+\section{Implementation}
+\section{Project Management}
+\section{Extensions}
+\section{Conclusion}
+
+\clearpage
+\thispagestyle{empty}
+\null\vfill
+\begin{center}
+\settowidth\longest{``A process cannot be understood by stopping it."}
+\parbox{\longest}{%
+  \raggedright{%
+  ``A process cannot be understood by stopping it." \\
+  }   
+  \raggedright{\emph{First Law of the Mentat -- Dune}}\par%
+}
+\end{center}
+\vfill\vfill
+\clearpage
 
 \end{document}
