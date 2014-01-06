@@ -9,10 +9,10 @@ function main(all_variables){
 
   var stack_variables = all_variables.stack || [];
   //var unique_id_list = filter_stack(stack_variables);
-  var unique_id_list = {unique_id: '71', typestring: 'java.lang.String[]'};
+  var unique_id_list = {unique_id: 102, type: 'java.lang.String[]'};
   if(unique_id_list != undefined){
   $.post("getHeapObject", unique_id_list).done(function(data){
-     console.log("data" + data);
+     console.log("data", data);
      var heap_td  = d3.select("#heap_td");
      append_heap(heap_td, data);
   });
@@ -181,7 +181,7 @@ function main(all_variables){
       console.log("bb" + objects);
       var objects_button = objects.append("button")
                                  .attr("type", "button")
-                                 .attr("class", "btn btn-default"); 
+                                 .attr("class", "btn btn-default");
       objects_button.append("span")
                     .attr("class", "glyhicon glyphicon-plus");
 }
@@ -193,24 +193,24 @@ function main(all_variables){
 
    //var endpoints = selection.selectAll("._jsPlumb_endpoint");
    //var svg_arrow = selection.selectAll("#arrow");
-   jsPlumb.importDefaults({ 
+   jsPlumb.importDefaults({
     ConnectionsDetachable:false,
-   }); 
+   });
 
    jsPlumb.bind("ready", function(){
       jsPlumb.Defaults.Container = "heap_stack";
       for(var i=0; i<arrows_id.length;i++){
-        var source = jsPlumb.addEndpoint("stackFrameValue_heap_71", 
-                           {anchor: [0.5, 0.5, 0, -1, 0, 2], 
+        var source = jsPlumb.addEndpoint("stackFrameValue_heap_71",
+                           {anchor: [0.5, 0.5, 0, -1, 0, 2],
                             connectionsDetachable:false,
-                            cssClass: "stackPoint" 
+                            cssClass: "stackPoint"
                            });
-        var target = jsPlumb.addEndpoint("heap_object_71", 
-                           {anchor: "Left", 
+        var target = jsPlumb.addEndpoint("heap_object_71",
+                           {anchor: "Left",
                             endpoint: "Blank",
-                            connectionsDetachable:false  
+                            connectionsDetachable:false
                            });
-        jsPlumb.connect({source: source, 
+        jsPlumb.connect({source: source,
                          target: target,
                          overlays: [["Arrow", {width: 6,length: 6,location:1}]],
                          Connector : ["State Machine", {proximityLimit:1}],
@@ -221,7 +221,7 @@ function main(all_variables){
   }
 
   /* Populates the stack with the values(the actual value for primitive types
-     and with arrows for objects). */ 
+     and with arrows for objects). */
   function populate_values(selection){
       var primitives = selection.filter(function(d){
          return primitive_list.indexOf(d.type) >= 0;
@@ -247,8 +247,8 @@ function main(all_variables){
    if(stack_variables){
      stack_variables.filter(function(d){
        return d.unique_id != undefined;
-        
-     });   
+
+     });
    }
    else
      return [];
