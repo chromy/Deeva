@@ -5,6 +5,7 @@ var deeva = angular.module('deeva', ['deeva.directives', 'deeva.services']);
 var INITIAL_PROMPT = '';
 var CHS_PER_LINE = 80;
 var BACK_CLASS = "CodeMirror-activeline-background";
+var PASSIVE_BACK_CLASS = "CodeMirror-passiveline-background";
 
 // Currently is a whole document controller
 deeva.controller('SimpleController', ['$scope', '$http', 'FileService', 'MiscService',
@@ -89,7 +90,7 @@ function ($scope, $http, FileService, MiscService) {
             $scope.breadcrumb = new_breadcrumb;
 
             /* Remove the line highlights */
-            $scope.codeMirror.removeLineClass($scope.currentLine, "background", BACK_CLASS);
+            $scope.codeMirror.removeLineClass($scope.currentLine, "background");
 
             /* Update the current class */
             $scope.current_class = data.current_class;
@@ -101,12 +102,14 @@ function ($scope, $http, FileService, MiscService) {
                 var current_line = data.line_number;
 
                 $scope.currentLine = current_line;
+
                 /*if (prev_line >= 0) {
                     $scope.codeMirror.removeLineClass(prev_line, "background", BACK_CLASS);
                 }*/
 
-                if (current_line >= 0) {
-                    $scope.codeMirror.addLineClass(current_line, 'background', BACK_CLASS);
+                if ($scope.currentLine >= 0) {
+                    var cls = $scope.currentState == "NO_INFERIOR" ? PASSIVE_BACK_CLASS : BACK_CLASS;
+                    $scope.codeMirror.addLineClass($scope.currentLine, 'background', cls);
                 }
 
                 $scope.codeMirror.setCursor($scope.currentLine);
