@@ -181,18 +181,28 @@ function main(all_variables){
 
    //var endpoints = selection.selectAll("._jsPlumb_endpoint");
    //var svg_arrow = selection.selectAll("#arrow");
- 
+   jsPlumb.importDefaults({ 
+    ConnectionsDetachable:false,
+   }); 
+
    jsPlumb.bind("ready", function(){
       jsPlumb.Defaults.Container = "heap_stack";
       for(var i=0; i<arrows_id.length;i++){
         var source = jsPlumb.addEndpoint("stackFrameValue_heap_71", 
-                           {anchor:[0.5,0.5,0, -0.5, 0,10]});
-        var target = jsPlumb.addEndpoint("heap_object_71", {anchor:"Left"});
-        target.addOverlay([ "Arrow", { width:10, height:10, id:"arrow" }]);
-          console.log("aaaaa" ); 
+                           {anchor: [0.5,0.5,1, -1, 0, 2], 
+                            connectionsDetachable:false,
+                            cssClass: "stackPoint" 
+                           });
+        var target = jsPlumb.addEndpoint("heap_object_71", 
+                           {anchor: "Left", 
+                            endpoint: "Blank",
+                            connectionsDetachable:false  
+                           });
         jsPlumb.connect({source: source, 
                          target: target,
-                         Connector : ["Bezier", {curviness:50}]
+                         overlays: [["Arrow", {width:10,length:20,location:1}]],
+                         Connector : ["State Machine", {proximityLimit:10}],
+                         cssClass: "connectLine"
                         });
       }
    });
