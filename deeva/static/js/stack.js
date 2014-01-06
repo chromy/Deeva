@@ -8,7 +8,7 @@ function main(all_variables){
   var primitive_list = ["int", "char", "boolean", "byte", "float", "double", "long", "short"];
 
   var stack_variables = all_variables.stack;
-  var heap_objects = [{type: 'T', object_type: 'Object', unique_id: '71' }, {type: 'T', object_type: 'Object', unique_id: '686' },  {type: 'T', object_type: 'Array', unique_id: '71', array: [11,12,13,14]}, {type:'T', string:'aha', unique_id:'486', object_type: 'String'}];
+  var heap_objects = [{type: 'T', object_type: 'Object', unique_id: '701' }, {type: 'T', object_type: 'Object', unique_id: '686' },  {type: 'T', object_type: 'Array', unique_id: '71', array: [11,12,13,14]}, {type:'T', string:'aha', unique_id:'486', object_type: 'String'}];
 
   var arrays = filter_heap(heap_objects, 'Array');
   var strings = filter_heap(heap_objects, 'String');
@@ -128,7 +128,10 @@ function main(all_variables){
       var heapObjectType = heapRowObject.append("div")
                                    .attr("class", "typeLabel")
                                    .text(function(d,i){
-                                       return d.object_type;
+                                      if(is_of_type(d, 'Object'))
+                                        return d.type;
+                                      else
+                                        return d.object_type;
                                    });
 
       var objectArray = heapRowObject.append("table")
@@ -192,7 +195,7 @@ function main(all_variables){
       jsPlumb.Defaults.Container = "heap_stack";
       for(var i=0; i<arrows_id.length;i++){
         var source = jsPlumb.addEndpoint("stackFrameValue_heap_71", 
-                           {anchor: [0.5,0.5,1, -1, 0, 2], 
+                           {anchor: [0.5, 0.5, 0, -1, 0, 2], 
                             connectionsDetachable:false,
                             cssClass: "stackPoint" 
                            });
@@ -203,7 +206,7 @@ function main(all_variables){
                            });
         jsPlumb.connect({source: source, 
                          target: target,
-                         overlays: [["Arrow", {width:10,length:20,location:1}]],
+                         overlays: [["Arrow", {width: 6,length: 6,location:1}]],
                          Connector : ["State Machine", {proximityLimit:1}],
                          cssClass: "connectLine"
                         });
