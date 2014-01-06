@@ -154,7 +154,7 @@ def push_input():
 @app.route("/getHeapObject", methods=["POST"])
 def get_heap_object():
     args = request.get_json()
-
+    print args
     unique_id = args.get('unique_id')
     typestr = args.get('typestring').encode('ascii', 'ignore')
 
