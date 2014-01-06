@@ -8,7 +8,7 @@ function main(all_variables){
   var primitive_list = ["int", "char", "boolean", "byte", "float", "double", "long", "short"];
 
   var stack_variables = all_variables.stack;
-  var heap_objects = [{type: 'T', object_type: 'Object', unique_id: '786' }, {type: 'T', object_type: 'Object', unique_id: '686' },  {type: 'T', object_type: 'Array', unique_id: '86', array: [11,12,13,14]}, {type:'T', string:'aha', unique_id:'486', object_type: 'String'}];
+  var heap_objects = [{type: 'T', object_type: 'Object', unique_id: '786' }, {type: 'T', object_type: 'Object', unique_id: '686' },  {type: 'T', object_type: 'Array', unique_id: '71', array: [11,12,13,14]}, {type:'T', string:'aha', unique_id:'486', object_type: 'String'}];
 
   var arrays = filter_heap(heap_objects, 'Array');
   var strings = filter_heap(heap_objects, 'String');
@@ -53,7 +53,6 @@ function main(all_variables){
    var stackFrameSel = d3.select(".stackFrameVarTable");
 
    if(stack_variables != null){
-   console.log(stack_variables);
    var globalVariables = stackFrameSel.selectAll("tr")
                                       .data(stack_variables)
                                       .enter()
@@ -76,8 +75,8 @@ function main(all_variables){
              .attr("class", "stackFrameValue")
              .attr("id", function(d) {
                     //TODO: must have different
-                    if(d.refID)
-                      return "stackFrameValue_heap_" + d.refID;
+                    if(d.unique_id)
+                      return "stackFrameValue_heap_" + d.unique_id;
                     else
                       return "stackFrameValue_" + d.name;
              });
@@ -153,6 +152,7 @@ function main(all_variables){
                                .text(function(d,i){
                                   return d;
                                });
+
       var indices = objectArrayTable.append("tr").attr("id", "indice");
       var indices_entries = indices.selectAll("td")
                                .data(function(d){
@@ -168,6 +168,10 @@ function main(all_variables){
                                .text(function(d,i){
                                    return i;
                                });
+      var objects = heap_td.selectAll(".Object").selectAll("#value");
+      console.log("bb" + objects);
+      objects.append("span")
+             .attr("class", "glyhicon glyphicon-plus");
 }
 
 
@@ -181,16 +185,14 @@ function main(all_variables){
    jsPlumb.bind("ready", function(){
       jsPlumb.Defaults.Container = "heap_stack";
       for(var i=0; i<arrows_id.length;i++){
-        var source = jsPlumb.addEndpoint("stackFrameValue_heap_"+arrows_id[i]); 
-        var target = jsPlumb.addEndpoint("heap_object_86");
-           
+        var source = jsPlumb.addEndpoint("stackFrameValue_heap_71", 
+                           {anchor:[0.5,0.5,0, -0.5, 0,10]});
+        var target = jsPlumb.addEndpoint("heap_object_71", {anchor:"Left"});
+        target.addOverlay([ "Arrow", { width:10, height:10, id:"arrow" }]);
+          console.log("aaaaa" ); 
         jsPlumb.connect({source: source, 
                          target: target,
-                         anchor:[ "Top", "Top"],
-                         //paintStyle:{lineWidth:7,strokeStyle:'black'},
-                         //endpointStype: { radius: 8},
-                         //endpoint: "Circle",
-                         connector: "Straight"
+                         Connector : ["Bezier", {curviness:50}]
                         });
       }
    });
@@ -212,7 +214,7 @@ function main(all_variables){
                 .text(function(d){
                     return d.value;
                 });
-      //create_arrows(objects);
+      create_arrows(objects);
   }
 }
 
