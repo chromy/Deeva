@@ -34,8 +34,8 @@ function ($scope, $http, FileService, MiscService) {
         stopBtn : ['RUNNING', 'AWAITING_IO', 'STASIS'],
         stepOverBtn : ['STASIS'],
         stepIntoBtn : ['STASIS'],
-        stepReturnBtn : ['STASIS', 'NO_INFERIOR']
-    }
+        stepReturnBtn : ['STASIS'],
+    };
 
 
     FileService.getPackages(function(package_dir) {
