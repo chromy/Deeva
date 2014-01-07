@@ -7,24 +7,30 @@ function main(all_variables){
   // Primitive types in Java.
   var primitive_list = ["int", "char", "boolean", "byte", "float", "double", "long", "short"];
 
-  var stack_variables = all_variables.stack;
-  var heap_objects = [{type: 'T', object_type: 'Object', unique_id: '71' }, {type: 'T', object_type: 'Object', unique_id: '686' },  {type: 'T', object_type: 'Array', unique_id: '71', array: [11,12,13,14]}, {type:'T', string:'aha', unique_id:'486', object_type: 'String'}];
+  var stack_variables = all_variables.stack || [];
+  //var unique_id_list = filter_stack(stack_variables);
+  var unique_id_list = {unique_id: 102, type: 'java.lang.String[]'};
+  if(unique_id_list != undefined){
+  $.post("getHeapObject", unique_id_list).done(function(data){
+     console.log("data", data);
+     var heap_td  = d3.select("#heap_td");
+     append_heap(heap_td, data);
+  });
+ }
 
-  var arrays = filter_heap(heap_objects, 'Array');
-  var strings = filter_heap(heap_objects, 'String');
-  var objects = filter_heap(heap_objects, 'Object');
+//[{type: 'T', object_type: 'Object', unique_id: '701' }, {type: 'T', object_type: 'Object', unique_id: '686' },  {type: 'T', object_type: 'Array', unique_id: '71', array: [11,12,13,14]}, {type:'T', string:'aha', unique_id:'486', object_type: 'String'}];
 
-  var arrows_id = [67];
+  //var arrays = filter_heap(heap_objects, 'Array');
+  //var strings = filter_heap(heap_objects, 'String');
+  //var objects = filter_heap(heap_objects, 'Object');
 
   var stack_td = d3.select("#stack_td");
 
-  var heap_td  = d3.select("#heap_td");
-
+  arrows_id=[1];
 //   append_global_stack();
 
 //   append_other_stacks();
 
-   append_heap(heap_td);
 
 
 
@@ -98,8 +104,8 @@ function main(all_variables){
 
 
 
-  // Creates the heap and the objects in it.
-   function append_heap(heap_selection){
+   // Creates the heap and the objects in it.
+   function append_heap(heap_selection, heap_objects){
      var heap = heap_selection.append("div").attr("id", "heap");
      var heapHeader = heap.append("div")
                           .attr("id", "heapHeader")
@@ -128,7 +134,10 @@ function main(all_variables){
       var heapObjectType = heapRowObject.append("div")
                                    .attr("class", "typeLabel")
                                    .text(function(d,i){
-                                       return d.object_type;
+                                      if(is_of_type(d, 'Object'))
+                                        return d.type;
+                                      else
+                                        return d.object_type;
                                    });
 
       var objectArray = heapRowObject.append("table")
@@ -172,7 +181,7 @@ function main(all_variables){
       console.log("bb" + objects);
       var objects_button = objects.append("button")
                                  .attr("type", "button")
-                                 .attr("class", "btn btn-default"); 
+                                 .attr("class", "btn btn-default");
       objects_button.append("span")
                     .attr("class", "glyhicon glyphicon-plus");
 }
@@ -184,26 +193,26 @@ function main(all_variables){
 
    //var endpoints = selection.selectAll("._jsPlumb_endpoint");
    //var svg_arrow = selection.selectAll("#arrow");
-   jsPlumb.importDefaults({ 
+   jsPlumb.importDefaults({
     ConnectionsDetachable:false,
-   }); 
+   });
 
    jsPlumb.bind("ready", function(){
       jsPlumb.Defaults.Container = "heap_stack";
       for(var i=0; i<arrows_id.length;i++){
-        var source = jsPlumb.addEndpoint("stackFrameValue_heap_71", 
-                           {anchor: [0.5,0.5,1, -1, 0, 2], 
+        var source = jsPlumb.addEndpoint("stackFrameValue_heap_71",
+                           {anchor: [0.5, 0.5, 0, -1, 0, 2],
                             connectionsDetachable:false,
-                            cssClass: "stackPoint" 
+                            cssClass: "stackPoint"
                            });
-        var target = jsPlumb.addEndpoint("heap_object_71", 
-                           {anchor: "Left", 
+        var target = jsPlumb.addEndpoint("heap_object_71",
+                           {anchor: "Left",
                             endpoint: "Blank",
-                            connectionsDetachable:false  
+                            connectionsDetachable:false
                            });
-        jsPlumb.connect({source: source, 
+        jsPlumb.connect({source: source,
                          target: target,
-                         overlays: [["Arrow", {width:10,length:20,location:1}]],
+                         overlays: [["Arrow", {width: 6,length: 6,location:1}]],
                          Connector : ["State Machine", {proximityLimit:1}],
                          cssClass: "connectLine"
                         });
@@ -212,7 +221,7 @@ function main(all_variables){
   }
 
   /* Populates the stack with the values(the actual value for primitive types
-     and with arrows for objects). */ 
+     and with arrows for objects). */
   function populate_values(selection){
       var primitives = selection.filter(function(d){
          return primitive_list.indexOf(d.type) >= 0;
@@ -227,11 +236,24 @@ function main(all_variables){
                 .text(function(d){
                     return d.value;
                 });
-      create_arrows(objects);
+     // create_arrows(objects);
   }
 }
 
 /* Utility functions */
+
+
+ function filter_stack(stack_variables){
+   if(stack_variables){
+     stack_variables.filter(function(d){
+       return d.unique_id != undefined;
+
+     });
+   }
+   else
+     return [];
+ }
+
  // Returns a set of all the objects of type 'type'.
  function filter_heap(heap_objects, type){
    heap_objects.filter(function(d){

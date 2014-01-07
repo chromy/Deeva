@@ -159,12 +159,15 @@ def push_input():
 
 @app.route("/getHeapObject", methods=["POST"])
 def get_heap_object():
-    args = request.get_json()
+    args = request.values
 
-    unique_id = args.get('unique_id')
-    typestr = args.get('typestring').encode('ascii', 'ignore')
+    unique_id = int(args.get('unique_id'))
+    typestr = args.get('type')
+    print type(typestr)
 
-    print unique_id
+    print "Getting Heap Object"
+    print "Unique ID:", unique_id
+    print "Type String:", typestr
 
     # Need to check that the debugger is alive and is in stasis mode
     # as this request is asynchronous

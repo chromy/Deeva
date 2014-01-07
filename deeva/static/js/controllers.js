@@ -118,10 +118,10 @@ function ($scope, $http, FileService, MiscService) {
 
             // refactor - plus fix heap!
             /* Update the stack and the heap */
-            var stack_heap = {'stack' : data.stack,
-                              'heap' : []
-                             }
-            main(stack_heap);
+            var stack_heap = {'stack' : data.stack};
+            if (data.stack) {
+                main(stack_heap);
+            }
         }
 
         if (data.stdout) {
