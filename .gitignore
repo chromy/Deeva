@@ -11,3 +11,5 @@
 docs/_build
 scripts/*.csv
 start_deeva
+
+*.toc
