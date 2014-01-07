@@ -70,26 +70,35 @@
 
 \section*{Executive Summary}
 \addcontentsline{toc}{section}{Executive Summary}
-% One line summary:
+
 Deeva is a simple Java debugger for teaching which allows graphical introspection of a running program.
 
-% What is a debugger?
-``Bugs'' are a type of software defect typically introduced though a mismatch between the programmers mental model of the system and the system itself.
-A ``debugger'' then is a program that allows programmers to inspect and manipulate the state and flow of a running system so they can understand the mismatch and hence fix the defect.
-
-% Why have we built one?
-In the first year introductory Java course many students are encountering imperative programming for the first time so there is a strong desire \todo{``by course leaders"?} to minimise `magic' particularly in the form of complex IDEs.
-
-Specifically students are encouraged to use a text editor (like \cmd{vim} or \cmd{emacs}) and invoke the Java compiler (\cmd{javac}) and virtual machine (\cmd{java}) directly in order develop a deeper and more transferable understanding of programming.
+In the first year introductory Java course many students are encountering imperative programming for the first time so there is a strong desire to minimise `magic' particularly in the form of complex IDEs which `make it work'.
 Unfortunately this attempt is hamstrung by the absence of a good Java debugger decoupled from an IDE.
-Without a strategy to fix broken programs students quickly discover bad habits ranging from the awful, shotgun debugging, to the merely poor, print statements.
+Without a good strategy to fix broken programs students quickly reinvent bad habits ranging from the awful, shotgun debugging, to the merely poor, print statements.
 
-We built Deeva to chiefly to fill this hole in the Java ecosystem and Lab infrastructure but it was designed with two additional goals in mind:
-first to help foster a strong mental model of imperative programming and secondly to introduce students to powerful introspection of software systems.
+What we want is debugger, invokable from the command line, simple enough that students who have never seen a debugger before can taught to use it in only a few minutes but powerful enough to make tracking down a bug easy. 
+Deeva fills this hole in the Java ecosystem and Lab infrastructure.
 
-% Summary of report content:
+Deeva was designed with an additional goal in mind.
+At Imperial (as most places) students are taught imperative programming with diagrams, the lecturer draws a stack and a heap and shows how moving through the code effect the stack and the heap.
+By using a novel user interface which resembles these diagrams we make debugging more intuitive, allow lectures to easily construct and step through these diagrams live on arbitrary code without fear of mistake and, for the first time, allow students to see how code they write is run on their own time without outside help.
+This way Deeva becomes a tool for both teaching and learning.
+
+All to many programmers, experts and beginners, never really learn to use or desire the powerful tools which already exist to introspect and modify running programs preferring instead to grovel though the source code with \cmd{printf}.
+For students Deeva provides excellent introduction to these tools while also filling a vital gap in Lab infrastructure and providing a useful tool for lecturers teaching imperative programming.
+
 In this report we will first make the case for the necessity of a tool like Deeva then enumerate our goals and evaluate how well Deeva meets these goals before moving on to discuss the design, implementation and management of the project. 
 Lastly we conclude with our final evaluation of the project and directions for future work.
+
+% What is a debugger?
+% ``Bugs'' are a type of software defect typically introduced though a mismatch between the programmers mental model of the system and the system itself.
+% A ``debugger'' then is a program that allows programmers to inspect and manipulate the state and flow of a running system so they can understand the mismatch and hence fix the defect.
+
+% Specifically students are encouraged to use a text editor and invoke the Java compiler and virtual machine directly in order develop a deeper and more transferable understanding of programming.
+% 
+% first to help foster a strong mental model of imperative programming and secondly to introduce students to powerful introspection of software systems.
+
 
 \clearpage
 \tableofcontents
