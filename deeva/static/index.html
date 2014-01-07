@@ -8,15 +8,11 @@
     <!-- Common css -->
     <link rel="stylesheet" href="static/css/deeva.css">
     <link rel="stylesheet" href="static/css/bootstrap.min.css">
-    <link rel="stylesheet" href="static/css/bootstrap-theme.min.css">
     <link rel="stylesheet" href="static/css/stack.css">
     <link rel="stylesheet" href="static/css/package.css">
 
     <!-- D3 -->
     <script src="static/lib/d3/d3.v3.min.js"></script>
-
-    <!-- AngularJS -->
-    <script src="static/lib/angular/angular.min.js"></script>
 
     <!-- codemirror.net online code editor -->
     <script src="static/lib/jquery/jquery-1.10.2.min.js"></script>
@@ -29,13 +25,9 @@
     <script src="static/lib/jquery-terminal/jquery.terminal-0.7.7.min.js"></script>
     <link href="static/css/jquery.terminal.css" rel="stylesheet">
 
-    <!-- jquery-ui -->
-    <script src="static/lib/jquery-ui/jquery-ui-1.10.3.custom.min.js"></script>
-    <link href="static/css/jquery-ui-1.10.3.custom.min.css" rel="stylesheet">
+    <!-- AngularJS -->
+    <script src="static/lib/angular/angular.min.js"></script>
 
-    <!-- tag-it -->
-    <script src="static/lib/tag-it/tag-it.min.js"></script>
-    <link href="static/css/jquery.tagit.css" rel="stylesheet">
     <!-- Bootstrap tab.js -->
     <script src="static/js/bootstrap.js"></script>
 
@@ -60,12 +52,10 @@
       <div class="row">
         <div class="col-md-6" style="max-width:{{cmMaxWidth}}px">
 	  <!-- Arguments -->
-          <ul id="arguments" ng-show="showArguments"></ul>
-
 	  <!-- Buttons Container -->
           <div id="buttons_container">
             <div type="image" class="myButtons" id="runBtn"
-                 ng-click="clickButton('run', getArgumentArray(arguments))" title="Continue">
+                 ng-click="clickButton('run', args" title="Continue">
               <div id="innerRunBtn" ng-show="currentState != 'NO_INFERIOR'"></div>
               <div id="innerRunBtnText" ng-show="currentState == 'NO_INFERIOR'">Run</div>
             </div>
@@ -95,12 +85,6 @@
 	  <!-- CodeMirror Instance -->
 	  <div id="codeInputPane" class="outer-circle"></div>
         </div> <!-- end col-md-6 -->
-
-
-        <div class="tooltip">
-          <div class="tooltip-inner"></div>
-          <div class="tooltip-arrow"></div>
-        </div>
 
 	<!-- Begin Stack/Heap section, bring this into a new controller, easier to separate -->
         <div class="col-md-6">

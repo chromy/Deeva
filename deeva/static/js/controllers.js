@@ -27,6 +27,7 @@ function ($scope, $http, FileService, MiscService) {
     $scope.breadcrumb = ['(default)', 'Select package or source file']; /* Set to be the default package */
     $scope.package_dir = {};
     $scope.current_class = "";
+    $scope.args = [];
 
     // ZZZ: Maybe should be in a directive thing somewhere
     /* Define what states that the given button is allowed to be enabled in */
@@ -46,7 +47,6 @@ function ($scope, $http, FileService, MiscService) {
     /* ZZZ: These lines should be handled by directives containing the separate ui elements */
     setUpCodeMirror();
     displayTerminal();
-    displayTagit();
     init();
 
     /* Click handler for the debug buttons */
@@ -265,19 +265,6 @@ function ($scope, $http, FileService, MiscService) {
             });
     }
 
-    function displayTagit() {
-        //Use the function below to get all arguments
-        $scope.arguments = $("#arguments").tagit({
-            allowDuplicates: true,
-            placeholderText: "Input argument(s) here"
-        });
-    }
-
-    $scope.getArgumentArray = function() {
-        var java_arguments = $scope.arguments.tagit("assignedTags");
-        return java_arguments;
-    }
-
     /* Refactoring of loading file on page, refactor again somewhere */
     $scope.loadFile = function(className, callback) {
         callback = callback || MiscService.nullFunction;
@@ -294,7 +281,7 @@ function ($scope, $http, FileService, MiscService) {
             for (var i=0; i<classdata.breakpoints.length; i++) {
                 var line = classdata.breakpoints[i];
                 var info = $scope.codeMirror.lineInfo(line);
-                console.log("Breakpoints" + classdata.breakpoints[i]);
+                console.log("Breakpoints", classdata.breakpoints[i]);
                 $scope.codeMirror.setGutterMarker(line, "breakpoints", makeBreakPoint());
             }
 
