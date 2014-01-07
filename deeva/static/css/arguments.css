@@ -23,3 +23,29 @@
     line-height: 28px;
     font-size: 12px;
 }
+
+.enable-assertions label {
+    line-height: 42px;
+    font-weight: normal;
+    margin-bottom: 2px;
+    float: left;
+}
+
+.enable-assertions .enabled {
+    color: green;
+}
+
+.enable-assertions .disabled {
+    color: #d9534f;
+}
+
+.enable-assertions .glyphicon {
+    font-size: 20px;
+    margin-right: 10px;
+    line-height: 36px;
+    float: left;
+}
+
+.enable-assertions .glyphicon.disabled {
+    line-height: 38px;
+}

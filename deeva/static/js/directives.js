@@ -2,31 +2,6 @@
 
 var directives = angular.module("deeva.directives", []);
 
-directives.directive('tagIt', [function() {
-    return {
-        restrict: 'A',
-        scope: {
-            args: '='
-        },
-        //template: '<li ng-repeat="arg in args">{{arg}}</li>',
-        link : function(scope, element, attrs) {
-            console.log("Found a tag it");
-            console.log(scope.args);
-            console.log(element);
-            var count = 0;
-
-            scope.$watch('args', function(new_value, old_value) {
-                console.log("Something changed");
-                console.log("newvalue", new_value);
-                count++;
-                if (count >3)
-                    element.tagit({allowDuplicates: true, placeholderText: "Input argument(s) here"});
-            }, true);
-            return "HELLO"
-        }
-    }
-}]);
-
 directives.directive('deevaArgs', [function() {
     var BACKSPACE = 8;
     var TAB = 9;
@@ -37,7 +12,8 @@ directives.directive('deevaArgs', [function() {
         restrict: 'E',
         templateUrl: 'static/templates/deevaArguments.html',
         scope: {
-            args: '='
+            args: '=',
+            enableAssertions: '='
         },
         replace: true,
         link: function(scope, element, attrs) {
@@ -48,24 +24,29 @@ directives.directive('deevaArgs', [function() {
                 input_elem.focus();
             });
 
-            /* Handler code for when backspace is pressed and we have an empty input */
+            /* Handler for when we press keys on the input element */
             input_elem.on('keydown', function(event) {
                 var keyCode = event.keyCode;
 
                 scope.$apply(function() {
-                if (keyCode == BACKSPACE && !input_elem.val()) {
-                    scope.args.pop();
-                } else if (keyCode == TAB || keyCode == RETURN || keyCode == SPACE) {
-                    var tag_content = input_elem.val();
+                    if (keyCode == BACKSPACE && !input_elem.val()) {
+                        /* If we're deleting and the input is empty, delete the
+                         * last one */
+                        scope.args.pop();
+                    } else if (keyCode == TAB || keyCode == RETURN
+                               || keyCode == SPACE) {
+                        /* If we press tab/space/enter we create a new tag */
+                        var tag_content = input_elem.val();
 
-                    if (tag_content) {
-                        scope.args.push(tag_content);
-                        input_elem.val("");
-                    }
-                    event.preventDefault();
-                }});
+                        if (tag_content) {
+                            scope.args.push(tag_content);
+                            input_elem.val("");
+                        }
+                        event.preventDefault();
+                    }});
             });
 
+            /* Remove element at given index */
             scope.remove = function(index) {
                 scope.args.splice(index, 1);
             }
@@ -80,6 +61,7 @@ directives.directive('deevaPackage', ['PackageService', function(PackageService)
     return {
         restrict: 'E',
         templateUrl: 'static/templates/deevaPackage.html',
+        replace: true,
         scope: {
             packageDir: '=',
             breadcrumb: '=',

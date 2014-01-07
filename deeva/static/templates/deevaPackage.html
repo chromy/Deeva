@@ -12,7 +12,7 @@
           <!-- Packages - do a ng-show on the header..-->
           <li role="presentation" class="dropdown-header" ng-show="!isEmpty(getPackages(crumb, $index))">Packages</li>
 
-          <!-- TODO: need to apply class for the active menu -->
+          <!-- Packages -->
           <li role="presentation"
               ng-repeat="(package_name, package_contents) in getPackages(crumb, $index)"
               ng-class="{disabled: package_name == crumb}">
@@ -51,4 +51,4 @@
       Goto current class
     </a>
   </div> <!-- col-md-3-->
-</div> <!-- row -->
+</div>

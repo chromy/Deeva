@@ -28,6 +28,7 @@ function ($scope, $http, FileService, MiscService) {
     $scope.package_dir = {};
     $scope.current_class = "";
     $scope.args = [];
+    $scope.enableAssertions = false;
 
     // ZZZ: Maybe should be in a directive thing somewhere
     /* Define what states that the given button is allowed to be enabled in */
@@ -50,8 +51,10 @@ function ($scope, $http, FileService, MiscService) {
     init();
 
     /* Click handler for the debug buttons */
-    $scope.clickButton = function(destination, argument_array) {
+    $scope.clickButton = function(destination, assertions, argument_array) {
+        console.log("assertions", assertions);
         if (destination == "run") {
+            /* Clear the terminal if we're starting a new instance of the vm */
             if ($scope.currentState == 'NO_INFERIOR') {
                 $scope.terminal.clear();
             }
@@ -59,7 +62,7 @@ function ($scope, $http, FileService, MiscService) {
             $scope.currentState = "RUNNING";
             console.log(argument_array);
         }
-        $http.post(destination, {args: argument_array})
+        $http.post(destination, {args: argument_array, ea: assertions})
             .success(function(data) {
                 console.log(data);
                 updateState(data);
@@ -84,6 +87,9 @@ function ($scope, $http, FileService, MiscService) {
         if (data.state == 'AWAITING_IO') {
             $scope.terminal.focus(true);
         }
+
+        /* Restore the state of the -ea flag */
+        $scope.enableAssertions = data.enable_assertions;
 
         /* Update the codemirror instance and the stack/heap visuals */
         if (data.line_number && data.current_class) {

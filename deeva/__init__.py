@@ -67,13 +67,15 @@ def run():
     if app.debugger.getStateName() == "NO_INFERIOR":
         request_args = request.get_json()
         argument_array = request_args.get("args")
+        enable_assertions = request_args.get("ea")
+        print request_args
         argument_string = " ".join(argument_array)
         java_argument_array = ListConverter().convert(argument_array, app.gateway._gateway_client)
-        # Need to save the arguments
+
         print 'Starting program...'
         # TODO Pass in the actual class path to the *debuggee program* here
         # Aswell as any other arguments e.g. -ea -cp asdf, commandline arguments
-        app.debugger.start(app.program, argument_string, java_argument_array)
+        app.debugger.start(app.program, argument_string, enable_assertions)
     else:
         print 'Continuing program...'
 
@@ -168,7 +170,6 @@ def get_heap_object():
 
     unique_id = int(args.get('unique_id'))
     typestr = args.get('type')
-    print type(typestr)
 
     print "Getting Heap Object"
     print "Unique ID:", unique_id
@@ -216,12 +217,15 @@ def make_api_response(f, *args, **kargs):
 
         # Need to do some sort of recursive converter, so that we don't have
         # malicious strings in Java that will kill our eval/repr etc
+
+        args = eval(repr(result['arguments'])) if eval(repr(result['arguments'])) != [""] else []
         result2 = {
             'state' : result['state'],
             'line_number' : result['line_number'],
             'stack' : eval(repr(st)),
             'current_class' : result['current_class'],
-            'arguments' : eval(repr(result['arguments']))
+            'arguments' : args,
+            'enable_assertions' : result['ea']
         }
         pprint.pprint(result2['stack']);
         return jsonify(status='ok', stdout=stdout, stderr=stderr, **result2)
