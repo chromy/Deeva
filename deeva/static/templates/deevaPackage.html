@@ -3,7 +3,7 @@
     <ol class="breadcrumb packages">
       <li ng-repeat="crumb in breadcrumb" class="dropdown">
         <!-- The package name with dropdown toggle -->
-        <a href="#" data-toggle="dropdown" ng-class="{unselected : pkg_was_selected(crumb)}">
+        <a data-toggle="dropdown" ng-class="{unselected : pkg_was_selected(crumb)}">
           {{crumb}}
         </a>
 
@@ -16,7 +16,7 @@
           <li role="presentation"
               ng-repeat="(package_name, package_contents) in getPackages(crumb, $index)"
               ng-class="{disabled: package_name == crumb}">
-            <a role="menuitem" tabindex="-1" href="#"
+            <a role="menuitem" tabindex="-1"
                ng-click="selectPackage($parent.$index, package_name)"
                ng-class="{selected: package_name == crumb}">
               {{package_name}}
@@ -35,7 +35,7 @@
           <li role="presentation"
               ng-repeat="(source_name, source_data) in getSources(crumb, $index)"
               ng-class="{disabled: source_name == crumb}">
-            <a role="menuitem" tabindex="-1" href="#"
+            <a role="menuitem" tabindex="-1"
                ng-click="selectSource($parent.$index, source_name, source_data.className)"
                ng-class="{selected: source_name == crumb}">
               {{source_name}}
@@ -46,7 +46,7 @@
     </ol>
   </div> <!-- col-md-9 -->
   <div class="col-md-3 select-current-class">
-    <a href="#" ng-click="selectCurrentClass()"
+    <a ng-click="selectCurrentClass()"
        ng-class="{disabled: isCurrentClass()}">
       Goto current class
     </a>

@@ -134,7 +134,7 @@ body {
   cursor: pointer;
 }
 
-#stepOverBtn { 
+#stepOverBtn {
   content:url("images/step_over.png");
 }
 
@@ -189,4 +189,8 @@ body {
 
 #codeInputPane {
   height: 600px;
+}
+
+a:hover {
+    cursor: pointer;
 }
