@@ -63,7 +63,9 @@ body {
   margin-bottom: 10px;
   text-align: center;
   height: 50px;
-  padding-left: 115px;;
+	width: 290px;
+	margin-left: auto;
+	margin-right: auto;
 }
 
 .myButtons[disabled="disabled"] {
