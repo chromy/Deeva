@@ -8,6 +8,8 @@
 \usepackage{parskip}
 \setlength{\parindent}{0cm}
 \usepackage{titlesec}
+\usepackage{pdfpages}
+\usepackage{cleveref}
 
 % Select what to do with todonotes: 
 % \usepackage[disable]{todonotes} % notes not showed
@@ -65,8 +67,8 @@
 % Project management 
 %   Planning, group organisation, breakdown + task allocation etc
 
-\section{Executive Summary}
-
+\section*{Executive Summary}
+\addcontentsline{toc}{section}{Executive Summary}
 % One line summary:
 Deeva is a simple Java debugger for teaching which allows graphical introspection of a running program.
 
@@ -88,6 +90,10 @@ first to help foster a strong mental model of imperative programming and secondl
 In this report we will first make the case for the necessity of a tool like Deeva then enumerate our goals and evaluate how well Deeva meets these goals before moving on to discuss the design, implementation and management of the project. 
 Lastly we conclude with our final evaluation of the project and directions for future work.
 
+\clearpage
+\tableofcontents
+\clearpage
+
 \section{Motivation}
 \subsection{Teaching at Imperial}
 Around half of first year undergraduate computing students at Imperial have no previous programming experience\footnote{Project Proposal} and since
@@ -102,8 +108,9 @@ So recently \todo{fact check} \footnote{For the last two years.} students have b
 Unfortunately there is downside to this approach, most Java debuggers are integrated in to IDEs and those which are not are often of poor quality this coupled with the relatively complex UI of debuggers in general (see our analysis below) means that students have no good option.
 Since many students are learning Imperative programing for the first time they quickly encounter bugs in their programs and without a strong understanding of the language or a taught strategy to deal with defects they are reduced to reinventing well known bad habits including \todo{list of bad habits}.
 
-To combat this problem Dr. Tristan Allwood proposed this third year group project to build a tool to fill this gap a debugger which was: independent from an IDE, simple enough to be used by beginners but powerful enough to be useful.
+To combat this problem Dr. Tristan Allwood proposed this third year group project to build a tool to fill this gap, a debugger which was: independent from an IDE, simple enough to be used by beginners but powerful enough to be useful.
 
+Since 
 
 \subsection{Alternatives}
 Despite the existence of powerful tools to introspect running programs many programmers continue to debug programs using print statements.
@@ -111,6 +118,8 @@ Since
 A strong mental model of programming fundamentals are predictive of eventual achievement.
 
 \section{Objectives}
+We produced a initial plan (for the full plan please see ~\cref{sec:initialplan}).
+
 \section{Contributions}
 \section{Design}
 \subsection{Frontend Design}
@@ -302,7 +311,13 @@ Github is a hosted source control which somebody else manages and is easily acce
   \raggedright{\emph{First Law of the Mentat -- Dune}}\par%
 }
 \end{center}
+\addcontentsline{toc}{section}{Quote}
 \vfill\vfill
 \clearpage
+
+\appendix
+\section{Initial Plan}
+\label{sec:initialplan}
+\includepdf[pages={-}, pagecommand={}]{plan.pdf}
 
 \end{document}
