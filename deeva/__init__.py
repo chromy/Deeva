@@ -134,7 +134,13 @@ def get_code(classname):
 
         app.source_code[classname] = load(location)
 
-    response = {'classname' : classname, 'code' : app.source_code[classname]}
+    all_bkpts = app.debugger.getBreakpoints()
+    bkpts = [b.getLineNumber()-1 for b in all_bkpts if b.getClas() == classname]
+
+    response = {'classname' : classname,
+                'code' : app.source_code[classname],
+                'breakpoints' : bkpts,
+                }
 
     return jsonify(response)
 
