@@ -71,8 +71,9 @@ def create_java_debugger(classpath, prog, debuggee_classpaths,
     debugger = JavaProxy(gateway.jvm.deeva.Debug(out_queue, classpaths, sourcepaths, prog))
 
     sources = debugger.getSources()
-    debugger.start(prog)
-    return debugger
+    # We can't start the debugger here, otherwise we'll lose chance to set arguments
+    # debugger.start(prog)
+    return debugger, gateway
 
 class JavaProxy:
     """Translates py4j Java exceptions into Python exceptions.

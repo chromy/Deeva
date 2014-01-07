@@ -33,7 +33,7 @@ def main(prog, args):
     debuggee_classpaths = args.cp.split(':')
     debuggee_sourcepaths = args.source_cp.split(':')
 
-    app.debugger = debug.create_java_debugger(classpath, prog, debuggee_classpaths, debuggee_sourcepaths)
+    app.debugger, app.gateway = debug.create_java_debugger(classpath, prog, debuggee_classpaths, debuggee_sourcepaths)
 
     # Save the program name
     app.program = prog

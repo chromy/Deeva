@@ -50,11 +50,12 @@ function ($scope, $http, FileService, MiscService) {
     init();
 
     /* Click handler for the debug buttons */
-    $scope.clickButton = function(destination) {
+    $scope.clickButton = function(destination, argument_array) {
         if (destination == "run") {
             $scope.currentState = "RUNNING";
+            console.log(argument_array);
         }
-        $http.post(destination)
+        $http.post(destination, {args: argument_array})
             .success(function(data) {
                 console.log(data);
                 updateState(data);
@@ -119,7 +120,7 @@ function ($scope, $http, FileService, MiscService) {
             // refactor - plus fix heap!
             /* Update the stack and the heap */
             var stack_heap = {'stack' : data.stack};
-            if (data.stack) {
+            if (data.stack && false) { //ZZZ: Horrible hack, but want to get other things working first
                 main(stack_heap);
             }
         }
@@ -174,7 +175,7 @@ function ($scope, $http, FileService, MiscService) {
                 tryToSetBreakpoint(cm, class_name, line);
             }
         });
-    } 
+    }
 
     // Invoke a POST method to backend to send a data about a set of breakpoints.
     function tryToSetBreakpoint(cm, clas, lineNumber) {
@@ -270,6 +271,11 @@ function ($scope, $http, FileService, MiscService) {
             allowDuplicates: true,
             placeholderText: "Input argument(s) here"
         });
+    }
+
+    $scope.getArgumentArray = function() {
+        var java_arguments = $scope.arguments.tagit("assignedTags");
+        return java_arguments;
     }
 
     /* Refactoring of loading file on page, refactor again somewhere */

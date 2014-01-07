@@ -8,7 +8,10 @@ import com.sun.jdi.connect.VMStartException;
 import com.sun.jdi.event.*;
 import com.sun.jdi.request.*;
 import deeva.breakpoint.Breakpoint;
-import deeva.exception.*;
+import deeva.exception.NoLoadedClassException;
+import deeva.exception.NoLocationException;
+import deeva.exception.NoVMException;
+import deeva.exception.WrongStateError;
 import deeva.io.StdInRedirectThread;
 import deeva.io.StreamRedirectThread;
 import deeva.sourceutil.SourceClassFinder;
@@ -49,6 +52,7 @@ public class Debug extends EventHandlerBase {
     private ObjectReference systemInObj;
     private Method sysInReadMethod;
     private Method sysInAvailableMethod;
+    private List<String> programArgs;
 
     public Debug(DebugResponseQueue outQueue,
                  List<String> classPaths, List<String> sourcePaths,
@@ -68,8 +72,10 @@ public class Debug extends EventHandlerBase {
         finder.getAllSources();
     }
 
-    public void start(String arg) {
-        vm = launchTarget(arg);
+    public void start(String programName, String programArgString,
+                      List<String>  programArgs) {
+        this.programArgs = programArgs;
+        vm = launchTarget(programName, programArgString);
         EventThread eventThread = new EventThread(vm, excludes, this);
         eventThread.start();
         redirectOutput();
@@ -549,10 +555,14 @@ public class Debug extends EventHandlerBase {
 
     // XXX: Refactor beneath this line... and above this line...
 
-    private VirtualMachine launchTarget(String mainArgs) {
+    private VirtualMachine launchTarget(String programName,
+                                        String programArgs) {
         System.err.println("finding launching connector");
         LaunchingConnector connector = findLaunchingConnector();
-        Map<String, Connector.Argument> arguments = connectorArguments(connector, mainArgs);
+        String mainString = programName + " " + programArgs;
+        System.err.println("Final main string: " + mainString);
+        Map<String, Connector.Argument> arguments = connectorArguments
+                (connector, mainString);
 
         try {
             System.err.println("beginning launch");

@@ -2,8 +2,8 @@ import os
 from flask import Flask, jsonify, render_template, request, g, make_response, redirect, url_for
 import debug
 from debug import load, WrongState
-import os
 import pprint
+from py4j.java_collections import ListConverter
 
 app = Flask('deeva')
 app.package_dict = {}
@@ -65,10 +65,15 @@ def unset_breakpoint():
 @app.route("/run", methods=['POST'])
 def run():
     if app.debugger.getStateName() == "NO_INFERIOR":
+        request_args = request.get_json()
+        argument_array = request_args.get("args")
+        argument_string = " ".join(argument_array)
+        java_argument_array = ListConverter().convert(argument_array, app.gateway._gateway_client)
+        # Need to save the arguments
         print 'Starting program...'
         # TODO Pass in the actual class path to the *debuggee program* here
         # Aswell as any other arguments e.g. -ea -cp asdf, commandline arguments
-        app.debugger.start(app.program)
+        app.debugger.start(app.program, argument_string, java_argument_array)
     else:
         print 'Continuing program...'
 

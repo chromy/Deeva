@@ -65,7 +65,7 @@
 	  <!-- Buttons Container -->
           <div id="buttons_container">
             <div type="image" class="myButtons" id="runBtn"
-                 ng-click="clickButton('run')" title="Continue">
+                 ng-click="clickButton('run', getArgumentArray(arguments))" title="Continue">
               <div id="innerRunBtn" ng-show="currentState != 'NO_INFERIOR'"></div>
               <div id="innerRunBtnText" ng-show="currentState == 'NO_INFERIOR'">Run</div>
             </div>
