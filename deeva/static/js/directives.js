@@ -33,11 +33,9 @@ directives.directive('deevaArgs', [function() {
                         /* If we're deleting and the input is empty, delete the
                          * last one */
                         scope.args.pop();
-                    } else if (keyCode == TAB || keyCode == RETURN
-                               || keyCode == SPACE) {
-                        /* If we press tab/space/enter we create a new tag */
+                    } else if (keyCode == TAB || keyCode == RETURN) {
+                        /* If we press tab/enter we create a new tag */
                         var tag_content = input_elem.val();
-
                         if (tag_content) {
                             scope.args.push(tag_content);
                             input_elem.val("");
