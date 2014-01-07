@@ -16,7 +16,7 @@
 \usepackage[draft]{todonotes}   % notes showed
 
 \newlength\longest
-
+\interfootnotelinepenalty=10000
 \titlespacing\section{0pt}{6pt plus 2pt minus 2pt}{0pt plus 0pt minus 2pt}
 \titlespacing\subsection{0pt}{4pt plus 2pt minus 2pt}{0pt plus 0pt minus 2pt}
 \newcommand{\subtitle}[1]{
@@ -276,9 +276,78 @@ This was not part of our initial plan but we currently added creating a ‘lectu
 \subsubsection{Back End}
 
 \section{Evaluation}
-\subsection{Testing}
+We used a number of techniques to evaluate Deeva.
+We used some techniques to help us find or fix specific problems and we used others to make sure that we were on the right track building the right things.
+\subsection{Usibility Testing}
+\begin{description}
+\item[Hallway Testing] \hfill \\
+\begin{figure}[h!]
+\centering
+\subfigure{%
+\includegraphics[height=50mm, width=60mm]{hallway1.jpg}}
+\quad
+\subfigure{%
+\includegraphics[height=50mm, width=60mm]{hallway2.jpg}}
+\end{figure}
 
+We employed a hallway testing approach when it came to evaluating the usability of our debugger, by getting the first year students (our primary stakeholders) and some second year students to demo our project and tell us their first impressions and what they were expecting. This was beneficial because as the developers, we are aware of the caveats and may subliminally navigate around them.
+Using the feedback from first year students allowed us to identify critical bugs/pitfalls in our usability design.
+This was obviously more qualitative however we used some measures (like how many times they had to ask questions) to help quantify things such as how intuitive the interface was or feature complete it was.
+On average, the people who participated in the testing asked around 1-3 questions related to basic features like how to run Deeva or how to set a breakpoint.
+This was insightful as we are aiming to make Deeva as intuitive as possible so we minimise the need to consult the help menu.
+This helped mainly with our first use case which is students using Deeva on the lab machines.
+
+\item[Quantified testing of colour schemes and font sizes] \hfill \\
+We wanted to employ the use of A/B testing to assess how effective certain colour schemes and font sizes would be.
+However we had to make a compromise, because the environment and number of users that we could get in one room simultaneously meant that we had to do it in one sitting i.e. we couldn’t let half the users in the room see one colour scheme and the other half see a different colour scheme.
+So in the end we just conducted a poll so they could pick which colour scheme and font size they liked the best.
+We did this with the help of our project supervisor (who lectures the course in which our debugger will primarily be used). 
+
+This is helpful as it allows us to catch possible problems with readability early, which in our case may change the direction in which our solution is architected.
+An example of this is that the projectors’ resolution in the lecture room is small, so not all the necessary information can be seen.
+Hence, we may need to have a separate mode which shows just the stack and the heap.
+The implication of this mode meant we had to change our implementation to be less monolithic.
+
+\item[Questionnaire] \hfill \\
+\begin{figure}[h!]
+\centering
+\subfigure{%
+\includegraphics[height=50mm, width=60mm]{questionnair1.jpg}}
+\quad
+\subfigure{%
+\includegraphics[height=50mm, width=60mm]{questionnair2.jpg}}
+\end{figure}
+
+After the general interviews we used a questionnaire to get answers to our most important questions.
+Specifically we asked which of the several button designs were better and validated our ad-hoc interview conclusions about the debugger.
+We considered using something like Amazon Mechanical Turk to get larger numbers of responses which might have been more statistically significant but it seemed silly when we had hundreds of programmers who were our exact target audience sitting next to us.
+\end{description}
+\subsection{Performance Testing}
+\begin{description}
+\item[Time to First Request] \hfill \\
+We also used a few other metrics, some custom and some off-the-shelf which could be automatically run over the repository to measure specific aspects of Deeva’s performance.
+\begin{figure}[h!]
+\centering
+\includegraphics[height=100mm,width=100mm]{timeToFirstRequest.png}
+\end{figure}
+
+One of these was the ‘time-to-first-request’.
+This is the time it takes Deeva to get from hitting enter on the command line to being able to accept user input.
+This is important because tools that are slow to start are painful to use and hence are used less\footnote{ It’s not a direct parallel but if we consider websites, page abandonment approaches 50\% as load time reaches about 10 seconds see: http://blog.kissmetrics.com/loading-time/?wide=1}.
+You can only improve what you measure so we wrote a script that iterates over the git history, starts Deeva and measures the time until it is accepting the first request\footnote{We got the idea for doing this from Gary Bernhardt screencast: https://www.destroyallsoftware.com/screencasts/catalog/time-to-first-request}.
+We can then display the results using a custom D3 graph.
+
+As you can see our app currently takes roughly 450ms to load.
+If we see that one commit increased the time-to-first-request, we can click on it and it will take us to the relevant commit on github so we can work out what went wrong.
+
+Happily this has turned out not to be such a big issue on this project as the time-to-first-request quickly stabilised and did not increase dramatically. 
+
+\end{description}
 \section{Project Management}
+For this project we have three problems which we haven't had (at least in combination) in past university projects: we're not sure what we're building, we want to make sure we deliver the software on time but don't know how long it will take and
+we want to make sure the software we write is correct and useful but have no easy way to define `correct' or `useful' in this domain.
+
+Happily Agile Programming has techniques we can use to help solve these problems.
 \subsection{Team Member Contributions}
 \subsubsection{Kritaphat Sonsri-in}
 \subsubsection{Xueqi Chen}
