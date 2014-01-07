@@ -48,12 +48,13 @@ def main(prog, args):
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument("java_class", help="Path to the java class you want to debug")
     parser.add_argument("-ea", help="Enable Assertions", action='store_true')
     parser.add_argument("-cp", help="Class path string for ", default=".")
     # Add here small subset of java commands we wish to pass on..
     parser.add_argument("--source_cp",
                         help="Path to the source files, in classpath format, default is the current directory",
                         default=".")
+    parser.add_argument("java_class", help="Path to the java class you want to debug")
+    parser.add_argument("args", nargs="*", help="Command line arguments for the debuggee program");
     args = parser.parse_args()
     main(args.java_class, args)

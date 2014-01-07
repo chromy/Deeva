@@ -612,7 +612,8 @@ public class Debug extends EventHandlerBase {
     Map<String, Connector.Argument> connectorArguments(LaunchingConnector connector, String mainArgs) {
         Map<String, Connector.Argument> arguments = connector.defaultArguments();
         System.out.println("Before - con");
-        Connector.Argument mainArg = (Connector.Argument)arguments.get("main");
+        /* Main Arg */
+        Connector.Argument mainArg = arguments.get("main");
         if (mainArg == null) {
             throw new Error("Bad launching connector");
         }
