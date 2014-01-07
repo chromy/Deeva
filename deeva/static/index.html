@@ -56,31 +56,34 @@
           <deeva-args args="args"></deeva-args>
 
 	  <!-- Buttons Container -->
-          <div id="buttons_container">
-            <div type="image" class="myButtons" id="runBtn"
-                 ng-click="clickButton('run', args)" title="Continue">
-              <div id="innerRunBtn" ng-show="currentState != 'NO_INFERIOR'"></div>
-              <div id="innerRunBtnText" ng-show="currentState == 'NO_INFERIOR'">Run</div>
-            </div>
-            <div type="image" class="myButtons" id="stopBtn"
-                 ng-disabled="!(state.stopBtn.indexOf(currentState) > -1)"
-		 ng-click="stop()" title="Stop">
-              <div id="innerStopBtn"></div>
-            </div>
-            <div type="image" class="myButtons" id="stepOverBtn"
-                 ng-disabled="!(state.stepOverBtn.indexOf(currentState) > -1)"
-		 ng-click="clickButton('stepOver')" title="Next">
-            </div>
-            <div type="image" class="myButtons" id="stepIntoBtn"
-                 ng-disabled="!(state.stepIntoBtn.indexOf(currentState) > -1)"
-		 ng-click="clickButton('stepInto')" title="Step Into">
-            </div>
-            <div type="image" class="myButtons" id="stepReturnBtn"
-                 ng-disabled="!(state.stepReturnBtn.indexOf(currentState) > -1)"
-                 ng-click="clickButton('stepReturn')" title="Step Out">
-            </div>
-          </div> <!-- end buttons container -->
-
+				<div class="row">
+					<div class="col-md-12">
+		        <div id="buttons_container">
+		          <div type="image" class="myButtons" id="runBtn"
+		               ng-click="clickButton('run', args)" title="Continue">
+		            <div id="innerRunBtn" ng-show="currentState != 'NO_INFERIOR'"></div>
+		            <div id="innerRunBtnText" ng-show="currentState == 'NO_INFERIOR'">Run</div>
+		          </div>
+		          <div type="image" class="myButtons" id="stopBtn"
+		               ng-disabled="!(state.stopBtn.indexOf(currentState) > -1)"
+			 ng-click="stop()" title="Stop">
+		            <div id="innerStopBtn"></div>
+		          </div>
+		          <div type="image" class="myButtons" id="stepOverBtn"
+		               ng-disabled="!(state.stepOverBtn.indexOf(currentState) > -1)"
+			 ng-click="clickButton('stepOver')" title="Next">
+		          </div>
+		          <div type="image" class="myButtons" id="stepIntoBtn"
+		               ng-disabled="!(state.stepIntoBtn.indexOf(currentState) > -1)"
+			 ng-click="clickButton('stepInto')" title="Step Into">
+		          </div>
+		          <div type="image" class="myButtons" id="stepReturnBtn"
+		               ng-disabled="!(state.stepReturnBtn.indexOf(currentState) > -1)"
+		               ng-click="clickButton('stepReturn')" title="Step Out">
+		          </div>
+		        </div> <!-- end buttons container -->
+					</div>
+			</div>
 	  <!-- Package directive -->
 	  <deeva-package breadcrumb="breadcrumb" package-dir="package_dir"
 			 current-class="current_class"
