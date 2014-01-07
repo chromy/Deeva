@@ -243,6 +243,7 @@ public class Debug extends EventHandlerBase {
         result.put("line_number", line_number);
         result.put("stack", stack);
         result.put("current_class", currentClass);
+        result.put("arguments", programArgs);
         return result;
     }
 

@@ -70,6 +70,9 @@ function ($scope, $http, FileService, MiscService) {
             return;
         }
 
+        /* Update the arguments, if we don't get anything, stick with previous value */
+        $scope.args = data.arguments || $scope.args;
+
         /* Set state of buttons */
         $scope.currentState = data.state;
 

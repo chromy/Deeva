@@ -1,0 +1,24 @@
+.deevaTags {
+    overflow: auto;
+    padding: 3px 5px;
+    border: 1px solid #ddd;
+}
+
+.deevaTags li {
+    display: block;
+    float: left;
+    margin: 2px 5px 2px 0;
+}
+
+.deevaTags .btn-deeva-args {
+    color: white;
+    background-color: #FF9900;
+    border-color: #F28C00;
+}
+
+.deevaTags input {
+    outline: none;
+    border: none;
+    line-height: 28px;
+    font-size: 12px;
+}

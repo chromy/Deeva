@@ -220,7 +220,8 @@ def make_api_response(f, *args, **kargs):
             'state' : result['state'],
             'line_number' : result['line_number'],
             'stack' : eval(repr(st)),
-            'current_class' : result['current_class']
+            'current_class' : result['current_class'],
+            'arguments' : eval(repr(result['arguments']))
         }
         pprint.pprint(result2['stack']);
         return jsonify(status='ok', stdout=stdout, stderr=stderr, **result2)
