@@ -43,11 +43,11 @@ function ($scope, $http, FileService, MiscService) {
         $scope.package_dir = package_dir;
     });
 
-    init();
     /* ZZZ: These lines should be handled by directives containing the separate ui elements */
     setUpCodeMirror();
     displayTerminal();
     displayTagit();
+    init();
 
     /* Click handler for the debug buttons */
     $scope.clickButton = function(destination) {
@@ -97,6 +97,7 @@ function ($scope, $http, FileService, MiscService) {
 
             /* Update the current code mirror instance */
             $scope.loadFile(data.current_class, function() {
+
                 /* Update cm */
                 var prev_line = $scope.currentLine;
                 var current_line = data.line_number;
@@ -173,15 +174,7 @@ function ($scope, $http, FileService, MiscService) {
                 tryToSetBreakpoint(cm, class_name, line);
             }
         });
-    }
-
-    // Return a div that contain a marker for breakpoint.
-    function makeBreakPoint() {
-        var breakPoint = document.createElement("div");
-        breakPoint.style.color = "#0000FF";
-        breakPoint.innerHTML = "●";
-        return breakPoint;
-    }
+    } 
 
     // Invoke a POST method to backend to send a data about a set of breakpoints.
     function tryToSetBreakpoint(cm, clas, lineNumber) {
@@ -189,13 +182,10 @@ function ($scope, $http, FileService, MiscService) {
         $http.post('setBreakpoint', {clas: clas, lineNumber: lineNumber})
             .success(function(data) {
                 if (data.success) {
-                    console.log("Setting breakpoint.");
-                    var breakpoint = makeBreakPoint();
-                    cm.setGutterMarker(lineNumber, "breakpoints", breakpoint);
-
-                    FileService.breakpoints(clas, function(breakpoints) {
-                        breakpoints.push(lineNumber);
-                    });
+                    FileService.addBreakpoint(clas, lineNumber);
+                    /* Add marker */
+                    var bp = makeBreakPoint();
+                    cm.setGutterMarker(lineNumber, "breakpoints", bp);
                 } else {
                     console.error("Could not set breakpoint.");
                 }
@@ -211,18 +201,9 @@ function ($scope, $http, FileService, MiscService) {
             .success(function(data) {
                 if (data.success) {
                     console.log("Unsetting breakpoint.");
-
-                    /* Get rid of the marker */
+                    FileService.removeBreakpoint(clas, lineNumber);
+                    /* Remove marker */
                     cm.setGutterMarker(lineNumber, "breakpoints", null);
-
-                    /* Send a request to send a unset breakpoint request */
-                    FileService.breakpoints(clas, function(breakpoints) {
-                        /* Find and remove a previously set breakpoint */
-                        var index = breakpoints.indexOf(lineNumber);
-                        if (index > -1) {
-                            breakpoints.splice(index, 1);
-                        }
-                    });
                 } else {
                     console.error("Could not unset breakpoint.");
                 }
@@ -301,6 +282,16 @@ function ($scope, $http, FileService, MiscService) {
         /* Get the file, any errors associated with getting the file will be displayed in code*/
         FileService.getFile(className, function(classdata) {
             $scope.codeMirror.swapDoc(classdata.code);
+
+            // Update breakpoints.
+            $scope.codeMirror.clearGutter("breakpoints");
+            for (var i=0; i<classdata.breakpoints.length; i++) {
+                var line = classdata.breakpoints[i];
+                var info = $scope.codeMirror.lineInfo(line);
+                console.log("Breakpoints" + classdata.breakpoints[i]);
+                $scope.codeMirror.setGutterMarker(line, "breakpoints", makeBreakPoint());
+            }
+
             /* Execute the callback so the directive can complete any actions it needs to */
             callback();
         });
@@ -316,3 +307,11 @@ function ($scope, $http, FileService, MiscService) {
             });
     };
 }]);
+
+// Return a div that contain a marker for breakpoint.
+function makeBreakPoint() {
+    var breakPoint = document.createElement("div");
+    breakPoint.style.color = "#0000FF";
+    breakPoint.innerHTML = "●";
+    return breakPoint;
+}
