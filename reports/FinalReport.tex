@@ -89,8 +89,23 @@ In this report we will first make the case for the necessity of a tool like Deev
 Lastly we conclude with our final evaluation of the project and directions for future work.
 
 \section{Motivation}
+\subsection{Teaching at Imperial}
+Around half of first year undergraduate computing students at Imperial have no previous programming experience\footnote{Project Proposal} and since
+the Imperial Computing department attaches great importance to practical programming ability much of students first year is spent learning several programming languages and completing many Labs, small programming tasks. 
+The practical teaching of programming on the first year follows this progression: Functional programing, Imperative programing, Object Orientation and finally Systems programming.
+Historically the department has taught Functional programming using Haskell, OO programming using Java and Systems programming using C but for Imperative programing a few different approaches have been tried.
+
+\todo{somthing here}
+
+The department also does not want students to end up relying on the large complex IDE like Eclipse or IntelliJ to `magically' run the code without understanding what it does.
+So recently \todo{fact check} \footnote{For the last two years.} students have been encouraged to avoid IDEs and instead use a text editor (like \cmd{vim} or \cmd{emacs}) and invoke the Java compiler (\cmd{javac}) and virtual machine (\cmd{java}) directly.
+Unfortunately there is downside to this approach, most Java debuggers are integrated in to IDEs and those which are not are often of poor quality this coupled with the relatively complex UI of debuggers in general (see our analysis below) means that students have no good option.
+Since many students are learning Imperative programing for the first time they quickly encounter bugs in their programs and without a strong understanding of the language or a taught strategy to deal with defects they are reduced to reinventing well known bad habits including \todo{list of bad habits}.
+
+To combat this problem Dr. Tristan Allwood proposed this third year group project to build a tool to fill this gap a debugger which was: independent from an IDE, simple enough to be used by beginners but powerful enough to be useful.
+
+
 \subsection{Alternatives}
-Over half of first year computing students at Imperial have no previous experience of imperative programming.
 Despite the existence of powerful tools to introspect running programs many programmers continue to debug programs using print statements.
 Since 
 A strong mental model of programming fundamentals are predictive of eventual achievement.
