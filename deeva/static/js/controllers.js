@@ -52,6 +52,10 @@ function ($scope, $http, FileService, MiscService) {
     /* Click handler for the debug buttons */
     $scope.clickButton = function(destination, argument_array) {
         if (destination == "run") {
+            if ($scope.currentState == 'NO_INFERIOR') {
+                $scope.terminal.clear();
+            }
+
             $scope.currentState = "RUNNING";
             console.log(argument_array);
         }
@@ -87,7 +91,6 @@ function ($scope, $http, FileService, MiscService) {
             var new_breadcrumb = data.current_class.split(".");
             var last_index = new_breadcrumb.length - 1;
             if (new_breadcrumb.slice(0, last_index).length == 0) {
-                console.log("We're in a default");
                 new_breadcrumb = ['(default)'].concat([new_breadcrumb[last_index]]);
             }
 
@@ -144,7 +147,7 @@ function ($scope, $http, FileService, MiscService) {
                 updateState(data);
             })
             .error(function(status) {
-                console.error("There is an error getting state.");
+                console.error("There is an error getting the state.");
             });
     }
 
