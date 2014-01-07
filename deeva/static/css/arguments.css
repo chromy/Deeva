@@ -2,6 +2,7 @@
     overflow: auto;
     padding: 3px 5px;
     border: 1px solid #ddd;
+    margin-bottom: 0;
 }
 
 .deevaTags li {
