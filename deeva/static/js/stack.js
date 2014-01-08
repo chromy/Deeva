@@ -7,15 +7,14 @@ function main(all_variables){
   // Primitive types in Java.
   var primitive_list = ["int", "char", "boolean", "byte", "float", "double", "long", "short"];
 
-  var stack_variables = all_variables.stack || [];
-  //var unique_id_list = filter_stack(stack_variables);
-  var unique_id_list = {unique_id: 71, type: 'java.lang.String[]'};
+  var stack_variables = all_variables.stacks || [];
+  var unique_id_list = filter_stacks(stack_variables)[0];
   if(unique_id_list != undefined){
   $.post("getHeapObject", unique_id_list).done(function(data){
-     console.log("data---", data);
-     console.log("data", [data].length);
+   //  console.log("data---", data);
+   //  console.log("data", [data].length);
      var heap_td  = d3.select("#heap_td");
-     append_heap(heap_td, [data.data]);
+//     append_heap(heap_td, [data.data]);
   });
  }
 
@@ -35,7 +34,7 @@ function main(all_variables){
   var stackFrames = stack.append("div")
                          .attr("id", "stackFrames");
 
-  append_stacks(stackFrames, [stack_variables, stack_variables, stack_variables], primitive_list);
+  append_stacks(stackFrames, stack_variables, primitive_list);
 
  }
 
@@ -58,7 +57,9 @@ function append_stacks(stack_selection, stack_variables, primitive_list){
                                     .attr("id", function(d, i){
                                         return "stackHeader" + i;
                                     })
-                                    .text("Main");
+                                    .text(function(d){
+                                        return d.method_name;
+                                    });
 
    //variable table
    var stackFrameTable = stackFrames.append("table")
@@ -69,7 +70,7 @@ function append_stacks(stack_selection, stack_variables, primitive_list){
 
    var stackVariables = stackFrameTable.selectAll("tr")
                                        .data(function(d, i){
-                                          return d;
+                                          return d.stack;
                                        })
                                        .enter()
                                        .append("tr");
@@ -161,7 +162,6 @@ function append_heap(heap_selection, heap_objects){
    var values_entries = values.selectAll("td")
                               .data(function(d){
                                  if(is_of_type(d, 'array')){
-                                   console.log("sasas" + d.array);
                                    return d.array;}
                                  if(is_of_type(d, 'string'))
                                    return d.string;
@@ -172,18 +172,16 @@ function append_heap(heap_selection, heap_objects){
                               .append("td")
                               .text(function(d,i){
                                  if(d){
-                                   console.log("not " + d);
                                    return d;
                                  }
                                  else{
-                                   console.log("empty " + d);
                                    return "empty";
                                  }
                               });
+   //TODO: trying to put empty
 
    var values_entries = values.selectAll("td")
                               .data(function(d){
-                                console.log("AICI");
                                  if(!d)
                                   return 1;
                               })
@@ -234,6 +232,7 @@ function append_heap(heap_selection, heap_objects){
                             connectionsDetachable:false,
                             cssClass: "stackPoint"
                            });
+/*
         var target = jsPlumb.addEndpoint("heap_object_71",
                            {anchor: "Left",
                             endpoint: "Blank",
@@ -254,15 +253,29 @@ function append_heap(heap_selection, heap_objects){
 /* Utility functions */
 
 
- function filter_stack(stack_variables){
-   if(stack_variables){
-     stack_variables.filter(function(d){
-       return d.unique_id != undefined;
+ function filter_stacks(stack_variables){
+  var map = Array.prototype.map;
+ 
+  var filtered_stacks = map.call(stack_variables, filter_one_stack);
+  var one_filtered_stack = []; 
+  var n = filtered_stacks.length;
+  for(var i=0; i<n;i++){
+   one_filtered_stack.push(filtered_stacks[i]); 
+  }
+  return one_filtered_stack;
+ }
 
-     });
-   }
-   else
-     return [];
+ function filter_one_stack(one_stack){
+  var map = Array.prototype.map;
+  var stack = one_stack.stack;
+  
+  stack = stack.filter(function(d){
+    return d.unique_id != undefined;
+  });
+  stack = map.call(stack, function(d){
+    return {unique_id: d.unique_id, type: d.type}; 
+  });
+  return stack;
  }
 
  // Returns a set of all the objects of type 'type'.
