@@ -10,6 +10,7 @@
 \usepackage{titlesec}
 \usepackage{pdfpages}
 \usepackage{cleveref}
+\usepackage{hyperref}
 
 % Select what to do with todonotes: 
 % \usepackage[disable]{todonotes} % notes not showed
@@ -97,9 +98,9 @@ For students Deeva provides excellent introduction to these tools while also fil
 % 
 % first to help foster a strong mental model of imperative programming and secondly to introduce students to powerful introspection of software systems.
 
-the Imperial Computing department attaches great importance to practical programming ability much of students first year is spent learning several programming languages and completing many Labs, small programming tasks. 
-The practical teaching of programming on the first year follows this progression: Functional programing, Imperative programing, Object Orientation and finally Systems programming.
-Historically the department has taught Functional programming using Haskell, OO programming using Java and Systems programming using C but for Imperative programing a few different approaches have been tried.
+%the Imperial Computing department attaches great importance to practical programming ability much of students first year is spent learning several programming languages and completing many Labs, small programming tasks. 
+%The practical teaching of programming on the first year follows this progression: Functional programing, Imperative programing, Object Orientation and finally Systems programming.
+%Historically the department has taught Functional programming using Haskell, OO programming using Java and Systems programming using C but for Imperative programing a few different approaches have been tried.
 
 \clearpage
 \tableofcontents
@@ -107,7 +108,7 @@ Historically the department has taught Functional programming using Haskell, OO 
 
 \section{Motivation}
 \subsection{``Introduction to Imperative Programming" at Imperial}
-Around half of first year undergraduate computing students at Imperial have no previous imperative programming experience\footnote{See Project Proposal} so the course ``Introduction to Imperative Programming" run in the first term after directly after ``Introduction to Functional Programming" forms a cornerstone of the practical education students receive giving them skills they will need almost every other course.
+Around half of first year undergraduate computing students at Imperial have no previous imperative programming experience\cite{projectpreposal} so the course ``Introduction to Imperative Programming" run in the first term after directly after ``Introduction to Functional Programming" forms a cornerstone of the practical education students receive giving them skills they will need almost every other course.
 
 The course focuses on the basics: control flow, functions and the write, compile, run cycle.
 To make teaching more effective it is desirable to avoid introducing unnecessary complexity like Object Orientation, memory management or complex IDEs all of which are left to later courses.
@@ -123,7 +124,7 @@ A debugger which was: independent from an IDE, simple enough to be used by begin
 
 The project also had a secondary goal.
 
-Since 
+Since \cite{saeed09}
 
 Despite the existence of powerful tools to introspect running programs many programmers continue to debug programs using print statements.
 Since 
@@ -452,5 +453,18 @@ Github is a hosted source control which somebody else manages and is easily acce
 \section{Initial Plan}
 \label{sec:initialplan}
 \includepdf[pages={-}, pagecommand={}]{plan.pdf}
+
+\begin{thebibliography}{9}
+
+\bibitem{projectpreposal}
+	Tristan Allwood.
+	\emph{Project Proposal: A Java Debugger Suitable for Teaching}.
+	\url{https://cate.doc.ic.ac.uk/projects/proposals.cgi?key=2013:1:show-2728}
+
+\bibitem{saeed09}
+	Dehnadi, Saeed, Richard Bornat, and Ray Adams. 
+	\emph{Meta-analysis of the effect of consistency on success in early learning of programming.}
+	PPIG, 2009.
+\end{thebibliography}
 
 \end{document}

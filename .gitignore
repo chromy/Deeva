@@ -13,3 +13,4 @@ scripts/*.csv
 start_deeva
 
 *.toc
+*.out
