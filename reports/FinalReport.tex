@@ -5,12 +5,16 @@
 \usepackage{graphicx}
 \usepackage{titling}
 % \usepackage[margin=1.8cm, includefoot]{geometry}
+
 \usepackage{parskip}
 \setlength{\parindent}{0cm}
+
 \usepackage{titlesec}
 \usepackage{pdfpages}
 \usepackage{cleveref}
 \usepackage{hyperref}
+\usepackage{framed}
+
 
 % Select what to do with todonotes: 
 % \usepackage[disable]{todonotes} % notes not showed
@@ -225,35 +229,54 @@ However, we thought if the stack grow more then eventually user would need to sc
 Therefore, we agreed on putting the stack and heap on the right with some modification to the first design.
 
 \subsubsection{Button Design}
-After interviews, we also found out that most of people find the naming and the design of buttons really confusing in Eclipse.
-Especially “Step Into”, “Step Over” and “Step Return”. As a result, we designed several different sets of buttons and used a questionnaire to pick among them.
+After conducting some interviews with users (see ~\cref{sec:evaluation}), we discovered that some people found the naming and the design of buttons very confusing in Eclipse.
+Especially the ``Step Into'', ``Step Over'' and ``Step Return'' buttons which control movement through the code.
+As a result, we designed several different sets of buttons and used a questionnaire to pick among them.
+
 \begin{figure}[h!]
 \centering
 \includegraphics[height=20mm,width=60mm]{buttons1.png}
+\caption{Initial Design of the ``Stepping'' Buttons}
 \end{figure}
 
-This is the original design of “Stepping” buttons.
-They inherit the design from Eclipse.
-They are “Step Into”, “Step Over” and “Step Return” from left to right respectively. 
+This is our original design of the ``Stepping'' buttons.
+They inherit the design from the Eclipse debugger.
+They are \cmd{Step Into}, \cmd{Step Over} and \cmd{Step Return} from left to right respectively.
 
-We asked one of our friends who is not from Computing and who has not used a debugger before what he thought they should do.
-He could not quite figure out just by looking at them.
-We then explained the concept of “Step Into”, “Step Over” and “Step Return” in terms of debugging and then asked again if he thought any of them really matched the buttons.
-Some valuable feedback which we received from him was that: “It would be useful if we could somehow represent different scopes/lines so that the arrows (along with their direction) can correctly express the intended function.”
+\begin{framed}
+\emph{A digression on the behavior of the Stepping buttons.}
+
+\begin{description}
+\item Step Into
+\item Step Over
+\item Step Return
+\end{description}
+
+\end{framed}
+
+
+We asked a friend who does not study Computing and who has not used a debugger before but has had exposure to programming before what he guessed each one should do.
+He could not quite figure it out just by looking at them confirming our suspicion that these are not the most intuitive of designs.
+We then explained the concept of \cmd{Step Into}, \cmd{Step Over} and \cmd{Step Return} in terms of debugging and then asked again if he thought any of them really matched the buttons.\todo{edit}
+He gave us some valuable feedback: ``It would be useful if we could somehow represent different scopes/lines so that the arrows (along with their direction) can correctly express the intended function.''
 \begin{figure}[h!]
 \centering
 \includegraphics[height=20mm,width=60mm]{buttons2.png}
 \end{figure}
 
 This is our second design.
-As suggested by our friend, the black lines indicate the lines of code which is similar to an editor. Arrows going in either the upwards or downwards directions indicate going to the next line, function, or (or previous) scope.
-We created a questionnaire in which we explained the definition of “Next”, “Into” and “Out” (renamed as the previous ones weren’t completely intuitive).
-Then we simply asked which of the eight button designs best represents the aforementioned functions.
-We gave out the questionnaires when we did the Hallway Testing to some first year students and second year students.
-Our second set of designs were much more popular than the original design on first year students.
-However most of the second year students chose the original Eclipse design and one of them explained: “This is because we have already used Eclipse, and have known what step in, step out and step return are.”
+As suggested by our friend, the black lines indicate the lines of code which is similar to an editor.
+Arrows going in either the upwards or downwards directions indicate going to the next line, function, or (or previous) scope.
+We created a questionnaire in which we explained the definition of ``Next", ``Into" and ``Out" (our new and hopefully more intuitive names for the functionality previously known as ``Step Into'', ``Step Over'' and ``Step Return'').
 
-However, at the end we did not use the second design because of some confusion raised by users and designers during the process. Some said that it is not that clear what the black lines indicate especially for experienced users who are already used to the original design.
+Then we asked which of the eight button designs best represents the aforementioned functions.
+We gave out the questionnaires (see ~\cref{sec:buttonquestionnaire}) when we did the Hallway Testing (see ~\cref{sec:evaluation}) to some first year students and second year students.
+Our second set of designs were much more popular than the original design for first year students.
+However most of the second year students chose the original Eclipse design, one of them explaining that because they had already used Eclipse they were used to the original buttons.
+
+In the end we did not use the second design because of some confusion from our users and comments from our project supervisor during the process. 
+It was not that clear what the black lines indicate especially for experienced users who are already used to the original design common to many debuggers additionally given that we expect users to graduate to using the Eclipse and other debuggers we did not want to create a whole new design vocabulary that they would soon have to relearn. 
+We did however keep the new more intuitive names.
 
 \subsubsection{Colour Scheme and Font Size Design}
 We carried out a questionnaire to see which colour scheme and font size are the most desirable one among the students. 
@@ -294,6 +317,7 @@ This was not part of our initial plan but we currently added creating a ‘lectu
 \subsubsection{Back End}
 
 \section{Evaluation}
+\label{sec:evaluation}
 We used a number of techniques to evaluate Deeva.
 We used some techniques to help us find or fix specific problems and we used others to make sure that we were on the right track building the right things.
 \subsection{Usibility Testing}
@@ -472,7 +496,15 @@ Github is a hosted source control which somebody else manages and is easily acce
 \begin{figure}[h!]
 \centering
 \includegraphics[width=\textwidth]{annotatedreport.jpg}
-\caption{An example feedback taken during a meeting with project supervisor.}
+\caption{An example of notes taken during a meeting with project supervisor.}
+\end{figure}
+
+\section{Button Questionnaire}
+\label{sec:buttonquestionnaire}
+\begin{figure}[h!]
+\centering
+\includegraphics[width=\textwidth]{questionnair2.jpg}
+\caption{An example feedback given by a user on our button designs.}
 \end{figure}
 
 \section{User Guide}
