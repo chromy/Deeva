@@ -16,7 +16,6 @@ function ($scope, $http, FileService, MiscService) {
 
     $scope.currentLine = -1;
     $scope.breakPoints = new Array();
-    $scope.showStdIn = true;
     $scope.showArguments = true;
     $scope.currentPrompt = "";
     $scope.stateToPresent = {"STASIS" : "Program paused",
