@@ -78,12 +78,12 @@ public class Debug extends EventHandlerBase {
         finder.getAllSources();
     }
 
-    public void start(String programName, String programArgString,
+    public void start(String programName, List<String> programArgs,
                       boolean enableAssertions) {
-        this.programArgs = Arrays.asList(programArgString.split(" "));
+        this.programArgs = programArgs;
         this.enableAssertions = enableAssertions;
 
-        vm = launchTarget(programName, programArgString);
+        vm = launchTarget(programName, programArgs);
         EventThread eventThread = new EventThread(vm, excludes, this);
         eventThread.start();
         redirectOutput();
@@ -565,11 +565,38 @@ public class Debug extends EventHandlerBase {
 
     // XXX: Refactor beneath this line... and above this line...
 
+    /** Implements same semantics as StringUtils.join() without the dependency
+    on the library */
+    private static String stringListJoin(List<String> list, String delimiter) {
+        if (list == null) {
+            return null;
+        }
+
+        Object[] strList = list.toArray();
+        StringBuilder sb = new StringBuilder();
+
+        for (int i = 0; i < strList.length; i++) {
+            String elem = (String)strList[i];
+            if (elem == null || elem.equals("")) {
+                continue;
+            }
+
+            sb.append(elem);
+
+            /* Don't append the delimiter if we're on the last item */
+            if (i != strList.length - 1) {
+                sb.append(delimiter);
+            }
+        }
+
+        return sb.toString();
+    }
     private VirtualMachine launchTarget(String programName,
-                                        String programArgs) {
+                                        List<String> programArgs) {
         System.err.println("finding launching connector");
         LaunchingConnector connector = findLaunchingConnector();
-        String mainString = programName + " " + programArgs;
+        String programArgsString = Debug.stringListJoin(programArgs, " ");
+        String mainString = programName + " " + programArgsString;
         System.err.println("Final main string: " + mainString);
         Map<String, Connector.Argument> arguments = connectorArguments
                 (connector, mainString, enableAssertions);

@@ -69,13 +69,12 @@ def run():
         argument_array = request_args.get("args")
         enable_assertions = request_args.get("ea")
         print request_args
-        argument_string = " ".join(argument_array)
         java_argument_array = ListConverter().convert(argument_array, app.gateway._gateway_client)
 
         print 'Starting program...'
         # TODO Pass in the actual class path to the *debuggee program* here
         # Aswell as any other arguments e.g. -ea -cp asdf, commandline arguments
-        app.debugger.start(app.program, argument_string, enable_assertions)
+        app.debugger.start(app.program, java_argument_array, enable_assertions)
     else:
         print 'Continuing program...'
 

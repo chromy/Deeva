@@ -3,7 +3,7 @@
   <ul class="deevaTags">
     <li ng-repeat="arg in args track by $index">
       <a class="btn btn-deeva-args btn-sm" ng-click="remove($index)">
-        {{arg}} <span class="glyphicon glyphicon-remove"></span>
+        <span ng-bind-html="arg | deevaSanitize"></span> <span class="glyphicon glyphicon-remove"></span>
       </a>
     </li>
     <li><input type="text" placeholder="Input argument(s) here" autocomplete="off"></li>
