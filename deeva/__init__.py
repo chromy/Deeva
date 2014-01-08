@@ -163,6 +163,23 @@ def push_input():
 
     return make_api_response(app.debugger.putStdInMessage, message)
 
+@app.route("/getHeapObjects", methods=[""])
+def get_heap_objects():
+    args = request.values
+    heap_requests = args.get('heap_requests')
+
+    heap_objects = []
+    for heap_request in heap_requests:
+        unique_id = int(args.get('unique_id'))
+        typestr = args.get('type')
+
+        print "Request for object(id=%d, class=%s)" % (unique_id, typestr)
+        heap_object = app.debugger.getHeapObject(unique_id, typestr)
+        heap_object_dict = eval(repr(heap_object_dict))
+        heap_objects.append(heap_object_dict)
+
+    return jsonify(success="true", objects=heap_objects
+
 @app.route("/getHeapObject", methods=["POST"])
 def get_heap_object():
     args = request.values
