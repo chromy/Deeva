@@ -193,10 +193,17 @@ Similarly we produced a prioritised list of extensions:
 
 
 \section{Contributions}
+
+
 \section{Design}
+\subsection{Deciding on a Web Frontend}
+\todo{reasons for web frontend here}
+
+
 \subsection{Frontend Design}
-\begin{description}
-\item[UI Design] \hfill \\
+\subsubsection{Overview}
+
+\subsubsection{UI Design}
 \begin{figure}[h!]
 \centering
 \subfigure[First UI Design]{%
@@ -217,7 +224,7 @@ As a result, we modified our UI design to be similar to the picture on the right
 However, we thought if the stack grow more then eventually user would need to scroll up and down to be able to see the code and the stack and heap at the same time, which is not really what we want.
 Therefore, we agreed on putting the stack and heap on the right with some modification to the first design.
 
-\item[Button Design] \hfill \\
+\subsubsection{Button Design}
 After interviews, we also found out that most of people find the naming and the design of buttons really confusing in Eclipse.
 Especially “Step Into”, “Step Over” and “Step Return”. As a result, we designed several different sets of buttons and used a questionnaire to pick among them.
 \begin{figure}[h!]
@@ -248,7 +255,7 @@ However most of the second year students chose the original Eclipse design and o
 
 However, at the end we did not use the second design because of some confusion raised by users and designers during the process. Some said that it is not that clear what the black lines indicate especially for experienced users who are already used to the original design.
 
-\item[Colour Scheme and Font Size Design] \hfill \\
+\subsubsection{Colour Scheme and Font Size Design}
 We carried out a questionnaire to see which colour scheme and font size are the most desirable one among the students. 
 \begin{figure}[h!]
 \centering
@@ -276,7 +283,6 @@ As this questionnaire was performed in one of the big lecture rooms (Huxley 311)
 However, as the smaller font size sample is perfectly readable on the lab machines we are thinking of releasing our debugger in two modes: ‘normal mode’ (to be used on the lab machines - font size 16) and  ‘lecturer mode’ (to be used by lecturers when teaching - font size 26).
 This was not part of our initial plan but we currently added creating a ‘lecturer mode’ to the top of our list of extensions.
 
-\end{description}
 \subsection{System Design}
 
 \section{Implementation}
@@ -291,8 +297,8 @@ This was not part of our initial plan but we currently added creating a ‘lectu
 We used a number of techniques to evaluate Deeva.
 We used some techniques to help us find or fix specific problems and we used others to make sure that we were on the right track building the right things.
 \subsection{Usibility Testing}
-\begin{description}
-\item[Hallway Testing] \hfill \\
+
+\subsubsection{Hallway Testing}
 \begin{figure}[h!]
 \centering
 \subfigure{%
@@ -309,7 +315,7 @@ On average, the people who participated in the testing asked around 1-3 question
 This was insightful as we are aiming to make Deeva as intuitive as possible so we minimise the need to consult the help menu.
 This helped mainly with our first use case which is students using Deeva on the lab machines.
 
-\item[Quantified testing of colour schemes and font sizes] \hfill \\
+\subsubsection{Quantified testing of colour schemes and font sizes}
 We wanted to employ the use of A/B testing to assess how effective certain colour schemes and font sizes would be.
 However we had to make a compromise, because the environment and number of users that we could get in one room simultaneously meant that we had to do it in one sitting i.e. we couldn’t let half the users in the room see one colour scheme and the other half see a different colour scheme.
 So in the end we just conducted a poll so they could pick which colour scheme and font size they liked the best.
@@ -320,7 +326,7 @@ An example of this is that the projectors’ resolution in the lecture room is s
 Hence, we may need to have a separate mode which shows just the stack and the heap.
 The implication of this mode meant we had to change our implementation to be less monolithic.
 
-\item[Questionnaire] \hfill \\
+\subsubsection{Questionnaire}
 \begin{figure}[h!]
 \centering
 \subfigure{%
@@ -333,7 +339,8 @@ The implication of this mode meant we had to change our implementation to be les
 After the general interviews we used a questionnaire to get answers to our most important questions.
 Specifically we asked which of the several button designs were better and validated our ad-hoc interview conclusions about the debugger.
 We considered using something like Amazon Mechanical Turk to get larger numbers of responses which might have been more statistically significant but it seemed silly when we had hundreds of programmers who were our exact target audience sitting next to us.
-\end{description}
+
+
 \subsection{Performance Testing}
 \begin{description}
 \item[Time to First Request] \hfill \\
