@@ -1,15 +1,23 @@
 \documentclass[11pt, a4paper]{article}
 
+\usepackage{varioref}
+\usepackage{hyperref}
+\usepackage{cleveref}
+
 \usepackage{listings}
 \usepackage{subfigure}
 \usepackage{graphicx}
 \usepackage{titling}
 % \usepackage[margin=1.8cm, includefoot]{geometry}
+
 \usepackage{parskip}
 \setlength{\parindent}{0cm}
+
 \usepackage{titlesec}
 \usepackage{pdfpages}
-\usepackage{cleveref}
+
+\usepackage{framed}
+
 
 % Select what to do with todonotes: 
 % \usepackage[disable]{todonotes} % notes not showed
@@ -33,7 +41,7 @@
 \begin{document}
 
 \title{Deeva}
-\subtitle{Final Report}
+\subtitle{A Java Debugger Suitable for Teaching}
 \author{Kritaphat Sonsri-in, Xueqi Chen, Hector Dearman, \\Alina Draganescu, Felix de Souza}
 
 \maketitle
@@ -97,29 +105,40 @@ For students Deeva provides excellent introduction to these tools while also fil
 % 
 % first to help foster a strong mental model of imperative programming and secondly to introduce students to powerful introspection of software systems.
 
+%the Imperial Computing department attaches great importance to practical programming ability much of students first year is spent learning several programming languages and completing many Labs, small programming tasks. 
+%The practical teaching of programming on the first year follows this progression: Functional programing, Imperative programing, Object Orientation and finally Systems programming.
+%Historically the department has taught Functional programming using Haskell, OO programming using Java and Systems programming using C but for Imperative programing a few different approaches have been tried.
 
 \clearpage
 \tableofcontents
 \clearpage
 
 \section{Motivation}
-\subsection{Teaching at Imperial}
-Around half of first year undergraduate computing students at Imperial have no previous programming experience\footnote{Project Proposal} and since
-the Imperial Computing department attaches great importance to practical programming ability much of students first year is spent learning several programming languages and completing many Labs, small programming tasks. 
-The practical teaching of programming on the first year follows this progression: Functional programing, Imperative programing, Object Orientation and finally Systems programming.
-Historically the department has taught Functional programming using Haskell, OO programming using Java and Systems programming using C but for Imperative programing a few different approaches have been tried.
+\subsection{``Introduction to Imperative Programming" at Imperial}
+Around half of first year undergraduate computing students at Imperial have no previous imperative programming experience\cite{projectproposal} so the course ``Introduction to Imperative Programming" run in the first term after directly after ``Introduction to Functional Programming" forms a cornerstone of the practical education students receive giving them skills they will need almost every other course.
 
-\todo{somthing here}
+The course focuses on the basics: control flow, functions and the write, compile, run cycle.
+To make teaching more effective it is desirable to avoid introducing unnecessary complexity like Object Orientation, memory management or complex IDEs all of which are left to later courses.
+For example although the class is now taught in Java () it has previously been taught in Kenya\footnote{} a language which acts as an imperative stepping stone to Java by allowing functions to exist outside of objects.
 
-The department also does not want students to end up relying on the large complex IDE like Eclipse or IntelliJ to `magically' run the code without understanding what it does.
-So recently \todo{fact check} \footnote{For the last two years.} students have been encouraged to avoid IDEs and instead use a text editor (like \cmd{vim} or \cmd{emacs}) and invoke the Java compiler (\cmd{javac}) and virtual machine (\cmd{java}) directly.
-Unfortunately there is downside to this approach, most Java debuggers are integrated in to IDEs and those which are not are often of poor quality this coupled with the relatively complex UI of debuggers in general (see our analysis below) means that students have no good option.
-Since many students are learning Imperative programing for the first time they quickly encounter bugs in their programs and without a strong understanding of the language or a taught strategy to deal with defects they are reduced to reinventing well known bad habits including \todo{list of bad habits}.
+In particular department does not want students to end up relying on the large complex IDE like Eclipse or IntelliJ to `magically' run the code without understanding what it does.
+So recently \todo{fact check} \footnote{For the last two years.} students have been encouraged to avoid IDEs and instead use a text editor (like \cmd{vim}, \cmd{emacs} or \cmd{gedit}) and invoke the Java compiler (\cmd{javac}) and virtual machine (\cmd{java}) directly.
+Unfortunately there is downside to this approach, most Java debuggers are integrated into IDEs and those which are not are often of poor quality, this coupled with the relatively complex UI of debuggers in general (see our analysis below) means that there is no good option for instructors to suggest to students.
+Students quickly encounter bugs in their programs and (necessarily) without a strong understanding of the language or a taught strategy to deal with bugs they are reduced to reinventing well known bad habits including \todo{list of bad habits}.
 
-To combat this problem Dr. Tristan Allwood proposed this third year group project to build a tool to fill this gap.
+To combat this problem Dr. Tristan Allwood proposed\cite{projectproposal} this third year group project to build a tool to fill this gap.
 A debugger which was: independent from an IDE, simple enough to be used by beginners but powerful enough to be useful.
 
-Since 
+The project also had a secondary goal.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=\textwidth]{whiteboard.png}
+\caption{Whiteboard Stack and Heap}
+\end{figure}
+
+
+Since \cite{saeed09}
 
 Despite the existence of powerful tools to introspect running programs many programmers continue to debug programs using print statements.
 Since 
@@ -132,10 +151,20 @@ A strong mental model of programming fundamentals are predictive of eventual ach
 \end{figure}
 
 \subsection{Alternatives}
+As part of our requirement analysis stage, we looked into detail of various existed debuggers to compare their pros and cons, and their suitability for first year students.
 \subsubsection{jdb}
+The Java Debugger, jdb, is a simple command line debugger that provides inspection and debugging for Java classes.
+It provides most of the basic functionalities of a debugger eg. setting breakpoint(s), stepping through the next line, and diagnosing the cause of the exception.
+However, since it is a command line debugger, it provides a poor graphic user interface.
+Hence, it is not quite intuitive to use.
 \subsubsection{JSwat}
 \subsubsection{Eclipse Debugger}
-\subsubsection{IntelaJ Debugger}
+Eclipse allows starting a Java program in Debug mode which provides a control of the execution process of the program and allows investigation of the state of the variables.
+In addition, it provides a lot more functionalities than jdb such as setting a conditional breakpoints, variables modification, and having an user friendly graphic user interface.
+Nevertheless, being an integrated IDE debugger and having a lot of unused features for beginner, it might overwhelm first year students.
+\subsubsection{IntelliJ Debugger}
+Similar to Eclipse Debugger, IntelliJ Debugger is also an integrated IDE debugger which provides fast and powerful functionalities.
+Even though it also provides nice feature that allow object(s) inspection easier, its overwhelming functionalities may cumbersome first year students.
 \subsubsection{Python Tutor}
 
 
@@ -181,10 +210,17 @@ Similarly we produced a prioritised list of extensions:
 
 
 \section{Contributions}
+
+
 \section{Design}
+\subsection{Deciding on a Web Frontend}
+\todo{reasons for web frontend here}
+
+
 \subsection{Frontend Design}
-\begin{description}
-\item[UI Design] \hfill \\
+\subsubsection{Overview}
+
+\subsubsection{UI Design}
 \begin{figure}[h!]
 \centering
 \subfigure[First UI Design]{%
@@ -205,42 +241,64 @@ As a result, we modified our UI design to be similar to the picture on the right
 However, we thought if the stack grow more then eventually user would need to scroll up and down to be able to see the code and the stack and heap at the same time, which is not really what we want.
 Therefore, we agreed on putting the stack and heap on the right with some modification to the first design.
 
-\item[Button Design] \hfill \\
-After interviews, we also found out that most of people find the naming and the design of buttons really confusing in Eclipse.
-Especially “Step Into”, “Step Over” and “Step Return”. As a result, we designed several different sets of buttons and used a questionnaire to pick among them.
+\subsubsection{Button Design}
+After conducting some interviews with users (see ~\cref{sec:evaluation}), we discovered that some people found the naming and the design of buttons very confusing in Eclipse.
+Especially the ``Step Into'', ``Step Over'' and ``Step Return'' buttons which control movement through the code.
+As a result, we designed several different sets of buttons and used a questionnaire to pick among them.
+
 \begin{figure}[h!]
 \centering
 \includegraphics[height=20mm,width=60mm]{buttons1.png}
+\caption{Initial Design of the ``Stepping'' Buttons}
 \end{figure}
 
-This is the original design of “Stepping” buttons.
-They inherit the design from Eclipse.
-They are “Step Into”, “Step Over” and “Step Return” from left to right respectively. 
+This is our original design of the ``Stepping'' buttons.
+They inherit the design from the Eclipse debugger.
+They are \cmd{Step Into}, \cmd{Step Over} and \cmd{Step Return} from left to right respectively.
 
-We asked one of our friends who is not from Computing and who has not used a debugger before what he thought they should do.
-He could not quite figure out just by looking at them.
-We then explained the concept of “Step Into”, “Step Over” and “Step Return” in terms of debugging and then asked again if he thought any of them really matched the buttons.
-Some valuable feedback which we received from him was that: “It would be useful if we could somehow represent different scopes/lines so that the arrows (along with their direction) can correctly express the intended function.”
+\begin{framed}
+\emph{A digression on the behavior of the Stepping buttons.}
+
+\begin{description}
+\item Step Into
+\item Step Over
+\item Step Return
+\end{description}
+
+\end{framed}
+
+
+We asked a friend who does not study Computing and who has not used a debugger before but has had exposure to programming before what he guessed each one should do.
+He could not quite figure it out just by looking at them confirming our suspicion that these are not the most intuitive of designs.
+We then explained the concept of \cmd{Step Into}, \cmd{Step Over} and \cmd{Step Return} in terms of debugging and then asked again if he thought any of them really matched the buttons.\todo{edit}
+He gave us some valuable feedback: ``It would be useful if we could somehow represent different scopes/lines so that the arrows (along with their direction) can correctly express the intended function.''
 \begin{figure}[h!]
 \centering
 \includegraphics[height=20mm,width=60mm]{buttons2.png}
+\caption{Redesign of the ``Stepping'' Buttons}
 \end{figure}
 
 This is our second design.
-As suggested by our friend, the black lines indicate the lines of code which is similar to an editor. Arrows going in either the upwards or downwards directions indicate going to the next line, function, or (or previous) scope.
-We created a questionnaire in which we explained the definition of “Next”, “Into” and “Out” (renamed as the previous ones weren’t completely intuitive).
-Then we simply asked which of the eight button designs best represents the aforementioned functions.
-We gave out the questionnaires when we did the Hallway Testing to some first year students and second year students.
-Our second set of designs were much more popular than the original design on first year students.
-However most of the second year students chose the original Eclipse design and one of them explained: “This is because we have already used Eclipse, and have known what step in, step out and step return are.”
+As suggested by our friend, the black lines indicate the lines of code which is similar to an editor.
+Arrows going in either the upwards or downwards directions indicate going to the next line, function, or (or previous) scope.
+We created a questionnaire in which we explained the definition of ``Next", ``Into" and ``Out" (our new and hopefully more intuitive names for the functionality previously known as ``Step Into'', ``Step Over'' and ``Step Return'').
 
-However, at the end we did not use the second design because of some confusion raised by users and designers during the process. Some said that it is not that clear what the black lines indicate especially for experienced users who are already used to the original design.
+Then we asked which of the eight button designs best represents the aforementioned functions.
+We gave out the questionnaires (see ~\cref{sec:buttonquestionnaire}) when we did the Hallway Testing (see ~\cref{sec:evaluation}) to some first year students and second year students.
+Our second set of designs were much more popular than the original design among first year students.
+However most of the second year students chose the original Eclipse design, one of them explaining that because they had already used Eclipse they were used to the original buttons.
 
-\item[Colour Scheme and Font Size Design] \hfill \\
-We carried out a questionnaire to see which colour scheme and font size are the most desirable one among the students. 
+In the end we did not use the second design because of some confusion from our users and comments from our project supervisor during the process. 
+It was not that clear what the black lines indicate especially for experienced users who are already used to the original design common to many debuggers additionally given that we expect users to graduate to using the Eclipse and other debuggers we did not want to create a whole new design vocabulary that they would soon have to relearn. 
+We did however keep the new more intuitive names.
+
+\subsubsection{Colour Scheme and Font Size Design}
+We carried out a test and questionnaire in front of a first year Java class to see which colour scheme and font size are the most liked and most visible on the projector in the lecture hall.
+
 \begin{figure}[h!]
 \centering
 \includegraphics[height=50mm,width=100mm]{lectureHall.jpg}
+\caption{Font size and colourscheme test in first year lecture.}
 \end{figure}
 
 Given 5 different colour schemes, the preferred choice was our current colour scheme (orange), followed by a light blue color scheme (see graph on the right).
@@ -260,11 +318,10 @@ Sample 1 had a font size of 26px and Sample 2 had a font size of 16px.
 \centering
 \includegraphics[height=60mm,width=100mm]{fonts.png}
 \end{figure}
-As this questionnaire was performed in one of the big lecture rooms (Huxley 311) the results for this question did not surprise us, ie. people preferred the sample with the bigger font size (see graph on the right).
-However, as the smaller font size sample is perfectly readable on the lab machines we are thinking of releasing our debugger in two modes: ‘normal mode’ (to be used on the lab machines - font size 16) and  ‘lecturer mode’ (to be used by lecturers when teaching - font size 26).
-This was not part of our initial plan but we currently added creating a ‘lecturer mode’ to the top of our list of extensions.
+As this questionnaire was performed in one of the big lecture rooms (Huxley 311) the results for this question did not surprise us, people preferred the sample with the bigger font size (see graph on the right).
+However, as the smaller font size sample is perfectly readable on the lab machines we are thinking\todo{fix} of releasing our debugger in two modes: `normal mode' (to be used on the lab machines - font size 16) and  `lecturer mode' (to be used by lecturers when teaching - font size 26).
+This was not part of our initial plan so, consulting with our project supervisor, we amended our list of extensions adding a `lecturer mode' to the top.
 
-\end{description}
 \subsection{System Design}
 
 \section{Implementation}
@@ -276,11 +333,12 @@ This was not part of our initial plan but we currently added creating a ‘lectu
 \subsubsection{Back End}
 
 \section{Evaluation}
+\label{sec:evaluation}
 We used a number of techniques to evaluate Deeva.
 We used some techniques to help us find or fix specific problems and we used others to make sure that we were on the right track building the right things.
 \subsection{Usibility Testing}
-\begin{description}
-\item[Hallway Testing] \hfill \\
+
+\subsubsection{Hallway Testing}
 \begin{figure}[h!]
 \centering
 \subfigure{%
@@ -297,7 +355,7 @@ On average, the people who participated in the testing asked around 1-3 question
 This was insightful as we are aiming to make Deeva as intuitive as possible so we minimise the need to consult the help menu.
 This helped mainly with our first use case which is students using Deeva on the lab machines.
 
-\item[Quantified testing of colour schemes and font sizes] \hfill \\
+\subsubsection{Quantified testing of colour schemes and font sizes}
 We wanted to employ the use of A/B testing to assess how effective certain colour schemes and font sizes would be.
 However we had to make a compromise, because the environment and number of users that we could get in one room simultaneously meant that we had to do it in one sitting i.e. we couldn’t let half the users in the room see one colour scheme and the other half see a different colour scheme.
 So in the end we just conducted a poll so they could pick which colour scheme and font size they liked the best.
@@ -308,7 +366,7 @@ An example of this is that the projectors’ resolution in the lecture room is s
 Hence, we may need to have a separate mode which shows just the stack and the heap.
 The implication of this mode meant we had to change our implementation to be less monolithic.
 
-\item[Questionnaire] \hfill \\
+\subsubsection{Questionnaire}
 \begin{figure}[h!]
 \centering
 \subfigure{%
@@ -321,7 +379,8 @@ The implication of this mode meant we had to change our implementation to be les
 After the general interviews we used a questionnaire to get answers to our most important questions.
 Specifically we asked which of the several button designs were better and validated our ad-hoc interview conclusions about the debugger.
 We considered using something like Amazon Mechanical Turk to get larger numbers of responses which might have been more statistically significant but it seemed silly when we had hundreds of programmers who were our exact target audience sitting next to us.
-\end{description}
+
+
 \subsection{Performance Testing}
 \begin{description}
 \item[Time to First Request] \hfill \\
@@ -333,8 +392,8 @@ We also used a few other metrics, some custom and some off-the-shelf which could
 
 One of these was the ‘time-to-first-request’.
 This is the time it takes Deeva to get from hitting enter on the command line to being able to accept user input.
-This is important because tools that are slow to start are painful to use and hence are used less\footnote{ It’s not a direct parallel but if we consider websites, page abandonment approaches 50\% as load time reaches about 10 seconds see: http://blog.kissmetrics.com/loading-time/?wide=1}.
-You can only improve what you measure so we wrote a script that iterates over the git history, starts Deeva and measures the time until it is accepting the first request\footnote{We got the idea for doing this from Gary Bernhardt screencast: https://www.destroyallsoftware.com/screencasts/catalog/time-to-first-request}.
+This is important because tools that are slow to start are painful to use and hence are used less\footnote{ It’s not a direct parallel but if we consider websites, page abandonment approaches 50\% as load time reaches about 10 seconds see: \url{http://blog.kissmetrics.com/loading-time/?wide=1}}.
+You can only improve what you measure so we wrote a script that iterates over the git history, starts Deeva and measures the time until it is accepting the first request\footnote{We got the idea for doing this from Gary Bernhardt screencast: \url{https://www.destroyallsoftware.com/screencasts/catalog/time-to-first-request}}.
 We can then display the results using a custom D3 graph.
 
 As you can see our app currently takes roughly 450ms to load.
@@ -379,7 +438,7 @@ To aid the management of the project on a holistic and timely perspective, sever
 \includegraphics[height=80mm,width=130mm]{Trello.png}
 \end{figure}
 
-We used Trello as our project management tool and as an Information Radiator\footnote{\tt{https://www.atlassian.com/wallboards/information-radiators.jsp}}.
+We used Trello as our project management tool and as an Information Radiator\footnote{\url{https://www.atlassian.com/wallboards/information-radiators.jsp}}.
 It also allows us to track our progress and average velocity. 
 We decided to use Trello as it fulfills most of the key features required for such a tool: it is easy to use and update, relatively flexible and allows for communications between members without too much interruption. 
 We decided to use an electronic version as they are a more manageable alternative to physical boards. 
@@ -419,7 +478,7 @@ Creating a Facebook group proved very efficient for communicating meeting times 
 We used Google Docs for collaborative editing on reports, plans and meeting summaries in real time.
   
 \item[Github] \hfill \\
-Github is a hosted source control which somebody else manages and is easily accessible from anywhere and also plays nicely with the hosted Continuous Integration tool - Travis CI\footnote{\tt{http://travis-ci.com/}}.
+Github is a hosted source control which somebody else manages and is easily accessible from anywhere and also plays nicely with the hosted Continuous Integration tool - Travis CI\footnote{\url{http://travis-ci.com/}}.
 
 \item[Travis CI] \hfill \\
 \todo{about Travis here}
@@ -448,5 +507,35 @@ Github is a hosted source control which somebody else manages and is easily acce
 \section{Initial Plan}
 \label{sec:initialplan}
 \includepdf[pages={-}, pagecommand={}]{plan.pdf}
+
+\section{Annotated Plan}
+\begin{figure}[h!]
+\centering
+\includegraphics[width=\textwidth]{annotatedreport.jpg}
+\caption{An example of notes taken during a meeting with project supervisor.}
+\end{figure}
+
+\section{Button Questionnaire}
+\label{sec:buttonquestionnaire}
+\begin{figure}[h!]
+\centering
+\includegraphics[width=\textwidth]{questionnair2.jpg}
+\caption{An example feedback given by a user on our button designs.}
+\end{figure}
+
+\section{User Guide}
+
+\begin{thebibliography}{9}
+
+\bibitem{projectproposal}
+	Tristan Allwood.
+	\emph{Project Proposal: A Java Debugger Suitable for Teaching}.
+	\url{https://cate.doc.ic.ac.uk/projects/proposals.cgi?key=2013:1:show-2728}
+
+\bibitem{saeed09}
+	Dehnadi, Saeed, Richard Bornat, and Ray Adams. 
+	\emph{Meta-analysis of the effect of consistency on success in early learning of programming.}
+	PPIG, 2009.
+\end{thebibliography}
 
 \end{document}

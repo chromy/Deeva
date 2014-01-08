@@ -45,6 +45,7 @@ public class Debug extends EventHandlerBase {
     private State state;
     private Semaphore sema;
     private List<Map<String, String>> stack;
+    private List<StackFrameMeta> stacks;
     private Map<Breakpoint, BreakpointRequest> breakpoints;
     private SourceClassFinder finder;
     private String currentClass;
@@ -78,12 +79,12 @@ public class Debug extends EventHandlerBase {
         finder.getAllSources();
     }
 
-    public void start(String programName, String programArgString,
+    public void start(String programName, List<String> programArgs,
                       boolean enableAssertions) {
-        this.programArgs = Arrays.asList(programArgString.split(" "));
+        this.programArgs = programArgs;
         this.enableAssertions = enableAssertions;
 
-        vm = launchTarget(programName, programArgString);
+        vm = launchTarget(programName, programArgs);
         EventThread eventThread = new EventThread(vm, excludes, this);
         eventThread.start();
         redirectOutput();
@@ -200,21 +201,55 @@ public class Debug extends EventHandlerBase {
         return processedObject;
     }
 
-    private List<Map<String, String>> getStack(LocatableEvent event)
-            throws IncompatibleThreadStateException, AbsentInformationException,
-            ClassNotLoadedException
-    {
-        /* Try to extract stack variables - Hack */
+    /**
+     * Given a locatable event, we extract all the stack frames up until this
+     * point in the execution. (note vm should be suspended atm)
+     *
+     * @param event
+     * @return
+     */
+    private List<StackFrameMeta> getStacks(LocatableEvent event)
+            throws
+            IncompatibleThreadStateException, ClassNotLoadedException,
+            AbsentInformationException {
         /* Get the thread in which we're stepping */
         ThreadReference threadRef = event.thread();
 
-        /* Get the top most stack frame in the thread that we've stopped in */
-        StackFrame stackFrame = threadRef.frame(0);
         System.err.println("-------------");
         System.err.println("Number of Frames: " + threadRef.frameCount());
 
+        List<StackFrameMeta> stackFrames = new
+                LinkedList<StackFrameMeta>();
+
+        List<StackFrame> frames = threadRef.frames();
+        int frameCount = 1;
+        for (StackFrame frame : frames) {
+
+            System.err.println("Frame: " + frameCount);
+            frameCount++;
+
+            /* Get some information about the stack frame */
+            String methodName = frame.location().method().name();
+            String className = frame.location().declaringType().name();
+            List<Map<String, String>> stackMap = this.getStack(frame);
+            StackFrameMeta meta
+                    = new StackFrameMeta(methodName, className, stackMap);
+
+            /* Add to the front of the queue */
+            stackFrames.add(0, meta);
+        }
+        return stackFrames;
+    }
+
+    private List<Map<String, String>> getStack(StackFrame stackFrame) throws
+            AbsentInformationException, ClassNotLoadedException
+    {
+        /* Get the top most stack frame in the thread that we've stopped in */
+
+
         /* We want to create a list of maps */
-        List<Map<String, String>> localVariables = new LinkedList<Map<String, String>>();
+        List<Map<String, String>> localVariables
+            = new LinkedList<Map<String, String>>();
 
         /* List all the variables on the stack */
         for (LocalVariable var : stackFrame.visibleVariables()) {
@@ -250,6 +285,7 @@ public class Debug extends EventHandlerBase {
         result.put("state", state);
         result.put("line_number", line_number);
         result.put("stack", stack);
+        result.put("stacks", stacks);
         result.put("current_class", currentClass);
         result.put("arguments", programArgs);
         result.put("ea", enableAssertions);
@@ -422,7 +458,8 @@ public class Debug extends EventHandlerBase {
             ClassNotLoadedException
     {
         System.err.println(event.location().method() + "@" + event.location().lineNumber());
-        stack = getStack(event);
+        stacks = getStacks(event);
+        stack = stacks.get(0).getStackMap();
         /* Delete the request */
         getRequestManager().deleteEventRequest(event.request());
         sema.release();
@@ -434,7 +471,8 @@ public class Debug extends EventHandlerBase {
 
         /* Try to extract the stack variables */
         state = State.STASIS;
-        stack = getStack(event);
+        stacks = getStacks(event);
+        stack = stacks.get(0).getStackMap();
         sema.release();
     }
 
@@ -565,11 +603,38 @@ public class Debug extends EventHandlerBase {
 
     // XXX: Refactor beneath this line... and above this line...
 
+    /** Implements same semantics as StringUtils.join() without the dependency
+    on the library */
+    private static String stringListJoin(List<String> list, String delimiter) {
+        if (list == null) {
+            return null;
+        }
+
+        Object[] strList = list.toArray();
+        StringBuilder sb = new StringBuilder();
+
+        for (int i = 0; i < strList.length; i++) {
+            String elem = (String)strList[i];
+            if (elem == null || elem.equals("")) {
+                continue;
+            }
+
+            sb.append(elem);
+
+            /* Don't append the delimiter if we're on the last item */
+            if (i != strList.length - 1) {
+                sb.append(delimiter);
+            }
+        }
+
+        return sb.toString();
+    }
     private VirtualMachine launchTarget(String programName,
-                                        String programArgs) {
+                                        List<String> programArgs) {
         System.err.println("finding launching connector");
         LaunchingConnector connector = findLaunchingConnector();
-        String mainString = programName + " " + programArgs;
+        String programArgsString = Debug.stringListJoin(programArgs, " ");
+        String mainString = programName + " " + programArgsString;
         System.err.println("Final main string: " + mainString);
         Map<String, Connector.Argument> arguments = connectorArguments
                 (connector, mainString, enableAssertions);

@@ -69,13 +69,12 @@ def run():
         argument_array = request_args.get("args")
         enable_assertions = request_args.get("ea")
         print request_args
-        argument_string = " ".join(argument_array)
         java_argument_array = ListConverter().convert(argument_array, app.gateway._gateway_client)
 
         print 'Starting program...'
         # TODO Pass in the actual class path to the *debuggee program* here
         # Aswell as any other arguments e.g. -ea -cp asdf, commandline arguments
-        app.debugger.start(app.program, argument_string, enable_assertions)
+        app.debugger.start(app.program, java_argument_array, enable_assertions)
     else:
         print 'Continuing program...'
 
@@ -218,11 +217,24 @@ def make_api_response(f, *args, **kargs):
         # Need to do some sort of recursive converter, so that we don't have
         # malicious strings in Java that will kill our eval/repr etc
 
+        stack_metas = result['stacks'] if result['stacks'] else []
+        stacks = []
+        for stack_meta in stack_metas:
+            method_name = stack_meta.getMethodName()
+            class_name = stack_meta.getClassName()
+            # Ugly hack, may not get fixed, depends on time left
+            stack_dict = eval(repr(stack_meta.getStackMap()))
+            stack_meta_dict = dict(method_name=method_name, class_name=class_name,
+                                   stack=stack_dict)
+            stacks.append(stack_meta_dict)
+
         args = eval(repr(result['arguments'])) if eval(repr(result['arguments'])) != [""] else []
         result2 = {
             'state' : result['state'],
             'line_number' : result['line_number'],
+            # Ugly Hack
             'stack' : eval(repr(st)),
+            'stacks' : stacks,
             'current_class' : result['current_class'],
             'arguments' : args,
             'enable_assertions' : result['ea']

@@ -2,6 +2,15 @@
 
 var directives = angular.module("deeva.directives", []);
 
+/* Allows spaces to be seen and not collapsed into a single space. */
+directives.filter('deevaSanitize', function($sce) {
+    return function (data) {
+        var space_re = / /gi;
+        var new_data = data.replace(space_re, "&nbsp;");
+        return $sce.trustAsHtml(new_data);
+    };
+});
+
 directives.directive('deevaArgs', [function() {
     var BACKSPACE = 8;
     var TAB = 9;
@@ -36,7 +45,8 @@ directives.directive('deevaArgs', [function() {
                     } else if (keyCode == TAB || keyCode == RETURN) {
                         /* If we press tab/enter we create a new tag */
                         var tag_content = input_elem.val();
-                        if (tag_content) {
+                        var non_empty = tag_content.replace(/ /gi, "") != "";
+                        if (tag_content && non_empty) {
                             scope.args.push(tag_content);
                             input_elem.val("");
                         }
