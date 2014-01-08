@@ -14,3 +14,4 @@ start_deeva
 
 *.toc
 *.out
+.DS_store
