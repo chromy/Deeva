@@ -33,10 +33,9 @@ body {
 	cursor: pointer;
 }
 
-#console-btn {
+#console {
   color: orange;
   font-size: 20px;
-  cursor: pointer;
 }
 
 #arg-btn {
@@ -62,12 +61,14 @@ body {
   margin-top: 10px;
   margin-bottom: 10px;
   text-align: center;
-  height: 50px;
-  padding-left: 115px;;
+  height: 56px;
+  width: 290px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .myButtons[disabled="disabled"] {
-    opacity: 0.6;
+  opacity: 0.6;
 }
 
 .myButtons {
@@ -133,7 +134,7 @@ body {
   cursor: pointer;
 }
 
-#stepOverBtn { 
+#stepOverBtn {
   content:url("images/step_over.png");
 }
 
@@ -184,4 +185,12 @@ body {
   position: absolute;
   height: 100%;
   width: 30px;
+}
+
+#codeInputPane {
+  height: 600px;
+}
+
+a:hover {
+    cursor: pointer;
 }

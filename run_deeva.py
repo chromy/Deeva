@@ -30,10 +30,10 @@ def main(prog, args):
     jdi_cp = subprocess.check_output(findjava_script, shell=True).replace('\n', '')
     classpath = deeva_cp + ":" + jdi_cp
 
-    debuggee_classpaths = args.cp.split(':')
-    debuggee_sourcepaths = args.source_cp.split(':')
-
-    app.debugger = debug.create_java_debugger(classpath, prog, debuggee_classpaths, debuggee_sourcepaths)
+    print "args:", args.args, type(args.args)
+    app.debugger, app.gateway = debug.create_java_debugger(classpath, prog, args.cp,
+                                                           args.source_cp, args.ea,
+                                                           args.args)
 
     # Save the program name
     app.program = prog
@@ -48,12 +48,15 @@ def main(prog, args):
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument("java_class", help="Path to the java class you want to debug")
     parser.add_argument("-ea", help="Enable Assertions", action='store_true')
     parser.add_argument("-cp", help="Class path string for ", default=".")
     # Add here small subset of java commands we wish to pass on..
     parser.add_argument("--source_cp",
                         help="Path to the source files, in classpath format, default is the current directory",
                         default=".")
+    parser.add_argument("java_class", help="Path to the java class you want to debug")
+    parser.add_argument("args", nargs="*", help="Command line arguments for the debuggee program");
+    # TODO: Look properly into how Java expects/uses it's arguments
     args = parser.parse_args()
+
     main(args.java_class, args)

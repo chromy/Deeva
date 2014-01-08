@@ -8,7 +8,10 @@ import com.sun.jdi.connect.VMStartException;
 import com.sun.jdi.event.*;
 import com.sun.jdi.request.*;
 import deeva.breakpoint.Breakpoint;
-import deeva.exception.*;
+import deeva.exception.NoLoadedClassException;
+import deeva.exception.NoLocationException;
+import deeva.exception.NoVMException;
+import deeva.exception.WrongStateError;
 import deeva.io.StdInRedirectThread;
 import deeva.io.StreamRedirectThread;
 import deeva.sourceutil.SourceClassFinder;
@@ -49,17 +52,24 @@ public class Debug extends EventHandlerBase {
     private ObjectReference systemInObj;
     private Method sysInReadMethod;
     private Method sysInAvailableMethod;
+    private List<String> programArgs;
+    private boolean enableAssertions = false;
+    private final String classPaths;
 
     public Debug(DebugResponseQueue outQueue,
-                 List<String> classPaths, List<String> sourcePaths,
-                 String mainClass) {
-        breakpoints = new HashMap<Breakpoint, BreakpointRequest>();
+                 String classPaths, String sourcePaths,
+                 String mainClass, boolean enableAssertions,
+                 List<String> initialArgs) {
+        this.classPaths = classPaths;
+        this.programArgs = initialArgs;
+        this.breakpoints = new HashMap<Breakpoint, BreakpointRequest>();
         this.outQueue = outQueue;
         this.inQueue = new LinkedBlockingQueue<String>();
-        sema = new Semaphore(0);
-        state = State.NO_INFERIOR;
-        finder = new SourceClassFinder(classPaths, sourcePaths);
-        currentClass = mainClass;
+        this.sema = new Semaphore(0);
+        this.state = State.NO_INFERIOR;
+        this.finder = new SourceClassFinder(classPaths, sourcePaths);
+        this.currentClass = mainClass;
+        this.enableAssertions = enableAssertions;
 
         /*  Generate all the classes and their relevant sources the debuggee
             may need
@@ -68,8 +78,12 @@ public class Debug extends EventHandlerBase {
         finder.getAllSources();
     }
 
-    public void start(String arg) {
-        vm = launchTarget(arg);
+    public void start(String programName, String programArgString,
+                      boolean enableAssertions) {
+        this.programArgs = Arrays.asList(programArgString.split(" "));
+        this.enableAssertions = enableAssertions;
+
+        vm = launchTarget(programName, programArgString);
         EventThread eventThread = new EventThread(vm, excludes, this);
         eventThread.start();
         redirectOutput();
@@ -237,6 +251,8 @@ public class Debug extends EventHandlerBase {
         result.put("line_number", line_number);
         result.put("stack", stack);
         result.put("current_class", currentClass);
+        result.put("arguments", programArgs);
+        result.put("ea", enableAssertions);
         return result;
     }
 
@@ -549,10 +565,14 @@ public class Debug extends EventHandlerBase {
 
     // XXX: Refactor beneath this line... and above this line...
 
-    private VirtualMachine launchTarget(String mainArgs) {
+    private VirtualMachine launchTarget(String programName,
+                                        String programArgs) {
         System.err.println("finding launching connector");
         LaunchingConnector connector = findLaunchingConnector();
-        Map<String, Connector.Argument> arguments = connectorArguments(connector, mainArgs);
+        String mainString = programName + " " + programArgs;
+        System.err.println("Final main string: " + mainString);
+        Map<String, Connector.Argument> arguments = connectorArguments
+                (connector, mainString, enableAssertions);
 
         try {
             System.err.println("beginning launch");
@@ -598,17 +618,38 @@ public class Debug extends EventHandlerBase {
     /**
      * Return the launching connector's arguments.
      */
-    Map<String, Connector.Argument> connectorArguments(LaunchingConnector connector, String mainArgs) {
+    Map<String, Connector.Argument> connectorArguments(LaunchingConnector
+                                                               connector,
+                                                       String mainArgs,
+                                                       boolean ea) {
         Map<String, Connector.Argument> arguments = connector.defaultArguments();
-        System.out.println("Before - con");
-        Connector.Argument mainArg = (Connector.Argument)arguments.get("main");
+
+        /* Set the options argument, where -classpath and -ea is passed in */
+        StringBuilder optionsSB = new StringBuilder();
+        Connector.Argument optionArg = arguments.get("options");
+
+        if (optionArg == null) {
+            throw new Error("Bad launching connector");
+        }
+
+        if (ea) {
+            optionsSB.append("-ea ");
+        }
+
+        if (this.classPaths != null) {
+            optionsSB.append("-cp " + this.classPaths + " ");
+        }
+
+        optionArg.setValue(optionsSB.toString());
+
+        /* Main Arg */
+        Connector.Argument mainArg = arguments.get("main");
         if (mainArg == null) {
             throw new Error("Bad launching connector");
         }
 
         mainArg.setValue(mainArgs);
 
-        System.out.println("After - con");
         return arguments;
     }
 }

@@ -2,6 +2,56 @@
 
 var directives = angular.module("deeva.directives", []);
 
+directives.directive('deevaArgs', [function() {
+    var BACKSPACE = 8;
+    var TAB = 9;
+    var RETURN = 13;
+    var SPACE = 32;
+
+    return {
+        restrict: 'E',
+        templateUrl: 'static/templates/deevaArguments.html',
+        scope: {
+            args: '=',
+            enableAssertions: '='
+        },
+        replace: true,
+        link: function(scope, element, attrs) {
+            var input_elem = element.find('input');
+
+            /* On click of the ul class, put focus on input_elem */
+            element.on('click', function(event) {
+                input_elem.focus();
+            });
+
+            /* Handler for when we press keys on the input element */
+            input_elem.on('keydown', function(event) {
+                var keyCode = event.keyCode;
+
+                scope.$apply(function() {
+                    if (keyCode == BACKSPACE && !input_elem.val()) {
+                        /* If we're deleting and the input is empty, delete the
+                         * last one */
+                        scope.args.pop();
+                    } else if (keyCode == TAB || keyCode == RETURN) {
+                        /* If we press tab/enter we create a new tag */
+                        var tag_content = input_elem.val();
+                        if (tag_content) {
+                            scope.args.push(tag_content);
+                            input_elem.val("");
+                        }
+                        event.preventDefault();
+                    }});
+            });
+
+            /* Remove element at given index */
+            scope.remove = function(index) {
+                scope.args.splice(index, 1);
+            }
+        }
+    };
+}]);
+
 directives.directive('deevaPackage', ['PackageService', function(PackageService) {
     /* String that gets displayed when we select a new package */
     var new_string = "Select package or source file";
@@ -9,6 +59,7 @@ directives.directive('deevaPackage', ['PackageService', function(PackageService)
     return {
         restrict: 'E',
         templateUrl: 'static/templates/deevaPackage.html',
+        replace: true,
         scope: {
             packageDir: '=',
             breadcrumb: '=',

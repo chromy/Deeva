@@ -1,0 +1,20 @@
+<div class="row">
+  <div class="col-md-9">
+  <ul class="deevaTags">
+    <li ng-repeat="arg in args track by $index">
+      <a class="btn btn-deeva-args btn-sm">
+        {{arg}} <span class="glyphicon glyphicon-remove" ng-click="remove($index)"></span>
+      </a>
+    </li>
+    <li><input type="text" placeholder="Input argument(s) here" autocomplete="off"></li>
+  </ul>
+  </div>
+  <div class="col-md-3 enable-assertions">
+    <span class="glyphicon"
+          ng-class="{'glyphicon-ok': enableAssertions, enabled: enableAssertions,
+                     'glyphicon-remove': !enableAssertions, disabled: !enableAssertions}"></span>
+    <label ng-click="enableAssertions = !enableAssertions">
+      Assertions <span ng-show="enableAssertions">Enabled</span><span ng-show="!enableAssertions">Disabled</span>
+    </label>
+  </div>
+</div>

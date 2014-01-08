@@ -14,25 +14,19 @@ public class SourceClassFinder {
 
     /* Maybe abstract out? who knows :S :S definitely in need of refactor at
     some point */
-    public SourceClassFinder(List<String> classPathStrings,
-                             List<String> sourcePathStrings) {
-        if (classPathStrings == null) {
-            classPathStrings = new LinkedList<String>();
+
+    public SourceClassFinder(String classPathString, String sourcePathString) {
+        if (classPathString == null) {
+            classPathString = ".";
         }
 
-        if (sourcePathStrings == null) {
-            sourcePathStrings = new LinkedList<String>();
+        if (sourcePathString == null) {
+            sourcePathString = ".";
         }
 
-        /* Add the current directory as the default if no classpaths are
-        specified */
-        if (classPathStrings.isEmpty()) {
-            classPathStrings.add(".");
-        }
-
-        if (sourcePathStrings.isEmpty()) {
-            sourcePathStrings.add(".");
-        }
+        List<String> classPathStrings = Arrays.asList(classPathString.split(":"));
+        List<String> sourcePathStrings
+                = Arrays.asList(sourcePathString.split(":"));
 
         this.classPaths = new LinkedList<File>();
         this.sourcePaths = new LinkedList<File>();
@@ -44,7 +38,6 @@ public class SourceClassFinder {
         for (String srcString : sourcePathStrings) {
             this.sourcePaths.add(new File(srcString));
         }
-
     }
 
     /**
@@ -65,6 +58,10 @@ public class SourceClassFinder {
         }
 
         File[] files = directory.listFiles();
+        if (files == null) {
+            return null;
+        }
+
         for (File file : files) {
             String packagePrepend = packageName.equals("") ? "" : packageName + '.';
             if (file.isDirectory()) {
@@ -126,6 +123,10 @@ public class SourceClassFinder {
         }
 
         File[] files = directory.listFiles();
+        if (files == null) {
+            return;
+        }
+
         for (File file : files) {
             String packagePrepend = packageName.equals("") ? "" : packageName + '.';
             String fileName = file.getName();
@@ -151,8 +152,6 @@ public class SourceClassFinder {
                 }
             }
         }
-
-        return;
     }
 
     public Map<String, SourceClassMeta> getAllClasses() {
@@ -208,7 +207,7 @@ public class SourceClassFinder {
     public static void main(String[] args) {
         List<String> cps = new LinkedList<String>();
 
-        SourceClassFinder finder = new SourceClassFinder(null, null);
+        SourceClassFinder finder = new SourceClassFinder(null, "asdf");
 
         Map<String, String> sources = finder.getAllSources();
 

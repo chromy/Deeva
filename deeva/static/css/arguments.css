@@ -1,0 +1,51 @@
+.deevaTags {
+    overflow: auto;
+    padding: 3px 5px;
+    border: 1px solid #ddd;
+    margin-bottom: 0;
+}
+
+.deevaTags li {
+    display: block;
+    float: left;
+    margin: 2px 5px 2px 0;
+}
+
+.deevaTags .btn-deeva-args {
+    color: white;
+    background-color: #FF9900;
+    border-color: #F28C00;
+}
+
+.deevaTags input {
+    outline: none;
+    border: none;
+    line-height: 28px;
+    font-size: 12px;
+}
+
+.enable-assertions label {
+    line-height: 42px;
+    font-weight: normal;
+    margin-bottom: 2px;
+    float: left;
+}
+
+.enable-assertions .enabled {
+    color: green;
+}
+
+.enable-assertions .disabled {
+    color: #d9534f;
+}
+
+.enable-assertions .glyphicon {
+    font-size: 20px;
+    margin-right: 10px;
+    line-height: 36px;
+    float: left;
+}
+
+.enable-assertions .glyphicon.disabled {
+    line-height: 38px;
+}

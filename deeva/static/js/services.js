@@ -113,28 +113,36 @@ services.service('FileService', ['$http', 'PackageService', function($http, Pack
         var url_name = '/file/' + classname;
         $http.get(url_name)
             .success(function(data) {
+                var message; // stupid Javascript scoping
                 var mime_type = 'text/x-java';
                 var errorneous = false;
 
                 if (!data.classname || data.classname != classname) {
-                    var message = "Server did not return any files.";
-                    console.error(message);
-                    data.code = [message]
-                    mime_type = 'text/x-markdown';
-                    errorneous = true;
-                }
-
-                if (!data.code) {
-                    var message = "There was an error getting the code";
+                    message = "Server did not return any files.";
                     console.error(message);
                     data.code = [message];
                     mime_type = 'text/x-markdown';
                     errorneous = true;
                 }
 
+                if (!data.code) {
+                    message = "There was an error getting the code";
+                    console.error(message);
+                    data.code = [message];
+                    mime_type = 'text/x-markdown';
+                    errorneous = true;
+                }
+
+                if (!data.breakpoints) {
+                    message = "There was an error getting the breakpoints";
+                    console.error(message);
+                    data.breakpoints = [];
+                    errorneous = true;
+                }
+
                 /* Create new CodeMirror document (maybe refactor this out) */
                 files[classname] = {'code': CodeMirror.Doc(data.code.join(''), mime_type),
-                                    'breakpoints': []};
+                                    'breakpoints': data.breakpoints};
 
                 if (!errorneous) {
                     console.log("File retrieved: " + classname);
@@ -157,9 +165,33 @@ services.service('FileService', ['$http', 'PackageService', function($http, Pack
         });
     }
 
+    function addBreakpoint (classname, line) {
+        getFile(classname, function(classdata) {
+            var breakpoints = classdata.breakpoints;
+            if (breakpoints.indexOf(line) != -1) {
+                return;
+            }
+            breakpoints.push(line);
+        });
+    }
+
+    function removeBreakpoint (classname, line) {
+        getFile(classname, function(classdata) {
+            var breakpoints = classdata.breakpoints;
+            /* Find and remove a previously set breakpoint */
+            var index = breakpoints.indexOf(line);
+            if (index > -1) {
+                breakpoints.splice(index, 1);
+            }
+        });
+    }
+
     return {
         'getPackages' : getPackages,
         'getFile' : getFile,
-        'breakpoints' : breakpoints
+        'breakpoints' : breakpoints,
+        'addBreakpoint' : addBreakpoint,
+        'removeBreakpoint' : removeBreakpoint,
     };
 }]);
+
