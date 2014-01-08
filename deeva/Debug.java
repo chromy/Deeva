@@ -45,6 +45,7 @@ public class Debug extends EventHandlerBase {
     private State state;
     private Semaphore sema;
     private List<Map<String, String>> stack;
+    private List<StackFrameMeta> stacks;
     private Map<Breakpoint, BreakpointRequest> breakpoints;
     private SourceClassFinder finder;
     private String currentClass;
@@ -207,7 +208,7 @@ public class Debug extends EventHandlerBase {
      * @param event
      * @return
      */
-    private List<List<Map<String, String>>> getStacks(LocatableEvent event)
+    private List<StackFrameMeta> getStacks(LocatableEvent event)
             throws
             IncompatibleThreadStateException, ClassNotLoadedException,
             AbsentInformationException {
@@ -217,22 +218,31 @@ public class Debug extends EventHandlerBase {
         System.err.println("-------------");
         System.err.println("Number of Frames: " + threadRef.frameCount());
 
-        List<List<Map<String, String>>> stackFrames = new
-                LinkedList<List<Map<String, String>>>();
+        List<StackFrameMeta> stackFrames = new
+                LinkedList<StackFrameMeta>();
 
         List<StackFrame> frames = threadRef.frames();
         int frameCount = 1;
         for (StackFrame frame : frames) {
+
             System.err.println("Frame: " + frameCount);
             frameCount++;
-            stackFrames.add(0, getStack(frame));
+
+            /* Get some information about the stack frame */
+            String methodName = frame.location().method().name();
+            String className = frame.location().declaringType().name();
+            List<Map<String, String>> stackMap = this.getStack(frame);
+            StackFrameMeta meta
+                    = new StackFrameMeta(methodName, className, stackMap);
+
+            /* Add to the front of the queue */
+            stackFrames.add(0, meta);
         }
         return stackFrames;
     }
 
     private List<Map<String, String>> getStack(StackFrame stackFrame) throws
             AbsentInformationException, ClassNotLoadedException
-
     {
         /* Get the top most stack frame in the thread that we've stopped in */
 
@@ -275,6 +285,7 @@ public class Debug extends EventHandlerBase {
         result.put("state", state);
         result.put("line_number", line_number);
         result.put("stack", stack);
+        result.put("stacks", stacks);
         result.put("current_class", currentClass);
         result.put("arguments", programArgs);
         result.put("ea", enableAssertions);
@@ -447,7 +458,8 @@ public class Debug extends EventHandlerBase {
             ClassNotLoadedException
     {
         System.err.println(event.location().method() + "@" + event.location().lineNumber());
-        stack = getStack(event);
+        stacks = getStacks(event);
+        stack = stacks.get(0).getStackMap();
         /* Delete the request */
         getRequestManager().deleteEventRequest(event.request());
         sema.release();
@@ -459,7 +471,8 @@ public class Debug extends EventHandlerBase {
 
         /* Try to extract the stack variables */
         state = State.STASIS;
-        stack = getStack(event);
+        stacks = getStacks(event);
+        stack = stacks.get(0).getStackMap();
         sema.release();
     }
 

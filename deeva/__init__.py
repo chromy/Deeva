@@ -217,11 +217,24 @@ def make_api_response(f, *args, **kargs):
         # Need to do some sort of recursive converter, so that we don't have
         # malicious strings in Java that will kill our eval/repr etc
 
+        stack_metas = result['stacks'] if result['stacks'] else []
+        stacks = []
+        for stack_meta in stack_metas:
+            method_name = stack_meta.getMethodName()
+            class_name = stack_meta.getClassName()
+            # Ugly hack, may not get fixed, depends on time left
+            stack_dict = eval(repr(stack_meta.getStackMap()))
+            stack_meta_dict = dict(method_name=method_name, class_name=class_name,
+                                   stack=stack_dict)
+            stacks.append(stack_meta_dict)
+
         args = eval(repr(result['arguments'])) if eval(repr(result['arguments'])) != [""] else []
         result2 = {
             'state' : result['state'],
             'line_number' : result['line_number'],
+            # Ugly Hack
             'stack' : eval(repr(st)),
+            'stacks' : stacks,
             'current_class' : result['current_class'],
             'arguments' : args,
             'enable_assertions' : result['ea']
