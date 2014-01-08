@@ -132,7 +132,7 @@ function ($scope, $http, FileService, MiscService) {
             // refactor - plus fix heap!
             /* Update the stack and the heap */
             var stack_heap = {'stack' : data.stack};
-            if (data.stack && false) { //ZZZ: Horrible hack, but want to get other things working first
+            if (data.stack ) { //ZZZ: Horrible hack, but want to get other things working first
                 main(stack_heap);
             }
         }

@@ -9,10 +9,10 @@ function main(all_variables){
 
   var stack_variables = all_variables.stack || [];
   //var unique_id_list = filter_stack(stack_variables);
-  var unique_id_list = {unique_id: 102, type: 'java.lang.String[]'};
+  var unique_id_list = {unique_id: 71, type: 'java.lang.String[]'};
   if(unique_id_list != undefined){
   $.post("getHeapObject", unique_id_list).done(function(data){
-     console.log("data", data.data);
+     console.log("data---", data);
      console.log("data", [data].length);
      var heap_td  = d3.select("#heap_td");
      append_heap(heap_td, [data.data]);
@@ -35,11 +35,12 @@ function main(all_variables){
   var stackFrames = stack.append("div")
                          .attr("id", "stackFrames");
 
-   append_stacks(stackFrames, [stack_variables, stack_variables, stack_variables], primitive_list);
+  append_stacks(stackFrames, [stack_variables, stack_variables, stack_variables], primitive_list);
+
  }
 
 
-   function append_stacks(stack_selection, stack_variables, primitive_list){
+function append_stacks(stack_selection, stack_variables, primitive_list){
    
    // create a div for each stack
    var stackFrames = stack_selection.selectAll("div")
@@ -96,73 +97,91 @@ function main(all_variables){
    populate_values(stackFrameValues, primitive_list);
 }
 
-   // Creates the heap and the objects in it.
-   function append_heap(heap_selection, heap_objects){
-     console.log("c" + heap_objects);
-     var heap = heap_selection.append("div").attr("id", "heap");
-     var heapHeader = heap.append("div")
-                          .attr("id", "heapHeader")
-                          .text("Heap");
+/* Populates the stack with the values(the actual value for primitive types
+   and with arrows for objects). */
+function populate_values(selection, primitive_list){
+   var primitives = selection.filter(function(d){
+      return primitive_list.indexOf(d.type) >= 0;
+   });
 
-     // create a table row for each object
-      var heapRows = heap.selectAll("table")
-                        .data(heap_objects)
-                        .enter()
-                        .append("table")
-                        .attr("class", "heapRow");
+   var objects = selection.filter(function(d){
+      return primitive_list.indexOf(d.type) < 0;
+   });
 
-      var heapRow = heapRows.append("td")
-                           .attr("class", "toplevelHeapObject")
-                           .attr("id", function(d,i){
-                              return "toplevel_heap_object_" + i;
-                           });
+   primitives.append("span")
+             .attr("class","primitives")
+             .text(function(d){
+                return d.value;
+             });
+}
 
-      // on heapRowObjects will all the JsPlumb be added !!!
-      var heapRowObject = heapRow.append("div")
-                             .attr("class", "heapObject")
-                             .attr("id", function(d,i){
+// Creates the heap and the objects in it.
+function append_heap(heap_selection, heap_objects){
+   var heap = heap_selection.append("div").attr("id", "heap");
+   var heapHeader = heap.append("div")
+                        .attr("id", "heapHeader")
+                        .text("Heap");
+
+   // create a table row for each object
+   var heapRows = heap.selectAll("table")
+                      .data(heap_objects)
+                      .enter()
+                      .append("table")
+                      .attr("class", "heapRow");
+
+   var heapRow = heapRows.append("td")
+                         .attr("class", "toplevelHeapObject")
+                         .attr("id", function(d,i){
+                            return "toplevel_heap_object_" + i;
+                         });
+
+   // on heapRowObjects will all the JsPlumb be added !!!
+   var heapRowObject = heapRow.append("div")
+                              .attr("class", "heapObject")
+                              .attr("id", function(d,i){
                                  return "heap_object_" + d.unique_id;
-                             });
+                              });
 
-      var heapObjectType = heapRowObject.append("div")
-                                   .attr("class", "typeLabel")
-                                   .text(function(d,i){
-                                      if(is_of_type(d, 'Object'))
-                                        return d.type;
-                                      else
-                                        return d.object_type;
-                                   });
+   var heapObjectType = heapRowObject.append("div")
+                                     .attr("class", "typeLabel")
+                                     .text(function(d,i){
+                                        if(is_of_type(d, 'object'))
+                                           return d.type;
+                                        else
+                                           return d.object_type;
+                                     });
 
-      var objectArray = heapRowObject.append("table")
-                                 .attr("class", function(d,i){
-                                       return d.object_type;
-                                 });
+   var objectArray = heapRowObject.append("table")
+                                  .attr("class", function(d,i){
+                                     return d.object_type;
+                                  });
 
-      var objectArrayTable = objectArray.append("tbody");
-      var values = objectArrayTable.append("tr").attr("id", "value");
-      var values_entries = values.selectAll("td")
-                               .data(function(d){
-                                   if(is_of_type(d, 'Array'))
+   var objectArrayTable = objectArray.append("tbody");
+   var values = objectArrayTable.append("tr").attr("id", "value");
+   var values_entries = values.selectAll("td")
+                              .data(function(d){
+                                 if(is_of_type(d, 'array')){
+                                   console.log("sasas" + d.array);
+                                   return d.array;}
+                                 if(is_of_type(d, 'string'))
+                                   return d.string;
+                                 if(is_of_type(d, 'object'))
+                                   return [];
+                              })
+                              .enter()
+                              .append("td")
+                              .text(function(d,i){
+                                 return d;
+                              });
+
+   var indices = objectArrayTable.append("tr").attr("id", "indice");
+   var indices_entries = indices.selectAll("td")
+                                .data(function(d){
+                                   if(is_of_type(d, 'array'))
                                       return d.array;
-                                   if(is_of_type(d, 'String'))
+                                   if(is_of_type(d, 'string'))
                                       return d.string;
-                                   if(is_of_type(d, 'Object'))
-                                      return [];
-                               })
-                               .enter()
-                               .append("td")
-                               .text(function(d,i){
-                                  return d;
-                               });
-
-      var indices = objectArrayTable.append("tr").attr("id", "indice");
-      var indices_entries = indices.selectAll("td")
-                               .data(function(d){
-                                   if(is_of_type(d, 'Array'))
-                                      return d.array;
-                                   if(is_of_type(d, 'String'))
-                                      return d.string;
-                                   if(is_of_type(d,'Object'))
+                                   if(is_of_type(d,'object'))
                                       return [];
                                })
                                .enter()
@@ -170,13 +189,14 @@ function main(all_variables){
                                .text(function(d,i){
                                    return i;
                                });
-      var objects = heap_selection.selectAll(".Object").selectAll("#value");
-      console.log("bb" + objects);
-      var objects_button = objects.append("button")
-                                 .attr("type", "button")
-                                 .attr("class", "btn btn-default");
-      objects_button.append("span")
-                    .attr("class", "glyhicon glyphicon-plus");
+   var objects = heap_selection.selectAll(".object").selectAll("#value");
+
+   var objects_button = objects.append("button")
+                               .attr("type", "button")
+                               .attr("class", "btn btn-default");
+   objects_button.append("span")
+                 .attr("class", "glyhicon glyphicon-plus");
+  //create_arrows(objects);
 }
 
 
@@ -190,7 +210,6 @@ function main(all_variables){
 
    jsPlumb.bind("ready", function(){
       jsPlumb.Defaults.Container = "heap_stack";
-      for(var i=0; i<arrows_id.length;i++){
         var source = jsPlumb.addEndpoint("stackFrameValue_heap_71",
                            {anchor: [0.5, 0.5, 0, -1, 0, 2],
                             connectionsDetachable:false,
@@ -201,33 +220,15 @@ function main(all_variables){
                             endpoint: "Blank",
                             connectionsDetachable:false
                            });
+/*
         jsPlumb.connect({source: source,
                          target: target,
                          overlays: [["Arrow", {width: 6,length: 6,location:1}]],
                          Connector : ["State Machine", {proximityLimit:1}],
                          cssClass: "connectLine"
                         });
-      }
+*/
    });
-  }
-
-  /* Populates the stack with the values(the actual value for primitive types
-     and with arrows for objects). */
-  function populate_values(selection, primitive_list){
-      var primitives = selection.filter(function(d){
-         return primitive_list.indexOf(d.type) >= 0;
-      });
-
-      var objects = selection.filter(function(d){
-         return primitive_list.indexOf(d.type) < 0;
-      });
-
-      primitives.append("span")
-                .attr("class","primitives")
-                .text(function(d){
-                    return d.value;
-                });
-     // create_arrows(objects);
   }
 
 
