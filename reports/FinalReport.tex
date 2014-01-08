@@ -10,6 +10,7 @@
 \usepackage{titlesec}
 \usepackage{pdfpages}
 \usepackage{cleveref}
+\usepackage{hyperref}
 
 % Select what to do with todonotes: 
 % \usepackage[disable]{todonotes} % notes not showed
@@ -33,7 +34,7 @@
 \begin{document}
 
 \title{Deeva}
-\subtitle{Final Report}
+\subtitle{A Java Debugger Suitable for Teaching}
 \author{Kritaphat Sonsri-in, Xueqi Chen, Hector Dearman, \\Alina Draganescu, Felix de Souza}
 
 \maketitle
@@ -97,29 +98,40 @@ For students Deeva provides excellent introduction to these tools while also fil
 % 
 % first to help foster a strong mental model of imperative programming and secondly to introduce students to powerful introspection of software systems.
 
+%the Imperial Computing department attaches great importance to practical programming ability much of students first year is spent learning several programming languages and completing many Labs, small programming tasks. 
+%The practical teaching of programming on the first year follows this progression: Functional programing, Imperative programing, Object Orientation and finally Systems programming.
+%Historically the department has taught Functional programming using Haskell, OO programming using Java and Systems programming using C but for Imperative programing a few different approaches have been tried.
 
 \clearpage
 \tableofcontents
 \clearpage
 
 \section{Motivation}
-\subsection{Teaching at Imperial}
-Around half of first year undergraduate computing students at Imperial have no previous programming experience\footnote{Project Proposal} and since
-the Imperial Computing department attaches great importance to practical programming ability much of students first year is spent learning several programming languages and completing many Labs, small programming tasks. 
-The practical teaching of programming on the first year follows this progression: Functional programing, Imperative programing, Object Orientation and finally Systems programming.
-Historically the department has taught Functional programming using Haskell, OO programming using Java and Systems programming using C but for Imperative programing a few different approaches have been tried.
+\subsection{``Introduction to Imperative Programming" at Imperial}
+Around half of first year undergraduate computing students at Imperial have no previous imperative programming experience\cite{projectproposal} so the course ``Introduction to Imperative Programming" run in the first term after directly after ``Introduction to Functional Programming" forms a cornerstone of the practical education students receive giving them skills they will need almost every other course.
 
-\todo{somthing here}
+The course focuses on the basics: control flow, functions and the write, compile, run cycle.
+To make teaching more effective it is desirable to avoid introducing unnecessary complexity like Object Orientation, memory management or complex IDEs all of which are left to later courses.
+For example although the class is now taught in Java () it has previously been taught in Kenya\footnote{} a language which acts as an imperative stepping stone to Java by allowing functions to exist outside of objects.
 
-The department also does not want students to end up relying on the large complex IDE like Eclipse or IntelliJ to `magically' run the code without understanding what it does.
-So recently \todo{fact check} \footnote{For the last two years.} students have been encouraged to avoid IDEs and instead use a text editor (like \cmd{vim} or \cmd{emacs}) and invoke the Java compiler (\cmd{javac}) and virtual machine (\cmd{java}) directly.
-Unfortunately there is downside to this approach, most Java debuggers are integrated in to IDEs and those which are not are often of poor quality this coupled with the relatively complex UI of debuggers in general (see our analysis below) means that students have no good option.
-Since many students are learning Imperative programing for the first time they quickly encounter bugs in their programs and without a strong understanding of the language or a taught strategy to deal with defects they are reduced to reinventing well known bad habits including \todo{list of bad habits}.
+In particular department does not want students to end up relying on the large complex IDE like Eclipse or IntelliJ to `magically' run the code without understanding what it does.
+So recently \todo{fact check} \footnote{For the last two years.} students have been encouraged to avoid IDEs and instead use a text editor (like \cmd{vim}, \cmd{emacs} or \cmd{gedit}) and invoke the Java compiler (\cmd{javac}) and virtual machine (\cmd{java}) directly.
+Unfortunately there is downside to this approach, most Java debuggers are integrated into IDEs and those which are not are often of poor quality, this coupled with the relatively complex UI of debuggers in general (see our analysis below) means that there is no good option for instructors to suggest to students.
+Students quickly encounter bugs in their programs and (necessarily) without a strong understanding of the language or a taught strategy to deal with bugs they are reduced to reinventing well known bad habits including \todo{list of bad habits}.
 
-To combat this problem Dr. Tristan Allwood proposed this third year group project to build a tool to fill this gap.
+To combat this problem Dr. Tristan Allwood proposed\cite{projectproposal} this third year group project to build a tool to fill this gap.
 A debugger which was: independent from an IDE, simple enough to be used by beginners but powerful enough to be useful.
 
-Since 
+The project also had a secondary goal.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=\textwidth]{whiteboard.png}
+\caption{White Board Stack and Heap}
+\end{figure}
+
+
+Since \cite{saeed09}
 
 Despite the existence of powerful tools to introspect running programs many programmers continue to debug programs using print statements.
 Since 
@@ -448,5 +460,18 @@ Github is a hosted source control which somebody else manages and is easily acce
 \section{Initial Plan}
 \label{sec:initialplan}
 \includepdf[pages={-}, pagecommand={}]{plan.pdf}
+
+\begin{thebibliography}{9}
+
+\bibitem{projectproposal}
+	Tristan Allwood.
+	\emph{Project Proposal: A Java Debugger Suitable for Teaching}.
+	\url{https://cate.doc.ic.ac.uk/projects/proposals.cgi?key=2013:1:show-2728}
+
+\bibitem{saeed09}
+	Dehnadi, Saeed, Richard Bornat, and Ray Adams. 
+	\emph{Meta-analysis of the effect of consistency on success in early learning of programming.}
+	PPIG, 2009.
+\end{thebibliography}
 
 \end{document}
