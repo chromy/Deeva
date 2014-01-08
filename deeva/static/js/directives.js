@@ -7,8 +7,6 @@ directives.filter('deevaSanitize', function($sce) {
     return function (data) {
         var space_re = / /gi;
         var new_data = data.replace(space_re, "&nbsp;");
-        console.log("sanitizing");
-        console.log(data, new_data);
         return $sce.trustAsHtml(new_data);
     };
 });
@@ -47,7 +45,8 @@ directives.directive('deevaArgs', [function() {
                     } else if (keyCode == TAB || keyCode == RETURN) {
                         /* If we press tab/enter we create a new tag */
                         var tag_content = input_elem.val();
-                        if (tag_content) {
+                        var non_empty = tag_content.replace(/ /gi, "") != "";
+                        if (tag_content && non_empty) {
                             scope.args.push(tag_content);
                             input_elem.val("");
                         }
