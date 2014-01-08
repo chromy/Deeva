@@ -171,7 +171,26 @@ function append_heap(heap_selection, heap_objects){
                               .enter()
                               .append("td")
                               .text(function(d,i){
-                                 return d;
+                                 if(d){
+                                   console.log("not " + d);
+                                   return d;
+                                 }
+                                 else{
+                                   console.log("empty " + d);
+                                   return "empty";
+                                 }
+                              });
+
+   var values_entries = values.selectAll("td")
+                              .data(function(d){
+                                console.log("AICI");
+                                 if(!d)
+                                  return 1;
+                              })
+                              .enter()
+                              .append("td")
+                              .text(function(d){
+                                 return "empty";
                               });
 
    var indices = objectArrayTable.append("tr").attr("id", "indice");
@@ -205,7 +224,7 @@ function append_heap(heap_selection, heap_objects){
 
    // makes connectors undraggable
    jsPlumb.importDefaults({
-    ConnectionsDetachable:false,
+     ConnectionsDetachable:false,
    });
 
    jsPlumb.bind("ready", function(){
