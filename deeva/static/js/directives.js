@@ -45,9 +45,8 @@ directives.directive('deevaArgs', [function() {
                          * last one */
                         scope.args.pop();
                     } else if (keyCode == TAB || keyCode == RETURN) {
-                        /* If we press tab/space/enter we create a new tag */
+                        /* If we press tab/enter we create a new tag */
                         var tag_content = input_elem.val();
-
                         if (tag_content) {
                             scope.args.push(tag_content);
                             input_elem.val("");

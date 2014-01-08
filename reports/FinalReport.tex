@@ -10,13 +10,14 @@
 \usepackage{titlesec}
 \usepackage{pdfpages}
 \usepackage{cleveref}
+\usepackage{hyperref}
 
 % Select what to do with todonotes: 
 % \usepackage[disable]{todonotes} % notes not showed
 \usepackage[draft]{todonotes}   % notes showed
 
 \newlength\longest
-
+\interfootnotelinepenalty=10000
 \titlespacing\section{0pt}{6pt plus 2pt minus 2pt}{0pt plus 0pt minus 2pt}
 \titlespacing\subsection{0pt}{4pt plus 2pt minus 2pt}{0pt plus 0pt minus 2pt}
 \newcommand{\subtitle}[1]{
@@ -33,7 +34,7 @@
 \begin{document}
 
 \title{Deeva}
-\subtitle{Final Report}
+\subtitle{A Java Debugger Suitable for Teaching}
 \author{Kritaphat Sonsri-in, Xueqi Chen, Hector Dearman, \\Alina Draganescu, Felix de Souza}
 
 \maketitle
@@ -70,58 +71,84 @@
 
 \section*{Executive Summary}
 \addcontentsline{toc}{section}{Executive Summary}
-% One line summary:
+
 Deeva is a simple Java debugger for teaching which allows graphical introspection of a running program.
 
-% What is a debugger?
-``Bugs'' are a type of software defect typically introduced though a mismatch between the programmers mental model of the system and the system itself.
-A ``debugger'' then is a program that allows programmers to inspect and manipulate the state and flow of a running system so they can understand the mismatch and hence fix the defect.
-
-% Why have we built one?
-In the first year introductory Java course many students are encountering imperative programming for the first time so there is a strong desire \todo{``by course leaders"?} to minimise `magic' particularly in the form of complex IDEs.
-
-Specifically students are encouraged to use a text editor (like \cmd{vim} or \cmd{emacs}) and invoke the Java compiler (\cmd{javac}) and virtual machine (\cmd{java}) directly in order develop a deeper and more transferable understanding of programming.
+In the first year introductory Java course many students are encountering imperative programming for the first time so there is a strong desire to minimise `magic' particularly in the form of complex IDEs which `make it work'.
 Unfortunately this attempt is hamstrung by the absence of a good Java debugger decoupled from an IDE.
-Without a strategy to fix broken programs students quickly discover bad habits ranging from the awful, shotgun debugging, to the merely poor, print statements.
+Without a good strategy to fix broken programs students quickly reinvent bad habits ranging from the awful, shotgun debugging, to the merely poor, print statements.
 
-We built Deeva to chiefly to fill this hole in the Java ecosystem and Lab infrastructure but it was designed with two additional goals in mind:
-first to help foster a strong mental model of imperative programming and secondly to introduce students to powerful introspection of software systems.
+What we want is debugger, invokable from the command line, simple enough that students who have never seen a debugger before can taught to use it in only a few minutes but powerful enough to make tracking down a bug easy. 
+Deeva fills this hole in the Java ecosystem and Lab infrastructure.
 
-% Summary of report content:
-In this report we will first make the case for the necessity of a tool like Deeva then enumerate our goals and evaluate how well Deeva meets these goals before moving on to discuss the design, implementation and management of the project. 
-Lastly we conclude with our final evaluation of the project and directions for future work.
+Deeva was designed with an additional goal in mind.
+At Imperial (as most places) students are taught imperative programming with diagrams, the lecturer draws a stack and a heap and shows how moving through the code effect the stack and the heap.
+By using a novel user interface which resembles these diagrams we make debugging more intuitive, allow lectures to easily construct and step through these diagrams live on arbitrary code without fear of mistake and, for the first time, allow students to see how code they write is run on their own time without outside help.
+This way Deeva becomes a tool for both teaching and learning.
+
+All to many programmers, experts and beginners, never really learn to use or desire the powerful tools which already exist to introspect and modify running programs preferring instead to grovel though the source code with \cmd{printf}.
+For students Deeva provides excellent introduction to these tools while also filling a vital gap in Lab infrastructure and providing a useful tool for lecturers teaching imperative programming.
+
+
+% What is a debugger?
+% ``Bugs'' are a type of software defect typically introduced though a mismatch between the programmers mental model of the system and the system itself.
+% A ``debugger'' then is a program that allows programmers to inspect and manipulate the state and flow of a running system so they can understand the mismatch and hence fix the defect.
+
+% Specifically students are encouraged to use a text editor and invoke the Java compiler and virtual machine directly in order develop a deeper and more transferable understanding of programming.
+% 
+% first to help foster a strong mental model of imperative programming and secondly to introduce students to powerful introspection of software systems.
+
+%the Imperial Computing department attaches great importance to practical programming ability much of students first year is spent learning several programming languages and completing many Labs, small programming tasks. 
+%The practical teaching of programming on the first year follows this progression: Functional programing, Imperative programing, Object Orientation and finally Systems programming.
+%Historically the department has taught Functional programming using Haskell, OO programming using Java and Systems programming using C but for Imperative programing a few different approaches have been tried.
 
 \clearpage
 \tableofcontents
 \clearpage
 
 \section{Motivation}
-\subsection{Teaching at Imperial}
-Around half of first year undergraduate computing students at Imperial have no previous programming experience\footnote{Project Proposal} and since
-the Imperial Computing department attaches great importance to practical programming ability much of students first year is spent learning several programming languages and completing many Labs, small programming tasks. 
-The practical teaching of programming on the first year follows this progression: Functional programing, Imperative programing, Object Orientation and finally Systems programming.
-Historically the department has taught Functional programming using Haskell, OO programming using Java and Systems programming using C but for Imperative programing a few different approaches have been tried.
+\subsection{``Introduction to Imperative Programming" at Imperial}
+Around half of first year undergraduate computing students at Imperial have no previous imperative programming experience\cite{projectproposal} so the course ``Introduction to Imperative Programming" run in the first term after directly after ``Introduction to Functional Programming" forms a cornerstone of the practical education students receive giving them skills they will need almost every other course.
 
-\todo{somthing here}
+The course focuses on the basics: control flow, functions and the write, compile, run cycle.
+To make teaching more effective it is desirable to avoid introducing unnecessary complexity like Object Orientation, memory management or complex IDEs all of which are left to later courses.
+For example although the class is now taught in Java () it has previously been taught in Kenya\footnote{} a language which acts as an imperative stepping stone to Java by allowing functions to exist outside of objects.
 
-The department also does not want students to end up relying on the large complex IDE like Eclipse or IntelliJ to `magically' run the code without understanding what it does.
-So recently \todo{fact check} \footnote{For the last two years.} students have been encouraged to avoid IDEs and instead use a text editor (like \cmd{vim} or \cmd{emacs}) and invoke the Java compiler (\cmd{javac}) and virtual machine (\cmd{java}) directly.
-Unfortunately there is downside to this approach, most Java debuggers are integrated in to IDEs and those which are not are often of poor quality this coupled with the relatively complex UI of debuggers in general (see our analysis below) means that students have no good option.
-Since many students are learning Imperative programing for the first time they quickly encounter bugs in their programs and without a strong understanding of the language or a taught strategy to deal with defects they are reduced to reinventing well known bad habits including \todo{list of bad habits}.
+In particular department does not want students to end up relying on the large complex IDE like Eclipse or IntelliJ to `magically' run the code without understanding what it does.
+So recently \todo{fact check} \footnote{For the last two years.} students have been encouraged to avoid IDEs and instead use a text editor (like \cmd{vim}, \cmd{emacs} or \cmd{gedit}) and invoke the Java compiler (\cmd{javac}) and virtual machine (\cmd{java}) directly.
+Unfortunately there is downside to this approach, most Java debuggers are integrated into IDEs and those which are not are often of poor quality, this coupled with the relatively complex UI of debuggers in general (see our analysis below) means that there is no good option for instructors to suggest to students.
+Students quickly encounter bugs in their programs and (necessarily) without a strong understanding of the language or a taught strategy to deal with bugs they are reduced to reinventing well known bad habits including \todo{list of bad habits}.
 
-To combat this problem Dr. Tristan Allwood proposed this third year group project to build a tool to fill this gap, a debugger which was: independent from an IDE, simple enough to be used by beginners but powerful enough to be useful.
+To combat this problem Dr. Tristan Allwood proposed\cite{projectproposal} this third year group project to build a tool to fill this gap.
+A debugger which was: independent from an IDE, simple enough to be used by beginners but powerful enough to be useful.
 
-Since 
+The project also had a secondary goal.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=\textwidth]{whiteboard.png}
+\caption{Whiteboard Stack and Heap}
+\end{figure}
+
+
+Since \cite{saeed09}
 
 Despite the existence of powerful tools to introspect running programs many programmers continue to debug programs using print statements.
 Since 
 A strong mental model of programming fundamentals are predictive of eventual achievement.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=\textwidth]{PythonTutorStackHeap.png}
+\caption{Python Tutor Stack and Heap Diagram}
+\end{figure}
 
 \subsection{Alternatives}
 \subsubsection{jdb}
 \subsubsection{JSwat}
 \subsubsection{Eclipse Debugger}
 \subsubsection{IntelaJ Debugger}
+\subsubsection{Python Tutor}
 
 
 \section{Objectives} 
@@ -261,9 +288,78 @@ This was not part of our initial plan but we currently added creating a ‘lectu
 \subsubsection{Back End}
 
 \section{Evaluation}
-\subsection{Testing}
+We used a number of techniques to evaluate Deeva.
+We used some techniques to help us find or fix specific problems and we used others to make sure that we were on the right track building the right things.
+\subsection{Usibility Testing}
+\begin{description}
+\item[Hallway Testing] \hfill \\
+\begin{figure}[h!]
+\centering
+\subfigure{%
+\includegraphics[height=50mm, width=60mm]{hallway1.jpg}}
+\quad
+\subfigure{%
+\includegraphics[height=50mm, width=60mm]{hallway2.jpg}}
+\end{figure}
 
+We employed a hallway testing approach when it came to evaluating the usability of our debugger, by getting the first year students (our primary stakeholders) and some second year students to demo our project and tell us their first impressions and what they were expecting. This was beneficial because as the developers, we are aware of the caveats and may subliminally navigate around them.
+Using the feedback from first year students allowed us to identify critical bugs/pitfalls in our usability design.
+This was obviously more qualitative however we used some measures (like how many times they had to ask questions) to help quantify things such as how intuitive the interface was or feature complete it was.
+On average, the people who participated in the testing asked around 1-3 questions related to basic features like how to run Deeva or how to set a breakpoint.
+This was insightful as we are aiming to make Deeva as intuitive as possible so we minimise the need to consult the help menu.
+This helped mainly with our first use case which is students using Deeva on the lab machines.
+
+\item[Quantified testing of colour schemes and font sizes] \hfill \\
+We wanted to employ the use of A/B testing to assess how effective certain colour schemes and font sizes would be.
+However we had to make a compromise, because the environment and number of users that we could get in one room simultaneously meant that we had to do it in one sitting i.e. we couldn’t let half the users in the room see one colour scheme and the other half see a different colour scheme.
+So in the end we just conducted a poll so they could pick which colour scheme and font size they liked the best.
+We did this with the help of our project supervisor (who lectures the course in which our debugger will primarily be used). 
+
+This is helpful as it allows us to catch possible problems with readability early, which in our case may change the direction in which our solution is architected.
+An example of this is that the projectors’ resolution in the lecture room is small, so not all the necessary information can be seen.
+Hence, we may need to have a separate mode which shows just the stack and the heap.
+The implication of this mode meant we had to change our implementation to be less monolithic.
+
+\item[Questionnaire] \hfill \\
+\begin{figure}[h!]
+\centering
+\subfigure{%
+\includegraphics[height=50mm, width=60mm]{questionnair1.jpg}}
+\quad
+\subfigure{%
+\includegraphics[height=50mm, width=60mm]{questionnair2.jpg}}
+\end{figure}
+
+After the general interviews we used a questionnaire to get answers to our most important questions.
+Specifically we asked which of the several button designs were better and validated our ad-hoc interview conclusions about the debugger.
+We considered using something like Amazon Mechanical Turk to get larger numbers of responses which might have been more statistically significant but it seemed silly when we had hundreds of programmers who were our exact target audience sitting next to us.
+\end{description}
+\subsection{Performance Testing}
+\begin{description}
+\item[Time to First Request] \hfill \\
+We also used a few other metrics, some custom and some off-the-shelf which could be automatically run over the repository to measure specific aspects of Deeva’s performance.
+\begin{figure}[h!]
+\centering
+\includegraphics[height=100mm,width=100mm]{timeToFirstRequest.png}
+\end{figure}
+
+One of these was the ‘time-to-first-request’.
+This is the time it takes Deeva to get from hitting enter on the command line to being able to accept user input.
+This is important because tools that are slow to start are painful to use and hence are used less\footnote{ It’s not a direct parallel but if we consider websites, page abandonment approaches 50\% as load time reaches about 10 seconds see: http://blog.kissmetrics.com/loading-time/?wide=1}.
+You can only improve what you measure so we wrote a script that iterates over the git history, starts Deeva and measures the time until it is accepting the first request\footnote{We got the idea for doing this from Gary Bernhardt screencast: https://www.destroyallsoftware.com/screencasts/catalog/time-to-first-request}.
+We can then display the results using a custom D3 graph.
+
+As you can see our app currently takes roughly 450ms to load.
+If we see that one commit increased the time-to-first-request, we can click on it and it will take us to the relevant commit on github so we can work out what went wrong.
+
+Happily this has turned out not to be such a big issue on this project as the time-to-first-request quickly stabilised and did not increase dramatically. 
+
+\end{description}
 \section{Project Management}
+For this project we have three problems which we haven't had (at least in combination) in past university projects: we're not sure what we're building, we want to make sure we deliver the software on time but don't know how long it will take and
+we want to make sure the software we write is correct and useful but have no easy way to define `correct' or `useful' in this domain.
+
+Happily Agile Programming has techniques we can use to help solve these problems.
 \subsection{Team Member Contributions}
 \subsubsection{Kritaphat Sonsri-in}
 \subsubsection{Xueqi Chen}
@@ -364,5 +460,27 @@ Github is a hosted source control which somebody else manages and is easily acce
 \section{Initial Plan}
 \label{sec:initialplan}
 \includepdf[pages={-}, pagecommand={}]{plan.pdf}
+
+\section{Annotated Plan}
+\begin{figure}[h!]
+\centering
+\includegraphics[width=\textwidth]{annotatedreport.jpg}
+\caption{An example feedback taken during a meeting with project supervisor.}
+\end{figure}
+
+\section{User Guide}
+
+\begin{thebibliography}{9}
+
+\bibitem{projectproposal}
+	Tristan Allwood.
+	\emph{Project Proposal: A Java Debugger Suitable for Teaching}.
+	\url{https://cate.doc.ic.ac.uk/projects/proposals.cgi?key=2013:1:show-2728}
+
+\bibitem{saeed09}
+	Dehnadi, Saeed, Richard Bornat, and Ray Adams. 
+	\emph{Meta-analysis of the effect of consistency on success in early learning of programming.}
+	PPIG, 2009.
+\end{thebibliography}
 
 \end{document}
