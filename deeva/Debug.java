@@ -200,21 +200,46 @@ public class Debug extends EventHandlerBase {
         return processedObject;
     }
 
-    private List<Map<String, String>> getStack(LocatableEvent event)
-            throws IncompatibleThreadStateException, AbsentInformationException,
-            ClassNotLoadedException
-    {
-        /* Try to extract stack variables - Hack */
+    /**
+     * Given a locatable event, we extract all the stack frames up until this
+     * point in the execution. (note vm should be suspended atm)
+     *
+     * @param event
+     * @return
+     */
+    private List<List<Map<String, String>>> getStacks(LocatableEvent event)
+            throws
+            IncompatibleThreadStateException, ClassNotLoadedException,
+            AbsentInformationException {
         /* Get the thread in which we're stepping */
         ThreadReference threadRef = event.thread();
 
-        /* Get the top most stack frame in the thread that we've stopped in */
-        StackFrame stackFrame = threadRef.frame(0);
         System.err.println("-------------");
         System.err.println("Number of Frames: " + threadRef.frameCount());
 
+        List<List<Map<String, String>>> stackFrames = new
+                LinkedList<List<Map<String, String>>>();
+
+        List<StackFrame> frames = threadRef.frames();
+        int frameCount = 1;
+        for (StackFrame frame : frames) {
+            System.err.println("Frame: " + frameCount);
+            frameCount++;
+            stackFrames.add(0, getStack(frame));
+        }
+        return stackFrames;
+    }
+
+    private List<Map<String, String>> getStack(StackFrame stackFrame) throws
+            AbsentInformationException, ClassNotLoadedException
+
+    {
+        /* Get the top most stack frame in the thread that we've stopped in */
+
+
         /* We want to create a list of maps */
-        List<Map<String, String>> localVariables = new LinkedList<Map<String, String>>();
+        List<Map<String, String>> localVariables
+            = new LinkedList<Map<String, String>>();
 
         /* List all the variables on the stack */
         for (LocalVariable var : stackFrame.visibleVariables()) {
