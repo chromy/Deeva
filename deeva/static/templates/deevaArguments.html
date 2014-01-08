@@ -2,8 +2,9 @@
   <div class="col-md-9">
   <ul class="deevaTags">
     <li ng-repeat="arg in args track by $index">
-      <a class="btn btn-deeva-args btn-sm" ng-click="remove($index)">
-        <span ng-bind-html="arg | deevaSanitize"></span> <span class="glyphicon glyphicon-remove"></span>
+      <a class="btn btn-deeva-args btn-sm">
+        <span ng-bind-html="arg | deevaSanitize"></span><span class="glyphicon glyphicon-remove"
+                                                              ng-click="remove($index)"></span>
       </a>
     </li>
     <li><input type="text" placeholder="Input argument(s) here" autocomplete="off"></li>
