@@ -261,7 +261,6 @@ Similarly we produced a prioritised list of extensions:
 
 
 \section{Design}
-\subsection{Deciding on a Web Frontend}
 During the meeting that we arranged with Tristan, we talked through what we had understood from the specification for the project.
 We also asked him to go through his expectations in details so that we could get a full understanding on the project.
 Hence a sketch of the original design was generated based on the requirements. 
@@ -392,12 +391,35 @@ This was not part of our initial plan so, consulting with our project supervisor
 \section{Implementation}
 
 \subsection{Overview}
-Deeva is written in three parts.
-A Javascript frontend using Angular, Codemirror and D3, Java backend using the jdi library to run and control the inferior program and finally a Python web server using Flask and py4j to tie the two together. 
+Deeva is written as web application in three parts.
+A Javascript frontend using Angular, Codemirror and D3, a Java backend using the jdi library to run and control the inferior program and finally a Python web server using Flask and py4j to tie the two together.
 
+\subsection{Deciding on a Web Front End}
+Beginning this project we knew we needed a graphical interface and were faced with a difficult decision.
+The obvious approach was a classic monolithic Java application\footnote{Java being the natural choice since it was the target language} however this had some disadvantages.
+
+
+- We have limited desktop experience GUI
+- Lots of custom code for the state UI
+- Java GUIs suck
+
+In contrast we had a lot of web development experience, the web is 
+Moreover framing the
+
+
+- A lot of Web experience
+- Web service promotes clear boundary between interface and backend allowing us to more effectively work on the project (people can work on front and back end simultaneously)
+- Opens up better technologies
+- Exiting applications
+- Faster development
+- lots of
+- Opptuiting for learning
+
+
+\subsection{Technology Choice}
 Deeva uses a range of technologies, some of which were new to us and some which were already familiar.
 
-\subsection{Details}
+
 \subsubsection{Front End}
 Effectively all web code ends up executing in Javascript and although there are many tools which compile to Javascript (CoffeeScript, Dart, TypeScript and many many more) given that we all had some passing familiarity with Javascript and very little exposure to any of the others we opted to stick with Javascript.
 
