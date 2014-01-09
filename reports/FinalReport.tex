@@ -422,7 +422,7 @@ This helped mainly with our first use case which is students using Deeva on the 
 
 \subsubsection{Quantified testing of colour schemes and font sizes}
 We wanted to employ the use of A/B testing to assess how effective certain colour schemes and font sizes would be.
-However we had to make a compromise, because the environment and number of users that we could get in one room simultaneously meant that we had to do it in one sitting i.e. we couldn’t let half the users in the room see one colour scheme and the other half see a different colour scheme.
+However we had to make a compromise, because the environment and number of users that we could get in one room simultaneously meant that we had to do it in one sitting i.e. we could not force half the users in the room see one colour scheme and the other half see a different colour scheme.
 So in the end we just conducted a poll so they could pick which colour scheme and font size they liked the best.
 We did this with the help of our project supervisor (who lectures the course in which our debugger will primarily be used). 
 
@@ -447,37 +447,35 @@ We considered using something like Amazon Mechanical Turk to get larger numbers 
 
 
 \subsection{Performance Testing}
+We also used a few other metrics, some custom and some off-the-shelf which could be automatically run over the repository to measure specific aspects of Deeva’s performance.
+
 \begin{description}
 \item[Time to First Request] \hfill \\
-We also used a few other metrics, some custom and some off-the-shelf which could be automatically run over the repository to measure specific aspects of Deeva’s performance.
 \begin{figure}[h!]
 \centering
-\includegraphics[height=100mm,width=100mm]{timeToFirstRequest.png}
+\includegraphics[width=100mm]{timeToFirstRequest.png}
 \end{figure}
 
-One of these was the ‘time-to-first-request’.
+One of these was the `time-to-first-request'.
 This is the time it takes Deeva to get from hitting enter on the command line to being able to accept user input.
-This is important because tools that are slow to start are painful to use and hence are used less\footnote{ It’s not a direct parallel but if we consider websites, page abandonment approaches 50\% as load time reaches about 10 seconds see: \url{http://blog.kissmetrics.com/loading-time/?wide=1}}.
+This is important because tools that are slow to start are painful to use and hence are used less\footnote{It's not a direct parallel but if we consider websites, page abandonment approaches 50\% as load time reaches about 10 seconds see: \url{http://blog.kissmetrics.com/loading-time/?wide=1}}.
 You can only improve what you measure so we wrote a script that iterates over the git history, starts Deeva and measures the time until it is accepting the first request\footnote{We got the idea for doing this from Gary Bernhardt screencast: \url{https://www.destroyallsoftware.com/screencasts/catalog/time-to-first-request}}.
 We can then display the results using a custom D3 graph.
 
-As you can see our app currently takes roughly 450ms to load.
-If we see that one commit increased the time-to-first-request, we can click on it and it will take us to the relevant commit on github so we can work out what went wrong.
+As you can see our application takes roughly 450ms to load.
 
-Happily this has turned out not to be such a big issue on this project as the time-to-first-request quickly stabilised and did not increase dramatically. 
+This graph allowed us to see when a commit increased the time-to-first-request, by clicking on the offending bay we could go to the relevant commit on Github and workout what caused the regression.
 
+Happily this turned out not to be such a big issue on this project as the time-to-first-request quickly stabilised and did not increase dramatically. 
 \end{description}
+
 \section{Project Management}
 For this project we have three problems which we haven't had (at least in combination) in past university projects: we're not sure what we're building, we want to make sure we deliver the software on time but don't know how long it will take and
 we want to make sure the software we write is correct and useful but have no easy way to define `correct' or `useful' in this domain.
 
-Happily Agile Programming has techniques we can use to help solve these problems.
-\subsection{Team Member Contributions}
-\subsubsection{Kritaphat Sonsri-in}
-\subsubsection{Xueqi Chen}
-\subsubsection{Alina Draganescu}
-\subsubsection{Felix de Souza}
-\subsubsection{Hector Dearman}
+We used Agile Programming techniques to help solve these problems.
+\todo{Stuff here.}
+
 \subsection{Team Management}
 
 To ensure effective development of the product, weekly supervisor meetings were scheduled.
@@ -489,18 +487,18 @@ During these meetings, the information gathered from the supervisor meetings wou
 Thus, tasks could be divided among group members, with everyone knowing what their colleagues are working on in this week, making group and individual efforts significantly more effective.
 \begin{figure}[h!]
 \centering
-\includegraphics[height=80mm,width=130mm]{estimation.jpg}
+\includegraphics[width=130mm]{estimation.jpg}
 \end{figure}
 
-To aid the management of the project on a holistic and timely perspective, several tools were used, which will be outlined in the following section.
-
 \subsection{Tools}
+To aid the management of the project on a holistic and timely perspective, several tools were used, which will be outlined below.
+
 \begin{description}
 
 \item[Trello] \hfill \\
 \begin{figure}[h!]
 \centering
-\includegraphics[height=80mm,width=\textwidth]{Trello.png}
+\includegraphics[width=\textwidth]{Trello.png}
 \end{figure}
 
 We used Trello as our project management tool and as an Information Radiator\footnote{\url{https://www.atlassian.com/wallboards/information-radiators.jsp}}.
@@ -548,6 +546,13 @@ Github is a hosted source control which somebody else manages and is easily acce
 \item[Travis CI] \hfill \\
 \todo{about Travis here}
 \end{description}
+
+\subsection{Team Member Contributions}
+\subsubsection{Kritaphat Sonsri-in}
+\subsubsection{Xueqi Chen}
+\subsubsection{Alina Draganescu}
+\subsubsection{Felix de Souza}
+\subsubsection{Hector Dearman}
 
 \section{Extensions}
 \section{Conclusion}
