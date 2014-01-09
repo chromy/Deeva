@@ -170,6 +170,7 @@ As part of our requirement analysis stage, we looked into detail of various exis
 \begin{figure}[h!]
 \centering
 \includegraphics[width=100mm]{jdb.png}
+\caption{jdb debugging example}
 \end{figure}
 
 The Java Debugger, jdb, is a simple command line debugger that provides inspection and debugging for Java classes.
@@ -180,6 +181,7 @@ Hence, it is not quite intuitive to use.
 \begin{figure}[h!]
 \centering
 \includegraphics[width=100mm]{jswat.png}
+\caption{JSwat debugger example}
 \end{figure}
 
 JSwat is a graphical Java debugger which provides basic functionality like: setting breakpoints, thread and stack display, variable monitoring and method invocation.
@@ -190,6 +192,7 @@ However, its unattractive interface with varies of features might still be a ove
 \begin{figure}[h!]
 \centering
 \includegraphics[width=100mm]{eclipse.jpg}
+\caption{Eclipse debugger example}
 \end{figure}
 
 Eclipse allows starting a Java program in Debug mode which provides a control of the execution process of the program and allows investigation of the state of the variables.
@@ -199,6 +202,7 @@ Nevertheless, being an integrated IDE debugger and having a lot of unused featur
 \begin{figure}[h!]
 \centering
 \includegraphics[width=100mm]{intellij.png}
+\caption{IntelliJ debugger example}
 \end{figure}
 
 Similar to Eclipse Debugger, IntelliJ Debugger is also an integrated IDE debugger which provides fast and powerful functionalities.
@@ -207,6 +211,7 @@ Even though it also provides nice feature that allow object(s) inspection easier
 \begin{figure}[h!]
 \centering
 \includegraphics[width=100mm]{pythontutor.png}
+\caption{Python Tutor example}
 \end{figure}
 
 Python Tutor is a debugger that provides users with a visualisation of the program.
@@ -267,14 +272,18 @@ Hence a sketch of the original design was generated based on the requirements.
 \begin{figure}[h!]
 \centering
 \includegraphics[width=\textwidth]{sketch.jpg}
+\caption{Sketch of the original design}
+\label{fig:sketch}
 \end{figure}
 
-We typically did this on a whiteboard in meetings with Tristan which we then photographed and then transitioned into a Google Docs diagram.
+We typically did this on a whiteboard (Figure~\ref{fig:sketch}) in meetings with Tristan which we then photographed and then transitioned into a Google Docs diagram.
 
-To avoid the costly mistake of spending a lot of time building something that we may have to throw away we mocked up our designs for the front end before creating them.
+To avoid the costly mistake of spending a lot of time building something that we may have to throw away we mocked up our designs for the front end (Figure~\ref{fig:mockup}) before creating them.
 \begin{figure}[h!]
 \centering
 \includegraphics[width=\textwidth]{mockup.png}
+\caption{Mocked up example}
+\label{fig:mockup}
 \end{figure}
 
 It then becomes easy to change and to show to first years and others for feedback. 
@@ -291,19 +300,23 @@ We have fixed our process to avoid this problem in the future, from now on after
 \includegraphics[height=70mm, width=60mm]{designIdea1.png}}
 \quad
 \subfigure[Second UI Design]{%
-\includegraphics[height=70mm, width=60mm]{designIdea2.png}}
+\includegraphics[height=70mm, width=60mm]{designIdea2.png}
+\label{fig:designIdea2}}
+\caption{Different views of the UI designs}
 \end{figure}
 
 Initially, we designed different views of the UI where the stack, heap and the code pane lay in different order.
 After talking to Tristan, we thought if we put the stack and the heap visual at the bottom instead of on the right, we could better manage scenarios like small screens, a growing stack and large arrays.
-As a result, we modified our UI design to be similar to the picture on the right above.\\
+As a result, we modified our UI design to be similar to the figure~\ref{fig:designIdea2}.\\
 \begin{figure}[h!]
 \centering
 \includegraphics[height=70mm,width=130mm]{finalDesign.png}
+\caption{Final UI Design}
+\label{fig:finalDesign}
 \end{figure}
 
 However, we thought if the stack grow more then eventually user would need to scroll up and down to be able to see the code and the stack and heap at the same time, which is not really what we want.
-Therefore, we agreed on putting the stack and heap on the right with some modification to the first design.
+Therefore, we agreed on putting the stack and heap on the right with some modification to the first design (see figure~\ref{fig:finalDesign}).
 
 \subsubsection{Button Design}
 After conducting some interviews with users (see ~\cref{sec:evaluation}), we discovered that some people found the naming and the design of buttons very confusing in Eclipse.
@@ -314,9 +327,10 @@ As a result, we designed several different sets of buttons and used a questionna
 \centering
 \includegraphics[height=20mm,width=60mm]{buttons1.png}
 \caption{Initial Design of the ``Stepping'' Buttons}
+\label{fig:button1}
 \end{figure}
 
-This is our original design of the ``Stepping'' buttons.
+Figure~\ref{fig:button1} shows our original design of the ``Stepping'' buttons.
 They inherit the design from the Eclipse debugger.
 They are \cmd{Step Into}, \cmd{Step Over} and \cmd{Step Return} from left to right respectively.
 
@@ -340,9 +354,10 @@ He gave us some valuable feedback: ``It would be useful if we could somehow repr
 \centering
 \includegraphics[height=20mm,width=60mm]{buttons2.png}
 \caption{Redesign of the ``Stepping'' Buttons}
+\label{fig:buttons2}
 \end{figure}
 
-This is our second design.
+Figure~\ref{fig:buttons2} represents our second design.
 As suggested by our friend, the black lines indicate the lines of code which is similar to an editor.
 Arrows going in either the upwards or downwards directions indicate going to the next line, function, or (or previous) scope.
 We created a questionnaire in which we explained the definition of ``Next", ``Into" and ``Out" (our new and hopefully more intuitive names for the functionality previously known as ``Step Into'', ``Step Over'' and ``Step Return'').
@@ -365,11 +380,13 @@ We carried out a test and questionnaire in front of a first year Java class to s
 \caption{Font size and colourscheme test in first year lecture.}
 \end{figure}
 
-Given 5 different colour schemes, the preferred choice was our current colour scheme (orange), followed by a light blue color scheme (see graph on the right).
+Given 5 different colour schemes, the preferred choice was our current colour scheme (orange), followed by a light blue color scheme (see figure~\ref{fig:colours}).
 This validated our initial research that showed that in visual presentations, people are attracted to bright, warm colours that express optimism.
 \begin{figure}[h!]
 \centering
 \includegraphics[height=60mm,width=100mm]{colours.png}
+\caption{A chart of first year color preference}
+\label{fig:colours}
 \end{figure}
 
 As some people expressed that they would like the possibility to personalise Deeva and have a choice between different colour schemes we included this feature on the extended list of features for our final product.
@@ -381,8 +398,10 @@ Sample 1 had a font size of 26px and Sample 2 had a font size of 16px.
 \begin{figure}[h!]
 \centering
 \includegraphics[height=60mm,width=100mm]{fonts.png}
+\caption{chart of first year font size preference}
+\label{fig:label}
 \end{figure}
-As this questionnaire was performed in one of the big lecture rooms (Huxley 311) the results for this question did not surprise us, people preferred the sample with the bigger font size (see graph on the right).
+As this questionnaire was performed in one of the big lecture rooms (Huxley 311) the results for this question did not surprise us, people preferred the sample with the bigger font size (see figure~\ref{fig:label}).
 However, as the smaller font size sample is perfectly readable on the lab machines we are thinking\todo{fix} of releasing our debugger in two modes: `normal mode' (to be used on the lab machines - font size 16) and  `lecturer mode' (to be used by lecturers when teaching - font size 26).
 This was not part of our initial plan so, consulting with our project supervisor, we amended our list of extensions adding a `lecturer mode' to the top.
 
@@ -463,9 +482,11 @@ We used some techniques to help us find or fix specific problems and we used oth
 \quad
 \subfigure{%
 \includegraphics[height=50mm, width=60mm]{hallway2.jpg}}
+\caption{The pictures taken during Hallway Testing}
+\label{fig:hallway}
 \end{figure}
 
-We employed a hallway testing approach when it came to evaluating the usability of our debugger, by getting the first year students (our primary stakeholders) and some second year students to demo our project and tell us their first impressions and what they were expecting. This was beneficial because as the developers, we are aware of the caveats and may subliminally navigate around them.
+We employed a hallway testing approach when it came to evaluating the usability of our debugger, by getting the first year students (our primary stakeholders) and some second year students to demo our project and tell us their first impressions and what they were expecting (see figure~\ref{fig:hallway}). This was beneficial because as the developers, we are aware of the caveats and may subliminally navigate around them.
 Using the feedback from first year students allowed us to identify critical bugs/pitfalls in our usability design.
 This was obviously more qualitative however we used some measures (like how many times they had to ask questions) to help quantify things such as how intuitive the interface was or feature complete it was.
 On average, the people who participated in the testing asked around 1-3 questions related to basic features like how to run Deeva or how to set a breakpoint.
@@ -491,6 +512,7 @@ The implication of this mode meant we had to change our implementation to be les
 \quad
 \subfigure{%
 \includegraphics[height=50mm, width=60mm]{questionnair2.jpg}}
+\caption{Questionnaire examples}
 \end{figure}
 
 After the general interviews we used a questionnaire to get answers to our most important questions.
@@ -506,6 +528,8 @@ We also used a few other metrics, some custom and some off-the-shelf which could
 \begin{figure}[h!]
 \centering
 \includegraphics[width=100mm]{timeToFirstRequest.png}
+\caption{Custom D3 graph displaying  time to first request}
+\label{fig:timeToFirstRequest}
 \end{figure}
 
 One of these was the `time-to-first-request'.
@@ -514,7 +538,7 @@ This is important because tools that are slow to start are painful to use and he
 You can only improve what you measure so we wrote a script that iterates over the git history, starts Deeva and measures the time until it is accepting the first request\footnote{We got the idea for doing this from Gary Bernhardt screencast: \url{https://www.destroyallsoftware.com/screencasts/catalog/time-to-first-request}}.
 We can then display the results using a custom D3 graph.
 
-As you can see our application takes roughly 450ms to load.
+From figure~\ref{fig:timeToFirstRequest}, you can see our application takes roughly 450ms to load.
 
 This graph allowed us to see when a commit increased the time-to-first-request, by clicking on the offending bar we could go to the relevant commit on Github and workout what caused the regression.
 
@@ -539,6 +563,7 @@ Thus, tasks could be divided among group members, with everyone knowing what the
 \begin{figure}[h!]
 \centering
 \includegraphics[width=130mm]{estimation.jpg}
+\caption{Picture taken during one of the group meeting}
 \end{figure}
 
 \subsection{Tools}
@@ -549,6 +574,8 @@ To aid the management of the project on a holistic and timely perspective, sever
 \begin{figure}[h!]
 \centering
 \includegraphics[width=\textwidth]{Trello.png}
+\caption{Trello}
+\label{fig:Trello}
 \end{figure}
 
 We used Trello as our project management tool and as an Information Radiator\footnote{\url{https://www.atlassian.com/wallboards/information-radiators.jsp}}.
@@ -558,7 +585,7 @@ We decided to use an electronic version as they are a more manageable alternativ
 We also found it extremely useful when it came to keeping everyone informed on the general progress and keeping all the information in one compact environment.
 
 A Trello board was created for a better project management process. 
-There are several different swimlanes on the board: ``Proposed'', which allows all members to throw in ideas; ``In Analysis'', where people talk about their ideas and have a discussion with group members to see if the story is feasible. 
+There are several different swimlanes (see figure~\ref{fig:Trello}) on the board: ``Proposed'', which allows all members to throw in ideas; ``In Analysis'', where people talk about their ideas and have a discussion with group members to see if the story is feasible. 
 If it is, the card will be then moved to ``In Estimation'' where we would use Planning Poker to assign the story with a complexity points.
 Otherwise, the story will be moved to ``Discarded''.
 The reason why we want to keep track of what we have discarded is that we might have thought we would not have time for it, but in reality we may have time at the end.
@@ -571,6 +598,7 @@ This is when we meet as a group and review our code to improve our style and pat
 \begin{figure}[h!]
 \centering
 \includegraphics[height=80mm,width=130mm]{planningPokers.jpg}
+\caption{Our hand made planning poker cards}
 \end{figure}
 
 We are using Planning Poker in order to estimate stories in each cycle of development. 
