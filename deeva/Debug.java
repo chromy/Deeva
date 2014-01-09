@@ -629,6 +629,33 @@ public class Debug extends EventHandlerBase {
 
         return sb.toString();
     }
+
+    public static void main(String[] args) {
+        System.out.println("Null List:");
+        System.out.println(Debug.stringListJoin(null, "-"));
+
+        System.out.println("Empty List:");
+        String[] a = {};
+        List<String> list = new LinkedList<String>(Arrays.asList(a));
+        System.out.println(Debug.stringListJoin(list, "-"));
+
+        System.out.println("List with null elem");
+        a = new String[]{null};
+        list = new LinkedList<String>(Arrays.asList(a));
+        System.out.println(Debug.stringListJoin(list, "-"));
+
+        System.out.println("List with normal elems");
+        a = new String[]{"a", "b", "c"};
+        list = new LinkedList<String>(Arrays.asList(a));
+        System.out.println(Debug.stringListJoin(list, "-"));
+
+        System.out.println("List with null and normal elems");
+        a = new String[]{"a", null, "c", "d"};
+        list = new LinkedList<String>(Arrays.asList(a));
+        System.out.println(Debug.stringListJoin(list, "-"));
+    }
+
+
     private VirtualMachine launchTarget(String programName,
                                         List<String> programArgs) {
         System.err.println("finding launching connector");

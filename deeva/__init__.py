@@ -1,5 +1,5 @@
 import os
-from flask import Flask, jsonify, render_template, request, g, make_response, redirect, url_for
+from flask import Flask, jsonify, render_template, request, g, make_response, redirect, url_for, Response
 import debug
 from debug import load, WrongState
 import pprint
@@ -32,6 +32,43 @@ def breakPoints():
         data = [{'clas':b.getClas(), 'line':b.getLineNumber()} for b in bkpts]
         return jsonify(break_points=data)
 
+@app.route("/closeConnection") # take in a con id
+def closeCon():
+    # Replace with conn id
+    from blinker import signal
+    sig = signal('deeva')
+
+    sig.send('closeCon', event="close", data="hello")
+    return "Close request send"
+
+
+@app.route("/postData/<event>/<data>")
+def postData(event, data):
+    print "Post Data:", data
+    from blinker import signal
+    sig = signal('deeva')
+    sig.send('postData', event=event, data={'abc': data})
+    return "All Good"
+
+@app.route("/streamHTML")
+def stream_html():
+    return app.send_static_file('test.html')
+
+@app.route("/stream")
+def stream():
+    subscriber = debug.DeevaEventSubscriber(["deeva"])
+    try:
+        return Response(subscriber.event_stream(), mimetype="text/event-stream")
+    except socket.error, e:
+        # http://stackoverflow.com/questions/180095/how-to-handle-a-broken-pipe-sigpipe-in-python
+        if isinstance(e.args, tuple):
+            if e[0] == errno.EPIPE:
+                print "Remote disconnected"
+            else:
+                pass
+        else:
+            print "socket error", e
+        return "Hello"
 
 @app.route("/stepOver", methods=['POST'])
 def step_over():
