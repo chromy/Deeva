@@ -472,8 +472,8 @@ We considered using something like Amazon Mechanical Turk to get larger numbers 
 \subsection{Performance Testing}
 We also used a few other metrics, some custom and some off-the-shelf which could be automatically run over the repository to measure specific aspects of Deeva’s performance.
 
-\begin{description}
-\item[Time to First Request] \hfill \\
+\subsubsection{Time to First Request}
+
 \begin{figure}[h!]
 \centering
 \includegraphics[width=100mm]{timeToFirstRequest.png}
@@ -487,10 +487,9 @@ We can then display the results using a custom D3 graph.
 
 As you can see our application takes roughly 450ms to load.
 
-This graph allowed us to see when a commit increased the time-to-first-request, by clicking on the offending bay we could go to the relevant commit on Github and workout what caused the regression.
+This graph allowed us to see when a commit increased the time-to-first-request, by clicking on the offending bar we could go to the relevant commit on Github and workout what caused the regression.
 
 Happily this turned out not to be such a big issue on this project as the time-to-first-request quickly stabilised and did not increase dramatically. 
-\end{description}
 
 \section{Project Management}
 For this project we have three problems which we haven't had (at least in combination) in past university projects: we're not sure what we're building, we want to make sure we deliver the software on time but don't know how long it will take and
@@ -514,11 +513,10 @@ Thus, tasks could be divided among group members, with everyone knowing what the
 \end{figure}
 
 \subsection{Tools}
+
 To aid the management of the project on a holistic and timely perspective, several tools were used, which will be outlined below.
 
-\begin{description}
-
-\item[Trello] \hfill \\
+\subsubsection{Trello}
 \begin{figure}[h!]
 \centering
 \includegraphics[width=\textwidth]{Trello.png}
@@ -540,7 +538,7 @@ After ``In Estimation'', the card will be assigned to group members with a set d
 Once the development is complete, the card should be moved into ``In Review''. 
 This is when we meet as a group and review our code to improve our style and pattern-usage.
 
-\item[Planing Poker] \hfill \\
+\subsubsection{Planning Poker}
 \begin{figure}[h!]
 \centering
 \includegraphics[height=80mm,width=130mm]{planningPokers.jpg}
@@ -557,18 +555,17 @@ So using planing poker has already helped us make sure we're all on the same pag
 One of our group members hand-made a set of poker cards just for estimation.
 It contains the Fibonacci numbers up to 13 including 0 and infinity - if the task was unfeasible in the time given, as well as ``coffee time'' if we think we needed a break. 
 
-\item[Facebook Group] \hfill \\
+\subsubsection{Facebook Group}
 Creating a Facebook group proved very efficient for communicating meeting times and general enquiries that were too conversational for Trello.  
 
-\item[Google Docs] \hfill \\
+\subsubsection{Google Docs}
 We used Google Docs for collaborative editing on reports, plans and meeting summaries in real time.
   
-\item[Github] \hfill \\
+\subsubsection{Github}
 Github is a hosted source control which somebody else manages and is easily accessible from anywhere and also plays nicely with the hosted Continuous Integration tool - Travis CI\footnote{\url{http://travis-ci.com/}}.
 
-\item[Travis CI] \hfill \\
+\subsubsection{Travis CI}
 \todo{about Travis here}
-\end{description}
 
 \subsection{Team Member Contributions}
 \subsubsection{Kritaphat Sonsri-in}
