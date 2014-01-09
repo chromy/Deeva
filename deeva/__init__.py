@@ -163,7 +163,7 @@ def push_input():
 
     return make_api_response(app.debugger.putStdInMessage, message)
 
-@app.route("/getHeapObjects", methods=[""])
+@app.route("/getHeapObjects", methods=["POST"])
 def get_heap_objects():
     args = request.values
     heap_requests = args.get('heap_requests')
@@ -178,7 +178,7 @@ def get_heap_objects():
         heap_object_dict = eval(repr(heap_object_dict))
         heap_objects.append(heap_object_dict)
 
-    return jsonify(success="true", objects=heap_objects
+    return jsonify(success="true", objects=heap_objects)
 
 @app.route("/getHeapObject", methods=["POST"])
 def get_heap_object():
