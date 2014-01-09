@@ -127,22 +127,24 @@ Unfortunately there is downside to this approach, most Java debuggers are integr
 Students quickly encounter bugs in their programs and (necessarily) without a strong understanding of the language or a taught strategy to deal with bugs they are reduced to reinventing well known bad habits including \todo{list of bad habits}.
 
 To combat this problem Dr. Tristan Allwood proposed\cite{projectproposal} this third year group project to build a tool to fill this gap.
-A debugger which was: independent from an IDE, simple enough to be used by beginners but powerful enough to be useful.
+A debugger which was: independent from an IDE, simple enough to be 	used by beginners but powerful enough to be useful.
 
-The project also had a secondary goal.
+The project also had another goal which was to be a tool for teaching.
+In ``Introduction to Imperative Programming" teaches fundamentals including control flow and the effect of assignment and function calls, return statements, etc
+\footnote{A strong mental model of programming fundamentals very important, for example when learning to program an early, consistent grasp of assignment is predictive of eventual achievement\cite{saeed09}.}.
+As in many courses this is done diagrammatically, by showing how each line of code in a program effects the stack and heap.
 
 \begin{figure}[h!]
 \centering
 \includegraphics[width=\textwidth]{whiteboard.png}
-\caption{Whiteboard Stack and Heap}
+\caption{Example diagram of Stack and Heap}
 \end{figure}
 
+However this approach is not ideal.
+It is time consuming and error prone to update the diagram and worse it requires an oracle, the instructor, to act as mechanical interpreter of the rules.
+Students have no way see such a visualisation on arbitrary code they write, no easy way to see why code they write does not have the effect they expect without ad-hoc experimentation: modifying the source code and hoping it exposes the original problem.
 
-Since \cite{saeed09}
-
-Despite the existence of powerful tools to introspect running programs many programmers continue to debug programs using print statements.
-Since 
-A strong mental model of programming fundamentals are predictive of eventual achievement.
+All of these problems are the kind that computers are very good at and indeed tools like \cmd{Python Tutor}\cite{pythontutor} can take a code snippet and produce visualisation of the execution trace. 
 
 \begin{figure}[h!]
 \centering
@@ -150,8 +152,20 @@ A strong mental model of programming fundamentals are predictive of eventual ach
 \caption{Python Tutor Stack and Heap Diagram}
 \end{figure}
 
+By replacing the unintuitive tabular representation of the stack and heap found in almost every debugger with a user interface based these diagrams we hope to make Deeva a useful tool for teaching.
+Allowing instructors to quickly create traces for programs in real time without the possibility of mistake.
+Even more importantly it lets Deeva become a tool for learning allowing students to explore the unfamiliar model of imperative programming without expert oversight.
+
+
+Finally despite the existence of powerful tools to introspect running programs many programmers continue to debug programs using print statements.
+Since
+
+\todo{something}
+
+
 \subsection{Alternatives}
 As part of our requirement analysis stage, we looked into detail of various existed debuggers to compare their pros and cons, and their suitability for first year students.
+
 \subsubsection{jdb}
 The Java Debugger, jdb, is a simple command line debugger that provides inspection and debugging for Java classes.
 It provides most of the basic functionalities of a debugger eg. setting breakpoint(s), stepping through the next line, and diagnosing the cause of the exception.
@@ -213,7 +227,8 @@ Similarly we produced a prioritised list of extensions:
 \end{enumerate}
 
 
-\section{Contributions}
+\section{Deeva}
+\todo{Big section where we describe each feature of Deeva in detail.}
 
 
 \section{Design}
@@ -535,6 +550,11 @@ Github is a hosted source control which somebody else manages and is easily acce
 	Tristan Allwood.
 	\emph{Project Proposal: A Java Debugger Suitable for Teaching}.
 	\url{https://cate.doc.ic.ac.uk/projects/proposals.cgi?key=2013:1:show-2728}
+
+\bibitem{pythontutor}
+	Philip Guo.
+	\emph{Python Tutor}.
+	\url{http://pythontutor.com/}
 
 \bibitem{saeed09}
 	Dehnadi, Saeed, Richard Bornat, and Ray Adams. 
