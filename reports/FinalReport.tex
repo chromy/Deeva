@@ -133,7 +133,7 @@ The project also had a secondary goal.
 
 \begin{figure}[h!]
 \centering
-\includegraphics[width=\textwidth]{whiteboard.png}
+\includegraphics[width=100mm]{whiteboard.png}
 \caption{Whiteboard Stack and Heap}
 \end{figure}
 
@@ -146,26 +146,55 @@ A strong mental model of programming fundamentals are predictive of eventual ach
 
 \begin{figure}[h!]
 \centering
-\includegraphics[width=\textwidth]{PythonTutorStackHeap.png}
+\includegraphics[width=100mm]{PythonTutorStackHeap.png}
 \caption{Python Tutor Stack and Heap Diagram}
 \end{figure}
 
 \subsection{Alternatives}
 As part of our requirement analysis stage, we looked into detail of various existed debuggers to compare their pros and cons, and their suitability for first year students.
 \subsubsection{jdb}
+\begin{figure}[h!]
+\centering
+\includegraphics[width=100mm]{jdb.png}
+\end{figure}
+
 The Java Debugger, jdb, is a simple command line debugger that provides inspection and debugging for Java classes.
 It provides most of the basic functionalities of a debugger eg. setting breakpoint(s), stepping through the next line, and diagnosing the cause of the exception.
 However, since it is a command line debugger, it provides a poor graphic user interface.
 Hence, it is not quite intuitive to use.
 \subsubsection{JSwat}
+\begin{figure}[h!]
+\centering
+\includegraphics[width=100mm]{jswat.png}
+\end{figure}
+
+JSwat is a graphical Java debugger which provides basic functionality like: setting breakpoints, thread and stack display, variable monitoring and method invocation.
+The feature it has which is lacking in some other debuggers is it allows users to trace through a linked list nicely by just clicking on a certain button repeatedly.
+A benefit of it is its small size, in terms of the disc usage.
+However, its unattractive interface with varies of features might still be a overwhelm for first year students.
 \subsubsection{Eclipse Debugger}
+\begin{figure}[h!]
+\centering
+\includegraphics[width=100mm]{eclipse.jpg}
+\end{figure}
+
 Eclipse allows starting a Java program in Debug mode which provides a control of the execution process of the program and allows investigation of the state of the variables.
 In addition, it provides a lot more functionalities than jdb such as setting a conditional breakpoints, variables modification, and having an user friendly graphic user interface.
 Nevertheless, being an integrated IDE debugger and having a lot of unused features for beginner, it might overwhelm first year students.
 \subsubsection{IntelliJ Debugger}
+\begin{figure}[h!]
+\centering
+\includegraphics[width=100mm]{intellij.png}
+\end{figure}
+
 Similar to Eclipse Debugger, IntelliJ Debugger is also an integrated IDE debugger which provides fast and powerful functionalities.
 Even though it also provides nice feature that allow object(s) inspection easier, its overwhelming functionalities may cumbersome first year students.
 \subsubsection{Python Tutor}
+\begin{figure}[h!]
+\centering
+\includegraphics[width=100mm]{pythontutor.png}
+\end{figure}
+
 Python Tutor is a debugger that provides users with a visualisation of the program.
 A user can write a Python program in the web browser and visualise what happens as the computer executes each line of the code.
 It is also capable of going backwards, the key functionality that distinguishes it from other debuggers.
