@@ -390,11 +390,34 @@ This was not part of our initial plan so, consulting with our project supervisor
 \subsection{System Design}
 
 \section{Implementation}
-\subsection{Technology Evaluation}
+
 \subsection{Overview}
+Deeva is written in three parts.
+A Javascript frontend using Angular, Codemirror and D3, Java backend using the jdi library to run and control the inferior program and finally a Python web server using Flask and py4j to tie the two together. 
+
+Deeva uses a range of technologies, some of which were new to us and some which were already familiar.
+
 \subsection{Details}
 \subsubsection{Front End}
+Effectively all web code ends up executing in Javascript and although there are many tools which compile to Javascript (CoffeeScript, Dart, TypeScript and many many more) given that we all had some passing familiarity with Javascript and very little exposure to any of the others we opted to stick with Javascript.
+
+We decided to use a front end framework having experienced how messy it was attempting to do without in a second year group project.
+Felix had used Angular before and Hector had a some experience with Ember (two Javascript frameworks).
+Angular is less opinionated than Ember which fitted better with our slightly unusual project (not to mention Felix's greater experience) so we used Angular.
+
+Our UI has elements to contend with, the code pane where we display the code of program being debugged and the state pane where we display the current state of that program.
+We could have wasted a lot of time hand coding these components\footnot{NIH\todoo[inline]{add refrence}} but it was faster to integrate and configure existing components.
+
+For the code pane we used CodeMirror\todo[inline]{reference} and we built the state pane using D3 we chose these libraries over alternatives because they are both active projects with good documentation. 
+
+For the communication architecture between the frontend and the server there are many options but the most common are SOAP/XML and REST/JSON.
+We choose to use JOSN and REST partly because it is what we are most used each of us having encountered it at some point in the past but also because it is simpler SOAP/XML and now the defacto standard for new web applications.
+
+This was a good decision, \todo{Talk about outcome}.
+
 \subsubsection{Middleware}
+
+
 \subsubsection{Back End}
 
 \section{Evaluation}
