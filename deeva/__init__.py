@@ -192,6 +192,7 @@ def get_heap_objects():
         typestr = args.get('type')
 
         print "Request for object(id=%d, class=%s)" % (unique_id, typestr)
+        # TODO: Return null objects if we can't find, and skip that object
         heap_object = app.debugger.getHeapObject(unique_id, typestr)
         heap_object_dict = eval(repr(heap_object_dict))
         heap_objects.append(heap_object_dict)
@@ -252,7 +253,7 @@ def make_api_response(f, *args, **kargs):
         # Need to do some sort of recursive converter, so that we don't have
         # malicious strings in Java that will kill our eval/repr etc
 
-        stack_metas = result.get('stacks', [])
+        stack_metas = result.get('stacks') or []
         stacks = []
         for stack_meta in stack_metas:
             method_name = stack_meta.getMethodName()
