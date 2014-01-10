@@ -1,6 +1,7 @@
  var type_array = 'array';
  var type_string = 'string';
  var type_object = 'object';
+ var empty_object = {value: undefined};
 function main(all_variables){
   d3.selectAll("#global_area").remove();
   d3.selectAll("#heap").remove();
@@ -172,14 +173,13 @@ function append_heap(heap_selection, heap_objects){
                                  else if(is_of_type(d, type_string))
                                    return d.string;
                                  else
-                                   return [1];
+                                   return [empty_object];
                               })
                               .enter()
                               .append("td")
                               .text(function(d,i){
                                  console.log("data", d);
-                                 console.log("length", d.length);
-                                 if(is_of_type(d, type_array) && d.length == 0)
+                                 if(is_empty_object(d))
                                    return "empty";
                                  else
                                    return d;
@@ -283,4 +283,8 @@ function append_heap(heap_selection, heap_objects){
  // Returns true if the object is of type 'type', false otherwise.
  function is_of_type(heap_element, type){
    return heap_element.object_type == type;
+ }
+ 
+ function is_empty_object(obj){
+   return obj == empty_object;
  }
