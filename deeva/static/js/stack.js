@@ -1,4 +1,7 @@
-
+ var type_array = 'array';
+ var type_string = 'string';
+ var type_object = 'object';
+ var empty_object = {value: undefined};
 function main(all_variables){
   d3.selectAll("#global_area").remove();
   d3.selectAll("#heap").remove();
@@ -8,21 +11,23 @@ function main(all_variables){
   var primitive_list = ["int", "char", "boolean", "byte", "float", "double", "long", "short"];
 
   var stack_variables = all_variables.stacks || [];
+    console.log("stack_variables", stack_variables);
   var unique_id_list = filter_stacks(stack_variables)[0];
   if(unique_id_list != undefined){
-  $.post("getHeapObject", unique_id_list).done(function(data){
-   //  console.log("data---", data);
-   //  console.log("data", [data].length);
-     var heap_td  = d3.select("#heap_td");
-//     append_heap(heap_td, [data.data]);
-  });
+      console.log("uid_list", unique_id_list);
+      $.ajax({
+	  type: "POST",
+	  url: "getHeapObjects",
+	  data: JSON.stringify({heap_requests: unique_id_list}),
+	  contentType: "application/json; charset=utf-8",
+	  dataType: "json",
+	  success: function (data) {
+              var heap_td  = d3.select("#heap_td");
+              append_heap(heap_td, data.objects);
+	      console.log("data stuff bla2", data);
+	  }
+      });
  }
-
-//[{type: 'T', object_type: 'Object', unique_id: '701' }, {type: 'T', object_type: 'Object', unique_id: '686' },  {type: 'T', object_type: 'Array', unique_id: '71', array: [11,12,13,14]}, {type:'T', string:'aha', unique_id:'486', object_type: 'String'}];
-
-  //var arrays = filter_heap(heap_objects, 'Array');
-  //var strings = filter_heap(heap_objects, 'String');
-  //var objects = filter_heap(heap_objects, 'Object');
 
   var stack_td = d3.select("#stack_td");
 
@@ -118,6 +123,7 @@ function populate_values(selection, primitive_list){
 
 // Creates the heap and the objects in it.
 function append_heap(heap_selection, heap_objects){
+   console.log("heap", heap_objects);
    var heap = heap_selection.append("div").attr("id", "heap");
    var heapHeader = heap.append("div")
                         .attr("id", "heapHeader")
@@ -146,7 +152,7 @@ function append_heap(heap_selection, heap_objects){
    var heapObjectType = heapRowObject.append("div")
                                      .attr("class", "typeLabel")
                                      .text(function(d,i){
-                                        if(is_of_type(d, 'object'))
+                                        if(is_of_type(d, type_object))
                                            return d.type;
                                         else
                                            return d.object_type;
@@ -161,44 +167,33 @@ function append_heap(heap_selection, heap_objects){
    var values = objectArrayTable.append("tr").attr("id", "value");
    var values_entries = values.selectAll("td")
                               .data(function(d){
-                                 if(is_of_type(d, 'array')){
-                                   return d.array;}
-                                 if(is_of_type(d, 'string'))
+                                 console.log("AICI", d);
+                                 if(is_of_type(d, type_array) && d.length > 0)
+                                   return d.array;
+                                 else if(is_of_type(d, type_string))
                                    return d.string;
-                                 if(is_of_type(d, 'object'))
-                                   return [];
+                                 else
+                                   return [empty_object];
                               })
                               .enter()
                               .append("td")
                               .text(function(d,i){
-                                 if(d){
-                                   return d;
-                                 }
-                                 else{
+                                 console.log("data", d);
+                                 if(is_empty_object(d))
                                    return "empty";
-                                 }
-                              });
-   //TODO: trying to put empty
-
-   var values_entries = values.selectAll("td")
-                              .data(function(d){
-                                 if(!d)
-                                  return 1;
-                              })
-                              .enter()
-                              .append("td")
-                              .text(function(d){
-                                 return "empty";
+                                 else
+                                   return d;
                               });
 
    var indices = objectArrayTable.append("tr").attr("id", "indice");
    var indices_entries = indices.selectAll("td")
                                 .data(function(d){
-                                   if(is_of_type(d, 'array'))
+                                 console.log("NEXT - NEXT", d);
+                                   if(is_of_type(d, type_array))
                                       return d.array;
-                                   if(is_of_type(d, 'string'))
+                                   if(is_of_type(d, type_string))
                                       return d.string;
-                                   if(is_of_type(d,'object'))
+                                   if(is_of_type(d, type_object))
                                       return [];
                                })
                                .enter()
@@ -206,7 +201,7 @@ function append_heap(heap_selection, heap_objects){
                                .text(function(d,i){
                                    return i;
                                });
-   var objects = heap_selection.selectAll(".object").selectAll("#value");
+   var objects = heap_selection.selectAll("." + type_object).selectAll("#value");
 
    var objects_button = objects.append("button")
                                .attr("type", "button")
@@ -288,4 +283,8 @@ function append_heap(heap_selection, heap_objects){
  // Returns true if the object is of type 'type', false otherwise.
  function is_of_type(heap_element, type){
    return heap_element.object_type == type;
+ }
+ 
+ function is_empty_object(obj){
+   return obj == empty_object;
  }
