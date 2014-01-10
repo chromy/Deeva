@@ -56,11 +56,14 @@ public class Debug extends EventHandlerBase {
     private List<String> programArgs;
     private boolean enableAssertions = false;
     private final String classPaths;
+    private final DeevaEventDispatcher dispatcher;
 
     public Debug(DebugResponseQueue outQueue,
                  String classPaths, String sourcePaths,
                  String mainClass, boolean enableAssertions,
-                 List<String> initialArgs) {
+                 List<String> initialArgs, DeevaEventDispatcher dispatcher) {
+        /* TODO: Use Builder pattern to setup a Debug Object or split Debug
+        into smaller bits */
         this.classPaths = classPaths;
         this.programArgs = initialArgs;
         this.breakpoints = new HashMap<Breakpoint, BreakpointRequest>();
@@ -71,6 +74,7 @@ public class Debug extends EventHandlerBase {
         this.finder = new SourceClassFinder(classPaths, sourcePaths);
         this.currentClass = mainClass;
         this.enableAssertions = enableAssertions;
+        this.dispatcher = dispatcher;
 
         /*  Generate all the classes and their relevant sources the debuggee
             may need
@@ -210,8 +214,8 @@ public class Debug extends EventHandlerBase {
      */
     private List<StackFrameMeta> getStacks(LocatableEvent event)
             throws
-            IncompatibleThreadStateException, ClassNotLoadedException,
-            AbsentInformationException {
+            IncompatibleThreadStateException, ClassNotLoadedException
+             {
         /* Get the thread in which we're stepping */
         ThreadReference threadRef = event.thread();
 
@@ -231,12 +235,18 @@ public class Debug extends EventHandlerBase {
             /* Get some information about the stack frame */
             String methodName = frame.location().method().name();
             String className = frame.location().declaringType().name();
-            List<Map<String, String>> stackMap = this.getStack(frame);
-            StackFrameMeta meta
-                    = new StackFrameMeta(methodName, className, stackMap);
+            try {
+                List<Map<String, String>> stackMap = this.getStack(frame);
+                StackFrameMeta meta
+                        = new StackFrameMeta(methodName, className, stackMap);
 
-            /* Add to the front of the queue */
-            stackFrames.add(0, meta);
+                /* Add to the front of the queue */
+                stackFrames.add(0, meta);
+            } catch (AbsentInformationException e) {
+                /* Send an event to other side of Deeva */
+                dispatcher.absent_information_event(className);
+                /* TODO: Do something else, we can't continue */
+            }
         }
         return stackFrames;
     }
@@ -319,7 +329,7 @@ public class Debug extends EventHandlerBase {
         return getState();
     }
 
-    public boolean setBreakpoint(String clas, int lineNum) throws AbsentInformationException {
+    public boolean setBreakpoint(String clas, int lineNum) {
         Breakpoint bkpt = new Breakpoint(clas, lineNum);
 
         // If the breakpoint exists return true.
@@ -340,12 +350,12 @@ public class Debug extends EventHandlerBase {
             breakpoints.put(bkpt, null);
             return true;
         } catch (NoLocationException error) {
-            // The VM exists and the class was loaded but we can't set a
-            // breakpoint here.
+            /* The VM exists and the class was loaded but we can't set a
+               breakpoint here. */
             return false;
         } catch (AbsentInformationException error) {
             System.err.println("Absent Information!");
-            // XXX: Handle this case better.
+            dispatcher.absent_information_event(clas);
             return false;
         }
     }
@@ -383,7 +393,7 @@ public class Debug extends EventHandlerBase {
 
     @Override
     public void handleEvent(Event e)
-            throws IncompatibleThreadStateException, AbsentInformationException,
+            throws IncompatibleThreadStateException,
             ClassNotLoadedException
     {
         System.err.println(e.getClass());
@@ -408,9 +418,11 @@ public class Debug extends EventHandlerBase {
     private void attemptToSetWaitingBreakpoints() {
         for (Breakpoint b : breakpoints.keySet()) {
             if (breakpoints.get(b) == null) {
+                String className = b.getClas();
                 System.err.println("Attempting to set saved breakpoint.");
                 try {
-                    BreakpointRequest req = attemptToSetBreakpoint(b.getClas(), b.getLineNumber());
+                    BreakpointRequest req = attemptToSetBreakpoint(className,
+                            b.getLineNumber());
                     breakpoints.put(b, req);
                 } catch (NoVMException error) {
                     System.err.println("1");
@@ -422,7 +434,9 @@ public class Debug extends EventHandlerBase {
                     System.err.println("3");
                     // Ignore this.
                 } catch (AbsentInformationException error) {
-                    System.err.println("Abstent Information!");
+                    System.err.println("Absent Information!");
+                    dispatcher.absent_information_event(className);
+                    /* TODO: Do something else, we can't continue */
                 }
             }
         }
@@ -447,14 +461,13 @@ public class Debug extends EventHandlerBase {
         EventRequestManager reqMgr = vm.eventRequestManager();
 
         BreakpointRequest req = reqMgr.createBreakpointRequest(loc);
-        //req.setSuspendPolicy(EventRequest.SUSPEND_ALL);
         req.enable();
         return req;
     }
 
     @Override
     public void stepEvent(StepEvent event)
-            throws IncompatibleThreadStateException, AbsentInformationException,
+            throws IncompatibleThreadStateException,
             ClassNotLoadedException
     {
         System.err.println(event.location().method() + "@" + event.location().lineNumber());
@@ -466,7 +479,7 @@ public class Debug extends EventHandlerBase {
     }
 
     @Override
-    public void breakpointEvent(BreakpointEvent event) throws ClassNotLoadedException, AbsentInformationException, IncompatibleThreadStateException {
+    public void breakpointEvent(BreakpointEvent event) throws ClassNotLoadedException, IncompatibleThreadStateException {
         System.err.println(event.location().method() + "@" + event.location().lineNumber());
 
         /* Try to extract the stack variables */
@@ -515,6 +528,7 @@ public class Debug extends EventHandlerBase {
                         if (bytesAvailable == 0) {
                             /* Change the state that we're in */
                             state = State.AWAITING_IO;
+                            dispatcher.awaiting_io_event();
                             /* Release the semaphore that is being held */
                             sema.release();
                         }
