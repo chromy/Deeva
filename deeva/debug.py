@@ -8,6 +8,7 @@ from py4j.java_gateway import *
 from Queue import Queue, Empty
 import threading, traceback
 from blinker import signal
+import events
 import logging
 import logging.config
 
