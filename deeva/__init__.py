@@ -2,6 +2,7 @@ import os
 from flask import Flask, jsonify, render_template, request, g, make_response, redirect, url_for, Response
 import debug
 from debug import load, WrongState
+import events
 import pprint
 from py4j.java_collections import ListConverter
 
@@ -10,27 +11,7 @@ app.package_dict = {}
 app.sources = {}
 app.source_code = {}
 
-@app.route("/")
-def index():
-    try:
-        return app.send_static_file('index.html')
-    except Exception as e:
-        print "got something here"
 
-@app.route("/breakPoints", methods=['POST', 'GET'])
-def breakPoints():
-    if request.method == 'POST':
-        # Possibly old code?
-        breakPoints = request.get_json()
-        print breakPoints
-        for b in breakPoints:
-            # XXX: fix line numbers
-            app.debugger.setBreakpoint('SimpleLoop', b+1)
-        return jsonify(status='ok')
-    else:
-        bkpts = app.debugger.getBreakpoints()
-        data = [{'clas':b.getClas(), 'line':b.getLineNumber()} for b in bkpts]
-        return jsonify(break_points=data)
 
 @app.route("/closeConnection") # take in a con id
 def closeCon():
@@ -57,18 +38,18 @@ def stream_html():
 @app.route("/stream")
 def stream():
     subscriber = debug.DeevaEventSubscriber(["deeva"])
+@app.route("/")
+def index():
     try:
-        return Response(subscriber.event_stream(), mimetype="text/event-stream")
-    except socket.error, e:
-        # http://stackoverflow.com/questions/180095/how-to-handle-a-broken-pipe-sigpipe-in-python
-        if isinstance(e.args, tuple):
-            if e[0] == errno.EPIPE:
-                print "Remote disconnected"
-            else:
-                pass
-        else:
-            print "socket error", e
-        return "Hello"
+        return app.send_static_file('index.html')
+    except Exception as e:
+        print "got something here"
+
+@app.route("/breakPoints")
+def breakPoints():
+    bkpts = app.debugger.getBreakpoints()
+    data = [{'clas':b.getClas(), 'line':b.getLineNumber()} for b in bkpts]
+    return jsonify(break_points=data)
 
 @app.route("/stepOver", methods=['POST'])
 def step_over():
@@ -271,7 +252,7 @@ def make_api_response(f, *args, **kargs):
         # Need to do some sort of recursive converter, so that we don't have
         # malicious strings in Java that will kill our eval/repr etc
 
-        stack_metas = result['stacks'] if result['stacks'] else []
+        stack_metas = result.get('stacks', [])
         stacks = []
         for stack_meta in stack_metas:
             method_name = stack_meta.getMethodName()
