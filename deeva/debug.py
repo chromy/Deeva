@@ -29,9 +29,6 @@ class ResponseQueue(object):
     class Java:
         implements = ['deeva.DebugResponseQueue']
 
-# FIX - SORRY
-out_queue = ResponseQueue()
-
 # fix
 def launch_gateway(port=0, jarpath="", classpath="", javaopts=[],
         die_on_exit=False):
@@ -70,7 +67,7 @@ def create_java_debugger(classpath, prog, debuggee_classpaths,
 
     debugger = JavaProxy(gateway.jvm.deeva.Debug(out_queue, debuggee_classpaths,
                                                  debuggee_sourcepaths, prog, ea,
-                                                 java_args))
+                                                 java_args, deeva_event_dispatcher))
 
     sources = debugger.getSources()
     # We can't start the debugger here, otherwise we'll lose chance to set arguments
@@ -122,3 +119,7 @@ def pop_output():
     stdout = ''.join([msg for stream, msg in results if stream == "stdout"])
     stderr = ''.join([msg for stream, msg in results if stream == "stderr"])
     return stdout, stderr
+
+# Globals
+out_queue = ResponseQueue()
+deeva_event_dispatcher = events.DeevaEventDispatcher()
