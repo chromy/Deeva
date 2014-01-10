@@ -1,4 +1,6 @@
-
+ var type_array = 'array';
+ var type_string = 'string';
+ var type_object = 'object';
 function main(all_variables){
   d3.selectAll("#global_area").remove();
   d3.selectAll("#heap").remove();
@@ -20,7 +22,7 @@ function main(all_variables){
 	  dataType: "json",
 	  success: function (data) {
               var heap_td  = d3.select("#heap_td");
-//              append_heap(heap_td, data.objects);
+              append_heap(heap_td, data.objects);
 	      console.log("data stuff bla2", data);
 	  }
       });
@@ -149,7 +151,7 @@ function append_heap(heap_selection, heap_objects){
    var heapObjectType = heapRowObject.append("div")
                                      .attr("class", "typeLabel")
                                      .text(function(d,i){
-                                        if(is_of_type(d, 'object'))
+                                        if(is_of_type(d, type_object))
                                            return d.type;
                                         else
                                            return d.object_type;
@@ -164,44 +166,34 @@ function append_heap(heap_selection, heap_objects){
    var values = objectArrayTable.append("tr").attr("id", "value");
    var values_entries = values.selectAll("td")
                               .data(function(d){
-                                 if(is_of_type(d, 'array')){
-                                   return d.array;}
-                                 if(is_of_type(d, 'string'))
+                                 console.log("AICI", d);
+                                 if(is_of_type(d, type_array) && d.length > 0)
+                                   return d.array;
+                                 else if(is_of_type(d, type_string))
                                    return d.string;
-                                 if(is_of_type(d, 'object'))
-                                   return [];
+                                 else
+                                   return [1];
                               })
                               .enter()
                               .append("td")
                               .text(function(d,i){
-                                 if(d){
-                                   return d;
-                                 }
-                                 else{
+                                 console.log("data", d);
+                                 console.log("length", d.length);
+                                 if(is_of_type(d, type_array) && d.length == 0)
                                    return "empty";
-                                 }
-                              });
-   //TODO: trying to put empty
-
-   var values_entries = values.selectAll("td")
-                              .data(function(d){
-                                 if(!d)
-                                  return 1;
-                              })
-                              .enter()
-                              .append("td")
-                              .text(function(d){
-                                 return "empty";
+                                 else
+                                   return d;
                               });
 
    var indices = objectArrayTable.append("tr").attr("id", "indice");
    var indices_entries = indices.selectAll("td")
                                 .data(function(d){
-                                   if(is_of_type(d, 'array'))
+                                 console.log("NEXT - NEXT", d);
+                                   if(is_of_type(d, type_array))
                                       return d.array;
-                                   if(is_of_type(d, 'string'))
+                                   if(is_of_type(d, type_string))
                                       return d.string;
-                                   if(is_of_type(d,'object'))
+                                   if(is_of_type(d, type_object))
                                       return [];
                                })
                                .enter()
@@ -209,7 +201,7 @@ function append_heap(heap_selection, heap_objects){
                                .text(function(d,i){
                                    return i;
                                });
-   var objects = heap_selection.selectAll(".object").selectAll("#value");
+   var objects = heap_selection.selectAll("." + type_object).selectAll("#value");
 
    var objects_button = objects.append("button")
                                .attr("type", "button")
