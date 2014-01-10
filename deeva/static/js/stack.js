@@ -8,21 +8,23 @@ function main(all_variables){
   var primitive_list = ["int", "char", "boolean", "byte", "float", "double", "long", "short"];
 
   var stack_variables = all_variables.stacks || [];
+    console.log("stack_variables", stack_variables);
   var unique_id_list = filter_stacks(stack_variables)[0];
   if(unique_id_list != undefined){
-  $.post("getHeapObject", unique_id_list).done(function(data){
-   //  console.log("data---", data);
-   //  console.log("data", [data].length);
-     var heap_td  = d3.select("#heap_td");
-//     append_heap(heap_td, [data.data]);
-  });
+      console.log("uid_list", unique_id_list);
+      $.ajax({
+	  type: "POST",
+	  url: "getHeapObjects",
+	  data: JSON.stringify({heap_requests: unique_id_list}),
+	  contentType: "application/json; charset=utf-8",
+	  dataType: "json",
+	  success: function (data) {
+              var heap_td  = d3.select("#heap_td");
+//              append_heap(heap_td, data.objects);
+	      console.log("data stuff bla2", data);
+	  }
+      });
  }
-
-//[{type: 'T', object_type: 'Object', unique_id: '701' }, {type: 'T', object_type: 'Object', unique_id: '686' },  {type: 'T', object_type: 'Array', unique_id: '71', array: [11,12,13,14]}, {type:'T', string:'aha', unique_id:'486', object_type: 'String'}];
-
-  //var arrays = filter_heap(heap_objects, 'Array');
-  //var strings = filter_heap(heap_objects, 'String');
-  //var objects = filter_heap(heap_objects, 'Object');
 
   var stack_td = d3.select("#stack_td");
 
@@ -118,6 +120,7 @@ function populate_values(selection, primitive_list){
 
 // Creates the heap and the objects in it.
 function append_heap(heap_selection, heap_objects){
+   console.log("heap", heap_objects);
    var heap = heap_selection.append("div").attr("id", "heap");
    var heapHeader = heap.append("div")
                         .attr("id", "heapHeader")

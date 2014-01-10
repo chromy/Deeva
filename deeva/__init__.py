@@ -165,39 +165,20 @@ def push_input():
 
 @app.route("/getHeapObjects", methods=["POST"])
 def get_heap_objects():
-    args = request.values
+    args = request.get_json()
     heap_requests = args.get('heap_requests')
 
     heap_objects = []
     for heap_request in heap_requests:
-        unique_id = int(args.get('unique_id'))
-        typestr = args.get('type')
+        unique_id = int(heap_request.get('unique_id'))
+        typestr = heap_request.get('type')
 
         print "Request for object(id=%d, class=%s)" % (unique_id, typestr)
         heap_object = app.debugger.getHeapObject(unique_id, typestr)
-        heap_object_dict = eval(repr(heap_object_dict))
+        heap_object_dict = eval(repr(heap_object))
         heap_objects.append(heap_object_dict)
 
     return jsonify(success="true", objects=heap_objects)
-
-@app.route("/getHeapObject", methods=["POST"])
-def get_heap_object():
-    args = request.values
-
-    unique_id = int(args.get('unique_id'))
-    typestr = args.get('type')
-
-    print "Getting Heap Object"
-    print "Unique ID:", unique_id
-    print "Type String:", typestr
-
-    # Need to check that the debugger is alive and is in stasis mode
-    # as this request is asynchronous
-
-    heap_object = app.debugger.getHeapObject(unique_id, typestr)
-    print heap_object
-    # YYY: Horrible Hack, fix soon, or maybe leave :P
-    return jsonify(data=eval(repr(heap_object)))
 
 @app.errorhandler(500)
 def page_not_found(error):
