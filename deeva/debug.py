@@ -29,40 +29,6 @@ class ResponseQueue(object):
     class Java:
         implements = ['deeva.DebugResponseQueue']
 
-class DeevaEventDispatcher(object):
-    def __init__(self):
-        pass
-
-    class Java:
-        implements = ['deeva.DeevaEventDispatcher']
-
-class DeevaEventSubscriber(object):
-    def __init__(self, topics):
-        # Give unique ID, and make sure not in
-
-        # Queue to hold the data from the events
-        self.queue = Queue()
-
-        # Subscribe to all the topics
-        for topic in topics:
-            topic_listener = signal(topic)
-            topic_listener.connect(self.handler)
-
-    def event_stream(self):
-        # Keep pulling from the Queue that Deeva is pushing to (via events)
-        while True:
-            # Blocking call
-            data = self.queue.get()
-            event = "event: %s\n" % data['event']
-            data_dict = "data: %s\n\n" % repr(data['data'])
-            self.queue.task_done()
-            yield event
-            yield data_dict
-
-    def handler(self, sender, **kw):
-        print "Python yield:", kw
-        self.queue.put(kw)
-
 # FIX - SORRY
 out_queue = ResponseQueue()
 
