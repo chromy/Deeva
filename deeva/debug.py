@@ -73,8 +73,6 @@ def create_java_debugger(classpath, prog, debuggee_classpaths,
                                                  java_args, deeva_event_dispatcher))
 
     sources = debugger.getSources()
-    # We can't start the debugger here, otherwise we'll lose chance to set arguments
-    # debugger.start(prog)
     return debugger, gateway
 
 class JavaProxy:
@@ -126,6 +124,7 @@ def pop_output():
 # Globals
 out_queue = ResponseQueue()
 deeva_event_dispatcher = events.DeevaEventDispatcher()
+
 def enable_py4j_logging():
     logger = logging.getLogger("py4j")
     logger.setLevel(logging.DEBUG)
