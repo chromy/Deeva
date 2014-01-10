@@ -8,6 +8,8 @@ from py4j.java_gateway import *
 from Queue import Queue, Empty
 import threading, traceback
 from blinker import signal
+import logging
+import logging.config
 
 class WrongState(Exception):
     pass
@@ -123,3 +125,7 @@ def pop_output():
 # Globals
 out_queue = ResponseQueue()
 deeva_event_dispatcher = events.DeevaEventDispatcher()
+def enable_py4j_logging():
+    logger = logging.getLogger("py4j")
+    logger.setLevel(logging.DEBUG)
+    logger.addHandler(logging.FileHandler('py4j.log', mode='w'))
