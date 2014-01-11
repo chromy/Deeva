@@ -73,6 +73,8 @@
 % Project management 
 %   Planning, group organisation, breakdown + task allocation etc
 
+
+
 \section*{Executive Summary}
 \addcontentsline{toc}{section}{Executive Summary}
 
@@ -260,9 +262,13 @@ Similarly we produced a prioritised list of extensions:
 \item Support all of Java (Threads etc)
 \end{enumerate}
 
-
 \section{Deeva}
-\todo{Big section where we describe each feature of Deeva in detail.}
+- Starting the program.
+- Not compiled
+- Start stop
+- Args
+- Assertion
+- Stdin/out/err
 
 
 \section{Design}
@@ -416,7 +422,6 @@ A Javascript frontend using Angular, Codemirror and D3, a Java backend using the
 \subsection{Deciding on a Web Front End}
 Beginning this project we knew we needed a graphical interface and were faced with a difficult decision.
 The obvious approach was a classic monolithic Java application\footnote{Java being the natural choice since it was the target language} however this had some disadvantages.
-
 
 - We have limited desktop experience GUI
 - Lots of custom code for the state UI
@@ -619,10 +624,16 @@ Creating a Facebook group proved very efficient for communicating meeting times 
 We used Google Docs for collaborative editing on reports, plans and meeting summaries in real time.
   
 \subsubsection{Github}
-Github is a hosted source control which somebody else manages and is easily accessible from anywhere and also plays nicely with the hosted Continuous Integration tool - Travis CI\footnote{\url{http://travis-ci.com/}}.
+Github is a hosted source control which somebody else manages and is easily accessible from anywhere and also plays nicely with the hosted Continuous Integration tool - Travis CI.
 
 \subsubsection{Travis CI}
-\todo{about Travis here}
+Travis\footnote{\url{http://travis-ci.com/}} is an online continues integration server.
+Whenever we push code to the Github server Travis takes the commit then makes and runs our integration tests, if the build fails Travis' emails us.
+Ideally the build on Travis should never fail (since we should run the tests ourselves before we commit) but the email notifications proved very useful for problems which only show up on a fresh install or if we made a small commit which ``shouldn't" have broken the build.
+Travis' notifications allowed quickly brought bad commits to our attention allowing us to fix or revert them before they became a major problem.  
+The major downside was since Travis has to install all the dependencies each time running the tests could take up to ten  
+
+
 
 \subsection{Team Member Contributions}
 \subsubsection{Kritaphat Sonsri-in}
@@ -630,9 +641,12 @@ Github is a hosted source control which somebody else manages and is easily acce
 \subsubsection{Alina Draganescu}
 \subsubsection{Felix de Souza}
 \subsubsection{Hector Dearman}
+Hector worked mostly on the backend implementing Breakpoints and the middle server layer. 
 
 \section{Extensions}
+
 \section{Conclusion}
+
 
 \clearpage
 \thispagestyle{empty}
