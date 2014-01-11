@@ -15,3 +15,5 @@ sh==1.09
 sure==1.2.2
 wsgiref==0.1.2
 coverage==3.7
+simplejson==3.3.2
+blinker==1.3

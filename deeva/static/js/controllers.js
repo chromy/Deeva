@@ -59,7 +59,6 @@ function ($scope, $http, FileService, MiscService) {
             }
 
             $scope.currentState = "RUNNING";
-            console.log(argument_array);
         }
         $http.post(destination, {args: argument_array, ea: assertions})
             .success(function(data) {
@@ -131,7 +130,7 @@ function ($scope, $http, FileService, MiscService) {
             // refactor - plus fix heap!
             /* Update the stack and the heap */
             var stack_heap = {'stacks' : data.stacks};
-            if (data.stack ) { //ZZZ: Horrible hack, but want to get other things working first
+            if (data.stacks) {
                 main(stack_heap);
             }
         }

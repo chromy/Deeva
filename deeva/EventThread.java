@@ -9,7 +9,7 @@ import com.sun.jdi.event.EventSet;
 public class EventThread extends Thread {
     private final VirtualMachine vm;     // Running VM
     private final String[] excludes;     // Packages to exclude
-    private final EventHandler handler;  // The object to receive each event. 
+    private final EventHandler handler;  // The object to receive each event.
 
     private boolean connected = true;  // Connected to VM
 

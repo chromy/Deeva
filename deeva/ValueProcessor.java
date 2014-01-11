@@ -1,26 +1,24 @@
 package deeva;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.sun.jdi.*;
+import deeva.processor.*;
+import deeva.processor.ClassValue;
 
 import java.util.*;
 
 public class ValueProcessor {
-    public static Map<String, String> processVariable(LocalVariable localVariable,
-                                                      Value variableValue,
-                                                      Map<String, String>sources) {
+    public static JVMValue processVariable(LocalVariable localVariable,
+                                                      Value variableValue) {
         if (localVariable == null) {
             return null;
         }
 
-        Map<String, String> localVarMap = new HashMap<String, String>();
-        localVarMap.put("name", localVariable.name());
+        JVMValue jvmValue = processValueOverviewNew(variableValue);
+        jvmValue.setName(localVariable.name());
 
-        /* Now process the actual variable value */
-        Map<String, String> varMapOverview =
-                ValueProcessor.processValueOverview(variableValue);
-        localVarMap.putAll(varMapOverview);
-
-        return localVarMap;
+        return jvmValue;
     }
 
     public static Map<String, ? extends Object>
@@ -36,6 +34,13 @@ public class ValueProcessor {
         if (!(variableValue instanceof ObjectReference)) {
             return varMap;
         }
+
+        JVMValue jvmValue = processValueFull(variableValue, sources);
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        String json = gson.toJson(jvmValue);
+        System.err.println("JSON FULL OBJECT:");
+        System.err.println(json);
+        System.err.println("Done printing JSON");
 
         ObjectReference objRef = (ObjectReference) variableValue;
 
@@ -127,6 +132,131 @@ public class ValueProcessor {
         return varMap;
     }
 
+    public static JVMValue processValueOverviewNew(Value variableValue) {
+        if (variableValue == null) {
+            return null;
+        }
+
+        Type valueType = variableValue.type();
+        String typeName = valueType.name();
+        JVMValue value;
+
+        if (variableValue instanceof com.sun.jdi.PrimitiveValue) {
+            /* Deal with primitive values */
+            value = new deeva.processor.PrimitiveValue(typeName, variableValue);
+        } else if (variableValue instanceof ObjectReference) {
+            /* Deal with reference types */
+            ObjectReference objRef = (ObjectReference) variableValue;
+            Long uniqueID = objRef.uniqueID();
+
+            if (variableValue instanceof StringReference) {
+                StringReference strRef = (StringReference) variableValue;
+                value = new StringValue(typeName, uniqueID, strRef);
+            } else if(variableValue instanceof ArrayReference) {
+                ArrayReference arrRef = (ArrayReference) variableValue;
+                value = new ArrayValue(typeName, uniqueID, arrRef, true);
+            } else {
+                value = new ClassValue(typeName, uniqueID, objRef, true);
+            }
+        } else {
+            value = null;
+        }
+
+        return value;
+    }
+
+    public static JVMValue processValueFull(Value variableValue,
+                                            Set<String> sources) {
+        JVMValue objOverview = processValueOverviewNew(variableValue);
+
+        if (!(variableValue instanceof ObjectReference)) {
+            /* TODO: Better error handling*/
+            return objOverview;
+        }
+
+        if (variableValue instanceof ArrayReference) {
+            ArrayValue arrVal = (ArrayValue) objOverview;
+            ArrayReference arrRef = (ArrayReference) variableValue;
+
+            /* Values in the array from JDI*/
+            List<Value> arrRefList = arrRef.getValues();
+            int numElems = arrRefList.size();
+
+            JVMValue[] array = new JVMValue[numElems];
+
+            /* Add an overview of each element in the array */
+            for (int i = 0; i < numElems; i++) {
+                array[i] = processValueOverviewNew(arrRefList.get(i));
+            }
+
+            /* Set the arrayValue to contain this new array */
+            arrVal.setArray(array);
+
+            return arrVal;
+        } else if (!(variableValue instanceof StringReference)) {
+            ClassValue classVal = (ClassValue) objOverview;
+            ObjectReference objRef = (ObjectReference) variableValue;
+            ClassType classType = (ClassType) objRef.type();
+            String typeName = classType.name();
+            Set<String> seenFields = new HashSet<String>();
+            List<JVMField> fields = new LinkedList<JVMField>();
+
+            ClassType currentClassType = classType;
+            /* Get all the fields in the current class and al the user
+            created classes */
+            while(sources.contains(typeName)) {
+                List<Field> fieldList = currentClassType.fields();
+
+                /* For each field we find, we add to the fields list */
+                for (Field field : fieldList) {
+                    String fieldName = field.name();
+                    /* If we've already seen this field i.e. the current
+                    field is a field declared in a superclass that has also
+                    been overriden in a descendant class OR the field has
+                    been generated by the compiler, we skip */
+                    if (seenFields.contains(fieldName) || field.isSynthetic()) {
+                        continue;
+                    }
+
+                    /* Process the value */
+                    Value value = objRef.getValue(field);
+
+                    JVMValue jvmValue = processValueOverviewNew(value);
+
+                    boolean isFinal = field.isFinal();
+                    boolean isStatic = field.isStatic();
+
+                    JVMField.Accessibility accessibility;
+                    if (field.isPrivate()) {
+                        accessibility = JVMField.Accessibility.PRIVATE;
+                    } else if (field.isProtected()) {
+                        accessibility = JVMField.Accessibility.PROTECTED;
+                    } else if (field.isPackagePrivate()) {
+                        accessibility = JVMField.Accessibility.PACKAGE_PRIVATE;
+                    } else {
+                        accessibility = JVMField.Accessibility.PUBLIC;
+                    }
+
+                    JVMField jvmField = new JVMField(fieldName, jvmValue,
+                            accessibility, isFinal, isStatic);
+
+                    fields.add(jvmField);
+                    seenFields.add(fieldName);
+                }
+
+                currentClassType = currentClassType.superclass();
+                typeName = currentClassType.name();
+            }
+
+            /* Set the fields element */
+            classVal.setFields(fields);
+
+            return classVal;
+        }
+
+        return objOverview;
+    }
+
     public static Map<String, String> processValueOverview(Value variableValue) {
         Map<String, String> varMap = new HashMap<String, String>();
 
@@ -137,7 +267,8 @@ public class ValueProcessor {
         }
 
         Type valueType = variableValue.type();
-        varMap.put("type", valueType.name());
+        String typeName = valueType.name();
+        varMap.put("type", typeName);
 
         /* We deal with primitive types */
         if (valueType instanceof IntegerType) {
