@@ -2,8 +2,7 @@
  var type_string = 'string';
  var type_object = 'object';
  var empty_object = {value: undefined};
-
-  // Primitive types in Java.
+   // Primitive types in Java.
  var primitive_list = ["int", "char", "boolean", "byte", "float", "double", "long", "short"];
 
 function main(all_variables){
@@ -169,6 +168,8 @@ function append_heap(heap_selection, heap_objects, unique_id_list){
                                    return d.array;
                                  else if(is_of_type(d, type_string))
                                    return d.string;
+                                 else if(is_of_type(d, type_object))
+                                   return [1];
                                  else
                                    return [empty_object];
                               })
@@ -189,6 +190,8 @@ function append_heap(heap_selection, heap_objects, unique_id_list){
                  return d;
               });
 
+   var all_objects = heap.selectAll("."+type_object).select("#value");
+ 
    var indices = objectArrayTable.append("tr").attr("id", "indice");
    var indices_entries = indices.selectAll("td")
                                 .data(function(d){
@@ -204,13 +207,6 @@ function append_heap(heap_selection, heap_objects, unique_id_list){
                                .text(function(d,i){
                                    return i;
                                });
-   var objects = heap_selection.selectAll("." + type_object).selectAll("#value");
-
-   var objects_button = objects.append("button")
-                               .attr("type", "button")
-                               .attr("class", "btn btn-default");
-   objects_button.append("span")
-                 .attr("class", "glyhicon glyphicon-plus");
   create_arrows(objects, unique_id_list);
 }
 
