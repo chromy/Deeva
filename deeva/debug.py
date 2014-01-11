@@ -34,7 +34,7 @@ class ResponseQueue(object):
 
 # fix
 def launch_gateway(port=0, jarpath="", classpath="", javaopts=[],
-        die_on_exit=False):
+                   die_on_exit=False):
     if not jarpath:
         jarpath = find_jar_path()
 

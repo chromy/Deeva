@@ -15,10 +15,6 @@ public class ArrayValue extends ReferenceValue {
         ArrayType arrType = (ArrayType) arrRef.type();
         this.component_type = arrType.componentTypeName();
         this.length = arrRef.length();
-
-        if (!overview) {
-            this.array = null;
-        }
     }
 
     public String getComponentType() {
