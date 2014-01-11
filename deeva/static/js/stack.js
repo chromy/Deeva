@@ -149,8 +149,9 @@ function append_heap(heap_selection, heap_objects, unique_id_list){
    var heapObjectType = heapRowObject.append("div")
                                      .attr("class", "typeLabel")
                                      .text(function(d,i){
-                                        if(is_of_type(d, type_object))
-                                           return d.type;
+                                        if(is_of_type(d, type_object)){
+                                             return get_class_name(d.type);
+                                           }
                                         else
                                            return d.object_type;
                                      });
@@ -191,6 +192,11 @@ function append_heap(heap_selection, heap_objects, unique_id_list){
               });
 
    var all_objects = heap.selectAll("."+type_object).select("#value");
+   all_objects.selectAll("td")
+              .text(function(d){
+                 return d;
+              });
+              
  
    var indices = objectArrayTable.append("tr").attr("id", "indice");
    var indices_entries = indices.selectAll("td")
@@ -207,7 +213,7 @@ function append_heap(heap_selection, heap_objects, unique_id_list){
                                .text(function(d,i){
                                    return i;
                                });
-  create_arrows(objects, unique_id_list);
+  create_arrows(all_objects, unique_id_list);
 }
 
 
@@ -289,4 +295,12 @@ function append_heap(heap_selection, heap_objects, unique_id_list){
  
  function is_empty_object(obj){
    return obj == empty_object;
+ }
+
+ function get_class_name(type){
+ 
+  var s = type.split(".");
+  var actual_type = s[s.length-1];
+  console.log("aaaaaaaaaaaa", actual_type);
+  return actual_type; 
  }
