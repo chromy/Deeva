@@ -277,7 +277,8 @@ function append_heap(heap_selection, heap_objects, unique_id_list){
    console.log("array_" + array_elems_uid[i]);
    jsPlumb.ready(function()  { 
    jsPlumb.addEndpoint("array_" + array_elems_uid[i],
-                           { 
+                           {cssClass: "stackPoint",
+                            anchor: [0.5, 0.5, 0, -1],
                             connectionsDetachable:false
                            });
            });
