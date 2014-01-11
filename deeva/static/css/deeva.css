@@ -57,6 +57,13 @@ body {
   margin-left: 50px;
 }
 
+#header p {
+  color: #ffffff;
+  margin: 0;
+  margin-top: 10px;
+  margin-left: 50px;
+}
+
 #buttons_container {
   margin-top: 10px;
   margin-bottom: 10px;

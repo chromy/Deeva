@@ -47,7 +47,14 @@
 
   <body>
     <div id="header">
-      <h1>Deeva</h1>
+      <div class="row">
+        <div class="col-md-7">
+          <h1>Deeva</h1>
+        </div>
+        <div class="col-md-5">
+          <p>current state: {{stateToPresent[currentState]}}</p>
+        </div>
+      </div>
     </div>
     <div class="container" id="myContainer">
       <div class="row">
@@ -91,7 +98,6 @@
 
         <!-- Begin Stack/Heap section, bring this into a new controller, easier to separate -->
         <div class="col-md-6">
-          <div id="state">{{stateToPresent[currentState]}}</div>
           <p id="console">Console</p>
           <div id="terminal"></div>
 
