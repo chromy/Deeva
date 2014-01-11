@@ -64,6 +64,10 @@ body {
   margin-left: 50px;
 }
 
+#header row {
+  width: 100%;
+}
+
 #buttons_container {
   margin-top: 10px;
   margin-bottom: 10px;
