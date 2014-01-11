@@ -1,6 +1,6 @@
- var type_array = 'array';
- var type_string = 'string';
- var type_object = 'object';
+ var type_array = 'ARRAY';
+ var type_string = 'STRING';
+ var type_object = 'OBJECT';
  var empty_object = {value: undefined};
    // Primitive types in Java.
  var primitive_list = ["int", "char", "boolean", "byte", "float", "double", "long", "short"];
@@ -43,7 +43,7 @@ function main(all_variables){
 
 
 function append_stacks(stack_selection, stack_variables){
-   
+
    // create a div for each stack
    var stackFrames = stack_selection.selectAll("div")
                                     .data(stack_variables)
@@ -187,7 +187,7 @@ function append_heap(heap_selection, heap_objects, unique_id_list){
              .text(function(d){
                 console.log("ARRAY__", d);
              });
-         
+
 
    var all_strings = heap.selectAll("."+type_string).select("#value");
    all_strings.selectAll("td")
@@ -200,8 +200,8 @@ function append_heap(heap_selection, heap_objects, unique_id_list){
               .text(function(d){
                  return d;
               });
-              
- 
+
+
    var indices = objectArrayTable.append("tr").attr("id", "indice");
    var indices_entries = indices.selectAll("td")
                                 .data(function(d){
@@ -251,7 +251,7 @@ function append_heap(heap_selection, heap_objects, unique_id_list){
                          overlays: [["Arrow", {width: 6,length: 6,location:1}]],
                          Connector : ["State Machine", {proximityLimit:1}],
                          cssClass: "connectLine"
-                        });  
+                        });
      }
    });
   }
@@ -302,9 +302,9 @@ function append_heap(heap_selection, heap_objects, unique_id_list){
  }
 
  function get_class_name(type){
- 
+
   var s = type.split(".");
   var actual_type = s[s.length-1];
   console.log("aaaaaaaaaaaa", actual_type);
-  return actual_type; 
+  return actual_type;
  }
