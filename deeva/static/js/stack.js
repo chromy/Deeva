@@ -2,19 +2,19 @@
  var type_string = 'string';
  var type_object = 'object';
  var empty_object = {value: undefined};
+
+  // Primitive types in Java.
+ var primitive_list = ["int", "char", "boolean", "byte", "float", "double", "long", "short"];
+
 function main(all_variables){
   d3.selectAll("#global_area").remove();
   d3.selectAll("#heap").remove();
   d3.selectAll("#stack").remove();
 
-  // Primitive types in Java.
-  var primitive_list = ["int", "char", "boolean", "byte", "float", "double", "long", "short"];
 
   var stack_variables = all_variables.stacks || [];
-    console.log("stack_variables", stack_variables);
   var unique_id_list = filter_stacks(stack_variables)[0];
   if(unique_id_list != undefined){
-      console.log("uid_list", unique_id_list);
       $.ajax({
 	  type: "POST",
 	  url: "getHeapObjects",
@@ -24,7 +24,6 @@ function main(all_variables){
 	  success: function (data) {
               var heap_td  = d3.select("#heap_td");
               append_heap(heap_td, data.objects, unique_id_list);
-	      console.log("data stuff bla2", data);
 	  }
       });
  }
@@ -39,12 +38,12 @@ function main(all_variables){
   var stackFrames = stack.append("div")
                          .attr("id", "stackFrames");
 
-  append_stacks(stackFrames, stack_variables, primitive_list);
+  append_stacks(stackFrames, stack_variables);
 
  }
 
 
-function append_stacks(stack_selection, stack_variables, primitive_list){
+function append_stacks(stack_selection, stack_variables){
    
    // create a div for each stack
    var stackFrames = stack_selection.selectAll("div")
@@ -100,12 +99,12 @@ function append_stacks(stack_selection, stack_variables, primitive_list){
                       return "stackFrameValue_" + d.name;
                  });
 
-   populate_values(stackFrameValues, primitive_list);
+   populate_values(stackFrameValues);
 }
 
 /* Populates the stack with the values(the actual value for primitive types
    and with arrows for objects). */
-function populate_values(selection, primitive_list){
+function populate_values(selection){
    var primitives = selection.filter(function(d){
       return primitive_list.indexOf(d.type) >= 0;
    });
