@@ -167,7 +167,7 @@ function append_heap(heap_selection, heap_objects, unique_id_list){
                               .data(function(d){
                                  if(is_of_type(d, type_array) && d.length > 0)
                                    return d.array;
-                                 else if(is_of_type(d, TYPE_STRING))
+                                 else if(is_of_type(d, type_string))
                                    return d.string;
                                  else if(is_of_type(d, type_object))
                                    // TODO
@@ -207,9 +207,9 @@ function append_heap(heap_selection, heap_objects, unique_id_list){
                                 .data(function(d){
                                    if(is_of_type(d, type_array))
                                       return d.array;
-                                   if(is_of_type(d, TYPE_STRING))
+                                   if(is_of_type(d, type_string))
                                       return d.string;
-                                   if(is_of_type(d, TYPE_OBJECT))
+                                   if(is_of_type(d, type_object))
                                       return [];
                                })
                                .enter()
