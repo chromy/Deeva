@@ -175,6 +175,9 @@ def get_heap_objects():
     args = request.get_json()
     heap_requests = args.get('heap_requests')
 
+    if app.debugger.getStateName() == 'NO_INFERIOR':
+        return jsonify(success=False)
+
     heap_objects = []
     for heap_request in heap_requests:
         unique_id = int(heap_request.get('unique_id'))
@@ -189,6 +192,10 @@ def get_heap_objects():
         heap_objects.append(heap_object_dict)
 
     return jsonify(success="true", objects=heap_objects)
+
+@app.route("/ping")
+def ping():
+    return "success"
 
 @app.errorhandler(500)
 def page_not_found(error):

@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 
 import os, webbrowser, subprocess
-from deeva import app, debug
+from deeva import app, debug, file_examiner
 
 class ConfigError(Exception):
     pass
@@ -15,6 +15,16 @@ def bool_arg(arg):
     else:
         raise ConfigError()
 
+def ask(question):
+    print question, '(y/n)'
+    while True:
+        a = raw_input('').lower()
+        if a == 'y':
+            return True
+        elif a == 'n':
+            return False
+        print question, '(y/n)'
+
 def config(app):
     app.config['DEBUG'] = bool_arg(os.environ.get('DEEVA_DEBUG', 'False'))
     app.config['OPEN_BROWSER'] = bool_arg(os.environ.get('DEEVA_OPEN_BROWSER', 'True'))
@@ -23,6 +33,13 @@ def config(app):
 def main(prog, args):
     # Read config vars
     config(app)
+
+    missing = file_examiner.classes_that_look_out_of_date(args.source_cp)
+    if missing != []:
+        print 'These files have classes that look like they need to recompiled:'
+        print '\n'.join(missing)
+        if not ask('Continue?'):
+            exit()
 
     # Start the Java debug server
     deeva_cp = os.path.dirname(os.path.abspath(__file__))

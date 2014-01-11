@@ -25,6 +25,7 @@ public class SimpleLoop {
       int j = 123;
       int k = 234;
       int l = 345;
+      int[] aaa = {1,2,3};
       boolean m = true;
       String s = "Hello123";
       System.out.println(s);
