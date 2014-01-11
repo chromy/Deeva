@@ -159,8 +159,7 @@ public class Debug extends EventHandlerBase {
         return state;
     }
 
-    public JVMValue getHeapObject(Long uniqueRefID,
-                                                       String refType) {
+    public JVMValue getHeapObject(Long uniqueRefID, String refType) {
         /* We can assume that the class would be loaded, since we're not
          * allowing arbitrary introspection */
 
@@ -197,9 +196,6 @@ public class Debug extends EventHandlerBase {
 
         /* Process the heap object*/
         Set<String> classes = finder.getAllClasses().keySet();
-        /*Map<String, ? extends Object> processedObject
-                = ValueProcessor.processValueSingleDepth(objectFound,
-                classes);*/
 
         return ValueProcessor.processValueFull(objectFound, classes);
     }
@@ -266,8 +262,11 @@ public class Debug extends EventHandlerBase {
             System.err.println("Type: " + type.name());
 
             /* Get an overview for the variable */
-            JVMValue jvmValue = ValueProcessor.processVariable(var,
-                    variableValue);
+
+            JVMValue jvmValue
+                = ValueProcessor.processVariable(var, variableValue,
+                                                 finder.getAllClasses()
+                                                         .keySet());
 
             localVariables.add(jvmValue);
         }

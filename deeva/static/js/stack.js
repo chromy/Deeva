@@ -11,6 +11,11 @@ function main(all_variables){
   d3.selectAll("#stackFrames").remove();
 
   jsPlumb.deleteEveryEndpoint();
+   $('#visual').scroll(
+                function(){
+                    jsPlumb.repaintEverything();
+                }
+            )
 
   var stack_variables = all_variables.stacks || [];
   var unique_id_list = filter_stacks(stack_variables)[0];
@@ -57,11 +62,12 @@ function append_stacks(stack_selection, stack_variables){
                                         return "stackHeader" + i;
                                     })
                                     .text(function(d){
-                                        return d.method_name;
+                                        console.log("assssss", d);
+                                        return d.methodName;
                                     });
 
    //variable table
-   var stackFrameTable = stackFrames.append("table")
+  var stackFrameTable = stackFrames.append("table")
                                    .attr("class", "stackFrameVarTable")
                                    .attr("id",function(d, i){
                                         return "stackVarTable" + i;
@@ -231,7 +237,8 @@ function append_heap(heap_selection, heap_objects, unique_id_list){
   function create_arrows(selection, unique_id_list){
    // makes connectors undraggable
    jsPlumb.importDefaults({
-     ConnectionsDetachable:false,
+     ConnectionsDetachable: false,
+     position: "relative"
    });
 
    jsPlumb.bind("ready", function(){
@@ -240,7 +247,8 @@ function append_heap(heap_selection, heap_objects, unique_id_list){
        for(var i=0; i<n; i++){
         var source = jsPlumb.addEndpoint("stackFrameValue_heap_"
                          + unique_id_list[i].unique_id,
-                           {anchor: [0.5, 0.5, 0, -1, 0, 2],
+                           {anchor: "Center",
+                           //{anchor: [0.5, 0.5, 0, -1, 0, 2],
                             endpoint: ["Dot", {radius:5}],
                             connectionsDetachable:false,
                             cssClass: "stackPoint"
@@ -269,6 +277,7 @@ function append_heap(heap_selection, heap_objects, unique_id_list){
    jsPlumb.ready(function()  { 
    jsPlumb.addEndpoint("array_" + array_elems_uid[i],
                            {cssClass: "stackPoint",
+                            anchor: "Center",
                             endpoint: ["Dot", {radius:5}],
                             anchor: [0.5, 0.5, 0, -1],
                             connectionsDetachable:false
