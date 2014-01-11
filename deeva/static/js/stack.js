@@ -57,7 +57,8 @@ function append_stacks(stack_selection, stack_variables){
                                         return "stackHeader" + i;
                                     })
                                     .text(function(d){
-                                        return d.method_name;
+                                        console.log("assssss", d);
+                                        return d.methodName;
                                     });
 
    //variable table
@@ -231,7 +232,8 @@ function append_heap(heap_selection, heap_objects, unique_id_list){
   function create_arrows(selection, unique_id_list){
    // makes connectors undraggable
    jsPlumb.importDefaults({
-     ConnectionsDetachable:false,
+     ConnectionsDetachable: false,
+     position: "relative"
    });
 
    jsPlumb.bind("ready", function(){
