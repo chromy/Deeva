@@ -170,6 +170,7 @@ function append_heap(heap_selection, heap_objects, unique_id_list){
                                  else if(is_of_type(d, type_string))
                                    return d.string;
                                  else if(is_of_type(d, type_object))
+                                   // TODO
                                    return [1];
                                  else
                                    return [empty_object];
@@ -182,7 +183,10 @@ function append_heap(heap_selection, heap_objects, unique_id_list){
                               });
 
    var all_arrays = heap.selectAll("."+type_array).select("#value");
-   all_arrays.selectAll("td");
+   all_arrays.selectAll("td")
+             .text(function(d){
+                console.log("ARRAY__", d);
+             });
          
 
    var all_strings = heap.selectAll("."+type_string).select("#value");
