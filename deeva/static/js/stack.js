@@ -177,8 +177,11 @@ function append_heap(heap_selection, heap_objects, unique_id_list){
                               .enter()
                               .append("td")
                               .text(function(d){
-                                 if(is_empty_object(d))
+
+                                 if(is_empty_object(d)){
+                                 console.log("WWW", d);
                                    return "empty";
+                                 }
                               });
    var array_elems_uid = [];
 
@@ -188,8 +191,12 @@ function append_heap(heap_selection, heap_objects, unique_id_list){
                 if(!is_empty_object(d) && primitive_list.indexOf(d.type) >= 0){
                    return d.value;
                 }else{
-                   array_elems_uid.push(d.unique_id);
-                   return ;
+                   if(!is_empty_object(d)){
+                     array_elems_uid.push(d.unique_id);
+                     return ;
+                   }else{
+                     return "empty";
+                    }
                 }
              })
              .attr("id", function(d){
@@ -247,8 +254,7 @@ function append_heap(heap_selection, heap_objects, unique_id_list){
        for(var i=0; i<n; i++){
         var source = jsPlumb.addEndpoint("stackFrameValue_heap_"
                          + unique_id_list[i].unique_id,
-                           {anchor: "Center",
-                           //{anchor: [0.5, 0.5, 0, -1, 0, 2],
+                           {anchor: [0.5, 0.5, 1, 1],
                             endpoint: ["Dot", {radius:5}],
                             connectionsDetachable:false,
                             cssClass: "stackPoint"
@@ -263,7 +269,7 @@ function append_heap(heap_selection, heap_objects, unique_id_list){
         jsPlumb.connect({source: source,
                          target: target,
                          overlays: [["Arrow", {width: 6,length: 6,location:1}]],
-                         Connector : ["State Machine", {proximityLimit:1}],
+                         Connector : ["State Machine", {proximityLimit:10}],
                          cssClass: "connectLine"
                         });
      }
@@ -271,15 +277,15 @@ function append_heap(heap_selection, heap_objects, unique_id_list){
   }
 
  function addEndPointsToArrayElems(array_elems_uid){
+   console.log("array_uid", array_elems_uid);
    var n = array_elems_uid.length;
    for(var i=0; i<n; i++){
    console.log("array_" + array_elems_uid[i]);
    jsPlumb.ready(function()  { 
    jsPlumb.addEndpoint("array_" + array_elems_uid[i],
                            {cssClass: "stackPoint",
-                            anchor: "Center",
                             endpoint: ["Dot", {radius:5}],
-                            anchor: [0.5, 0.5, 0, -1],
+                            anchor: [0.5, 0.5, 1, 1],
                             connectionsDetachable:false
                            });
            });
