@@ -44,6 +44,10 @@
   text-align: center;
 }
 
+#value td{
+  height: 30px;
+}
+
 table.STRING{
   background-color: #F3F781;
   border-radius: 7px;
@@ -55,6 +59,7 @@ table.ARRAY{
 table.ARRAY td{
   border: 1px solid black;
 }
+
 #indice {
   min-height: 10px;
   font-size: 10px;
@@ -73,3 +78,4 @@ svg.connectLine path{
 .stackPoint svg circle{
   fill: black;
 }
+
