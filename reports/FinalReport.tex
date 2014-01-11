@@ -421,28 +421,21 @@ A Javascript frontend using Angular, Codemirror and D3, a Java backend using the
 
 \subsection{Deciding on a Web Front End}
 Beginning this project we knew we needed a graphical interface and were faced with a difficult decision.
-The obvious approach was a classic monolithic Java application\footnote{Java being the natural choice since it was the target language} however this had some disadvantages.
+The obvious approach was a classic monolithic Java application\footnote{Java being the natural choice since it was the target language} however this had some disadvantages. 
 
-- We have limited desktop experience GUI
-- Lots of custom code for the state UI
-- Java GUIs suck
+We have limited experience with desktop GUI programs, our previous experience with Java GUIs (as users) had been poor, 
+we knew we would need a lot of custom code for drawing the state UI which would be painful in Java and where worried about the 
 
-In contrast we had a lot of web development experience, the web is 
-Moreover framing the
+In contrast we had a lot more web development experience.
+Having examined Python Tutor we knew that the custom UI we wanted would be easy to do in a web front end.
 
+Finally writing the project as a ``local web service" promotes a clear boundary between interface and backend allowing us to more effectively work on the project (people can work on front and back end simultaneously) and allowing either component to be easily swapped out.
 
-- A lot of Web experience
-- Web service promotes clear boundary between interface and backend allowing us to more effectively work on the project (people can work on front and back end simultaneously)
-- Opens up better technologies
-- Exiting applications
-- Faster development
-- lots of
-- Opptuiting for learning
+\todo{This became important when mid way through the project we realised that the resolution of the projectors in the lecture halls was too low to see both the code and the state on the same screen.}
 
 
 \subsection{Technology Choice}
 Deeva uses a range of technologies, some of which were new to us and some which were already familiar.
-
 
 \subsubsection{Front End}
 Effectively all web code ends up executing in Javascript and although there are many tools which compile to Javascript (CoffeeScript, Dart, TypeScript and many many more) given that we all had some passing familiarity with Javascript and very little exposure to any of the others we opted to stick with Javascript.
@@ -462,22 +455,24 @@ We choose to use JOSN and REST partly because it is what we are most used each o
 This was a good decision, \todo{Talk about outcome}.
 
 \subsubsection{Middleware}
-Python
-Flask
-py4j
+We considered using Java for the server layer which would have drastically simplify the design but in the end (despite trying several) could not find a Java web framework and server that was lightweight enough for our application. 
+In the end we used Python and Flask for the middle server layer because we had a lot of previous experience with them.
+Flask is a very lightweight `microframework'.
 
+We used \cmd{py4j} to bridge the Java Python gap, allowing our Python server to call and handle callbacks from the Java backend.
+We initially attempted to use \cmd{Pyjnius} but it was time consuming to build (our continuous integration tests took ~15mins) and we could not get it to work on non-Linux platforms.
+We also considered \cmd{JPype} but it seemed to have worse documentation and seemed significantly less active than either of the others.    
 
 \subsubsection{Back End}
-Java
-jdi
-
+We used the Java Debug Interface (\cmd{jdi}) to create, run, step, pause and inspect the inferior programs.
+We considered other alternatives: \cmd{jdi} uses a lower level API to the JVM which we could have used or we could 
 
 
 \section{Evaluation}
 \label{sec:evaluation}
 We used a number of techniques to evaluate Deeva.
 We used some techniques to help us find or fix specific problems and we used others to make sure that we were on the right track building the right things.
-\subsection{Usibility Testing}
+\subsection{Usability Testing}
 
 \subsubsection{Hallway Testing}
 \begin{figure}[h!]
@@ -618,20 +613,21 @@ One of our group members hand-made a set of poker cards just for estimation.
 It contains the Fibonacci numbers up to 13 including 0 and infinity - if the task was unfeasible in the time given, as well as ``coffee time'' if we think we needed a break. 
 
 \subsubsection{Facebook Group}
-Creating a Facebook group proved very efficient for communicating meeting times and general enquiries that were too conversational for Trello.  
+Creating a Facebook group proved very efficient for communicating meeting times and general enquiries that were too conversational for Trello.
 
 \subsubsection{Google Docs}
 We used Google Docs for collaborative editing on reports, plans and meeting summaries in real time.
   
 \subsubsection{Github}
-Github is a hosted source control which somebody else manages and is easily accessible from anywhere and also plays nicely with the hosted Continuous Integration tool - Travis CI.
+Github is a hosted source control which somebody else manages and is easily accessible from anywhere and also plays nicely with the hosted Continuous Integration tool we used - Travis CI.
+Over the period we worked on this project Github had a few hours of down time but this was easily less than the time it would have taken us to setup and maintain our own source control server.
 
 \subsubsection{Travis CI}
 Travis\footnote{\url{http://travis-ci.com/}} is an online continues integration server.
 Whenever we push code to the Github server Travis takes the commit then makes and runs our integration tests, if the build fails Travis' emails us.
 Ideally the build on Travis should never fail (since we should run the tests ourselves before we commit) but the email notifications proved very useful for problems which only show up on a fresh install or if we made a small commit which ``shouldn't" have broken the build.
 Travis' notifications allowed quickly brought bad commits to our attention allowing us to fix or revert them before they became a major problem.  
-The major downside was since Travis has to install all the dependencies each time running the tests could take up to ten  
+Since Travis has to install all the dependencies each time running the tests can take up to ten minutes. 
 
 
 
