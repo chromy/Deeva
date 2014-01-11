@@ -31,10 +31,10 @@ def main(prog, args):
     gson_cp = "lib/gson-2.2.4.jar"
     classpath = deeva_cp + ":" + jdi_cp + ":" + gson_cp
 
-    print "args:", args.args, type(args.args)
     app.debugger, app.gateway = debug.create_java_debugger(classpath, prog, args.cp,
                                                            args.source_cp, args.ea,
                                                            args.args)
+    app.gson_lib = app.gateway.jvm.com.google.gson.GsonBuilder().setPrettyPrinting().create()
 
     # Save the program name
     app.program = prog
