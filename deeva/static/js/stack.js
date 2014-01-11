@@ -10,6 +10,7 @@ function main(all_variables){
   d3.selectAll("#heapBody").remove();
   d3.selectAll("#stackFrames").remove();
 
+  jsPlumb.deleteEveryEndpoint();
 
   var stack_variables = all_variables.stacks || [];
   var unique_id_list = filter_stacks(stack_variables)[0];
