@@ -17,21 +17,21 @@ public class PrimitiveValue extends JVMValue {
 
     public PrimitiveValue(String type, Value variableValue) {
         super(type);
-        if (variableValue instanceof IntegerType) {
+        if (variableValue instanceof IntegerValue) {
             this.value = ((IntegerValue) variableValue).value();
-        } else if (variableValue instanceof BooleanType) {
+        } else if (variableValue instanceof BooleanValue) {
             this.value = ((BooleanValue) variableValue).value();
-        } else if (variableValue instanceof ByteType) {
+        } else if (variableValue instanceof ByteValue) {
             this.value = ((ByteValue) variableValue).value();
-        } else if (variableValue instanceof CharType) {
+        } else if (variableValue instanceof CharValue) {
             this.value = ((CharValue) variableValue).value();
-        } else if (variableValue instanceof DoubleType) {
+        } else if (variableValue instanceof DoubleValue) {
             this.value = ((DoubleValue) variableValue).value();
-        } else if (variableValue instanceof FloatType) {
+        } else if (variableValue instanceof FloatValue) {
             this.value = ((FloatValue) variableValue).value();
-        } else if (variableValue instanceof LongType) {
+        } else if (variableValue instanceof LongValue) {
             this.value = ((LongValue) variableValue).value();
-        } else if (variableValue instanceof ShortType) {
+        } else if (variableValue instanceof ShortValue) {
             this.value = ((ShortValue) variableValue).value();
         } else {
             this.value = "void";
