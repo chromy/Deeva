@@ -48,6 +48,20 @@ function ($scope, $http, FileService, MiscService) {
     setUpCodeMirror();
     displayTerminal();
     init();
+    startLivenessCheck();
+
+    function startLivenessCheck() {
+        var checkID = window.setInterval(function () {
+            $http.get("ping").error(function(status) {
+                $('#exitModal').modal({
+                     keyboard: false,
+                     backdrop: 'static'
+                });
+                console.error("Server Dead.");
+                clearInterval(checkID);
+            });
+        }, 1000);
+    }
 
     /* Click handler for the debug buttons */
     $scope.clickButton = function(destination, assertions, argument_array) {
@@ -164,7 +178,7 @@ function ($scope, $http, FileService, MiscService) {
             tabSize: 4,
             lineNumbers: true,
             lineWrapping: true,
-            firstLineNumber: 0,
+            firstLineNumber: 1,
             readOnly: "nocursor",
             gutters: ["CodeMirror-linenumbers", "breakpoints"],
         });
