@@ -1,6 +1,7 @@
- var type_array = 'array';
- var type_string = 'string';
- var type_object = 'object';
+ var TYPE_ARRAY = 'ARRAY';
+ var TYPE_STRING = 'STRING';
+ var TYPE_OBJECT = 'OBJECT';
+
  var empty_object = {value: undefined};
 function main(all_variables){
   d3.selectAll("#global_area").remove();
@@ -45,7 +46,7 @@ function main(all_variables){
 
 
 function append_stacks(stack_selection, stack_variables, primitive_list){
-   
+
    // create a div for each stack
    var stackFrames = stack_selection.selectAll("div")
                                     .data(stack_variables)
@@ -152,7 +153,7 @@ function append_heap(heap_selection, heap_objects){
    var heapObjectType = heapRowObject.append("div")
                                      .attr("class", "typeLabel")
                                      .text(function(d,i){
-                                        if(is_of_type(d, type_object))
+                                        if(is_of_type(d, TYPE_OBJECT))
                                            return d.type;
                                         else
                                            return d.object_type;
@@ -168,9 +169,9 @@ function append_heap(heap_selection, heap_objects){
    var values_entries = values.selectAll("td")
                               .data(function(d){
                                  console.log("AICI", d);
-                                 if(is_of_type(d, type_array) && d.length > 0)
+                                 if(is_of_type(d, TYPE_ARRAY) && d.length > 0)
                                    return d.array;
-                                 else if(is_of_type(d, type_string))
+                                 else if(is_of_type(d, TYPE_STRING))
                                    return d.string;
                                  else
                                    return [empty_object];
@@ -189,11 +190,11 @@ function append_heap(heap_selection, heap_objects){
    var indices_entries = indices.selectAll("td")
                                 .data(function(d){
                                  console.log("NEXT - NEXT", d);
-                                   if(is_of_type(d, type_array))
+                                   if(is_of_type(d, TYPE_ARRAY))
                                       return d.array;
-                                   if(is_of_type(d, type_string))
+                                   if(is_of_type(d, TYPE_STRING))
                                       return d.string;
-                                   if(is_of_type(d, type_object))
+                                   if(is_of_type(d, TYPE_OBJECT))
                                       return [];
                                })
                                .enter()
@@ -201,7 +202,7 @@ function append_heap(heap_selection, heap_objects){
                                .text(function(d,i){
                                    return i;
                                });
-   var objects = heap_selection.selectAll("." + type_object).selectAll("#value");
+   var objects = heap_selection.selectAll("." + TYPE_OBJECT).selectAll("#value");
 
    var objects_button = objects.append("button")
                                .attr("type", "button")
@@ -250,12 +251,12 @@ function append_heap(heap_selection, heap_objects){
 
  function filter_stacks(stack_variables){
   var map = Array.prototype.map;
- 
+
   var filtered_stacks = map.call(stack_variables, filter_one_stack);
-  var one_filtered_stack = []; 
+  var one_filtered_stack = [];
   var n = filtered_stacks.length;
   for(var i=0; i<n;i++){
-   one_filtered_stack.push(filtered_stacks[i]); 
+   one_filtered_stack.push(filtered_stacks[i]);
   }
   return one_filtered_stack;
  }
@@ -263,12 +264,12 @@ function append_heap(heap_selection, heap_objects){
  function filter_one_stack(one_stack){
   var map = Array.prototype.map;
   var stack = one_stack.stack;
-  
+
   stack = stack.filter(function(d){
     return d.unique_id != undefined;
   });
   stack = map.call(stack, function(d){
-    return {unique_id: d.unique_id, type: d.type}; 
+    return {unique_id: d.unique_id, type: d.type};
   });
   return stack;
  }
@@ -284,7 +285,7 @@ function append_heap(heap_selection, heap_objects){
  function is_of_type(heap_element, type){
    return heap_element.object_type == type;
  }
- 
+
  function is_empty_object(obj){
    return obj == empty_object;
  }
