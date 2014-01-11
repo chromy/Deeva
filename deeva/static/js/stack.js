@@ -247,7 +247,8 @@ function append_heap(heap_selection, heap_objects, unique_id_list){
        for(var i=0; i<n; i++){
         var source = jsPlumb.addEndpoint("stackFrameValue_heap_"
                          + unique_id_list[i].unique_id,
-                           {anchor: [0.5, 0.5, 0, -1, 0, 2],
+                           {anchor: "Center",
+                           //{anchor: [0.5, 0.5, 0, -1, 0, 2],
                             endpoint: ["Dot", {radius:5}],
                             connectionsDetachable:false,
                             cssClass: "stackPoint"
@@ -276,6 +277,7 @@ function append_heap(heap_selection, heap_objects, unique_id_list){
    jsPlumb.ready(function()  { 
    jsPlumb.addEndpoint("array_" + array_elems_uid[i],
                            {cssClass: "stackPoint",
+                            anchor: "Center",
                             endpoint: ["Dot", {radius:5}],
                             anchor: [0.5, 0.5, 0, -1],
                             connectionsDetachable:false
