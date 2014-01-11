@@ -58,7 +58,7 @@ class DeevaEventDispatcher(object):
         """
 
         self.deeva_main.send('deeva_java',
-                             event_obj=DeevaSuspendEvent(state_data))
+                             event_obj=DeevaSuspendedEvent(state_data))
 
     def stack_heap_object_event(self, stack_data, heap_data):
         """This event occurs when the Debuggee JVM has the result for a explicit heap
@@ -212,7 +212,14 @@ class DeevaSuspendedEvent(DeevaEvent):
 
     def format_event(self):
         messages = []
+        from deeva import app
+        state_data_json = app.gson_lib.toJson(self.state_data)
+        state_data_json_array = state_data_json.split("\n")
+
         messages.append("event: %s\n" % self.name)
+        for state_data_json_elem in state_data_json_array:
+            messages.append("data: %s\n" % state_data_json_elem)
+        messages.append("\n")
 
         return messages
 
@@ -228,8 +235,12 @@ class DeevaStackHeapEvent(DeevaEvent):
         from deeva import app
         # Serialise the data objects
         stack_json = app.gson_lib.toJson(self.stack_data)
+        stack_json_array = stack_json.split("\n")
         messages.append("event: %s\n" % self.name)
-        messages.append("data: %s\n\n" % stack_json)
+
+        for stack_elem in stack_json_array:
+            messages.append("data: %s\n" % stack_elem)
+        messages.append("\n")
 
         return messages
 
