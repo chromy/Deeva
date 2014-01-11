@@ -189,9 +189,10 @@ def get_heap_objects():
         unique_id = int(heap_request.get('unique_id'))
         typestr = heap_request.get('type')
 
-        print "Request for object(id=%d, class=%s)" % (unique_id, typestr)
-        # TODO: Return null objects if we can't find, and skip that object
+        print "< Request for object(id=%d, class=%s) >" % (unique_id, typestr)
         heap_object = app.debugger.getHeapObject(unique_id, typestr)
+        if not heap_object:
+            continue
         heap_object_json = app.gson_lib.toJson(heap_object)
         heap_object_dict = json.loads(heap_object_json)
         heap_objects.append(heap_object_dict)
