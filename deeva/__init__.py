@@ -5,13 +5,12 @@ from debug import load, WrongState
 import events
 import pprint
 from py4j.java_collections import ListConverter
+import simplejson as json
 
 app = Flask('deeva')
 app.package_dict = {}
 app.sources = {}
 app.source_code = {}
-
-
 
 @app.route("/closeConnection") # take in a con id
 def closeCon():
@@ -38,6 +37,9 @@ def stream_html():
 @app.route("/stream")
 def stream():
     subscriber = debug.DeevaEventSubscriber(["deeva"])
+
+
+
 @app.route("/")
 def index():
     try:
@@ -86,11 +88,9 @@ def run():
         request_args = request.get_json()
         argument_array = request_args.get("args")
         enable_assertions = request_args.get("ea")
-        print request_args
         java_argument_array = ListConverter().convert(argument_array, app.gateway._gateway_client)
 
         print 'Starting program...'
-        # TODO Pass in the actual class path to the *debuggee program* here
         # Aswell as any other arguments e.g. -ea -cp asdf, commandline arguments
         app.debugger.start(app.program, java_argument_array, enable_assertions)
     else:
@@ -177,8 +177,6 @@ def push_input():
     args = request.get_json()
     message = args.get('message')
 
-    print "PYTHON -", message
-
     return make_api_response(app.debugger.putStdInMessage, message)
 
 @app.route("/getHeapObjects", methods=["POST"])
@@ -194,7 +192,8 @@ def get_heap_objects():
         print "Request for object(id=%d, class=%s)" % (unique_id, typestr)
         # TODO: Return null objects if we can't find, and skip that object
         heap_object = app.debugger.getHeapObject(unique_id, typestr)
-        heap_object_dict = eval(repr(heap_object))
+        heap_object_json = app.gson_lib.toJson(heap_object)
+        heap_object_dict = json.loads(heap_object_json)
         heap_objects.append(heap_object_dict)
 
     return jsonify(success="true", objects=heap_objects)
@@ -217,6 +216,11 @@ def make_api_response(f, *args, **kargs):
     else:
         stdout, stderr = debug.pop_output()
 
+        # Serialise the Java Object using the gson library and deserialise it
+        # into a Python Dictionary
+        result_json = app.gson_lib.toJson(result)
+        result_dict = json.loads(result_json)
+
         # If we're awaiting IO, the vm is not a suspended, so just dump stdin
         # and stderr and the state. We can't inspect variables etc.
 
@@ -224,37 +228,10 @@ def make_api_response(f, *args, **kargs):
         # expecting, we similarly dump stdout, stderr and status, as the vm is
         # not in a suspend state.
 
-        if result['state'] == "AWAITING_IO" or result.get('non_sema'):
-            return jsonify(stdout=stdout, stderr=stderr, state=result['state'])
+        if result_dict.get('state') == "AWAITING_IO" or result_dict.get('premature_push'):
+            return jsonify(stdout=stdout, stderr=stderr, state=result.get('state'))
 
         # XXX: fix
-        result['line_number'] -= 1
-        st = result['stack']
+        result_dict['line_number'] -= 1
 
-        # Need to do some sort of recursive converter, so that we don't have
-        # malicious strings in Java that will kill our eval/repr etc
-
-        stack_metas = result.get('stacks') or []
-        stacks = []
-        for stack_meta in stack_metas:
-            method_name = stack_meta.getMethodName()
-            class_name = stack_meta.getClassName()
-            # Ugly hack, may not get fixed, depends on time left
-            stack_dict = eval(repr(stack_meta.getStackMap()))
-            stack_meta_dict = dict(method_name=method_name, class_name=class_name,
-                                   stack=stack_dict)
-            stacks.append(stack_meta_dict)
-
-        args = eval(repr(result['arguments'])) if eval(repr(result['arguments'])) != [""] else []
-        result2 = {
-            'state' : result['state'],
-            'line_number' : result['line_number'],
-            # Ugly Hack
-            'stack' : eval(repr(st)),
-            'stacks' : stacks,
-            'current_class' : result['current_class'],
-            'arguments' : args,
-            'enable_assertions' : result['ea']
-        }
-        pprint.pprint(result2['stack']);
-        return jsonify(status='ok', stdout=stdout, stderr=stderr, **result2)
+        return jsonify(status='ok', stdout=stdout, stderr=stderr, **result_dict)
