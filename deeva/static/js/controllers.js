@@ -64,17 +64,28 @@ function ($scope, $http, FileService, MiscService, $window) {
         $http.post(destination, {args: argument_array, ea: assertions})
             .success(function(data) {
                 console.log(data);
-                updateState(data);
+                console.debug("Commented out updating state, line 68");
+                //updateState(data);
             })
             .error(function(status) {
                 console.error("There is an error on " + destination + "()");
             });
     };
 
+    function updateStack(stacks) {
+        /* Update the stack and the heap */
+        var stack_heap = {'stacks' : stacks};
+        if (stack_heap.stacks) {
+            main(stack_heap);
+        }
+    }
+
     function updateState(data) {
         if (!data) {
             return;
         }
+
+        console.debug("Updating State");
 
         /* Update the arguments, if we don't get anything, stick with previous value */
         $scope.args = data.arguments || $scope.args;
@@ -91,7 +102,7 @@ function ($scope, $http, FileService, MiscService, $window) {
         $scope.enableAssertions = data.enable_assertions;
 
         /* Update the codemirror instance and the stack/heap visuals */
-        if (data.line_number && data.current_class) {
+        if (data.line_number != undefined && data.current_class) {
             /* Set the breadcrumb (if need be) */
             var new_breadcrumb = data.current_class.split(".");
             var last_index = new_breadcrumb.length - 1;
@@ -102,7 +113,7 @@ function ($scope, $http, FileService, MiscService, $window) {
             $scope.breadcrumb = new_breadcrumb;
 
             /* Remove the line highlights */
-            $scope.codeMirror.removeLineClass($scope.currentLine, "background");
+            $scope.codeMirror.removeLineClass($scope.currentLine - 1, "background");
 
             /* Update the current class */
             $scope.current_class = data.current_class;
@@ -115,25 +126,19 @@ function ($scope, $http, FileService, MiscService, $window) {
                 var current_line = data.line_number;
 
                 $scope.currentLine = current_line;
+                console.debug("CurrentLine: ", $scope.currentLine);
 
                 /*if (prev_line >= 0) {
                     $scope.codeMirror.removeLineClass(prev_line, "background", BACK_CLASS);
                 }*/
 
-                if ($scope.currentLine >= 0) {
+                if ($scope.currentLine > 0) {
                     var cls = $scope.currentState == "NO_INFERIOR" ? PASSIVE_BACK_CLASS : BACK_CLASS;
-                    $scope.codeMirror.addLineClass($scope.currentLine, 'background', cls);
+                    $scope.codeMirror.addLineClass($scope.currentLine - 1, 'background', cls);
                 }
 
                 $scope.codeMirror.setCursor($scope.currentLine);
             });
-
-            // refactor - plus fix heap!
-            /* Update the stack and the heap */
-            var stack_heap = {'stacks' : data.stacks};
-            if (data.stacks) {
-                main(stack_heap);
-            }
         }
 
         if (data.stdout) {
@@ -149,7 +154,8 @@ function ($scope, $http, FileService, MiscService, $window) {
     function init() {
         $http.get('getCurrentState')
             .success(function(data) {
-                updateState(data);
+                console.debug("Commented out updateState line 154");
+                //updateState(data);
             })
             .error(function(status) {
                 console.error("There is an error getting the state.");
@@ -166,7 +172,7 @@ function ($scope, $http, FileService, MiscService, $window) {
             tabSize: 4,
             lineNumbers: true,
             lineWrapping: true,
-            firstLineNumber: 0,
+            firstLineNumber: 1,
             readOnly: "nocursor",
             gutters: ["CodeMirror-linenumbers", "breakpoints"],
         });
@@ -270,7 +276,8 @@ function ($scope, $http, FileService, MiscService, $window) {
         $http.post('pushInput', {message:input+'\n'})
             .success(function(data) {
                 console.log(data)
-                updateState(data);
+                console.debug("Commenting out updating State line 276");
+                //updateState(data);
             })
             .error(function(status) {
                 console.error("There is an error sending input " + status);
@@ -320,7 +327,7 @@ function ($scope, $http, FileService, MiscService, $window) {
         };
 
         /* Closing the connection should we navigate away */
-        $window.onbeforeunload = function() {
+        window.onbeforeunload = function() {
             console.debug("Sending request to close the connection");
             $http.post("/closeConnection", {unique_id: $scope.subscriber_id})
                 .success(function(data) {
@@ -346,19 +353,21 @@ function ($scope, $http, FileService, MiscService, $window) {
         /* event to receive the stack/heap data */
         $scope.eventStream.addEventListener("stack_heap", function(e) {
             var json_string = e.data;
-            var obj = JSON.parse(json_string);
-            console.debug("stack_heap:", obj);
+            var stack_heap = JSON.parse(json_string);
+            console.debug("stack_heap:", stack_heap);
 
             //TODO: Call update stack/heap view
+            updateStack(stack_heap);
         });
 
         /* event to receive the state data when the debuggee jvm gets suspended */
         $scope.eventStream.addEventListener("suspended", function(e) {
             var json_string = e.data;
-            var obj = JSON.parse(json_string);
-            console.debug("suspended:", obj);
+            var state = JSON.parse(json_string);
+            console.debug("suspended:", state);
 
             //TODO: Call update state
+            updateState(state);
         });
 
         $scope.eventStream.addEventListener("absent_information", function(e) {
@@ -367,6 +376,14 @@ function ($scope, $http, FileService, MiscService, $window) {
 
         $scope.eventStream.addEventListener("awaiting_io", function(e) {
             console.debug("AWAITING_IO, data: ", e.data);
+        });
+
+        $scope.eventStream.addEventListener("stderr", function(e) {
+            console.debug("stderr:", e.data)
+        });
+
+        $scope.eventStream.addEventListener("stdout", function(e) {
+            console.debug("stdout:", e.data)
         });
     };
 

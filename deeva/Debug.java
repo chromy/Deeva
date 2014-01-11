@@ -691,11 +691,21 @@ public class Debug extends EventHandlerBase {
 
         errThread = new StreamRedirectThread("stderr",
                 process.getErrorStream(),
-                this.outQueue);
+                this.outQueue, new OutputDispatcher() {
+            @Override
+            public void dispatchOutput(String s) {
+                dispatcher.stderr(s);
+            }
+        });
 
         outThread = new StreamRedirectThread("stdout",
                 process.getInputStream(),
-                this.outQueue);
+                this.outQueue, new OutputDispatcher() {
+            @Override
+            public void dispatchOutput(String s) {
+                dispatcher.stdout(s);
+            }
+        });
 
         inThread = new StdInRedirectThread("stdin",
                 process.getOutputStream(), this.inQueue);

@@ -12,4 +12,6 @@ public interface DeevaEventDispatcher {
                                             heapObjects);
     public void absent_information_event(String className);
     public void error(String errorName, String errorMessage);
+    public void stdout(String s);
+    public void stderr(String s);
 }
