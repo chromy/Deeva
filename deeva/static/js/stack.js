@@ -229,8 +229,8 @@ function append_heap(heap_selection, heap_objects, unique_id_list){
                             cssClass: "stackPoint"
                            });
 
-        var target = jsPlumb.addEndpoint("heap_object_", 
-                         + unique_id_list[i].unique_id,
+        var target = jsPlumb.addEndpoint("heap_object_"
+                        + unique_id_list[i].unique_id,
                            {anchor: "Left",
                             endpoint: "Blank",
                             connectionsDetachable:false
