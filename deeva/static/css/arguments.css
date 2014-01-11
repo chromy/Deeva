@@ -29,6 +29,7 @@
     font-weight: normal;
     margin-bottom: 2px;
     float: left;
+    cursor: pointer;
 }
 
 .enable-assertions .enabled {
