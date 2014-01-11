@@ -23,7 +23,7 @@ function main(all_variables){
 	  dataType: "json",
 	  success: function (data) {
               var heap_td  = d3.select("#heap_td");
-              append_heap(heap_td, data.objects);
+              append_heap(heap_td, data.objects, unique_id_list);
 	      console.log("data stuff bla2", data);
 	  }
       });
@@ -122,7 +122,7 @@ function populate_values(selection, primitive_list){
 }
 
 // Creates the heap and the objects in it.
-function append_heap(heap_selection, heap_objects){
+function append_heap(heap_selection, heap_objects, unique_id_list){
    console.log("heap", heap_objects);
    var heap = heap_selection.append("div").attr("id", "heap");
    var heapHeader = heap.append("div")
@@ -167,7 +167,6 @@ function append_heap(heap_selection, heap_objects){
    var values = objectArrayTable.append("tr").attr("id", "value");
    var values_entries = values.selectAll("td")
                               .data(function(d){
-                                 console.log("AICI", d);
                                  if(is_of_type(d, type_array) && d.length > 0)
                                    return d.array;
                                  else if(is_of_type(d, type_string))
@@ -188,7 +187,6 @@ function append_heap(heap_selection, heap_objects){
    var indices = objectArrayTable.append("tr").attr("id", "indice");
    var indices_entries = indices.selectAll("td")
                                 .data(function(d){
-                                 console.log("NEXT - NEXT", d);
                                    if(is_of_type(d, type_array))
                                       return d.array;
                                    if(is_of_type(d, type_string))
@@ -208,11 +206,11 @@ function append_heap(heap_selection, heap_objects){
                                .attr("class", "btn btn-default");
    objects_button.append("span")
                  .attr("class", "glyhicon glyphicon-plus");
-  //create_arrows(objects);
+  create_arrows(objects, unique_id_list);
 }
 
 
-  function create_arrows(selection){
+  function create_arrows(selection, unique_id_list){
    selection.append("svg").attr("id", "arrow");
 
    // makes connectors undraggable
@@ -222,25 +220,28 @@ function append_heap(heap_selection, heap_objects){
 
    jsPlumb.bind("ready", function(){
       jsPlumb.Defaults.Container = "heap_stack";
-        var source = jsPlumb.addEndpoint("stackFrameValue_heap_71",
+       var n = unique_id_list.length;
+       for(var i=0; i<n; i++){
+        var source = jsPlumb.addEndpoint("stackFrameValue_heap_"
+                         + unique_id_list[i].unique_id,
                            {anchor: [0.5, 0.5, 0, -1, 0, 2],
                             connectionsDetachable:false,
                             cssClass: "stackPoint"
                            });
-/*
-        var target = jsPlumb.addEndpoint("heap_object_71",
+
+        var target = jsPlumb.addEndpoint("heap_object_", 
+                         + unique_id_list[i].unique_id,
                            {anchor: "Left",
                             endpoint: "Blank",
                             connectionsDetachable:false
                            });
-/*
         jsPlumb.connect({source: source,
                          target: target,
                          overlays: [["Arrow", {width: 6,length: 6,location:1}]],
                          Connector : ["State Machine", {proximityLimit:1}],
                          cssClass: "connectLine"
-                        });
-*/
+                        });  
+     }
    });
   }
 
