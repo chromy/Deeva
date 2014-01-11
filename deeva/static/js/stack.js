@@ -262,12 +262,12 @@ function append_heap(heap_selection, heap_objects, unique_id_list){
 
  function filter_stacks(stack_variables){
   var map = Array.prototype.map;
- 
+
   var filtered_stacks = map.call(stack_variables, filter_one_stack);
-  var one_filtered_stack = []; 
+  var one_filtered_stack = [];
   var n = filtered_stacks.length;
   for(var i=0; i<n;i++){
-   one_filtered_stack.push(filtered_stacks[i]); 
+   one_filtered_stack.push(filtered_stacks[i]);
   }
   return one_filtered_stack;
  }
@@ -275,12 +275,12 @@ function append_heap(heap_selection, heap_objects, unique_id_list){
  function filter_one_stack(one_stack){
   var map = Array.prototype.map;
   var stack = one_stack.stack;
-  
+
   stack = stack.filter(function(d){
     return d.unique_id != undefined;
   });
   stack = map.call(stack, function(d){
-    return {unique_id: d.unique_id, type: d.type}; 
+    return {unique_id: d.unique_id, type: d.type};
   });
   return stack;
  }
@@ -296,7 +296,7 @@ function append_heap(heap_selection, heap_objects, unique_id_list){
  function is_of_type(heap_element, type){
    return heap_element.object_type == type;
  }
- 
+
  function is_empty_object(obj){
    return obj == empty_object;
  }
