@@ -62,23 +62,26 @@
               <div id="innerRunBtn" ng-show="currentState != 'NO_INFERIOR'"></div>
               <div id="innerRunBtnText" ng-show="currentState == 'NO_INFERIOR'">Run</div>
             </div>
-            <div type="image" class="myButtons" id="stopBtn"
+            <input type="image" class="myButtons" id="stopBtn"
                  ng-disabled="!(state.stopBtn.indexOf(currentState) > -1)"
-                 ng-click="stop()" title="Stop">
-              <div id="innerStopBtn"></div>
-            </div>
-            <div type="image" class="myButtons" id="stepOverBtn"
+                 ng-click="stop()" title="Stop" 
+                 src="/static/css/images/stop.png">
+            </input>
+            <input type="image" class="myButtons" id="stepOverBtn"
                  ng-disabled="!(state.stepOverBtn.indexOf(currentState) > -1)"
-                 ng-click="clickButton('stepOver')" title="Next">
-            </div>
-            <div type="image" class="myButtons" id="stepIntoBtn"
+                 ng-click="clickButton('stepOver')" title="Next"
+                 src="/static/css/images/step_over.png">
+            </input>
+            <input type="image" class="myButtons" id="stepIntoBtn"
                  ng-disabled="!(state.stepIntoBtn.indexOf(currentState) > -1)"
-                 ng-click="clickButton('stepInto')" title="Step Into">
-            </div>
-            <div type="image" class="myButtons" id="stepReturnBtn"
+                 ng-click="clickButton('stepInto')" title="Step Into"
+                 src="/static/css/images/step_into.png">
+            </input>
+            <input type="image" class="myButtons" id="stepReturnBtn"
                  ng-disabled="!(state.stepReturnBtn.indexOf(currentState) > -1)"
-                 ng-click="clickButton('stepReturn')" title="Step Out">
-            </div>
+                 ng-click="clickButton('stepReturn')" title="Step Out"
+                 src="/static/css/images/step_return.png">
+            </input>
           </div> <!-- end buttons container -->
 
           <!-- Package directive -->

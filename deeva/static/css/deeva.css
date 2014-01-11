@@ -134,18 +134,6 @@ body {
   cursor: pointer;
 }
 
-#stepOverBtn {
-  content:url("images/step_over.png");
-}
-
-#stepIntoBtn {
-  content:url("images/Step_into.png");
-}
-
-#stepReturnBtn {
-  content:url("images/step_return.png");
-}
-
 #visual {
   overflow:scroll;
   width: 100%;
