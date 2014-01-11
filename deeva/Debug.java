@@ -14,6 +14,8 @@ import deeva.exception.NoVMException;
 import deeva.exception.WrongStateError;
 import deeva.io.StdInRedirectThread;
 import deeva.io.StreamRedirectThread;
+import deeva.processor.JVMValue;
+import deeva.processor.ReferenceValue;
 import deeva.sourceutil.SourceClassFinder;
 
 import java.io.IOException;
@@ -28,10 +30,6 @@ public class Debug extends EventHandlerBase {
         STASIS,
         RUNNING,
         AWAITING_IO;
-
-        public String __html__() {
-            return this.toString();
-        }
     }
 
     private final String[] excludes = {"java.*", "javax.*", "sun.*", "com.sun.*"};
@@ -42,9 +40,8 @@ public class Debug extends EventHandlerBase {
     private StdInRedirectThread inThread;
     private BlockingQueue<String> inQueue;
     private DebugResponseQueue outQueue;
-    private State state;
+    private State state = State.NO_INFERIOR;
     private Semaphore sema;
-    private List<Map<String, String>> stack;
     private List<StackFrameMeta> stacks;
     private Map<Breakpoint, BreakpointRequest> breakpoints;
     private SourceClassFinder finder;
@@ -135,7 +132,7 @@ public class Debug extends EventHandlerBase {
         return this.finder.getAllSources();
     }
 
-    public Map<String, Object> putStdInMessage(String msg) throws
+    public DeevaState putStdInMessage(String msg) throws
             InterruptedException {
         /* Possibly more validation if necessary */
 
@@ -143,25 +140,26 @@ public class Debug extends EventHandlerBase {
          * into the debuggee stdin */
         this.inQueue.put(msg);
 
-        Map<String, Object> ioStatusMap = new HashMap<String, Object>();
-        ioStatusMap.put("input_received", Boolean.TRUE);
-
+        /* If we are awaiting_io */
         if (state == State.AWAITING_IO) {
             state = State.RUNNING;
             sema.acquire();
-            Map<String, Object> stateMap = getState();
-
-            stateMap.putAll(ioStatusMap);
-            return stateMap;
+            DeevaState state = getState();
+            /* TODO: Fire event somewhere else */
+            return state;
         }
 
-        ioStatusMap.put("state", state);
-        ioStatusMap.put("non_sema", Boolean.TRUE);
+        /* If we are not awaiting io, i.e. premature push of input data,
+        then just continue */
 
-        return ioStatusMap;
+        DeevaStateBuilder dsb = new DeevaStateBuilder();
+        dsb.setState(state);
+        DeevaState state = dsb.create();
+        state.premature_push = true;
+        return state;
     }
 
-    public Map<String, ? extends Object> getHeapObject(Long uniqueRefID,
+    public JVMValue getHeapObject(Long uniqueRefID,
                                                        String refType) {
         /* We can assume that the class would be loaded, since we're not
          * allowing arbitrary introspection */
@@ -199,10 +197,11 @@ public class Debug extends EventHandlerBase {
 
         /* Process the heap object*/
         Set<String> classes = finder.getAllClasses().keySet();
-        Map<String, ? extends Object> processedObject
-                = ValueProcessor.processValueSingleDepth(objectFound, classes);
+        /*Map<String, ? extends Object> processedObject
+                = ValueProcessor.processValueSingleDepth(objectFound,
+                classes);*/
 
-        return processedObject;
+        return ValueProcessor.processValueFull(objectFound, classes);
     }
 
     /**
@@ -236,9 +235,9 @@ public class Debug extends EventHandlerBase {
             String methodName = frame.location().method().name();
             String className = frame.location().declaringType().name();
             try {
-                List<Map<String, String>> stackMap = this.getStack(frame);
+                List<JVMValue> stack = this.getStack(frame);
                 StackFrameMeta meta
-                        = new StackFrameMeta(methodName, className, stackMap);
+                        = new StackFrameMeta(methodName, className, stack);
 
                 /* Add to the front of the queue */
                 stackFrames.add(0, meta);
@@ -251,15 +250,10 @@ public class Debug extends EventHandlerBase {
         return stackFrames;
     }
 
-    private List<Map<String, String>> getStack(StackFrame stackFrame) throws
+    private List<JVMValue> getStack(StackFrame stackFrame) throws
             AbsentInformationException, ClassNotLoadedException
     {
-        /* Get the top most stack frame in the thread that we've stopped in */
-
-
-        /* We want to create a list of maps */
-        List<Map<String, String>> localVariables
-            = new LinkedList<Map<String, String>>();
+        List<JVMValue> localVariables = new LinkedList<JVMValue>();
 
         /* List all the variables on the stack */
         for (LocalVariable var : stackFrame.visibleVariables()) {
@@ -272,37 +266,34 @@ public class Debug extends EventHandlerBase {
             System.err.println("Type: " + type.name());
 
             /* Get an overview for the variable */
-            Map<String, String> varMap = ValueProcessor.processVariable(var,
+            JVMValue jvmValue = ValueProcessor.processVariable(var,
                     variableValue);
-            if (varMap.containsKey("unique_id")) {
-                System.err.println(varMap.get("unique_id"));
-            }
-            localVariables.add(varMap);
+
+            localVariables.add(jvmValue);
         }
 
         return localVariables;
     }
 
-    public Map<String, Object> run() throws InterruptedException {
+    public DeevaState run() throws InterruptedException {
         vm.resume();
         state = State.RUNNING;
         sema.acquire();
         return getState();
     }
 
-    public Map<String, Object> getState() {
-        Map<String, Object> result = new HashMap<String, Object>();
-        result.put("state", state);
-        result.put("line_number", line_number);
-        result.put("stack", stack);
-        result.put("stacks", stacks);
-        result.put("current_class", currentClass);
-        result.put("arguments", programArgs);
-        result.put("ea", enableAssertions);
-        return result;
+    public DeevaState getState() {
+        DeevaStateBuilder dsb = new DeevaStateBuilder();
+        dsb.setState(state);
+        dsb.setLineNumber(line_number);
+        dsb.setStack(stacks);
+        dsb.setCurrentClass(currentClass);
+        dsb.setArguments(programArgs);
+        dsb.setEa(enableAssertions);
+        return dsb.create();
     }
 
-    public Map<String, Object> stepInto() throws InterruptedException {
+    public DeevaState stepInto() throws InterruptedException {
         if (state != State.STASIS) {
             throw new WrongStateError("Should be in STASIS state.");
         }
@@ -311,7 +302,7 @@ public class Debug extends EventHandlerBase {
         return getState();
     }
 
-    public Map<String, Object> stepReturn() throws InterruptedException {
+    public DeevaState stepReturn() throws InterruptedException {
         if (state != State.STASIS) {
             throw new WrongStateError("Should be in STASIS state.");
         }
@@ -320,7 +311,7 @@ public class Debug extends EventHandlerBase {
         return getState();
     }
 
-    public Map<String, Object> stepOver() throws InterruptedException {
+    public DeevaState stepOver() throws InterruptedException {
         if (state != State.STASIS) {
             throw new WrongStateError("Should be in STASIS state.");
         }
@@ -472,7 +463,6 @@ public class Debug extends EventHandlerBase {
     {
         System.err.println(event.location().method() + "@" + event.location().lineNumber());
         stacks = getStacks(event);
-        stack = stacks.get(0).getStackMap();
         /* Delete the request */
         getRequestManager().deleteEventRequest(event.request());
         sema.release();
@@ -485,7 +475,6 @@ public class Debug extends EventHandlerBase {
         /* Try to extract the stack variables */
         state = State.STASIS;
         stacks = getStacks(event);
-        stack = stacks.get(0).getStackMap();
         sema.release();
     }
 
@@ -743,7 +732,7 @@ public class Debug extends EventHandlerBase {
         }
 
         if (this.classPaths != null) {
-            optionsSB.append("-cp " + this.classPaths + " ");
+            optionsSB.append("-cp ").append(this.classPaths).append(" ");
         }
 
         optionArg.setValue(optionsSB.toString());
