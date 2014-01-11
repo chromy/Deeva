@@ -14,7 +14,8 @@ app.source_code = {}
 
 @app.route("/closeConnection", methods=['POST']) # take in a con id
 def closeCon():
-    uid = request.values.get('unique_id', None)
+    args = request.getJson()
+    uid = args.get('unique_id', None)
     from blinker import signal
     sig = signal(uid)
     sig.send('closeCon', event_obj=events.DeevaExitEvent())

@@ -8,8 +8,8 @@ var BACK_CLASS = "CodeMirror-activeline-background";
 var PASSIVE_BACK_CLASS = "CodeMirror-passiveline-background";
 
 // Currently is a whole document controller
-deeva.controller('SimpleController', ['$scope', '$http', 'FileService', 'MiscService',
-function ($scope, $http, FileService, MiscService) {
+deeva.controller('SimpleController', ['$scope', '$http', 'FileService', 'MiscService', '$window',
+function ($scope, $http, FileService, MiscService, $window) {
     /*
      * Initialise scope variables
      */
@@ -28,6 +28,7 @@ function ($scope, $http, FileService, MiscService) {
     $scope.current_class = "";
     $scope.args = [];
     $scope.enableAssertions = false;
+    $scope.subscriber_id = "";
 
     // ZZZ: Maybe should be in a directive thing somewhere
     /* Define what states that the given button is allowed to be enabled in */
@@ -153,6 +154,7 @@ function ($scope, $http, FileService, MiscService) {
             .error(function(status) {
                 console.error("There is an error getting the state.");
             });
+        //$scope.listen();
     }
 
     /* Initialze codeMirror and display it */
@@ -309,6 +311,67 @@ function ($scope, $http, FileService, MiscService) {
                 console.error("Error getting object");
             });
     };
+
+    $scope.listen = function() {
+        $scope.eventStream = new EventSource("/stream");
+        $scope.eventStream.onerror = function(e) {
+            console.error("We encountered an error whilst connecting to the EventSource, closing now.");
+            evtSource.close();
+        };
+
+        /* Closing the connection should we navigate away */
+        $window.onbeforeunload = function() {
+            console.debug("Sending request to close the connection");
+            $http.post("/closeConnection", {unique_id: $scope.subscriber_id})
+                .success(function(data) {
+                    console.debug(data);
+                });
+        };
+
+        /*
+         *  Event Listener's
+         */
+
+        /* close event */
+        $scope.eventStream.addEventListener("close", function(e) {
+            console.debug("Closing the event stream");
+        });
+
+        /* event to receive the subscriber_id */
+        $scope.eventStream.addEventListener("subscriber_id", function(e) {
+            $scope.subscriber_id = e.data;
+            console.debug("Subscriber ID:", $scope.subscriber_id);
+        });
+
+        /* event to receive the stack/heap data */
+        $scope.eventStream.addEventListener("stack_heap", function(e) {
+            var json_string = e.data;
+            var obj = JSON.parse(json_string);
+            console.debug("stack_heap:", obj);
+
+            //TODO: Call update stack/heap view
+        });
+
+        /* event to receive the state data when the debuggee jvm gets suspended */
+        $scope.eventStream.addEventListener("suspended", function(e) {
+            var json_string = e.data;
+            var obj = JSON.parse(json_string);
+            console.debug("suspended:", obj);
+
+            //TODO: Call update state
+        });
+
+        $scope.eventStream.addEventListener("absent_information", function(e) {
+            console.debug("Absent information for class: ", e.data);
+        });
+
+        $scope.eventStream.addEventListener("awaiting_io", function(e) {
+            console.debug("AWAITING_IO, data: ", e.data);
+        });
+    };
+
+    $scope.listen();
+
 }]);
 
 // Return a div that contain a marker for breakpoint.
