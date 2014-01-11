@@ -263,13 +263,12 @@ Similarly we produced a prioritised list of extensions:
 \end{enumerate}
 
 \section{Deeva}
-- Starting the program.
-- Not compiled
-- Start stop
-- Args
-- Assertion
-- Stdin/out/err
-
+\subsection{Starting the program}
+\subsection{Start/Stop/Step/Step Into/Step Return}
+\subsection{Arguments}
+\subsection{Assertion}
+\subsection{Stdin/Stdout/Stderr}
+\subsection{Not Compiled}
 
 \section{Design}
 During the meeting that we arranged with Tristan, we talked through what we had understood from the specification for the project.
@@ -298,7 +297,15 @@ For example (as mentioned) we completed a version that was generally agreed to b
 We have fixed our process to avoid this problem in the future, from now on after mocking in Google Docs we can test the mock at the expected size in the lecture hall.
 \subsection{Frontend Design}
 \subsubsection{Overview}
-
+To meet the requirements of the core functionality, we had designed the user interface with respect to each of the features.
+The interface is essentially divided into two parts.
+The left half contains mainly the source code and the right half contains the stack and heap graph.
+In the left part, a tab-like bar allows users to input and to delete arguments easily. 
+Additionally, a series of buttons enables users to compile the function, start debugging, go to next line, go into a sub-function, return from a sub-function.
+A drop-down list displays all available classes from the package so that user could select to go to a specific class.
+Lastly, a code pane displays the source code.
+In the right part, the user interface contains a console output area which allows users to see any Stdout or Stderr, and also takes Stdin.
+A detailed diagram is also included to show the current state of the program in a form of stack and heap.
 \subsubsection{UI Design}
 \begin{figure}[h!]
 \centering
