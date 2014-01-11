@@ -11,6 +11,11 @@ function main(all_variables){
   d3.selectAll("#stackFrames").remove();
 
   jsPlumb.deleteEveryEndpoint();
+   $('#visual').scroll(
+                function(){
+                    jsPlumb.repaintEverything();
+                }
+            )
 
   var stack_variables = all_variables.stacks || [];
   var unique_id_list = filter_stacks(stack_variables)[0];
@@ -62,7 +67,7 @@ function append_stacks(stack_selection, stack_variables){
                                     });
 
    //variable table
-   var stackFrameTable = stackFrames.append("table")
+  var stackFrameTable = stackFrames.append("table")
                                    .attr("class", "stackFrameVarTable")
                                    .attr("id",function(d, i){
                                         return "stackVarTable" + i;
