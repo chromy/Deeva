@@ -7,13 +7,13 @@ public class DeevaStateBuilder {
 
     private Debug.State state = Debug.State.NO_INFERIOR;
     private int line_number = -1;
-    private List<StackFrameMeta> stack = new LinkedList<StackFrameMeta>();
+    private List<StackFrameMeta> stacks = new LinkedList<StackFrameMeta>();
     private String current_class = "";
     private List<String> arguments = new LinkedList<String>();
     private boolean enable_assertions = false;
 
     public DeevaState create() {
-        return new DeevaState(state, line_number, stack, current_class,
+        return new DeevaState(state, line_number, stacks, current_class,
                               arguments, enable_assertions);
     }
 
@@ -33,12 +33,12 @@ public class DeevaStateBuilder {
         this.line_number = line_number;
     }
 
-    public List<StackFrameMeta> getStack() {
-        return stack;
+    public List<StackFrameMeta> getStacks() {
+        return stacks;
     }
 
-    public void setStack(List<StackFrameMeta> stack) {
-        this.stack = stack;
+    public void setStacks(List<StackFrameMeta> stacks) {
+        this.stacks = stacks;
     }
 
     public String getCurrentClass() {

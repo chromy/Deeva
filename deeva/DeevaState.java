@@ -5,23 +5,23 @@ import java.util.List;
 public class DeevaState {
     private final Debug.State state;
     private final int line_number;
-    private final List<StackFrameMeta> stacks;
     private final String current_class;
     private final List<String> arguments;
     private final boolean enable_assertions;
+    private final List<StackFrameMeta> stacks;
     public boolean premature_push; /* TODO: will be redundant when using
                                        events */
 
     public DeevaState(Debug.State state, int line_number,
-                      List<StackFrameMeta> stack, String current_class,
+                      List<StackFrameMeta> stacks, String current_class,
                       List<String> arguments, boolean ea) {
 
         this.state = state;
         this.line_number = line_number;
-        this.stacks = stack;
         this.current_class = current_class;
         this.arguments = arguments;
         this.enable_assertions = ea;
+        this.stacks = stacks;
     }
 
     public Debug.State getState() {
@@ -30,10 +30,6 @@ public class DeevaState {
 
     public int getLine_number() {
         return line_number;
-    }
-
-    public List<StackFrameMeta> getStacks() {
-        return stacks;
     }
 
     public String getCurrent_class() {
@@ -49,4 +45,7 @@ public class DeevaState {
     }
 
 
+    public List<StackFrameMeta> getStacks() {
+        return stacks;
+    }
 }
