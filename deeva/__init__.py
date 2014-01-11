@@ -184,6 +184,9 @@ def get_heap_objects():
     args = request.get_json()
     heap_requests = args.get('heap_requests')
 
+    if app.debugger.getStateName() == 'NO_INFERIOR':
+        return jsonify(success=False)
+
     heap_objects = []
     for heap_request in heap_requests:
         unique_id = int(heap_request.get('unique_id'))
