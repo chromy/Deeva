@@ -24,8 +24,13 @@
     font-size: 12px;
 }
 
+.enable-assertions {
+    height: 100%;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
 .enable-assertions label {
-    line-height: 42px;
     font-weight: normal;
     margin-bottom: 2px;
     float: left;
@@ -42,11 +47,9 @@
 
 .enable-assertions .glyphicon {
     font-size: 20px;
-    margin-right: 10px;
-    line-height: 36px;
+    margin-right: 5px;
     float: left;
 }
 
 .enable-assertions .glyphicon.disabled {
-    line-height: 38px;
 }
