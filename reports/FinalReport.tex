@@ -140,7 +140,7 @@ However this approach is not ideal.
 It is time consuming and error prone to update the diagram and worse it requires an oracle, the instructor, to act as mechanical interpreter of the rules.
 Students have no way see such a visualisation on arbitrary code they write, no easy way to see why code they write does not have the effect they expect without ad-hoc experimentation: modifying the source code and hoping it exposes the original problem.
 
-All of these problems are the kind that computers are very good at and indeed tools like \cmd{Python Tutor}\cite{pythontutor} can take a code snippet and produce visualisation of the execution trace. 
+All of these problems are the kind that computers are very good at and indeed tools like \cmd{Python Tutor}\cite{pythontutor} can take a code snippet and produce a visualisation of the execution trace. 
 
 \begin{figure}[h!]
 \centering
@@ -148,10 +148,9 @@ All of these problems are the kind that computers are very good at and indeed to
 \caption{Python Tutor Stack and Heap Diagram}
 \end{figure}
 
-By replacing the unintuitive tabular representation of the stack and heap found in almost every debugger with a user interface based these diagrams we hope to make Deeva a useful tool for teaching.
-Allowing instructors to quickly create traces for programs in real time without the possibility of mistake.
+By replacing the unintuitive tabular representation of the stack and heap found in almost every debugger with a user interface based these diagrams we hope to make Deeva a useful tool for teaching,
+allowing instructors to quickly create traces for programs in real time without making a mistake.
 Even more importantly it lets Deeva become a tool for learning allowing students to explore the unfamiliar model of imperative programming without expert oversight.
-
 
 Finally despite the existence of powerful tools to introspect running programs many programmers continue to debug programs using print statements.
 Since
@@ -210,11 +209,11 @@ Even though it also provides nice feature that allow object(s) inspection easier
 \caption{Python Tutor example}
 \end{figure}
 
-Python Tutor is a debugger that provides users with a visualisation of the program.
+Python Tutor is not a debugger but an online tool that provides users with a visualisation of the program.
 A user can write a Python program in the web browser and visualise what happens as the computer executes each line of the code.
-It is also capable of going backwards, the key functionality that distinguishes it from other debuggers.
-This would be the optimal choice for our first year students except that it works for Python not Java.
-However this would be what we are aiming to design.
+It can play though this trace forwards and backwards, functionality that absent from most debuggers.
+This would be a useful tool for first year students except that it uses Python not Java, does not support classical debugger movement or input and does not support multiple files.
+However it does has a much better way to display the state of the program.
 
 \section{Objectives} 
 
