@@ -199,6 +199,10 @@ def get_heap_objects():
 
     return jsonify(success="true", objects=heap_objects)
 
+@app.route("/ping")
+def ping():
+    return "success"
+
 @app.errorhandler(500)
 def page_not_found(error):
     import traceback
