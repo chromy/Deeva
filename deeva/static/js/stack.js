@@ -181,13 +181,27 @@ function append_heap(heap_selection, heap_objects, unique_id_list){
                                  if(is_empty_object(d))
                                    return "empty";
                               });
+   var array_elems_uid = [];
 
    var all_arrays = heap.selectAll("."+type_array).select("#value");
    all_arrays.selectAll("td")
              .text(function(d){
+                if(!is_empty_object(d) && primitive_list.indexOf(d.type) >= 0){
+                   return d.value;
+                }else{
+                   array_elems_uid.push(d.unique_id);
+                   return ;
+                }
                 console.log("ARRAY__", d);
+             })
+             .attr("id", function(d){
+                if(is_empty_object(d))
+                   return "array_empty";
+                else if(primitive_list.indexOf(d.type) >= 0)
+                   return "array_" + d.name;
+                else
+                   return "array_" + d.unique_id;
              });
-
 
    var all_strings = heap.selectAll("."+type_string).select("#value");
    all_strings.selectAll("td")
@@ -217,6 +231,7 @@ function append_heap(heap_selection, heap_objects, unique_id_list){
                                .text(function(d,i){
                                    return i;
                                });
+  addEndPointsToArrayElems(array_elems_uid);
   create_arrows(all_objects, unique_id_list);
 }
 
@@ -236,6 +251,7 @@ function append_heap(heap_selection, heap_objects, unique_id_list){
         var source = jsPlumb.addEndpoint("stackFrameValue_heap_"
                          + unique_id_list[i].unique_id,
                            {anchor: [0.5, 0.5, 0, -1, 0, 2],
+                            endpoint: ["Dot", {radius:5}],
                             connectionsDetachable:false,
                             cssClass: "stackPoint"
                            });
@@ -256,6 +272,21 @@ function append_heap(heap_selection, heap_objects, unique_id_list){
    });
   }
 
+ function addEndPointsToArrayElems(array_elems_uid){
+   var n = array_elems_uid.length;
+   for(var i=0; i<n; i++){
+   console.log("array_" + array_elems_uid[i]);
+   jsPlumb.ready(function()  { 
+   jsPlumb.addEndpoint("array_" + array_elems_uid[i],
+                           {cssClass: "stackPoint",
+                            endpoint: ["Dot", {radius:5}],
+                            anchor: [0.5, 0.5, 0, -1],
+                            connectionsDetachable:false
+                           });
+           });
+
+ }
+}
 
 /* Utility functions */
 
