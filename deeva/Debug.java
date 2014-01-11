@@ -273,7 +273,7 @@ public class Debug extends EventHandlerBase {
 
             /* Get an overview for the variable */
             Map<String, String> varMap = ValueProcessor.processVariable(var,
-                    variableValue, finder.getAllSources());
+                    variableValue);
             if (varMap.containsKey("unique_id")) {
                 System.err.println(varMap.get("unique_id"));
             }

@@ -2,8 +2,10 @@ package deeva.processor;
 
 import com.sun.jdi.ObjectReference;
 
+import java.util.List;
+
 public class ClassValue extends ReferenceValue {
-    private JVMField[] fields;
+    private List<JVMField> fields;
 
     public ClassValue(String type, long unique_id,
                       ObjectReference objRef, boolean overview) {
@@ -14,11 +16,11 @@ public class ClassValue extends ReferenceValue {
         }
     }
 
-    public JVMField[] getFields() {
+    public List<JVMField> getFields() {
         return fields;
     }
 
-    public void setFields(JVMField[] fields) {
-        this.fields = fields;
+    public void setFields(List<JVMField> jvmFieldList) {
+        this.fields = jvmFieldList;
     }
 }
