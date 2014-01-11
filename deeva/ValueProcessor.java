@@ -9,31 +9,16 @@ import deeva.processor.ClassValue;
 import java.util.*;
 
 public class ValueProcessor {
-    public static Map<String, String> processVariable(LocalVariable localVariable,
+    public static JVMValue processVariable(LocalVariable localVariable,
                                                       Value variableValue) {
         if (localVariable == null) {
             return null;
         }
 
-        Map<String, String> localVarMap = new HashMap<String, String>();
-        localVarMap.put("name", localVariable.name());
-
-        /* Now process the actual variable value */
-        Map<String, String> varMapOverview =
-                ValueProcessor.processValueOverview(variableValue);
-
         JVMValue jvmValue = processValueOverviewNew(variableValue);
         jvmValue.setName(localVariable.name());
 
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        String json = gson.toJson(jvmValue);
-        //System.err.println("JSON:");
-        //System.err.println(json);
-        //System.err.println("Done printing JSON");
-
-        localVarMap.putAll(varMapOverview);
-
-        return localVarMap;
+        return jvmValue;
     }
 
     public static Map<String, ? extends Object>
