@@ -122,7 +122,6 @@ function populate_values(selection){
 
 // Creates the heap and the objects in it.
 function append_heap(heap_selection, heap_objects, unique_id_list){
-   console.log("heap", heap_objects);
    var heap = heap_selection.append("div").attr("id", "heap");
    var heapHeader = heap.append("div")
                         .attr("id", "heapHeader")
@@ -175,13 +174,20 @@ function append_heap(heap_selection, heap_objects, unique_id_list){
                               })
                               .enter()
                               .append("td")
-                              .text(function(d,i){
-                                 console.log("data", d);
+                              .text(function(d){
                                  if(is_empty_object(d))
                                    return "empty";
-                                 else
-                                   return d;
                               });
+
+   var all_arrays = heap.selectAll("."+type_array).select("#value");
+   all_arrays.selectAll("td");
+         
+
+   var all_strings = heap.selectAll("."+type_string).select("#value");
+   all_strings.selectAll("td")
+              .text(function(d){
+                 return d;
+              });
 
    var indices = objectArrayTable.append("tr").attr("id", "indice");
    var indices_entries = indices.selectAll("td")
