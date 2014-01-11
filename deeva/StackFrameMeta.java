@@ -1,22 +1,24 @@
 package deeva;
 
+import deeva.processor.JVMValue;
+
 import java.util.List;
 import java.util.Map;
 
 public class StackFrameMeta {
-    private final List<Map<String, String>> stackMap;
+    private final List<JVMValue> stack;
     private final String methodName;
     private final String className;
 
     public StackFrameMeta(String methodName, String className,
-                          List<Map<String, String>> stackMap) {
+                          List<JVMValue> stack) {
         this.methodName = methodName;
         this.className = className;
-        this.stackMap = stackMap;
+        this.stack = stack;
     }
 
-    public List<Map<String, String>> getStackMap() {
-        return stackMap;
+    public List<JVMValue> getStack() {
+        return stack;
     }
 
     public String getMethodName() {
