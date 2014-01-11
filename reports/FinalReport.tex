@@ -18,7 +18,6 @@
 
 \usepackage{framed}
 
-
 % Select what to do with todonotes: 
 % \usepackage[disable]{todonotes} % notes not showed
 \usepackage[draft]{todonotes}   % notes showed
@@ -53,8 +52,6 @@
 % Push after every commit.
 % ONLY EDIT ONE SECTION BEFORE COMMITTING.
 
-
-
 % Three main goals:
 % 1. Fill a tool hole for first year Java course
 % 2. Foster a strong mental model of imperative programming
@@ -76,6 +73,8 @@
 % Project management 
 %   Planning, group organisation, breakdown + task allocation etc
 
+
+
 \section*{Executive Summary}
 \addcontentsline{toc}{section}{Executive Summary}
 
@@ -95,7 +94,6 @@ This way Deeva becomes a tool for both teaching and learning.
 
 All to many programmers, experts and beginners, never really learn to use or desire the powerful tools which already exist to introspect and modify running programs preferring instead to grovel though the source code with \cmd{printf}.
 For students Deeva provides excellent introduction to these tools while also filling a vital gap in Lab infrastructure and providing a useful tool for lecturers teaching imperative programming.
-
 
 % What is a debugger?
 % ``Bugs'' are a type of software defect typically introduced though a mismatch between the programmers mental model of the system and the system itself.
@@ -131,7 +129,7 @@ A debugger which was: independent from an IDE, simple enough to be 	used by begi
 
 The project also had another goal which was to be a tool for teaching.
 In ``Introduction to Imperative Programming" teaches fundamentals including control flow and the effect of assignment and function calls, return statements, etc
-\footnote{A strong mental model of programming fundamentals very important, for example when learning to program an early, consistent grasp of assignment is predictive of eventual achievement\cite{saeed09}.}.
+\footnote{A strong mental model of programming fundamentals is very important, for example when learning to program an early, consistent grasp of assignment is predictive of eventual achievement\cite{saeed09}.}.
 As in many courses this is done diagrammatically, by showing how each line of code in a program effects the stack and heap.
 
 \begin{figure}[h!]
@@ -144,7 +142,7 @@ However this approach is not ideal.
 It is time consuming and error prone to update the diagram and worse it requires an oracle, the instructor, to act as mechanical interpreter of the rules.
 Students have no way see such a visualisation on arbitrary code they write, no easy way to see why code they write does not have the effect they expect without ad-hoc experimentation: modifying the source code and hoping it exposes the original problem.
 
-All of these problems are the kind that computers are very good at and indeed tools like \cmd{Python Tutor}\cite{pythontutor} can take a code snippet and produce visualisation of the execution trace. 
+All of these problems are the kind that computers are very good at and indeed tools like \cmd{Python Tutor}\cite{pythontutor} can take a code snippet and produce a visualisation of the execution trace. 
 
 \begin{figure}[h!]
 \centering
@@ -152,10 +150,9 @@ All of these problems are the kind that computers are very good at and indeed to
 \caption{Python Tutor Stack and Heap Diagram}
 \end{figure}
 
-By replacing the unintuitive tabular representation of the stack and heap found in almost every debugger with a user interface based these diagrams we hope to make Deeva a useful tool for teaching.
-Allowing instructors to quickly create traces for programs in real time without the possibility of mistake.
+By replacing the unintuitive tabular representation of the stack and heap found in almost every debugger with a user interface based these diagrams we hope to make Deeva a useful tool for teaching,
+allowing instructors to quickly create traces for programs in real time without making a mistake.
 Even more importantly it lets Deeva become a tool for learning allowing students to explore the unfamiliar model of imperative programming without expert oversight.
-
 
 Finally despite the existence of powerful tools to introspect running programs many programmers continue to debug programs using print statements.
 Since
@@ -170,7 +167,7 @@ As part of our requirement analysis stage, we looked into detail of various exis
 \begin{figure}[h!]
 \centering
 \includegraphics[width=100mm]{jdb.png}
-\caption{jdb debugging example}
+\caption{jdb Debugger Screenshot}
 \end{figure}
 
 The Java Debugger, jdb, is a simple command line debugger that provides inspection and debugging for Java classes.
@@ -181,7 +178,7 @@ Hence, it is not quite intuitive to use.
 \begin{figure}[h!]
 \centering
 \includegraphics[width=100mm]{jswat.png}
-\caption{JSwat debugger example}
+\caption{JSwat Screenshot}
 \end{figure}
 
 JSwat is a graphical Java debugger which provides basic functionality like: setting breakpoints, thread and stack display, variable monitoring and method invocation.
@@ -192,7 +189,7 @@ However, its unattractive interface with varies of features might still be a ove
 \begin{figure}[h!]
 \centering
 \includegraphics[width=100mm]{eclipse.jpg}
-\caption{Eclipse debugger example}
+\caption{Eclipse Debugger Screenshot}
 \end{figure}
 
 Eclipse allows starting a Java program in Debug mode which provides a control of the execution process of the program and allows investigation of the state of the variables.
@@ -202,7 +199,7 @@ Nevertheless, being an integrated IDE debugger and having a lot of unused featur
 \begin{figure}[h!]
 \centering
 \includegraphics[width=100mm]{intellij.png}
-\caption{IntelliJ debugger example}
+\caption{IntelliJ Debugger Screenshot}
 \end{figure}
 
 Similar to Eclipse Debugger, IntelliJ Debugger is also an integrated IDE debugger which provides fast and powerful functionalities.
@@ -211,14 +208,16 @@ Even though it also provides nice feature that allow object(s) inspection easier
 \begin{figure}[h!]
 \centering
 \includegraphics[width=100mm]{pythontutor.png}
-\caption{Python Tutor example}
+\caption{Python Tutor Screenshot}
 \end{figure}
 
-Python Tutor is a debugger that provides users with a visualisation of the program.
+Python Tutor is not a debugger but an online tool that provides users with a visualisation of the program.
 A user can write a Python program in the web browser and visualise what happens as the computer executes each line of the code.
-It is also capable of going backwards, the key functionality that distinguishes it from other debuggers.
-This would be the optimal choice for our first year students except that it works for Python not Java.
-However this would be what we are aiming to design.
+It can play though this trace forwards and backwards, functionality that absent from most debuggers.
+This would be a useful tool for first year students except that it uses Python not Java, does not support classical debugger movement or input and does not support multiple files.
+
+However it does have this much better way to display the state of the program which we are interested in replicating.
+
 
 \section{Objectives} 
 
@@ -226,8 +225,11 @@ To produce a Java debugger that was:
 
 \begin{description}
 \item[Independent] \hfill \\
+The debugger is a separate tool started from the command line, it does not require or run inside a IDE.
 \item[Powerful] \hfill \\
+The debugger is powerful enough to solve real problems.
 \item[Simple] \hfill \\
+The debugger is intuitive enough to be easily picked up by first year students.
 \end{description}
 
 At the start of the project we produced a initial plan (for the full plan please see ~\cref{sec:initialplan}) where we broke these high level objectives down into a minimal set of concrete goals which we then had signed off by Dr. Allwood.
@@ -260,9 +262,13 @@ Similarly we produced a prioritised list of extensions:
 \item Support all of Java (Threads etc)
 \end{enumerate}
 
-
 \section{Deeva}
-\todo{Big section where we describe each feature of Deeva in detail.}
+- Starting the program.
+- Not compiled
+- Start stop
+- Args
+- Assertion
+- Stdin/out/err
 
 
 \section{Design}
@@ -416,7 +422,6 @@ A Javascript frontend using Angular, Codemirror and D3, a Java backend using the
 \subsection{Deciding on a Web Front End}
 Beginning this project we knew we needed a graphical interface and were faced with a difficult decision.
 The obvious approach was a classic monolithic Java application\footnote{Java being the natural choice since it was the target language} however this had some disadvantages.
-
 
 - We have limited desktop experience GUI
 - Lots of custom code for the state UI
@@ -619,10 +624,16 @@ Creating a Facebook group proved very efficient for communicating meeting times 
 We used Google Docs for collaborative editing on reports, plans and meeting summaries in real time.
   
 \subsubsection{Github}
-Github is a hosted source control which somebody else manages and is easily accessible from anywhere and also plays nicely with the hosted Continuous Integration tool - Travis CI\footnote{\url{http://travis-ci.com/}}.
+Github is a hosted source control which somebody else manages and is easily accessible from anywhere and also plays nicely with the hosted Continuous Integration tool - Travis CI.
 
 \subsubsection{Travis CI}
-\todo{about Travis here}
+Travis\footnote{\url{http://travis-ci.com/}} is an online continues integration server.
+Whenever we push code to the Github server Travis takes the commit then makes and runs our integration tests, if the build fails Travis' emails us.
+Ideally the build on Travis should never fail (since we should run the tests ourselves before we commit) but the email notifications proved very useful for problems which only show up on a fresh install or if we made a small commit which ``shouldn't" have broken the build.
+Travis' notifications allowed quickly brought bad commits to our attention allowing us to fix or revert them before they became a major problem.  
+The major downside was since Travis has to install all the dependencies each time running the tests could take up to ten  
+
+
 
 \subsection{Team Member Contributions}
 \subsubsection{Kritaphat Sonsri-in}
@@ -630,9 +641,12 @@ Github is a hosted source control which somebody else manages and is easily acce
 \subsubsection{Alina Draganescu}
 \subsubsection{Felix de Souza}
 \subsubsection{Hector Dearman}
+Hector worked mostly on the backend implementing Breakpoints and the middle server layer. 
 
 \section{Extensions}
+
 \section{Conclusion}
+
 
 \clearpage
 \thispagestyle{empty}
