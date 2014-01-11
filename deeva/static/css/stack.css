@@ -44,15 +44,15 @@
   text-align: center;
 }
 
-table.string{
+table.STRING{
   background-color: #F3F781;
   border-radius: 7px;
 }
 
-table.array{
+table.ARRAY{
   background-color: yellow;
 }
-table.array td{
+table.ARRAY td{
   border: 1px solid black;
 }
 #indice {

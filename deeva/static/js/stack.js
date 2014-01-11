@@ -183,11 +183,17 @@ function append_heap(heap_selection, heap_objects, unique_id_list){
                               });
 
    var all_arrays = heap.selectAll("."+type_array).select("#value");
-   all_arrays.selectAll("td")
+   all_arrays.selectAll("td");
+ /*
              .text(function(d){
+                if(!is_empty_object(d) && primitive_list.indexOf(d.type) >= 0){
+                   return d.value;
+                }else{
+                   
+                }
                 console.log("ARRAY__", d);
              });
-
+*/
 
    var all_strings = heap.selectAll("."+type_string).select("#value");
    all_strings.selectAll("td")
