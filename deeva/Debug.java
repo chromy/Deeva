@@ -294,7 +294,7 @@ public class Debug extends EventHandlerBase {
 
         /* TODO: rename function to send state, and make it return void */
         dispatcher.stack_heap_object_event(deevaState.getStacks(), null);
-
+        dispatcher.suspended_event(deevaState);
         return deevaState;
     }
 
