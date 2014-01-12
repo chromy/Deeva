@@ -563,7 +563,7 @@ It consists of mainly three parts, an Event Loop, Event Handler, and a general c
 State, EventDispatcher (asynchronous), I/O, Error Handling
 Problems - Classpath/Sourcepath \& (Lazy loading), Thread Safety, I/O blocking, 
 
-\emph{Event Loop \& Event Handler}\\
+\textbf{\emph{Event Loop \& Event Handler}}\\
 The Event Loop runs in a separate thread, and it is connected to the inferior VM, listening for any requests that were submitted.
 When it receives an event, it will then call a suitable handler to handle that event.
 We only define handlers for events that we wish to handle, i.e. events that are in the scope of our project.
@@ -575,22 +575,66 @@ Initially we were using HashMaps to contain state, because that would work well 
 Encapsulating the state that we wanted in POJOs meant that we could run serialisers, like \texttt{gson} (which serialises a Java Object into the JSON format) and we could deserialise the JSON on the Python side, into the Python Dictionary without any complaints.
 This method is more desirable because JSON is a public standard, so should anyone want to use our debugger library (in a different environment other than Python or Java), they would have a standard way of getting data out of our library.
 
-\emph{General Request Class and Event Dispatching}\\
+\todo[inline]{Talk about state data generation, object references/primitive types}
+
+\textbf{\emph{General Request Class and Event Dispatching}}\\
 This is class that clients (and in our case the Python VM via py4j) interacts with.
 We can make our requests which then forwards the request onto the inferior JVM.
 
 Due to the asynchronous nature of the JVM and it's events (the reason why we first misunderstood the model), we needed another way of receiving and processing the events, cue our Event Handler as aforementioned.
 However that was only one step of the process, we also needed to asynchronously communicate the data from the events (that we had subscribed to). 
-Initially we used a semaphore, so that requests didn't complete until an event that would suspend the JVM would come and release the semaphore, thus sending the state back with the initial request.
+
+Initially we had used a semaphore, so that requests didn't complete until an event that would suspend the JVM would come and release the semaphore, thus sending the state back with the initial request.
 This created problems because of threaded nature of our web server, and the threaded nature of py4j and we were often getting deadlock, or being in inconsistent states (as the web interface wouldn't respond as the request was blocked or a deadlock etc).
-We addressed this by defining an interface \texttt{`DeevaEventDispatcher'}, where clients would implement this interface and pass it into the constructor for our library, i.e. callbacks or handlers that get called when we're handling JDI events, e.g. should we receive a Breakpoint event, we then call \texttt{`suspended_event()'} and pass along the state object.
+
+We addressed this by defining an interface \texttt{`DeevaEventDispatcher'}, where clients would implement this interface and pass it into the constructor for our library, i.e. callbacks or handlers that get called when we're handling JDI events, e.g. should we receive a Breakpoint event, we then call \texttt{`suspended\_event()'} and pass along the state object.
 The concrete implementation of this on the client side would define the behaviour or what should happen should our debugger report that the JVM has suspended.
 How we implemented this for our client side is mentioned below in \emph{Middleware}. 
 
+\textbf{\emph{Input/Output (I/O)}}\\
+Most first years are unlikely to have been introduced to Java UI and that also requires an understanding of how Java works as a whole.
+This makes input and output via \texttt{stdin} and \texttt{stdout/stderr} respectively paramount, as they would be writing to and reading from the command line.
+Implementing support was split into two parts: input and output.
+
+How we handled output was that we had a separate thread running for each type of output (\texttt{stdout \& stderr}). We started this thread when the inferior JVM was started and we would redirect the outputs of the inferior JVM to their respective threads.
+The thread would then make a call to the event dispatcher, signalling that output had occurred, and we would send the output along with it.
+
+How we handled input was different, and we also had to take into account the thread running the I/O request could block waiting for input.
+Basically there is a \texttt{BlockingQueue} on the Java side in our debugger, that contains the data from a ``command line''.
+There was a separate thread running that would pull data from this queue, and then feed it into the \texttt{OutputStream} that is connected to the \texttt{InputStream} (i.e. \texttt{Standard.in}) of the inferior JVM process.
+
+However we still had to deal with the problem that occurred when the thread running the main function would block waiting for input.
+Taking into consideration our development stack, we had to provide a way of informing the user that we were awaiting data, otherwise it would look like the site (client view of debugged program) had frozen.
+
+We mitigated this problem by adding a hook into the debuggee JVM.
+This hook found the \texttt{System.in} object, and we made a \texttt{MethodEntryRequest} whenever \texttt{read()} was called (which it is called implicitly by \texttt{InputStreamReader}s, \texttt{Scanner}s etc.)
+We had to use this method of ``monkey-patching'' since for \texttt{System.in}, \texttt{read()} is a native call which is also blocking, and as a result the state of the thread (in Java) performing the call would still be \texttt{RUNNING} as if it isn't blocked (a caveat of the JVM).
+
+When the inferior JVM starts to read from input, the JVM would suspend and emit an event.
+Whilst the JVM is suspended, we can also invoke methods.
+The \texttt{InputStream} class has a method called \texttt{available()} which as described by the Java docs: ``Returns an estimate of the number of bytes that can be read (or skipped over) from this input stream without blocking by the next invocation of a method for this input stream.'' \cite{java_available}. 
+It is usually not advised to use this value as part of a decision process, however we were in complete control of the inferior JVMs \texttt{stdin}, as it is backed by a Queue.
+
+We couldn't have put this logic in the Thread that was ``redirecting'' input, because it would keep notifying the user especially when the Queue was empty i.e. no data was entered in by the client.
+This way allows us to inform the user that we are ``requesting'' data (even though in the command line this rarely happens).
+It also allows the user experience to be more intuitive, especially considering our target audience and our development stack (i.e. web application).
+
+How we handled I/O when it got to the client is mentioned below in \emph{Middleware}.
+
+\todo[inline]{Insert diagram of how I/O redirection worked}
+
+\textbf{\emph{Sourcepath/Classpath resolution}}\\
+Since our debugger should be able to be run from anywhere, and also we can't assume that compiled sources would be in the same directory as the source files themselves, we tried to do some form of classpath/sourcepath resolution.
+
+The user would specify a classpath as usual, but also they had to specify a sourcepath, so we could find the corresponding sources for the classes that had been loaded. 
+By default, to conform with Java's semantics, if they don't specify a classpath/sourcepath, we assume that it is just the current directory.
 
 
-We used the Java Debug Interface (\cmd{jdi}) to create, run, step, pause and inspect the inferior programs.
-We considered other alternatives: \cmd{jdi} uses a lower level API to the JVM which we could have used or we could 
+
+\textbf{\emph{Error Handling}}\\
+
+\textbf{\emph{General Problems/Caveats}}\\
+\todo[inline]{thread safety, i/o blocking, lazy loading classes (breakpoitns etc)}
 
 
 \section{Evaluation}
@@ -840,6 +884,12 @@ Hector worked mostly on the backend implementing Breakpoints and the middle serv
         \emph{Heisenbug}
         \url{http://en.wikipedia.org/wiki/Heisenbug}
         2013
+
+\bibitem{java_available}
+        Java Docs
+        \emph{Javadoc: InputStream, available()}
+        \url{http://docs.oracle.com/javase/7/docs/api/java/io/InputStream.html#available()}
+        2011
 \end{thebibliography}
 
 \end{document}
