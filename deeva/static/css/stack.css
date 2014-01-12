@@ -80,5 +80,17 @@ svg.connectLine path{
 }
 
 .heapRow{
- margin-bottom: 7px;
+  margin-bottom: 7px;
+}
+
+.pointer{
+  cursor: pointer;
+  display: block;
+  height: 31px;
+}
+
+.pointer:hover{
+  outline-style: double;
+  outline-width: 2px;
+  outline-color: rgb(255,235,0);
 }
