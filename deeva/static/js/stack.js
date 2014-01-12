@@ -32,7 +32,7 @@ function setJsPlumbDefaults() {
         }],
     ];
 
-    //jsPlumb.Defaults.Connector = ["State Machine";];
+    jsPlumb.Defaults.Connector = ["StateMachine"];
 }
 
 function main(all_variables) {
