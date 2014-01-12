@@ -39,12 +39,12 @@
 #heap{
 
 }
-#indice td, #value td{
+.indice td, .value td {
   min-width: 30px;
   text-align: center;
 }
 
-#value td{
+#value td {
   height: 30px;
 }
 
@@ -56,7 +56,7 @@ table.STRING{
 table.ARRAY{
   background-color: yellow;
 }
-table.ARRAY td{
+table.ARRAY td {
   border: 1px solid black;
 }
 

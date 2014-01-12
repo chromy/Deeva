@@ -8,17 +8,44 @@ var empty_object = {
 // Primitive types in Java.
 var primitive_list = ["int", "char", "boolean", "byte", "float", "double", "long", "short"];
 
+var id_to_objects;
+
+function setJsPlumbDefaults() {
+    jsPlumb.importDefaults({
+        ConnectionsDetachable: false,
+    });
+    jsPlumb.Defaults.Container = "visual";
+    jsPlumb.Defaults.Endpoints = [
+        ["Dot", {radius: 5, cssClass: "stackPoint" }],
+        ["Blank", {radius: 6}],
+    ];
+    jsPlumb.Defaults.Anchors = [
+        [0.5, 0.5, 1, 1],
+        "Left",
+    ];
+    jsPlumb.Defaults.ConnectionOverlays = [
+        ["Arrow", {
+            width: 6,
+            length: 6,
+            location: 1,
+        }],
+    ];
+
+    //jsPlumb.Defaults.Connector = ["State Machine";];
+}
+
 function main(all_variables) {
+    setJsPlumbDefaults();
+
+    // clear old objects
+    id_to_objects = {};
+
     d3.selectAll("#global_area").remove();
     d3.selectAll("#heapBody").remove();
     d3.selectAll("#stackFrames").remove();
 
     jsPlumb.deleteEveryEndpoint();
-    $('#visual').scroll(
-        function() {
-            jsPlumb.repaintEverything();
-        }
-    );
+    $('#visual').scroll(jsPlumb.repaintEverything);
 
     var stack_variables = all_variables.stacks || [];
     var unique_id_list = filter_stacks(stack_variables)[0];
@@ -34,6 +61,7 @@ function main(all_variables) {
             success: function(data) {
                 var heap = d3.select("#heap");
                 append_heap(heap, data.objects, unique_id_list);
+                draw_arrows();
             }
         });
     }
@@ -44,46 +72,44 @@ function main(all_variables) {
         .attr("id", "stackFrames");
 
     append_stacks(stackFrames, stack_variables);
-
 }
-
 
 function append_stacks(stack_selection, stack_variables) {
 
     // create a div for each stack
-    var stackFrames = stack_selection.selectAll("div")
+    var stack = stack_selection.selectAll("div")
         .data(stack_variables)
         .enter()
         .append("div");
-    stackFrames.attr("class", "stackFrame")
+    stack.attr("class", "stackFrame")
         .attr("id", function(d, i) {
             return "stack" + i;
         });
 
-    //name of the stack
-    var stackFrameHeaders = stackFrames.append("div")
+    // name of the stack
+    var stackHeaders = stack.append("div")
         .attr("class", "stackFrameHeader")
         .attr("id", function(d, i) {
             return "stackHeader" + i;
         })
         .text(function(d) {
-            console.log("assssss", d);
+            console.log("Stack:", d);
             return d.methodName;
         });
 
-    //variable table
-    var stackFrameTable = stackFrames.append("table")
+    // variable table
+    var stackTables = stack.append("table")
         .attr("class", "stackFrameVarTable")
         .attr("id", function(d, i) {
             return "stackVarTable" + i;
         });
 
-    var stackVariables = stackFrameTable.selectAll("tr")
+    var stackVariables = stackTables.selectAll("tr")
         .data(function(d, i) {
             return d.stack;
         })
         .enter()
-        .append("tr");
+            .append("tr");
 
     stackVariables.attr("class", "variableTr")
         .attr("id", function(d, i) {
@@ -96,7 +122,7 @@ function append_stacks(stack_selection, stack_variables) {
             return d.name;
         });
 
-    var stackFrameValues = stackVariables.append("td")
+    var stackValues = stackVariables.append("td")
         .attr("class", "stackFrameValue")
         .attr("id", function(d) {
             if (d.unique_id)
@@ -105,30 +131,79 @@ function append_stacks(stack_selection, stack_variables) {
                 return "stackFrameValue_" + d.name;
         });
 
-    populate_values(stackFrameValues);
+    populate_values(stackValues);
 }
 
-/* Populates the stack with the values(the actual value for primitive types
-   and with arrows for objects). */
+function draw_arrows() {
+    var objects = d3.select("#heapBody").selectAll("div");
+    objects.each(function(d) {
+        var obj = this;
+        var pointers = d3.selectAll(".pointer_to_" + obj.id);
+        pointers.each(function(p) {
+            jsPlumb.connect({
+                source: this,
+                target: obj,
+                cssClass: "connectLine",
+            });
+            console.log(obj + '->' + this);
+        });
+    });
+}
+
+function createObject(id) {
+
+}
+
+function withObject(id, f) {
+    if (!(id in id_to_objects)) {
+        var o = $('<div></div>');
+        $("#heap").append(o);
+        id_to_objects[id] = o.get()[0];
+    }
+    f(id_to_objects[id]);
+}
+
+/* Populates the stack with the values
+ * (the actual value for primitive types and with arrows for objects). */
 function populate_values(selection) {
+
+    selection.each(function(d) {
+        console.log(d);
+    });
+
     var primitives = selection.filter(function(d) {
         return primitive_list.indexOf(d.type) >= 0;
     });
 
     var objects = selection.filter(function(d) {
-        return primitive_list.indexOf(d.type) < 0;
+        return primitive_list.indexOf(d.type) == -1;
     });
 
     var null_objects = selection.filter(function(d) {
-        return primitive_list.indexOf(d.type) < 0 && d.value === undefined;
+        return primitive_list.indexOf(d.type) < 0 && d.unique_id === undefined;
     });
 
+    // null objects get special null value
     null_objects.append("span")
         .attr("class", "primitives")
         .text(function(d) {
             return 'null';
         });
 
+    // connect object pointers to object on heap
+    //objects.each(function(v) {
+    //    var me = this;
+    //    withObject(v.unique_id, function(o) {
+    //        jsPlumb.connect({source:me, target:o});
+    //    });
+    //});
+    objects.append("span")
+        .html("&nbsp;")
+        .attr("class", function(d) {
+            return 'pointer_to_object_' + d.unique_id;
+        });
+
+    // primitive values are drawn in the cell
     primitives.append("span")
         .attr("class", "primitives")
         .text(function(d) {
@@ -141,118 +216,198 @@ function populate_values(selection) {
 function append_heap(heap_selection, heap_objects, unique_id_list) {
     var heap = heap_selection.append("div").attr("id", "heapBody");
 
-    // create a table row for each object
-    var heapRows = heap.selectAll("table")
+    // create the actual objects
+    var objects = heap.selectAll("div")
         .data(heap_objects)
-        .enter()
-        .append("table")
-        .attr("class", "heapRow");
+        .enter().append("div")
+            .attr("id", function(d, i) {
+                return "object_" + d.unique_id;
+            })
+            .attr("class", "heapRow");
 
-    var heapRow = heapRows.append("td")
-        .attr("class", "toplevelHeapObject")
-        .attr("id", function(d, i) {
-            return "toplevel_heap_object_" + i;
-        });
-
-    // on heapRowObjects will all the JsPlumb be added !!!
-    var heapRowObject = heapRow.append("div")
-        .attr("class", "heapObject")
-        .attr("id", function(d, i) {
-            return "heap_object_" + d.unique_id;
-        });
-
-    var heapObjectType = heapRowObject.append("div")
+    // label each object according to type
+    objects.append("div")
         .attr("class", "typeLabel")
         .text(function(d, i) {
             if (is_of_type(d, type_object)) {
                 return get_class_name(d.type);
-            } else
-                return d.object_type;
+            }
+            return d.object_type;
         });
 
-    var objectArray = heapRowObject.append("table")
+    // we have three diffrent types of things, arrays, strings and 'real'
+    // objects
+    var strings = objects.filter(function(d) {
+        return is_of_type(d, type_string);
+    });
+
+    var arrays = objects.filter(function(d) {
+        return is_of_type(d, type_array);
+    });
+
+    var pure_objects = objects.filter(function(d) {
+        return is_of_type(d, type_object);
+    });
+
+    var array_tables = arrays.append("table")
         .attr("class", function(d, i) {
             return d.object_type;
         });
 
-    var objectArrayTable = objectArray.append("tbody");
-    var values = objectArrayTable.append("tr").attr("id", "value");
-    var values_entries = values.selectAll("td")
-        .data(function(d) {
-            if (is_of_type(d, type_array) && d.length > 0)
-                return d.array;
-            else if (is_of_type(d, type_string))
-                return d.string;
-            else if (is_of_type(d, type_object))
-            // TODO
-                return [1];
-            else
-                return [empty_object];
-        })
-        .enter()
-        .append("td")
-        .text(function(d) {
+    var array_indexes = array_tables
+        .append("tr")
+        .attr("class", "indice")
+        .selectAll("td")
+        .data(function(d) { console.log(d); return d.array; })
+        .enter().append("td")
+            .text(function(d, i) { return i; });
 
-            if (is_empty_object(d)) {
-                console.log("WWW", d);
-                return "empty";
-            }
-        });
-    var array_elems_uid = [];
+    var array_values = array_tables
+        .append("tr")
+        .attr("class", "value")
+        .selectAll("td")
+        .data(function(d) { return d.array; })
+        .enter().append("td")
+            .text(function(d, i) { return d.unique_id; });
 
-    var all_arrays = heap.selectAll("." + type_array).select("#value");
-    all_arrays.selectAll("td")
-        .text(function(d) {
-            if (!is_empty_object(d) && primitive_list.indexOf(d.type) >= 0) {
-                return d.value;
-            } else {
-                if (!is_empty_object(d)) {
-                    array_elems_uid.push(d.unique_id);
-                    return;
-                } else {
-                    return "empty";
-                }
-            }
-        })
-        .attr("id", function(d) {
-            if (is_empty_object(d))
-                return "array_empty";
-            else if (primitive_list.indexOf(d.type) >= 0)
-                return "array_" + d.name;
-            else
-                return "array_" + d.unique_id;
+    var string_tables = strings.append("table")
+        .attr("class", function(d, i) {
+            return d.object_type;
         });
 
-    var all_strings = heap.selectAll("." + type_string).select("#value");
-    all_strings.selectAll("td")
-        .text(function(d) {
-            return d;
+    var string_values = string_tables
+        .append("tr")
+        .attr("class", "value")
+        .selectAll("td")
+        .data(function(d) { return d.string; })
+        .enter().append("td")
+            .text(function(d, i) { return d; });
+
+    var string_indexes = string_tables
+        .append("tr")
+        .attr("class", "indice")
+        .selectAll("td")
+        .data(function(d) { return d.string; })
+        .enter().append("td")
+            .text(function(d, i) { return i; });
+
+    var pure_object_tables = pure_objects.append("table")
+        .attr("class", function(d, i) {
+            return d.object_type;
         });
 
-    var all_objects = heap.selectAll("." + type_object).select("#value");
-    all_objects.selectAll("td")
-        .text(function(d) {
-            return d;
+    var pure_object_rows = pure_objects.append("table")
+        .append("tr")
+        .attr("class", "indice")
+        .selectAll("td")
+        .attr("class", function(d, i) {
+            return d.object_type;
         });
 
 
-    var indices = objectArrayTable.append("tr").attr("id", "indice");
-    var indices_entries = indices.selectAll("td")
-        .data(function(d) {
-            if (is_of_type(d, type_array))
-                return d.array;
-            if (is_of_type(d, type_string))
-                return d.string;
-            if (is_of_type(d, type_object))
-                return [];
-        })
-        .enter()
-        .append("td")
-        .text(function(d, i) {
-            return i;
-        });
-    create_arrows(all_objects, unique_id_list);
-    addEndPointsToArrayElems(array_elems_uid);
+    //
+    ///var heapRow = heapRows.append("td")
+    //    .attr("class", "toplevelHeapObject")
+
+    //// on heapRowObjects will all the JsPlumb be added !!!
+    //var heapRowObject = heapRow.append("div")
+    //    .attr("class", "heapObject")
+    //    .attr("id", function(d, i) {
+    //        return "heap_object_" + d.unique_id;
+    //    });
+
+    //var heapObjectType = heapRowObject.append("div")
+    //    .attr("class", "typeLabel")
+    //    .text(function(d, i) {
+    //        if (is_of_type(d, type_object)) {
+    //            return get_class_name(d.type);
+    //        }
+    //        return d.object_type;
+    //    });
+
+    //var objectArray = heapRowObject.append("table")
+    //    .attr("class", function(d, i) {
+    //        return d.object_type;
+    //    });
+
+    //var objectArrayTable = objectArray.append("tbody");
+    //var values = objectArrayTable.append("tr").attr("id", "value");
+    //var values_entries = values.selectAll("td")
+    //    .data(function(d) {
+    //        if (is_of_type(d, type_array) && d.length > 0)
+    //            return d.array;
+    //        else if (is_of_type(d, type_string))
+    //            return d.string;
+    //        else if (is_of_type(d, type_object))
+    //        // TODO
+    //            return [1];
+    //        else
+    //            return [empty_object];
+    //    })
+    //    .enter()
+    //    .append("td")
+    //    .text(function(d) {
+
+    //        if (is_empty_object(d)) {
+    //            console.log("WWW", d);
+    //            return "empty";
+    //        }
+    //    });
+    //var array_elems_uid = [];
+
+    //var all_arrays = heap.selectAll("." + type_array).select("#value");
+    //all_arrays.selectAll("td")
+    //    .text(function(d) {
+    //        if (!is_empty_object(d) && primitive_list.indexOf(d.type) >= 0) {
+    //            return d.value;
+    //        } else {
+    //            if (!is_empty_object(d)) {
+    //                array_elems_uid.push(d.unique_id);
+    //                return;
+    //            } else {
+    //                return "empty";
+    //            }
+    //        }
+    //    })
+    //    .attr("id", function(d) {
+    //        if (is_empty_object(d))
+    //            return "array_empty";
+    //        else if (primitive_list.indexOf(d.type) >= 0)
+    //            return "array_" + d.name;
+    //        else
+    //            return "array_" + d.unique_id;
+    //    });
+
+    //var all_strings = heap.selectAll("." + type_string).select("#value");
+    //all_strings.selectAll("td")
+    //    .text(function(d) {
+    //        return d;
+    //    });
+
+    //var all_objects = heap.selectAll("." + type_object).select("#value");
+    //all_objects.selectAll("td")
+    //    .text(function(d) {
+    //        return d;
+    //    });
+
+
+    //var indices = objectArrayTable.append("tr").attr("id", "indice");
+    //var indices_entries = indices.selectAll("td")
+    //    .data(function(d) {
+    //        if (is_of_type(d, type_array))
+    //            return d.array;
+    //        if (is_of_type(d, type_string))
+    //            return d.string;
+    //        if (is_of_type(d, type_object))
+    //            return [];
+    //    })
+    //    .enter()
+    //    .append("td")
+    //    .text(function(d, i) {
+    //        return i;
+    //    });
+    //create_arrows(all_objects, unique_id_list);
+    //addEndPointsToArrayElems(array_elems_uid);
 }
 
 
