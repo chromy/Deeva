@@ -539,6 +539,7 @@ We initially attempted to use \cmd{Pyjnius} but it was time consuming to build (
 We also considered \cmd{JPype} but it seemed to have worse documentation and seemed significantly less active than either of the others.    
 
 \subsubsection{Back End}
+\textbf{Java Virtual Machine Tools Interface (JVM TI) and the Java Debug Interface (JDI)}
 
 The Java specification provides an interface that all the different JVM implementations must conform to (of course, some features may not be supported in some Virtual Machines (VMs) for which the specification provides for).
 The Java Virtual Machine Tools Interface (JVM TI) \cite{jvmti} allows a program to inspect the state and control the execution of applications running in a JVM.
@@ -554,6 +555,38 @@ A JVM can emit events when certain things happen e.g. when a thread is suspended
 What a debugger would do, would define an Event Handler, which listens and processes the events that are emitted.
 However if a JVM were to output every possible event, it would cripple execution time (plus the JDI can be used for instrumentation i.e. generate a stream of trace where the original source can't be modified).
 The solution to this is that we submit requests for events we would like to handle, and define methods that would be called should we see an event.
+
+\textbf{Deeva - Java Debugger Implementation}\\
+Our debugger is not a fully fledged one, however we believe it suffices for the scope of our project.
+It consists of mainly three parts, an Event Loop, Event Handler, and a general class that can make requests to the JVM.
+
+State, EventDispatcher (asynchronous), I/O, Error Handling
+Problems - Classpath/Sourcepath \& (Lazy loading), Thread Safety, I/O blocking, 
+
+\emph{Event Loop \& Event Handler}\\
+The Event Loop runs in a separate thread, and it is connected to the inferior VM, listening for any requests that were submitted.
+When it receives an event, it will then call a suitable handler to handle that event.
+We only define handlers for events that we wish to handle, i.e. events that are in the scope of our project.
+The information we wished to capture and return back to our client listeners are not always contained within a single class within the JDI, and can be spread everywhere. 
+
+To ameliorate this, we made some simple Plain Old Java Objects (POJO) to contain the state we wished to capture and communicate to clients using our library.
+Initially we were using HashMaps to contain state, because that would work well with Python's dictionary types; however there were many caveats due to way that \texttt{py4j} mapped Java collection types and Python's collection types and serialisation became a big issue and if we had continued down this path we would have classes that had members that were unrelated.
+
+Encapsulating the state that we wanted in POJOs meant that we could run serialisers, like \texttt{gson} (which serialises a Java Object into the JSON format) and we could deserialise the JSON on the Python side, into the Python Dictionary without any complaints.
+This method is more desirable because JSON is a public standard, so should anyone want to use our debugger library (in a different environment other than Python or Java), they would have a standard way of getting data out of our library.
+
+\emph{General Request Class and Event Dispatching}\\
+This is class that clients (and in our case the Python VM via py4j) interacts with.
+We can make our requests which then forwards the request onto the inferior JVM.
+
+Due to the asynchronous nature of the JVM and it's events (the reason why we first misunderstood the model), we needed another way of receiving and processing the events, cue our Event Handler as aforementioned.
+However that was only one step of the process, we also needed to asynchronously communicate the data from the events (that we had subscribed to). 
+Initially we used a semaphore, so that requests didn't complete until an event that would suspend the JVM would come and release the semaphore, thus sending the state back with the initial request.
+This created problems because of threaded nature of our web server, and the threaded nature of py4j and we were often getting deadlock, or being in inconsistent states (as the web interface wouldn't respond as the request was blocked or a deadlock etc).
+We addressed this by defining an interface \texttt{`DeevaEventDispatcher'}, where clients would implement this interface and pass it into the constructor for our library, i.e. callbacks or handlers that get called when we're handling JDI events, e.g. should we receive a Breakpoint event, we then call \texttt{`suspended_event()'} and pass along the state object.
+The concrete implementation of this on the client side would define the behaviour or what should happen should our debugger report that the JVM has suspended.
+How we implemented this for our client side is mentioned below in \emph{Middleware}. 
+
 
 
 We used the Java Debug Interface (\cmd{jdi}) to create, run, step, pause and inspect the inferior programs.
