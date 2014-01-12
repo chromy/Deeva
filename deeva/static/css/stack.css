@@ -21,19 +21,21 @@
 
 #stackHeader, #heapHeader{
  font-weight: bold;
- font-size: 30px;
+ font-size: 25px;
 }
 
 .stackFrameHeader{
  font-weight: bold;
- font-size: 20px;
- padding-top: 15px;
- padding-bottom: 10px;
- 
+ font-size: 16px;
+ padding-top: 13px;
 }
 
 .stackFrameVar{
- font-size: 22px;
+ font-size: 16px;
+}
+
+.typeLabel {
+    text-decoration: underline;
 }
 
 #heap{
@@ -79,8 +81,24 @@ svg.connectLine path{
   fill: black;
 }
 
-.heapRow{
-  margin-bottom: 7px;
+.heapRow {
+    width: 80px;
+    background-color: #D5FAFF;
+    margin: 5px;
+}
+
+.heapRow table {
+    border-collapse: collapse;
+}
+
+.heapRow tr {
+}
+
+.heapRow td {
+    min-width: 40px;
+    height: 31px;
+    font-size: 15px;
+    text-align: center;
 }
 
 .pointer{
