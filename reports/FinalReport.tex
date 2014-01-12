@@ -463,7 +463,7 @@ Angular is less opinionated than Ember which fitted better with our slightly unu
 Our UI has elements to contend with, the code pane where we display the code of program being debugged and the state pane where we display the current state of that program.
 We could have wasted a lot of time hand coding these components \footnote{NIH\todo[inline]{add refrence}} but it was faster to integrate and configure existing components.
 
-For the code pane we used CodeMirror\todo[inline]{reference} and we built the state pane using D3 we chose these libraries over alternatives because they are both active projects with good documentation. 
+For the code pane we used CodeMirror\cite{CodeMirror} and we built the state pane using D3 we chose these libraries over alternatives because they are both active projects with good documentation. 
 
 For the communication architecture between the frontend and the server there are many options but the most common are SOAP/XML and REST/JSON.
 We choose to use JOSN and REST partly because it is what we are most used each of us having encountered it at some point in the past but also because it is simpler SOAP/XML and now the defacto standard for new web applications.
@@ -714,6 +714,12 @@ Hector worked mostly on the backend implementing Breakpoints and the middle serv
 	Dehnadi, Saeed, Richard Bornat, and Ray Adams. 
 	\emph{Meta-analysis of the effect of consistency on success in early learning of programming.}
 	PPIG, 2009.
+
+\bibitem{CodeMirror}
+	Marijn Haverbeke.
+	\emph{CodeMirror}.
+	\url{http://codemirror.net/}
+
 \end{thebibliography}
 
 \end{document}
