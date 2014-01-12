@@ -629,7 +629,13 @@ Since our debugger should be able to be run from anywhere, and also we can't ass
 The user would specify a classpath as usual, but also they had to specify a sourcepath, so we could find the corresponding sources for the classes that had been loaded. 
 By default, to conform with Java's semantics, if they don't specify a classpath/sourcepath, we assume that it is just the current directory.
 
+To find all the classes that could potentially be of interest (N.B. we couldn't find a way that would  determine exactly what classes we would need before hand, see \emph{Lazy Loading Classes} below.) we traversed the directories listed in the classpath, looking for class files.
+Should we find a class file, we would append the directory structure relative to one of the directories in the classpath, so we could get the fully qualified class name (e.g. \texttt{java.lang.String} rather than just \texttt{String}).
+We would then keep a track of the absolute path of this class in map to be used later.
 
+To find all the sources, instead of adding any source file, we would only add sources that had a corresponding class that had been detected by the algorithm described above.
+
+Clients could then query this set of data, and load the source files for classes they were interested in (lazily).
 
 \textbf{\emph{Error Handling}}\\
 
