@@ -159,38 +159,41 @@ function is_object(d) {
     return !is_null(d) && !is_primative(d) && d.unique_id !== undefined;
 }
 
-function toggle_object_visibility(id) {
+function toggle_object_visibility(id, type) {
     if (object_visible(id)) {
         var index = visible_objects.indexOf(id);
         visible_objects.splice(index, 1);
     } else {
         visible_objects.push(id);
     }
-    ensure_object(id);
+    ensure_object(id, type);
     append_heap(all_objects);
     jsPlumb.deleteEveryEndpoint();
     draw_arrows();
 }
 
-function ensure_object(id) {
+function ensure_object(id, type) {
     var exists = all_objects.some(function(o) {
         return id == o.unique_id;
     });
     if (!exists) {
-        load_object(id);
+        load_object(id, type);
     }
 }
 
-function load_object(id) {
+function load_object(id, type) {
     $.ajax({
         type: "POST",
         url: "getHeapObjects",
         data: JSON.stringify({
-            heap_requests: [{unique_id: id}]
+            heap_requests: [{unique_id: id, type: type}]
         }),
         contentType: "application/json; charset=utf-8",
         dataType: "json",
         success: function(data) {
+            if (date.objects === undefined) {
+                return;
+            }
             console.log(data);
             all_objects = all_objects.concat(data.objects);
             append_heap(all_objects);
@@ -219,7 +222,7 @@ function populate_values(selection) {
 
     objects
         .on("click", function(d) {
-            toggle_object_visibility(d.unique_id);
+            toggle_object_visibility(d.unique_id, d.type);
         })
         .append("span")
         .html("&nbsp;")
