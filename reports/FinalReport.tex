@@ -477,9 +477,10 @@ We considered other alternatives: \cmd{jdi} uses a lower level API to the JVM wh
 
 \section{Evaluation}
 \label{sec:evaluation}
-We used a number of techniques to evaluate Deeva.
+
+\subsection{Continuous Evaluation}
+We used a number of techniques to evaluate as we built it Deeva.
 We used some techniques to help us find or fix specific problems and we used others to make sure that we were on the right track building the right things.
-\subsection{Usability Testing}
 
 \subsubsection{Hallway Testing}
 \begin{figure}[h!]
@@ -527,10 +528,8 @@ Specifically we asked which of the several button designs were better and valida
 We considered using something like Amazon Mechanical Turk to get larger numbers of responses which might have been more statistically significant but it seemed silly when we had hundreds of programmers who were our exact target audience sitting next to us.
 
 
-\subsection{Performance Testing}
-We also used a few other metrics, some custom and some off-the-shelf which could be automatically run over the repository to measure specific aspects of Deeva’s performance.
-
-\subsubsection{Time to First Request}
+\subsubsection{Performance Testing}
+We also used a few other metrics, some custom and some off-the-shelf which could be automatically run over the repository to measure specific aspects of Deeva’s performance one of these was Time to First Request.
 
 \begin{figure}[h!]
 \centering
@@ -550,6 +549,9 @@ From figure~\ref{fig:timeToFirstRequest}, you can see our application takes roug
 This graph allowed us to see when a commit increased the time-to-first-request, by clicking on the offending bar we could go to the relevant commit on Github and workout what caused the regression.
 
 Happily this turned out not to be such a big issue on this project as the time-to-first-request quickly stabilised and did not increase dramatically. 
+
+\subsection{Final Evaluation}
+\todo[inline]{do stuff}
 
 \section{Project Management}
 For this project we have three problems which we haven't had (at least in combination) in past university projects: we're not sure what we're building, we want to make sure we deliver the software on time but don't know how long it will take and
