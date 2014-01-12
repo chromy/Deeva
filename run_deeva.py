@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 
 import os, webbrowser, subprocess
+import deeva
 from deeva import app, debug, file_examiner
 
 class ConfigError(Exception):
@@ -45,7 +46,7 @@ def main(prog, args):
     deeva_cp = os.path.dirname(os.path.abspath(__file__))
     findjava_script = os.path.join(deeva_cp, 'findjava.sh')
     jdi_cp = subprocess.check_output(findjava_script, shell=True).replace('\n', '')
-    gson_cp = "lib/gson-2.2.4.jar"
+    gson_cp = os.path.join(deeva.__path__[0], '..', "lib/gson-2.2.4.jar")
     classpath = deeva_cp + ":" + jdi_cp + ":" + gson_cp
 
     app.debugger, app.gateway = debug.create_java_debugger(classpath, prog, args.cp,
