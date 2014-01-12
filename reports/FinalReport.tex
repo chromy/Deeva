@@ -84,7 +84,7 @@ In the first year introductory Java course many students are encountering impera
 Unfortunately this attempt is hamstrung by the absence of a good Java debugger decoupled from an IDE.
 Without a good strategy to fix broken programs students quickly reinvent bad habits ranging from the awful, shotgun debugging, to the merely poor, print statements.
 
-What we want is debugger, invokable from the command line, simple enough that students who have never seen a debugger before can taught to use it in only a few minutes but powerful enough to make tracking down a bug easy. 
+What we want is a debugger, invokable from the command line, simple enough that students who have never seen a debugger before can taught to use it in only a few minutes but powerful enough to make tracking down a bug easy. 
 Deeva fills this hole in the Java ecosystem and Lab infrastructure.
 
 Deeva was designed with an additional goal in mind.
@@ -113,19 +113,19 @@ For students Deeva provides excellent introduction to these tools while also fil
 
 \section{Motivation}
 \subsection{``Introduction to Imperative Programming" at Imperial}
-Around half of first year undergraduate computing students at Imperial have no previous imperative programming experience\cite{projectproposal} so the course ``Introduction to Imperative Programming" run in the first term directly after ``Introduction to Functional Programming" forms a cornerstone of the practical education students receive giving them skills they will need almost every other course.
+Around half of first year undergraduate computing students at Imperial have no previous imperative programming experience\cite{projectproposal} so the course ``Introduction to Imperative Programming" run in the first term directly after ``Introduction to Functional Programming" forms a cornerstone of the practical education students receive giving them skills they will need in almost every other course.
 
 The course focuses on the basics: control flow, functions and the write, compile, run cycle.
 To make teaching more effective it is desirable to avoid introducing unnecessary complexity like Object Orientation, memory management or complex IDEs all of which are left to later courses.
-For example although the class is now taught in Java () \todo{Do we need this bracket?}. it has previously been taught in Kenya\footnote{} a language which acts as an imperative stepping stone to Java by allowing functions to exist outside of objects.
+For example, although the introductory course is now taught in Java it has previously been taught in Kenya\footnote{http://chatley.com/kenya/}, a language which acts as an imperative stepping stone to Java by allowing functions to exist outside of objects.
 
-In particular department does not want students to end up relying on the large complex IDE like Eclipse or IntelliJ to `magically' run the code without understanding what it does.
-So recently \todo{fact check} \footnote{For the last two years.} students have been encouraged to avoid IDEs and instead use a text editor (like \cmd{vim}, \cmd{emacs} or \cmd{gedit}) and invoke the Java compiler (\cmd{javac}) and virtual machine (\cmd{java}) directly.
-Unfortunately there is downside to this approach, most Java debuggers are integrated into IDEs and those which are not are often of poor quality, this coupled with the relatively complex UI of debuggers in general (see our analysis below) means that there is no good option for instructors to suggest to students.
-Students quickly encounter bugs in their programs and (necessarily) without a strong understanding of the language or a taught strategy to deal with bugs they are reduced to reinventing well known bad habits including \todo{list of bad habits}.
+In particular, the department does not want students to end up relying on the large complex IDE like Eclipse or IntelliJ to `magically' run the code without understanding what it does.
+So for the last two years students have been encouraged to avoid IDEs and instead use a text editor (like \cmd{vim}, \cmd{emacs} or \cmd{gedit}) and invoke the Java compiler (\cmd{javac}) and virtual machine (\cmd{java}) directly.
+Unfortunately there is a downside to this approach, as most Java debuggers are integrated into IDEs and those which are not are often of poor quality. This coupled with the relatively complex UI of debuggers in general (see our analysis below) means that there is no good option for instructors to suggest to their class.
+Students quickly encounter bugs in their programs and without a strong understanding of the language or a strategy to deal with bugs they are reduced to reinventing well known bad habits including an abundance of print statements, large try-catch blocks, making everything public or the plain wait for a miracle.
 
 To combat this problem Dr. Tristan Allwood proposed\cite{projectproposal} this third year group project to build a tool to fill this gap.
-A debugger which was: independent from an IDE, simple enough to be 	used by beginners but powerful enough to be useful.
+A debugger which was: independent from an IDE, simple enough to be used by beginners but powerful enough to be useful.
 
 The project also had another goal which was to be a tool for teaching.
 In ``Introduction to Imperative Programming" teaches fundamentals including control flow and the effect of assignment and function calls, return statements, etc
