@@ -115,7 +115,7 @@ For students Deeva provides excellent introduction to these tools while also fil
 \subsection{``Introduction to Imperative Programming" at Imperial}
 Around half of first year undergraduate computing students at Imperial have no previous imperative programming experience\cite{projectproposal} so the course ``Introduction to Imperative Programming" run in the first term directly after ``Introduction to Functional Programming" forms a cornerstone of the practical education students receive giving them skills they will need in almost every other course.
 
-The course focuses on the basics: control flow, functions and the write, compile, run cycle.
+The course focuses on the basics: control flow, functions and the write-compile-run cycle.
 To make teaching more effective it is desirable to avoid introducing unnecessary complexity like Object Orientation, memory management or complex IDEs all of which are left to later courses.
 For example, although the introductory course is now taught in Java it has previously been taught in Kenya\footnote{http://chatley.com/kenya/}, a language which acts as an imperative stepping stone to Java by allowing functions to exist outside of objects.
 
@@ -127,8 +127,9 @@ Students quickly encounter bugs in their programs and without a strong understan
 To combat this problem Dr. Tristan Allwood proposed\cite{projectproposal} this third year group project to build a tool to fill this gap.
 A debugger which was: independent from an IDE, simple enough to be used by beginners but powerful enough to be useful.
 
-The project also had another goal which was to be a tool for teaching.
-In ``Introduction to Imperative Programming" teaches fundamentals including control flow and the effect of assignment and function calls, return statements, etc
+%%The project also had another goal which was to be a tool for teaching.
+Another main goal for this project is to be a teaching tool.
+``Introduction to Imperative Programming" teaches fundamentals including control flow and the effect of assignment and function calls, return statements, etc
 \footnote{A strong mental model of programming fundamentals is very important, for example when learning to program an early, consistent grasp of assignment is predictive of eventual achievement\cite{saeed09}.}.
 As in many courses this is done diagrammatically, by showing how each line of code in a program effects the stack and heap.
 
@@ -147,7 +148,7 @@ Some computer tools like \cmd{Python Tutor} \cite{pythontutor} are very useful a
 
 \begin{figure}[h!]
 \centering
-\includegraphics[width=100mm]{PythonTutorStackHeap.png}
+\includegraphics[width=125mm]{PythonTutorStackHeap.png}
 \caption{Python Tutor Stack and Heap Diagram}
 \end{figure}
 
@@ -165,7 +166,7 @@ Below is a summary of our conclusions.
 \subsubsection{jdb}
 \begin{figure}[h!]
 \centering
-\includegraphics[width=100mm]{jdb.png}
+\includegraphics[width=125mm]{jdb.png}
 \caption{jdb Debugger Screenshot}
 \end{figure}
 
@@ -177,7 +178,7 @@ Hence, jdb has the core functionalities we are looking for in a debugger but it 
 \subsubsection{JSwat}
 \begin{figure}[h!]
 \centering
-\includegraphics[width=100mm]{jswat.png}
+\includegraphics[width=125mm]{jswat.png}
 \caption{JSwat Screenshot}
 \end{figure}
 
@@ -191,12 +192,12 @@ Finally, JSwat is a tool that is closer to what we are trying to achieve but we 
 \subsubsection{Eclipse Debugger}
 \begin{figure}[h!]
 \centering
-\includegraphics[width=100mm]{eclipse.jpg}
+\includegraphics[width=125mm]{eclipse.jpg}
 \caption{Eclipse Debugger Screenshot}
 \end{figure}
 
 Eclipse allows the user to start a Java program in Debug mode which provides a control of the execution process and allows for investigation of the variable state.
-In addition, it provides a lot more functionalities than jdb, such as setting conditional breakpoints, modifying variables friendlier graphic user interface etc.
+In addition, it provides a lot more functionalities than jdb, such as setting conditional breakpoints, modifying variables, friendlier graphic user interface etc.
 Nevertheless, Eclipse is an integrated IDE debugger that has a lot of features that beginner will not use.
 
 In concluion, although Eclipse is one of the most used and reliable IDEs it is not suitable for beginners as it wraps debugging in a `magical' black box which is exactly what the lecturers are trying to avoid. 
@@ -204,7 +205,7 @@ In concluion, although Eclipse is one of the most used and reliable IDEs it is n
 \subsubsection{IntelliJ Debugger}
 \begin{figure}[h!]
 \centering
-\includegraphics[width=100mm]{intellij.png}
+\includegraphics[width=125mm]{intellij.png}
 \caption{IntelliJ Debugger Screenshot}
 \end{figure}
 
@@ -213,7 +214,7 @@ Even though it also provides nice features that allow for easy object inspection
 \subsubsection{Python Tutor}
 \begin{figure}[h!]
 \centering
-\includegraphics[width=100mm]{pythontutor.png}
+\includegraphics[width=125mm]{pythontutor.png}
 \caption{Python Tutor Screenshot}
 \end{figure}
 
@@ -227,7 +228,7 @@ However, it does have a much better way of displaying the state of the program, 
 
 \section{Objectives} 
 
-To produce a Java debugger that was:
+Our objective was to produce a Java debugger that was:
 
 \begin{description}
 \item[Independent] \hfill \\
@@ -265,7 +266,7 @@ Similarly we produced a prioritised list of extensions:
 \item Watch points
 \item Multi-platform (OSX, Linux, Windows)
 \item Maximal Documentation
-\item Support all of Java (Threads etc)
+\item Support all of Java features (Threads etc)
 \end{enumerate}
 
 \section{Deeva}
@@ -277,19 +278,21 @@ Similarly we produced a prioritised list of extensions:
 \subsection{Not Compiled}
 
 \section{Design}
-During the meeting that we arranged with Tristan, we talked through what we had understood from the specification for the project.
-We also asked him to go through his expectations in details so that we could get a full understanding on the project.
-Hence a sketch of the original design was generated based on the requirements. 
+
+After the project assignment, we had our first meeting with Tristan in order to disscuss his expectations for the debugging tool along with our ideas about the project requirements. 
+
+We found that Tristan's motivation behind setting such a project was to have a teaching tool that can graphically represent the state of Java programs. In lectures, he uses the whiteboard to create a picture of the stack and the heap at different points in the program like you can see in Figure \ref{fig:sketch}. However, he wanted a debugger suitable for teaching with a graphical representation as the whiteboard method is time consuming and offers less consitency than a automated tool. 
+Therefore, we decided to use his whiteboard sketches as the starting point for Deeva's user interface, mostly because we found his drawings intuitive and accurate.
+ 
 \begin{figure}[h!]
 \centering
 \includegraphics[width=\textwidth]{sketch.jpg}
-\caption{Sketch of the original design}
+\caption{Tristan's whiteboard representation of a Java program}
 \label{fig:sketch}
 \end{figure}
 
-We typically did this on a whiteboard (Figure~\ref{fig:sketch}) in meetings with Tristan which we then photographed and then transitioned into a Google Docs diagram.
+To avoid the costly mistake of spending a lot of time designing and building a UI that we may not use for the final product we decided to create a mocked front end design that satisfies both our and Tristan's requirements. We acheived this by disscussing differnet approaches with Tristan, sketching them on the whteboard and the transposing the idea in a Google Doc mockup (Figure~\ref{fig:mockup}).
 
-To avoid the costly mistake of spending a lot of time building something that we may have to throw away we mocked up our designs for the front end (Figure~\ref{fig:mockup}) before creating them.
 \begin{figure}[h!]
 \centering
 \includegraphics[width=\textwidth]{mockup.png}
@@ -297,21 +300,21 @@ To avoid the costly mistake of spending a lot of time building something that we
 \label{fig:mockup}
 \end{figure}
 
-It then becomes easy to change and to show to first years and others for feedback. 
-This does not solve every problem.
-For example (as mentioned) we completed a version that was generally agreed to be good on paper and we tried it out in a lecture hall and found that the text was not readable from the back.
-We have fixed our process to avoid this problem in the future, from now on after mocking in Google Docs we can test the mock at the expected size in the lecture hall.
+This approach also made it easy to modify the design and to ask for feedback from first year students. 
+However, this strategy did not solve every problem.
+For example, we completed a UI version that was generally agreed to be a good design on paper but had flaws (e.g. not readable from the back) that were discovered once we tried it on the screens in one of the lecture rooms. 
+As a result, we decided to test our mockups on the lecture room screens after each major design change to minimise the chance of unexpected issues once the UI has been implemented.
+
 \subsection{Frontend Design}
 \subsubsection{Overview}
-To meet the requirements of the core functionality, we had designed the user interface with respect to each of the features.
-The interface is essentially divided into two parts.
-The left half contains mainly the source code and the right half contains the stack and heap graph.
-In the left part, a tab-like bar allows users to input and to delete arguments easily. 
-Additionally, a series of buttons enables users to compile the function, start debugging, go to next line, go into a sub-function, return from a sub-function.
-A drop-down list displays all available classes from the package so that user could select to go to a specific class.
-Lastly, a code pane displays the source code.
-In the right part, the user interface contains a console output area which allows users to see any Stdout or Stderr, and also takes Stdin.
-A detailed diagram is also included to show the current state of the program in a form of stack and heap.
+
+Each part of our user interface was built to represents core features of our project, like the ability to view the source code or the possibility of reading from Stdin.
+
+The UI is esentially divided into two large parts. 
+On the left hand side there is a tab-like bar that enables user to easily add or remove program arguments, a series of buttons representing the main debugging actions (run, stop, next, step into, step out), a dropw-down list that displays all the available classes from the package that could be loaded in the code pane and finally the code pane that displays the source code or the previously selected class.
+
+On the right hand side there is a console input/output area that allows for comunication with stdin, stdout and stderr. The rest of the space is filled by the graphical representation of the current stack and heap state.
+
 \subsubsection{UI Design}
 \begin{figure}[h!]
 \centering
