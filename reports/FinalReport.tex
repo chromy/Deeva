@@ -134,15 +134,16 @@ As in many courses this is done diagrammatically, by showing how each line of co
 
 \begin{figure}[h!]
 \centering
-\includegraphics[width=100mm]{whiteboard.png}
+\includegraphics[width=125mm]{whiteBoardDrawing.jpg}
 \caption{Example diagram of Stack and Heap}
+\label{boarddiagrams}
 \end{figure}
 
 However this approach is not ideal.
-It is time consuming and error prone to update the diagram and worse it requires an oracle, the instructor, to act as mechanical interpreter of the rules.
-Students have no way see such a visualisation on arbitrary code they write, no easy way to see why code they write does not have the effect they expect without ad-hoc experimentation: modifying the source code and hoping it exposes the original problem.
+It is time consuming and error prone to update the diagram and worse, it requires an oracle, the instructor, to act as mechanical interpreter of the rules.
+Students have no way of graphically visualise the state of the programs they write, no easy way to see why their code does not have the effect they expect without ad-hoc experimentation: modifying the source code and hoping it exposes the original problem.
 
-All of these problems are the kind that computers are very good at and indeed tools like \cmd{Python Tutor}\cite{pythontutor} can take a code snippet and produce a visualisation of the execution trace. 
+Some computer tools like \cmd{Python Tutor} \cite{pythontutor} are very useful at rendering a correct visualisation of the execution trace base on a code snippet.
 
 \begin{figure}[h!]
 \centering
@@ -150,15 +151,12 @@ All of these problems are the kind that computers are very good at and indeed to
 \caption{Python Tutor Stack and Heap Diagram}
 \end{figure}
 
-By replacing the unintuitive tabular representation of the stack and heap found in almost every debugger with a user interface based these diagrams we hope to make Deeva a useful tool for teaching,
-allowing instructors to quickly create traces for programs in real time without making a mistake.
-Even more importantly it lets Deeva become a tool for learning allowing students to explore the unfamiliar model of imperative programming without expert oversight.
+By replacing the unintuitive tabular representation of the stack and heap found in almost every debugger with a user interface (based on these diagrams - see Figure \ref{boarddiagrams}) we hope to make Deeva a useful tool for teaching,
+allowing instructors to create traces for programs in real time without making a mistake.
+Even more importantly, it lets Deeva become a tool for learning, allowing students to explore the unfamiliar model of imperative programming without expert oversight.
 
-Finally despite the existence of powerful tools to introspect running programs many programmers continue to debug programs using print statements.
-Since
-
-\todo{something}
-
+Finally, despite the existence of powerful tools to introspect running programs many programmers continue to debug code using print statements.
+This is probably due to the fact that they were not properly introduced to debugging tools or they found them too difficult to understand. So, with Deeva we are hoping to `inspire' new programmers to embrace debugging tools and to use them not only  for fixing bugs but also for understanding the workings of different programming languages.   
 
 \subsection{Alternatives}
 As part of our requirement analysis stage, we looked into detail of various existed debuggers to compare their pros and cons, and their suitability for first year students.
