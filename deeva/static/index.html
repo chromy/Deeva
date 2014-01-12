@@ -53,7 +53,7 @@
           <h1>Deeva</h1>
         </div>
         <div class="col-md-5">
-          <p>current state: {{stateToPresent[currentState]}}</p>
+          <p>Current State: {{stateToPresent[currentState]}}</p>
         </div>
       </div>
     </div>
@@ -99,15 +99,15 @@
         </div> <!-- end col-md-6 -->
       </div> <!-- end row -->
 
-      <div class="row">
-        <div class="col-md-6" style="max-width:{{cmMaxWidth}}px">
+      <div class="row bottom">
+        <div class="col-md-6 fullHeight" style="max-width:{{cmMaxWidth}}px;">
           <!-- CodeMirror Instance -->
-          <div id="codeInputPane" class="outer-circle"></div>
+          <div id="codeInputPane" class="outer-circle fullHeight"></div>
         </div> <!-- end col-md-6 -->
 
         <!-- Begin Stack/Heap section, bring this into a new controller, easier to separate -->
-        <div class="col-md-6">
-          <div id="heap_stack">
+        <div class="col-md-6 fullHeight">
+          <div id="heap_stack" class="fullHeight">
             <div id="visual" style="position: relative;">
               <div style="float:left; width:33%;">
                 <div id="stack_td">
