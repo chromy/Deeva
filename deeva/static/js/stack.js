@@ -5,6 +5,9 @@ var empty_object = {
     value: undefined
 };
 
+var visible_objects = [];
+var all_objects = [];
+
 // Primitive types in Java.
 var primitive_list = ["int", "char", "boolean", "byte", "float", "double", "long", "short"];
 
@@ -35,9 +38,6 @@ function setJsPlumbDefaults() {
 function main(all_variables) {
     setJsPlumbDefaults();
 
-    // clear old objects
-    id_to_objects = {};
-
     d3.selectAll("#global_area").remove();
     d3.selectAll("#heapBody").remove();
     d3.selectAll("#stackFrames").remove();
@@ -57,8 +57,10 @@ function main(all_variables) {
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             success: function(data) {
-                var heap = d3.select("#heap");
-                append_heap(heap, data.objects, unique_id_list);
+                var heap = d3.select('#heap').append("div").attr("id", "heapBody");
+                all_objects = data.objects;
+                append_heap(all_objects);
+                data.objects.push({foo: 2});
                 draw_arrows();
             }
         });
@@ -160,6 +162,24 @@ function is_object(d) {
     return !is_null(d) && !is_primative(d) && d.unique_id !== undefined;
 }
 
+function toggle_object_visibility(id) {
+    if (object_visible(id)) {
+        var index = visible_objects.indexOf(id);
+        visible_objects.splice(index, 1);
+        console.log("Hiding: " + id);
+    } else {
+        visible_objects.push(id);
+        console.log("Showing: " + id);
+    }
+    append_heap(all_objects);
+    jsPlumb.deleteEveryEndpoint();
+    draw_arrows();
+}
+
+function object_visible(id) {
+    return visible_objects.indexOf(id) != -1;
+}
+
 /* Populates the stack with the values
  * (the actual value for primitive types and with arrows for objects). */
 function populate_values(selection) {
@@ -176,14 +196,19 @@ function populate_values(selection) {
     null_objects.append("span")
         .attr("class", "primitives")
         .text(function(d) {
-            return 'null';
+            return '⊥';
         });
 
-    objects.append("span")
+    objects
+        .on("click", function(d) {
+            toggle_object_visibility(d.unique_id);
+        })
+        .append("span")
         .html("&nbsp;")
         .attr("class", function(d) {
             return 'pointer_to_object_' + d.unique_id;
         });
+
 
     // primitive values are drawn in the cell
     primitives.append("span")
@@ -195,13 +220,25 @@ function populate_values(selection) {
 }
 
 // Creates the heap and the objects in it.
-function append_heap(heap_selection, heap_objects, unique_id_list) {
-    var heap = heap_selection.append("div").attr("id", "heapBody");
+function append_heap(heap_objects) {
+    var visible_objects = heap_objects
+        .filter(function(d) {
+            return object_visible(d.unique_id);
+        });
+    visible_objects.sort(function (a, b) { return a.unique_id - b.unique_id; });
+
+    console.log('vis', visible_objects);
+
+    var heap = d3.select("#heapBody");
 
     // create the actual objects
-    var objects = heap.selectAll("div")
-        .data(heap_objects)
-        .enter().append("div")
+    var the_objects = heap.selectAll("div")
+        .data(visible_objects, function(d) { console.log(this); return d.unique_id; });
+
+    the_objects.exit().each(function(d) { console.log('remove'); console.log(this); }).remove();
+
+    var objects = the_objects.enter()
+        .append("div")
             .attr("id", function(d, i) {
                 return "object_" + d.unique_id;
             })
@@ -299,6 +336,7 @@ function append_heap(heap_selection, heap_objects, unique_id_list) {
             console.log(d);
         });
     populate_values(pure_object_values);
+
 }
 
 
