@@ -156,10 +156,11 @@ allowing instructors to create traces for programs in real time without making a
 Even more importantly, it lets Deeva become a tool for learning, allowing students to explore the unfamiliar model of imperative programming without expert oversight.
 
 Finally, despite the existence of powerful tools to introspect running programs many programmers continue to debug code using print statements.
-This is probably due to the fact that they were not properly introduced to debugging tools or they found them too difficult to understand. So, with Deeva we are hoping to `inspire' new programmers to embrace debugging tools and to use them not only  for fixing bugs but also for understanding the workings of different programming languages.   
+This is probably due to the fact that they were not properly introduced to debugging tools or they found them too difficult to understand. So, with Deeva we are hoping to `inspire' new programmers to embrace debugging tools and to use them not only  for fixing bugs but also for understanding the workings of\texttt{•} different programming languages.   
 
 \subsection{Alternatives}
-As part of our requirement analysis stage, we looked into detail of various existed debuggers to compare their pros and cons, and their suitability for first year students.
+As part of our analysis stage, we looked at various different debuggers in order to decide what features we would like to include in Deeva. Our main interest was to find features that appeal to first year students (e.g. graphical visualisation) but does not overcomplicate the tool (e.g. watchpoints). 
+Below is a summary of our conclusions.
 
 \subsubsection{jdb}
 \begin{figure}[h!]
@@ -171,7 +172,8 @@ As part of our requirement analysis stage, we looked into detail of various exis
 The Java Debugger, jdb, is a simple command line debugger that provides inspection and debugging for Java classes.
 It provides most of the basic functionalities of a debugger eg. setting breakpoint(s), stepping through the next line, and diagnosing the cause of the exception.
 However, since it is a command line debugger, it provides a poor graphic user interface.
-Hence, it is not quite intuitive to use.
+
+Hence, jdb has the core functionalities we are looking for in a debugger but it is not supported by a good graphic representation. This makes it unintuitive for first year students, introducing the exact problem we are trying to solve.
 \subsubsection{JSwat}
 \begin{figure}[h!]
 \centering
@@ -180,9 +182,12 @@ Hence, it is not quite intuitive to use.
 \end{figure}
 
 JSwat is a graphical Java debugger which provides basic functionality like: setting breakpoints, thread and stack display, variable monitoring and method invocation.
-The feature it has which is lacking in some other debuggers is it allows users to trace through a linked list nicely by just clicking on a certain button repeatedly.
-A benefit of it is its small size, in terms of the disc usage.
-However, its unattractive interface with varies of features might still be a overwhelm for first year students.
+The advantage of this tool (which is missing in most debuggers) is that it allows users to nicely `walk' through a linked list just by repeatedly clicking on a certain button.
+Another benefit is its small size in terms of the disc usage.
+However, its unattractive interface with a multitude of features might still overwhelm a debugging beginner.
+
+Finally, JSwat is a tool that is closer to what we are trying to achieve but we found that it is still too complicated for our purposes. 
+
 \subsubsection{Eclipse Debugger}
 \begin{figure}[h!]
 \centering
@@ -190,9 +195,12 @@ However, its unattractive interface with varies of features might still be a ove
 \caption{Eclipse Debugger Screenshot}
 \end{figure}
 
-Eclipse allows starting a Java program in Debug mode which provides a control of the execution process of the program and allows investigation of the state of the variables.
-In addition, it provides a lot more functionalities than jdb such as setting a conditional breakpoints, variables modification, and having an user friendly graphic user interface.
-Nevertheless, being an integrated IDE debugger and having a lot of unused features for beginner, it might overwhelm first year students.
+Eclipse allows the user to start a Java program in Debug mode which provides a control of the execution process and allows for investigation of the variable state.
+In addition, it provides a lot more functionalities than jdb, such as setting conditional breakpoints, modifying variables friendlier graphic user interface etc.
+Nevertheless, Eclipse is an integrated IDE debugger that has a lot of features that beginner will not use.
+
+In concluion, although Eclipse is one of the most used and reliable IDEs it is not suitable for beginners as it wraps debugging in a `magical' black box which is exactly what the lecturers are trying to avoid. 
+
 \subsubsection{IntelliJ Debugger}
 \begin{figure}[h!]
 \centering
@@ -201,7 +209,7 @@ Nevertheless, being an integrated IDE debugger and having a lot of unused featur
 \end{figure}
 
 Similar to Eclipse Debugger, IntelliJ Debugger is also an integrated IDE debugger which provides fast and powerful functionalities.
-Even though it also provides nice feature that allow object(s) inspection easier, its overwhelming functionalities may cumbersome first year students.
+Even though it also provides nice features that allow for easy object inspection, it is again overwhelming first year students.
 \subsubsection{Python Tutor}
 \begin{figure}[h!]
 \centering
@@ -209,12 +217,12 @@ Even though it also provides nice feature that allow object(s) inspection easier
 \caption{Python Tutor Screenshot}
 \end{figure}
 
-Python Tutor is not a debugger but an online tool that provides users with a visualisation of the program.
-A user can write a Python program in the web browser and visualise what happens as the computer executes each line of the code.
-It can play though this trace forwards and backwards, functionality that absent from most debuggers.
-This would be a useful tool for first year students except that it uses Python not Java, does not support classical debugger movement or input and does not support multiple files.
+Python Tutor is not a debugger but an online tool that provides users with a visualisation of the program state.
+A user can write a Python program in the web browser and visualise what happens as each line of the code gets executed.
+It can play through the program trace forwards and backwards, a functionality that is absent in most debuggers.
+This would be a very useful tool for first year students except that it uses Python not Java. Also, it does not support classical debugger movement (e.g. step in, step into), user input or multiple files.
 
-However it does have this much better way to display the state of the program which we are interested in replicating.
+However, it does have a much better way of displaying the state of the program, making the program execution very easy to understand. This feature appealed a lot to us as we wanted to make it the selling point of Deeva.
 
 
 \section{Objectives} 
@@ -475,10 +483,9 @@ We considered other alternatives: \cmd{jdi} uses a lower level API to the JVM wh
 
 \section{Evaluation}
 \label{sec:evaluation}
-
-\subsection{Continuous Evaluation}
-We used a number of techniques to evaluate as we built it Deeva.
+We used a number of techniques to evaluate Deeva.
 We used some techniques to help us find or fix specific problems and we used others to make sure that we were on the right track building the right things.
+\subsection{Usability Testing}
 
 \subsubsection{Hallway Testing}
 \begin{figure}[h!]
@@ -526,8 +533,10 @@ Specifically we asked which of the several button designs were better and valida
 We considered using something like Amazon Mechanical Turk to get larger numbers of responses which might have been more statistically significant but it seemed silly when we had hundreds of programmers who were our exact target audience sitting next to us.
 
 
-\subsubsection{Performance Testing}
-We also used a few other metrics, some custom and some off-the-shelf which could be automatically run over the repository to measure specific aspects of Deeva’s performance one of these was Time to First Request.
+\subsection{Performance Testing}
+We also used a few other metrics, some custom and some off-the-shelf which could be automatically run over the repository to measure specific aspects of Deeva’s performance.
+
+\subsubsection{Time to First Request}
 
 \begin{figure}[h!]
 \centering
@@ -547,9 +556,6 @@ From figure~\ref{fig:timeToFirstRequest}, you can see our application takes roug
 This graph allowed us to see when a commit increased the time-to-first-request, by clicking on the offending bar we could go to the relevant commit on Github and workout what caused the regression.
 
 Happily this turned out not to be such a big issue on this project as the time-to-first-request quickly stabilised and did not increase dramatically. 
-
-\subsection{Final Evaluation}
-\todo[inline]{do stuff}
 
 \section{Project Management}
 For this project we have three problems which we haven't had (at least in combination) in past university projects: we're not sure what we're building, we want to make sure we deliver the software on time but don't know how long it will take and
