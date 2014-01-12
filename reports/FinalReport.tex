@@ -306,15 +306,14 @@ As a result, we decided to test our mockups on the lecture room screens after ea
 
 \subsection{Frontend Design}
 \subsubsection{Overview}
-To meet the requirements of the core functionality, we had designed the user interface with respect to each of the features.
-The interface is essentially divided into two parts.
-The left half contains mainly the source code and the right half contains the stack and heap graph.
-In the left part, a tab-like bar allows users to input and to delete arguments easily. 
-Additionally, a series of buttons enables users to compile the function, start debugging, go to next line, go into a sub-function, return from a sub-function.
-A drop-down list displays all available classes from the package so that user could select to go to a specific class.
-Lastly, a code pane displays the source code.
-In the right part, the user interface contains a console output area which allows users to see any Stdout or Stderr, and also takes Stdin.
-A detailed diagram is also included to show the current state of the program in a form of stack and heap.
+
+Each part of our user interface was built to represents core features of our project, like the ability to view the source code or the possibility of reading from Stdin.
+
+The UI is esentially divided into two large parts. 
+On the left hand side there is a tab-like bar that enables user to easily add or remove program arguments, a series of buttons representing the main debugging actions (run, stop, next, step into, step out), a dropw-down list that displays all the available classes from the package that could be loaded in the code pane and finally the code pane that displays the source code or the previously selected class.
+
+On the right hand side there is a console input/output area that allows for comunication with stdin, stdout and stderr. The rest of the space is filled by the graphical representation of the current stack and heap state.
+
 \subsubsection{UI Design}
 \begin{figure}[h!]
 \centering
