@@ -586,6 +586,7 @@ However that was only one step of the process, we also needed to asynchronously 
 
 Initially we had used a semaphore, so that requests didn't complete until an event that would suspend the JVM would come and release the semaphore, thus sending the state back with the initial request.
 This created problems because of threaded nature of our web server, and the threaded nature of py4j and we were often getting deadlock, or being in inconsistent states (as the web interface wouldn't respond as the request was blocked or a deadlock etc).
+It also meant that we couldn't define a new view of the state of the debugger, hence our Python web server would be tightly coupled to the inner workings of the debugger (i.e. requests blocking whilst blocking on a semaphore, which could only be released by a suspending event).
 
 We addressed this by defining an interface \texttt{`DeevaEventDispatcher'}, where clients would implement this interface and pass it into the constructor for our library, i.e. callbacks or handlers that get called when we're handling JDI events, e.g. should we receive a Breakpoint event, we then call \texttt{`suspended\_event()'} and pass along the state object.
 The concrete implementation of this on the client side would define the behaviour or what should happen should our debugger report that the JVM has suspended.
@@ -638,6 +639,20 @@ To find all the sources, instead of adding any source file, we would only add so
 Clients could then query this set of data, and load the source files for classes they were interested in (lazily).
 
 \textbf{\emph{Error Handling}}\\
+The JVM is a complicated piece of software, we can also think of it as a software processor (since it also has it own instruction set).
+So it goes without saying that JVM errors are bound to occur.
+On top of that there could be errors as part of the debugging process.
+
+So it is imperative that we handle these errors in a nice way, and communicate that to the client.
+In our debugger, we can catch those errors via Exceptions, but that is native to our debugger, it still needs to be communicated to the client.
+We can make use of our event dispatcher as aforementioned (\texttt{DeevaEventDispatcher}), which we can pass a nice description of the error, and it can be later handled by the client.
+
+A few examples of errors that we handle are:
+\begin{description}
+  \item[AbsentInformationException]\hfill\\
+    This exception is raised when we try to query the JVM for knowledge that would only be there should the class file we're interested contains it, but isn't i.e. the class file was not compiled with debug symbols.
+    Examples of information that we're interested 
+\end{description}
 
 \textbf{\emph{General Problems/Caveats}}\\
 \todo[inline]{thread safety, i/o blocking, lazy loading classes (breakpoitns etc)}
