@@ -136,7 +136,7 @@ function draw_arrows() {
     var objects = d3.select("#heapBody").selectAll("div");
     objects.each(function(d) {
         var obj = this;
-        var pointers = d3.selectAll("#pointer_to_" + obj.id);
+        var pointers = d3.selectAll(".pointer_to_" + obj.id);
         pointers.each(function(p) {
             jsPlumb.connect({
                 source: this,
@@ -226,9 +226,8 @@ function populate_values(selection) {
         })
         .append("span")
         .html("&nbsp;")
-        .attr("class", "pointer")
-        .attr("id", function(d) {
-            return 'pointer_to_object_' + d.unique_id;
+        .attr("class", function(d) {
+            return 'pointer' + ' ' + 'pointer_to_object_' + d.unique_id;
         })
         .attr("title", "click to expand");
 

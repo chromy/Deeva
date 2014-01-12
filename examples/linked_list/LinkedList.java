@@ -25,7 +25,8 @@ public class LinkedList<T> {
     }
 
     public static void main(String[] args) {
-        LinkedList<Integer> lst = new LinkedList<Integer>(1, new LinkedList<Integer>(2, null));
+        LinkedList<Integer> lst = new LinkedList<Integer>(1, 
+                new LinkedList<Integer>(2, null));
         int total = sum(lst);
         System.out.println(total);
     }
