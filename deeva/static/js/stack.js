@@ -191,7 +191,7 @@ function load_object(id, type) {
         contentType: "application/json; charset=utf-8",
         dataType: "json",
         success: function(data) {
-            if (date.objects === undefined) {
+            if (data.objects === undefined) {
                 return;
             }
             console.log(data);
