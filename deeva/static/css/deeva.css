@@ -105,6 +105,10 @@ body {
   box-shadow: 3px 3px 0px 0px #ccc;
 }
 
+.myButtons:focus {
+  outline: none;
+}
+
 #state {
   text-align: center;
   font-size: 25px;
