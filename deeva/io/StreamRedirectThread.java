@@ -43,8 +43,8 @@ public class StreamRedirectThread extends Thread {
             int count;
             while ((count = in.read(cbuf, 0, BUFFER_SIZE)) >= 0) {
                 String s = new String(cbuf, 0, count);
+                //dispatcher.dispatchOutput(s);
                 resQueue.put(getName(), s);
-                dispatcher.dispatchOutput(s);
             }
         } catch (IOException exc) {
             System.err.println("Child I/O Transfer - " + exc);

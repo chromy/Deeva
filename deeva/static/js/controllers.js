@@ -393,11 +393,15 @@ function ($scope, $http, FileService, MiscService, $window) {
         });
 
         $scope.eventStream.addEventListener("stderr", function(e) {
-            console.debug("stderr:", e.data)
+            var stderr = e.data;
+            console.debug("stderr:", stderr);
+            printToTerminal(stderr, false);
         });
 
         $scope.eventStream.addEventListener("stdout", function(e) {
-            console.debug("stdout:", e.data)
+            var stdout = e.data;
+            console.debug("stdout:", stdout)
+            printToTerminal(stdout, false);
         });
     };
 
