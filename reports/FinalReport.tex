@@ -147,7 +147,7 @@ Some computer tools like \cmd{Python Tutor} \cite{pythontutor} are very useful a
 
 \begin{figure}[h!]
 \centering
-\includegraphics[width=100mm]{PythonTutorStackHeap.png}
+\includegraphics[width=125mm]{PythonTutorStackHeap.png}
 \caption{Python Tutor Stack and Heap Diagram}
 \end{figure}
 
@@ -165,7 +165,7 @@ Below is a summary of our conclusions.
 \subsubsection{jdb}
 \begin{figure}[h!]
 \centering
-\includegraphics[width=100mm]{jdb.png}
+\includegraphics[width=125mm]{jdb.png}
 \caption{jdb Debugger Screenshot}
 \end{figure}
 
@@ -177,7 +177,7 @@ Hence, jdb has the core functionalities we are looking for in a debugger but it 
 \subsubsection{JSwat}
 \begin{figure}[h!]
 \centering
-\includegraphics[width=100mm]{jswat.png}
+\includegraphics[width=125mm]{jswat.png}
 \caption{JSwat Screenshot}
 \end{figure}
 
@@ -191,7 +191,7 @@ Finally, JSwat is a tool that is closer to what we are trying to achieve but we 
 \subsubsection{Eclipse Debugger}
 \begin{figure}[h!]
 \centering
-\includegraphics[width=100mm]{eclipse.jpg}
+\includegraphics[width=125mm]{eclipse.jpg}
 \caption{Eclipse Debugger Screenshot}
 \end{figure}
 
@@ -204,7 +204,7 @@ In concluion, although Eclipse is one of the most used and reliable IDEs it is n
 \subsubsection{IntelliJ Debugger}
 \begin{figure}[h!]
 \centering
-\includegraphics[width=100mm]{intellij.png}
+\includegraphics[width=125mm]{intellij.png}
 \caption{IntelliJ Debugger Screenshot}
 \end{figure}
 
@@ -213,7 +213,7 @@ Even though it also provides nice features that allow for easy object inspection
 \subsubsection{Python Tutor}
 \begin{figure}[h!]
 \centering
-\includegraphics[width=100mm]{pythontutor.png}
+\includegraphics[width=125mm]{pythontutor.png}
 \caption{Python Tutor Screenshot}
 \end{figure}
 
@@ -227,7 +227,7 @@ However, it does have a much better way of displaying the state of the program, 
 
 \section{Objectives} 
 
-To produce a Java debugger that was:
+Our objective was to produce a Java debugger that was:
 
 \begin{description}
 \item[Independent] \hfill \\
@@ -265,7 +265,7 @@ Similarly we produced a prioritised list of extensions:
 \item Watch points
 \item Multi-platform (OSX, Linux, Windows)
 \item Maximal Documentation
-\item Support all of Java (Threads etc)
+\item Support all of Java features (Threads etc)
 \end{enumerate}
 
 \section{Deeva}
@@ -277,19 +277,21 @@ Similarly we produced a prioritised list of extensions:
 \subsection{Not Compiled}
 
 \section{Design}
-During the meeting that we arranged with Tristan, we talked through what we had understood from the specification for the project.
-We also asked him to go through his expectations in details so that we could get a full understanding on the project.
-Hence a sketch of the original design was generated based on the requirements. 
+
+After the project assignment, we had our first meeting with Tristan in order to disscuss his expectations for the debugging tool along with our ideas about the project requirements. 
+
+We found that Tristan's motivation behind setting such a project was to have a teaching tool that can graphically represent the state of Java programs. In lectures, he uses the whiteboard to create a picture of the stack and the heap at different points in the program like you can see in Figure \ref{fig:sketch}. However, he wanted a debugger suitable for teaching with a graphical representation as the whiteboard method is time consuming and offers less consitency than a automated tool. 
+Therefore, we decided to use his whiteboard sketches as the starting point for Deeva's user interface, mostly because we found his drawings intuitive and accurate.
+ 
 \begin{figure}[h!]
 \centering
 \includegraphics[width=\textwidth]{sketch.jpg}
-\caption{Sketch of the original design}
+\caption{Tristan's whiteboard representation of a Java program}
 \label{fig:sketch}
 \end{figure}
 
-We typically did this on a whiteboard (Figure~\ref{fig:sketch}) in meetings with Tristan which we then photographed and then transitioned into a Google Docs diagram.
+To avoid the costly mistake of spending a lot of time designing and building a UI that we may not use for the final product we decided to create a mocked front end design that satisfies both our and Tristan's requirements. We acheived this by disscussing differnet approaches with Tristan, sketching them on the whteboard and the transposing the idea in a Google Doc mockup (Figure~\ref{fig:mockup}).
 
-To avoid the costly mistake of spending a lot of time building something that we may have to throw away we mocked up our designs for the front end (Figure~\ref{fig:mockup}) before creating them.
 \begin{figure}[h!]
 \centering
 \includegraphics[width=\textwidth]{mockup.png}
@@ -297,9 +299,10 @@ To avoid the costly mistake of spending a lot of time building something that we
 \label{fig:mockup}
 \end{figure}
 
-It then becomes easy to change and to show to first years and others for feedback. 
-This does not solve every problem.
-For example (as mentioned) we completed a version that was generally agreed to be good on paper and we tried it out in a lecture hall and found that the text was not readable from the back.
+This approach also made it easy to modify the design and to ask for feedback from first year students. 
+However, this strategy did not solve every problem.
+For example, we completed a UI version that was generally agreed to be a good design on paper but had flaws (e.g. not readable from the back) that were discovered once we tried it on the screens in one of the lecture rooms. 
+
 We have fixed our process to avoid this problem in the future, from now on after mocking in Google Docs we can test the mock at the expected size in the lecture hall.
 \subsection{Frontend Design}
 \subsubsection{Overview}
