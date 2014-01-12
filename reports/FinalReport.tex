@@ -539,6 +539,7 @@ We initially attempted to use \cmd{Pyjnius} but it was time consuming to build (
 We also considered \cmd{JPype} but it seemed to have worse documentation and seemed significantly less active than either of the others.    
 
 \subsubsection{Back End}
+
 The Java specification provides an interface that all the different JVM implementations must conform to (of course, some features may not be supported in some Virtual Machines (VMs) for which the specification provides for).
 The Java Virtual Machine Tools Interface (JVM TI) \cite{jvmti} allows a program to inspect the state and control the execution of applications running in a JVM.
 This API is written in C/C++ and is quite low level (in fact it is the lowest in the Debugger Architecture).
@@ -546,8 +547,14 @@ Java provides another interface written in Java, the Java Debug Interface (JDI),
 This is useful as it simplifies our process, as we don't have to worry about wrapping Java to call C functions and vice versa, and also get the correct semantics, (the JDI library is quite huge, and implementing it ourselves is another project in itself).
 
 With this in mind, we first thought that implementation would be quite simple, however we misunderstood the model of how the JVM works together with JDI.
+The inferior JVM (the virtual machine hosting the program being debugged) has to run in a separate virtual machine, because if the debugger and the debuggee run in the same virtual machine, a catastrophic bug in the program debugged can crash the debugger, rendering it useless. 
+The inferior JVM probably has no knowledge that it is being ``debugged'', and having them in the same process/JVM most probably increases the liklihood of Heisenbugs \cite{heisenbug}.
 
- 
+A JVM can emit events when certain things happen e.g. when a thread is suspended, when the VM has been initialised or killed, when a breakpoint has been reached, when a method has been entered/exited, and when a single step has occurred (either step into, step over, step return).
+What a debugger would do, would define an Event Handler, which listens and processes the events that are emitted.
+However if a JVM were to output every possible event, it would cripple execution time (plus the JDI can be used for instrumentation i.e. generate a stream of trace where the original source can't be modified).
+The solution to this is that we submit requests for events we would like to handle, and define methods that would be called should we see an event.
+
 
 We used the Java Debug Interface (\cmd{jdi}) to create, run, step, pause and inspect the inferior programs.
 We considered other alternatives: \cmd{jdi} uses a lower level API to the JVM which we could have used or we could 
@@ -793,6 +800,12 @@ Hector worked mostly on the backend implementing Breakpoints and the middle serv
         Wikipedia.
         \emph{Java Virtual Machine Tools Interface}
         \url{http://en.wikipedia.org/wiki/Java_Virtual_Machine_Tools_Interface}
+        2013
+
+\bibitem{heisenbug}
+        Wikipedia.
+        \emph{Heisenbug}
+        \url{http://en.wikipedia.org/wiki/Heisenbug}
         2013
 \end{thebibliography}
 
