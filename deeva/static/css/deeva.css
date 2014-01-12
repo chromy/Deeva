@@ -1,15 +1,16 @@
 /* deeva css stylesheet */
 
-body {
+html, body {
+    height: 100%;
 }
+
 .row {
   height: 100%;
 }
 
 #myContainer {
-  display:table;
+  display: table;
   width: 100%;
-  margin-bottom: 20px;
 }
 
 #code {
@@ -75,8 +76,6 @@ body {
   text-align: center;
   height: 56px;
   width: 290px;
-  margin-left: auto;
-  margin-right: auto;
 }
 
 .myButtons[disabled="disabled"] {

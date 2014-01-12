@@ -46,6 +46,7 @@
   </head>
 
   <body>
+    <div class="container" id="myContainer">
     <div id="header">
       <div class="row" id="headerRow">
         <div class="col-md-7">
@@ -56,7 +57,6 @@
         </div>
       </div>
     </div>
-    <div class="container" id="myContainer">
       <div class="row">
         <div class="col-md-6" style="max-width:{{cmMaxWidth}}px">
           <!-- Arguments -->
@@ -72,38 +72,41 @@
             <input type="image" class="myButtons" id="stopBtn"
                  ng-disabled="!(state.stopBtn.indexOf(currentState) > -1)"
                  ng-click="stop()" title="Stop" 
-                 src="/static/css/images/stop.png">
-            </input>
+                 src="/static/css/images/stop.png"/>
             <input type="image" class="myButtons" id="stepOverBtn"
                  ng-disabled="!(state.stepOverBtn.indexOf(currentState) > -1)"
                  ng-click="clickButton('stepOver')" title="Next"
-                 src="/static/css/images/step_over.png">
-            </input>
+                 src="/static/css/images/step_over.png"/>
             <input type="image" class="myButtons" id="stepIntoBtn"
                  ng-disabled="!(state.stepIntoBtn.indexOf(currentState) > -1)"
                  ng-click="clickButton('stepInto')" title="Step Into"
-                 src="/static/css/images/step_into.png">
-            </input>
+                 src="/static/css/images/step_into.png"/>
             <input type="image" class="myButtons" id="stepReturnBtn"
                  ng-disabled="!(state.stepReturnBtn.indexOf(currentState) > -1)"
                  ng-click="clickButton('stepReturn')" title="Step Out"
-                 src="/static/css/images/step_return.png">
-            </input>
-          </div> <!-- end buttons container -->
+                 src="/static/css/images/step_return.png"/>
+            <!-- Package directive -->
 
-          <!-- Package directive -->
-          <deeva-package breadcrumb="breadcrumb" package-dir="package_dir"
+          </div> <!-- end buttons container -->
+            <deeva-package breadcrumb="breadcrumb" package-dir="package_dir"
                          current-class="current_class"
                          source-click="loadFile"></deeva-package>
+        </div> <!-- end col-md-6 -->
+        <div class="col-md-6">
+          
+          <p id="console">Console</p>
+          <div id="terminal"></div>
+        </div> <!-- end col-md-6 -->
+      </div> <!-- end row -->
+
+      <div class="row">
+        <div class="col-md-6" style="max-width:{{cmMaxWidth}}px">
           <!-- CodeMirror Instance -->
           <div id="codeInputPane" class="outer-circle"></div>
         </div> <!-- end col-md-6 -->
 
         <!-- Begin Stack/Heap section, bring this into a new controller, easier to separate -->
         <div class="col-md-6">
-          <p id="console">Console</p>
-          <div id="terminal"></div>
-
           <div id="heap_stack">
             <div id="visual" style="position: relative;">
               <div style="float:left; width:33%;">
