@@ -28,7 +28,9 @@ clean_examples:
 setup_deploy:
 	test -d .env || virtualenv .env
 	source .env/bin/activate; pip install -r requirements.txt;
-	source .env/bin/activate; cd deeva; javac *.java -classpath $(CLASS_PATH)
+	source .env/bin/activate; test $(TOOL_JAR_PATH) || test -f $(TOOL_JAR_PATH)
+	source .env/bin/activate; find deeva -name "*.java" > $(SOURCE_FILE)
+	source .env/bin/activate; javac -g @$(SOURCE_FILE) -classpath $(CLASS_PATH)
 	echo '#!/bin/bash' > start_deeva
 	echo 'DIR=$$(dirname "$$(readlink -f "$$0")")' >> start_deeva
 	echo 'source $$DIR/.env/bin/activate' >> start_deeva
