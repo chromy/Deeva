@@ -360,7 +360,16 @@ Deeva supports multiple Java files as well as multiple packages. From figure \re
 Whenever Deeva server is terminated, the front-end will be able to notice it and the modal just like in figure \ref{fig:quitFeature} will be shown. This feature allows user to be noticed that the back-end is terminated and hence, he or she should not continue to debug or expect the correct behaviour.
 
 \subsection{Deeva in the Labs}
-\todo{??}
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.5]{buildFeature.png}
+\caption{Github Deploy and Building Screenshot}
+\label{fig:buildFeature}
+\end{figure}
+Deeva is supported by lab machines.
+Figure \ref{fig:buildFeature} from our github homepage shows that Deeva is easy and straightforward to deploy and build.
+In order to deploy Deeva, one can run {\tt git clone https://github.com/chromy/Deeva.git}, {\tt make deploy}, and {\tt ln -s start\_deeva <somewhere on your path>/deeva} from the command line.
+Similarly, to build Deeva, one can run {\tt pip install -r requirements.txt} and {\tt make build} from the command line.
 
 \section{Design}
 
