@@ -8,7 +8,7 @@
 \usepackage{subfigure}
 \usepackage{graphicx}
 \usepackage{titling}
-% \usepackage[margin=1.8cm, includefoot]{geometry}
+\usepackage[margin=1.8cm, includefoot]{geometry}
 
 \usepackage{parskip}
 \setlength{\parindent}{0cm}
@@ -569,7 +569,7 @@ The solution to this problem became very simple as it only requires to build a c
 Deeva uses a range of technologies, some of which were new to us and some which were already familiar.
 
 \subsubsection{Front End}
-Effectively all web code ends up being executed in Javascript and although there are many tools which compile to Javascript (CoffeeScript, Dart, TypeScript and many many more) we opted to stick to JavaScript. 
+Effectively all web code ends up being executed in Javascript and although there are many tools which compile to Javascript (CoffeeScript, Dart, TypeScript and many many more) we opted to stick to JavaScript.
 This was mainly due to the fact that all of us had some experience with JavaScript but very little exposure to any of the above mentioned tools.
 
 We decided to use a frontend framework having experienced how messy it was attempting to do without in a second year group project.
@@ -587,7 +587,7 @@ For the code pane we used CodeMirror\cite{CodeMirror} as it is a versatile text 
 Although CodeMirror has many more features than we used it made what we did need to do, features like line highlighting and displaying breakpoints) very easy.
 It has an active community, a well-documented API and is used on large products including Bitbucket and Google Apps. 
 
-For the state pane which shows the graphical representation of the program state we are using D3\cite{D3} as it provides a very easy and powerful way of manipulating data using HTML, SVG and CSS. 
+For the state pane which shows the graphical representation of the program state we are using D3\cite{D3} as it provides a very easy and powerful way of manipulating data using HTML, SVG and CSS.
 Similarly to CodeMirror, D3 has an active community and a multitude of use cases.
 When implementing the state visualisation we quickly came to appreciate the power of D3.
 For example D3 allows us to bind the JSON representation of Java objects retrieved from the server to HTML div then easily add and remove divs as the user explores the object graph. 
@@ -599,7 +599,7 @@ We used Bootstrap\cite{Bootstrap} frontend framework as it provides a fast and e
 It is generally a popular choice in web development as it has multiple extensions and components and it was the natural choice as all of us had previous experience with it.
 
 For the communication architecture between the frontend and the server there are many options but the most common are SOAP/XML and REST/JSON.
-We chose to use JOSN and REST partly because it is the one that we have encountered most from the above mentioned options. 
+We chose to use JOSN and REST partly because it is the one that we have encountered most from the above mentioned options.
 Also, it is simpler than SOAP/XML and is now the de facto standard for new web applications.
 
 \subsubsection{Middleware}
@@ -766,6 +766,16 @@ different signals, we can filter the events that come through, and display
 different things based on the data received (namely have a main view and a
 stack\_heap view).
 
+See \ref{fig:servertoclient} for a diagram showing this model/infrastructure.
+\begin{figure}[h!]
+\centering
+\includegraphics[width=160mm, height=120mm]{servertoclient.png}
+\caption{Diagram showing asynchronous event dispatching from server to client}
+\label{fig:servertoclient}
+\end{figure}
+
+
+
 \subsubsection{Back End}
 \textbf{Java Virtual Machine Tools Interface (JVM TI) and the Java Debug Interface (JDI)}
 
@@ -845,9 +855,14 @@ We couldn't have put this logic in the Thread that was ``redirecting'' input, be
 This way allows us to inform the user that we are ``requesting'' data (even though in the command line this rarely happens).
 It also allows the user experience to be more intuitive, especially considering our target audience and our development stack (i.e. web application).
 
-How we handled I/O when it got to the client is mentioned below in \emph{Middleware}.
+How we handled I/O when it got to the client is mentioned in \emph{Middleware} and can be shown in Figure \ref{fig:iostack}.
+\begin{figure}[h!]
+\centering
+\includegraphics[width=160mm, height=120mm]{iodiagram.png}
+\caption{Diagram showing how I/O is implemented with our development stack}
+\label{fig:iostack}
+\end{figure}
 
-\todo[inline]{Insert diagram of how I/O redirection worked}
 
 \textbf{\emph{Sourcepath/Classpath resolution}}\\
 Since our debugger should be able to be run from anywhere, and also we can't assume that compiled sources would be in the same directory as the source files themselves, we tried to do some form of classpath/sourcepath resolution.
@@ -1033,19 +1048,19 @@ Along with the nature of the project, it combined three major milestones that we
 
 \subsection{Agile Programming}
 
-Our software devlopment process is based on Agile programming methods because we found the approach suitable for our goals for the project. 
+Our software devlopment process is based on Agile programming methods because we found the approach suitable for our goals for the project.
 On top of helping solving the above mentioned challenges, Agile programming has sustainable methods for dealing with large, volatile projects.
 
-Firstly, it is based on iterative development, promoting tight cycles. 
-Because this was a large project for which we were not sure how many features we can fit in the allocated time constrains, using one week development cycles helped us to keep track of the team's general speed and setbacks. 
-For examlple, we could see in which weeks we were busy doing other courseworks and the number of implemented features in that cycle was low. 
-We than could compensate by redesigning our goals for the next cycle. 
+Firstly, it is based on iterative development, promoting tight cycles.
+Because this was a large project for which we were not sure how many features we can fit in the allocated time constrains, using one week development cycles helped us to keep track of the team's general speed and setbacks.
+For examlple, we could see in which weeks we were busy doing other courseworks and the number of implemented features in that cycle was low.
+We than could compensate by redesigning our goals for the next cycle.
 This introduces another key feature of Agile programming: flexible response to change.
 
 One of our main challanges was the uncertainty regarding the end result of the project. 
 Hence, we required a programming style that allowed for rapid response to change as our initial plan got modified during the project execution.
 
-Finally, incremental feature development allowed us to have a basic tool working soon after the project assignment which meant we started receiving feedback from the early stages of Deeva. 
+Finally, incremental feature development allowed us to have a basic tool working soon after the project assignment which meant we started receiving feedback from the early stages of Deeva.
 
 \subsection{Team Management}
 
