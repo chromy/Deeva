@@ -18,7 +18,7 @@
 
 \usepackage{framed}
 
-% Select what to do with todonotes: 
+% Select what to do with todonotes:
 % \usepackage[disable]{todonotes} % notes not showed
 \usepackage[draft]{todonotes}   % notes showed
 
@@ -57,20 +57,20 @@
 % 2. Foster a strong mental model of imperative programming
 % 3. Introduction to debugging
 
-% Introduction 
-%   Set the scene (‘motivation’) 
-%   State the problem you are trying to solve (‘objective(s)’) 
-%   Summarise what you achieved (‘contributions’) 
-% Design & implementation 
-%   Detail your design (why did you do it this way?) 
-%   Summarise key implementation details (how did you do it? what tools did you use?) 
-% Evaluation 
-%   Summarise testing procedures (+ relevant testing results) 
-%   Evaluate your deliverables, e.g. in terms of performance, usability, usefulness… 
-%   (how successful was the project?) 
-% Conclusion and future extensions 
-%   Say what you’ve concluded from doing the work and how you’d build on it 
-% Project management 
+% Introduction
+%   Set the scene (‘motivation’)
+%   State the problem you are trying to solve (‘objective(s)’)
+%   Summarise what you achieved (‘contributions’)
+% Design & implementation
+%   Detail your design (why did you do it this way?)
+%   Summarise key implementation details (how did you do it? what tools did you use?)
+% Evaluation
+%   Summarise testing procedures (+ relevant testing results)
+%   Evaluate your deliverables, e.g. in terms of performance, usability, usefulness…
+%   (how successful was the project?)
+% Conclusion and future extensions
+%   Say what you’ve concluded from doing the work and how you’d build on it
+% Project management
 %   Planning, group organisation, breakdown + task allocation etc
 
 
@@ -84,7 +84,7 @@ In the first year introductory Java course many students are encountering impera
 Unfortunately this attempt is hamstrung by the absence of a good Java debugger decoupled from an IDE.
 Without a good strategy to fix broken programs students quickly reinvent bad habits ranging from the awful, shotgun debugging, to the merely poor, print statements.
 
-What we want is a debugger, invokable from the command line, simple enough that students who have never seen a debugger before can taught to use it in only a few minutes but powerful enough to make tracking down a bug easy. 
+What we want is a debugger, invokable from the command line, simple enough that students who have never seen a debugger before can taught to use it in only a few minutes but powerful enough to make tracking down a bug easy.
 Deeva fills this hole in the Java ecosystem and Lab infrastructure.
 
 Deeva was designed with an additional goal in mind.
@@ -100,10 +100,10 @@ For students Deeva provides excellent introduction to these tools while also fil
 % A ``debugger'' then is a program that allows programmers to inspect and manipulate the state and flow of a running system so they can understand the mismatch and hence fix the defect.
 
 % Specifically students are encouraged to use a text editor and invoke the Java compiler and virtual machine directly in order develop a deeper and more transferable understanding of programming.
-% 
+%
 % first to help foster a strong mental model of imperative programming and secondly to introduce students to powerful introspection of software systems.
 
-%the Imperial Computing department attaches great importance to practical programming ability much of students first year is spent learning several programming languages and completing many Labs, small programming tasks. 
+%the Imperial Computing department attaches great importance to practical programming ability much of students first year is spent learning several programming languages and completing many Labs, small programming tasks.
 %The practical teaching of programming on the first year follows this progression: Functional programing, Imperative programing, Object Orientation and finally Systems programming.
 %Historically the department has taught Functional programming using Haskell, OO programming using Java and Systems programming using C but for Imperative programing a few different approaches have been tried.
 
@@ -157,10 +157,10 @@ allowing instructors to create traces for programs in real time without making a
 Even more importantly, it lets Deeva become a tool for learning, allowing students to explore the unfamiliar model of imperative programming without expert oversight.
 
 Finally, despite the existence of powerful tools to introspect running programs many programmers continue to debug code using print statements.
-This is probably due to the fact that they were not properly introduced to debugging tools or they found them too difficult to understand. So, with Deeva we are hoping to `inspire' new programmers to embrace debugging tools and to use them not only  for fixing bugs but also for understanding the workings of\texttt{•} different programming languages.   
+This is probably due to the fact that they were not properly introduced to debugging tools or they found them too difficult to understand. So, with Deeva we are hoping to `inspire' new programmers to embrace debugging tools and to use them not only  for fixing bugs but also for understanding the workings of\texttt{•} different programming languages.
 
 \subsection{Alternatives}
-As part of our analysis stage, we looked at various different debuggers in order to decide what features we would like to include in Deeva. Our main interest was to find features that appeal to first year students (e.g. graphical visualisation) but does not overcomplicate the tool (e.g. watchpoints). 
+As part of our analysis stage, we looked at various different debuggers in order to decide what features we would like to include in Deeva. Our main interest was to find features that appeal to first year students (e.g. graphical visualisation) but does not overcomplicate the tool (e.g. watchpoints).
 Below is a summary of our conclusions.
 
 \subsubsection{jdb}
@@ -187,7 +187,7 @@ The advantage of this tool (which is missing in most debuggers) is that it allow
 Another benefit is its small size in terms of the disc usage.
 However, its unattractive interface with a multitude of features might still overwhelm a debugging beginner.
 
-Finally, JSwat is a tool that is closer to what we are trying to achieve but we found that it is still too complicated for our purposes. 
+Finally, JSwat is a tool that is closer to what we are trying to achieve but we found that it is still too complicated for our purposes.
 
 \subsubsection{Eclipse Debugger}
 \begin{figure}[h!]
@@ -200,7 +200,7 @@ Eclipse allows the user to start a Java program in Debug mode which provides a c
 In addition, it provides a lot more functionalities than jdb, such as setting conditional breakpoints, modifying variables, friendlier graphic user interface etc.
 Nevertheless, Eclipse is an integrated IDE debugger that has a lot of features that beginner will not use.
 
-In concluion, although Eclipse is one of the most used and reliable IDEs it is not suitable for beginners as it wraps debugging in a `magical' black box which is exactly what the lecturers are trying to avoid. 
+In concluion, although Eclipse is one of the most used and reliable IDEs it is not suitable for beginners as it wraps debugging in a `magical' black box which is exactly what the lecturers are trying to avoid.
 
 \subsubsection{IntelliJ Debugger}
 \begin{figure}[h!]
@@ -226,7 +226,7 @@ This would be a very useful tool for first year students except that it uses Pyt
 However, it does have a much better way of displaying the state of the program, making the program execution very easy to understand. This feature appealed a lot to us as we wanted to make it the selling point of Deeva.
 
 
-\section{Objectives} 
+\section{Objectives}
 
 Our objective was to produce a Java debugger that was:
 
@@ -337,11 +337,11 @@ Similarly we produced a prioritised list of extensions:
 
 \section{Design}
 
-After the project assignment, we had our first meeting with Tristan in order to disscuss his expectations for the debugging tool along with our ideas about the project requirements. 
+After the project assignment, we had our first meeting with Tristan in order to disscuss his expectations for the debugging tool along with our ideas about the project requirements.
 
-We found that Tristan's motivation behind setting such a project was to have a teaching tool that can graphically represent the state of Java programs. In lectures, he uses the whiteboard to create a picture of the stack and the heap at different points in the program like you can see in Figure \ref{fig:sketch}. However, he wanted a debugger suitable for teaching with a graphical representation as the whiteboard method is time consuming and offers less consitency than a automated tool. 
+We found that Tristan's motivation behind setting such a project was to have a teaching tool that can graphically represent the state of Java programs. In lectures, he uses the whiteboard to create a picture of the stack and the heap at different points in the program like you can see in Figure \ref{fig:sketch}. However, he wanted a debugger suitable for teaching with a graphical representation as the whiteboard method is time consuming and offers less consitency than a automated tool.
 Therefore, we decided to use his whiteboard sketches as the starting point for Deeva's user interface, mostly because we found his drawings intuitive and accurate.
- 
+
 \begin{figure}[h!]
 \centering
 \includegraphics[width=\textwidth]{sketch.jpg}
@@ -358,9 +358,9 @@ To avoid the costly mistake of spending a lot of time designing and building a U
 \label{fig:mockup}
 \end{figure}
 
-This approach also made it easy to modify the design and to ask for feedback from first year students. 
+This approach also made it easy to modify the design and to ask for feedback from first year students.
 However, this strategy did not solve every problem.
-For example, we completed a UI version that was generally agreed to be a good design on paper but had flaws (e.g. not readable from the back) that were discovered once we tried it on the screens in one of the lecture rooms. 
+For example, we completed a UI version that was generally agreed to be a good design on paper but had flaws (e.g. not readable from the back) that were discovered once we tried it on the screens in one of the lecture rooms.
 As a result, we decided to test our mockups on the lecture room screens after each major design change to minimise the chance of unexpected issues once the UI has been implemented.
 
 \subsection{Frontend Design}
@@ -368,7 +368,7 @@ As a result, we decided to test our mockups on the lecture room screens after ea
 
 Each component of the user interface was built to represents core features of the project, like the ability to view the source code or the possibility of reading from \texttt{stdin}.
 
-The UI is esentially divided into two large parts. 
+The UI is esentially divided into two large parts.
 On the left hand side there is a tab-like bar that enables the user to easily add or remove program arguments, a series of buttons representing the main debugging actions (run, stop, next, step into, step out), a dropw-down list that displays all the available classes from the package that could be loaded in the code pane and finally the code pane that displays the source code or the previously selected class.
 
 On the right hand side there is a console input/output area that allows for comunication with \texttt{stdin}, \texttt{stdout} and \texttt{stderr}. The rest of the space is filled by the graphical representation of the current stack and heap state.
@@ -452,8 +452,8 @@ We gave out the questionnaires (see ~\cref{sec:buttonquestionnaire}) when we did
 Our second set of designs were much more popular than the original design among first year students.
 However most of the second year students chose the original Eclipse design, one of them explaining that because they had already used Eclipse they were used to the original buttons.
 
-In the end we did not use the second design because of some confusion from our users and comments from our project supervisor during the process. 
-It was not that clear what the black lines indicate especially for experienced users who are already used to the original design common to many debuggers additionally given that we expect users to graduate to using the Eclipse and other debuggers we did not want to create a whole new design vocabulary that they would soon have to relearn. 
+In the end we did not use the second design because of some confusion from our users and comments from our project supervisor during the process.
+It was not that clear what the black lines indicate especially for experienced users who are already used to the original design common to many debuggers additionally given that we expect users to graduate to using the Eclipse and other debuggers we did not want to create a whole new design vocabulary that they would soon have to relearn.
 We did however keep the new more intuitive names.
 
 \subsubsection{Colour Scheme and Font Size Design}
@@ -552,13 +552,130 @@ We chose to use JOSN and REST partly because it is the one that we have encounte
 Also, it is simpler than SOAP/XML and is now the de facto standard for new web applications.
 
 \subsubsection{Middleware}
-We considered using Java for the server layer which would have drastically simplify the design but in the end (despite trying several) could not find a Java web framework and server that was lightweight enough for our application. 
-In the end we used Python and Flask for the middle server layer because we had a lot of previous experience with them.
-Flask is a very lightweight `microframework'.
+The Middleware is what connects the two seemingly different paradigms and
+environments together.  This is where we also map user requests on to the
+debugger, and manipulate and convert the data received back from the debugger in
+a format that the client expects.  As is recommended, we try not to reinvent the
+wheel, especially since it would make us diverge from the main focus of our
+project.  Ideally we were looking for a web framework that would sit atop of a
+web server, so we could focus more on the debugger rather than how to implement
+communication between the server, client and the debugger class (which in turn
+is connected to the inferior JVM).
 
-We used \cmd{py4j} to bridge the Java Python gap, allowing our Python server to call and handle callbacks from the Java backend.
-We initially attempted to use \cmd{Pyjnius} but it was time consuming to build (our continuous integration tests took ~15mins) and we could not get it to work on non-Linux platforms.
-We also considered \cmd{JPype} but it seemed to have worse documentation and seemed significantly less active than either of the others.    
+Initially we thought it would be best to use a framework that was implemented on
+top of the JVM because then it would mean we could call our debugger code
+directly.  Some of the JVM-based frameworks we could have used were:
+\begin{itemize}
+  \item Play Framework (either in Java or Scala)
+  \item Spring Framework
+  \item Grails
+\end{itemize}
+
+However there was a steep learning curve, and none of us had any prior
+experience, which would have meant we would spending less time developing the
+debugger, and more trying to figure out how to write a server in one of the
+aforementioned frameworks.  This disadvantange, we felt, significantly
+outweighed the advantage of being able to natively call our debugger.
+
+For this we resorted to using Flask, a lightweight micro web framework written
+in Python, that the majority of us had used and had prior experience with.  It
+allows us to get up to speed surprisingly quickly, due to the well designed
+nature of the framework and also the language features of Python.  This then
+meant we need to find a way of getting the Python VM and the Java VM to
+communicate.  Yet again we didn't have time to reinvent the wheel, so we
+researched some possible options:
+\begin{description}
+  \item[Pyjnius]\hfill\\
+    Pyjnius is a library which provides methods and protocols for communicating
+    between the JVM and the Python VM.  We initially chose Pyjnius, which seemed
+    to have an active community and documentation that seemed to be up to
+    date. However we quickly realised that there were gaping holes in the
+    documentation, and there were many problems.
+
+    Some of these problems included that it wasn't cross-platform friendly, it
+    would work on certain platforms, and with a lot of work only sometimes on
+    another platform e.g. Mac OS X platform. It also required some C libraries
+    that may or may not have needed to be compiled, and the library would have
+    to be compiled on every platform it was run, and it is not always guaranteed
+    that a C compiler would be present by default e.g. Windows platform
+    (although we don't aim to support Windows currently) and also the Mac OS X
+    operating systems.
+
+    Another problem we faced with this library was that it more time consuming
+    to build, and our tests that the continuous integration server was doing
+    took around 15 mins (most of which was spent fetching and getting modules,
+    and also building them (especially the compulsory C library that
+    \texttt{pyjnius} required).
+  \item[JPype]\hfill\\
+    JPype is also another library which defines some protocol for which to send
+    and receive commands from both the Java and Python virtual machines.
+
+    We briefly considered this option, but the community and the development
+    seemed to be inactive, and it didn't seem to pick up a lot of traction in
+    the community, meaning if we got a bug, or were unaware how things were to
+    be, we would have to investigate ourselves and provide a fix ourselves.
+
+    The documentation also seemed to be unhelpful and very outdated, so we had
+    to pass up this option.
+  \item[Jython]\hfill\\
+    Jython isn't necessarily a framework per-se but an implementation of Python
+    on the Java Virtual Machine, meaning it could natively call functions of
+    languages that are based on the JVM i.e. Java, Scala etc. This seemed like a
+    better alternative than the other JVM based frameworks, as it also had all
+    the popular language features and expressiveness of the Python language.
+
+    However appealing this solution was, it had significant drawbacks. We had to
+    make sure that all the Python libraries/modules we were planning to use had
+    Jython implementations. We couldn't make this guarantee from the start as
+    this project was also very exploratory (we didn't know what we needed before
+    we needed it).
+  \item[\texttt{py4j}]\hfill\\
+    Like \texttt{pyjnius} and \texttt{JPype}, \texttt{py4j} also provided
+    methods and protocols for communicating between the two VMs. We settled for
+    this option because it seemed to be the most stable, and was rather
+    intuitive. The developer behind it seemed to be quite active, and a lot of
+    bug fixes had been present.
+
+    We did have a few issues, which were in fact bugs, and in the end we cloned
+    and forked the repository and made the changes ourselves and when building
+    Deeva, we pull from our fork.
+
+    However we've been largely impressed and comfortable with this library and
+    would thoroughly recommend it if using Python is a must.
+\end{description}
+
+\textbf{Client Implementation}
+
+Aside from the bridging libraries and the web server frameworks, there was more
+to the Middleware that wasn't necessarily an integral part of the Java Debugger,
+hence may nont be included in the back-end section. This is because we could
+swap it out and use a different client, due to the implementation agnostic
+approach we took in designing our debugger. This is just one way of implementing
+a client to our class, if we were to use Java UI we could still interact with
+our Debugger class without any changes to it.
+
+We previously discussed that low resolution was a problem, especially for where
+it would be mainly used, in a teaching setting (namely Huxley 308/311) where the
+projectors have very low resolution, and even if they had higher resolution they
+would not be visible from the back. This forced us to rethink our design, and
+was also another reason for why we moved away from the initial semaphore design
+we were using. If we were able to have two separate views running, one showing
+the main interface (code and state) and another view showing the stack and heap,
+then this problem of the low resolution could be alleviated.
+
+\emph{Blinker}
+
+Enter \texttt{blinker} \cite{blinker}
+
+
+
+\todo[inline]{EventDispatcher Implementation - I/O}
+\todo[inline]{Blinker/Stack Heap view}
+\todo[inline]{Diagram showing the model - maybe it should go in the design bit}
+\todo[inline]{Data processing into a format the client was expecting}
+\todo[inline]{Loading the files}
+\todo[inline]{Starting the debugger,}
+\todo[inline]{User experience, files out of date}
 
 \subsubsection{Back End}
 \textbf{Java Virtual Machine Tools Interface (JVM TI) and the Java Debug Interface (JDI)}
@@ -570,7 +687,7 @@ Java provides another interface written in Java, the Java Debug Interface (JDI),
 This is useful as it simplifies our process, as we don't have to worry about wrapping Java to call C functions and vice versa, and also get the correct semantics, (the JDI library is quite huge, and implementing it ourselves is another project in itself).
 
 With this in mind, we first thought that implementation would be quite simple, however we misunderstood the model of how the JVM works together with JDI.
-The inferior JVM (the virtual machine hosting the program being debugged) has to run in a separate virtual machine, because if the debugger and the debuggee run in the same virtual machine, a catastrophic bug in the program debugged can crash the debugger, rendering it useless. 
+The inferior JVM (the virtual machine hosting the program being debugged) has to run in a separate virtual machine, because if the debugger and the debuggee run in the same virtual machine, a catastrophic bug in the program debugged can crash the debugger, rendering it useless.
 The inferior JVM probably has no knowledge that it is being ``debugged'', and having them in the same process/JVM most probably increases the liklihood of Heisenbugs \cite{heisenbug}.
 
 A JVM can emit events when certain things happen e.g. when a thread is suspended, when the VM has been initialised or killed, when a breakpoint has been reached, when a method has been entered/exited, and when a single step has occurred (either step into, step over, step return).
@@ -582,14 +699,11 @@ The solution to this is that we submit requests for events we would like to hand
 Our debugger is not a fully fledged one, however we believe it suffices for the scope of our project.
 It consists of mainly three parts, an Event Loop, Event Handler, and a general class that can make requests to the JVM.
 
-State, EventDispatcher (asynchronous), I/O, Error Handling
-Problems - Classpath/Sourcepath \& (Lazy loading), Thread Safety, I/O blocking, 
-
 \textbf{\emph{Event Loop \& Event Handler}}\\
 The Event Loop runs in a separate thread, and it is connected to the inferior VM, listening for any requests that were submitted.
 When it receives an event, it will then call a suitable handler to handle that event.
 We only define handlers for events that we wish to handle, i.e. events that are in the scope of our project.
-The information we wished to capture and return back to our client listeners are not always contained within a single class within the JDI, and can be spread everywhere. 
+The information we wished to capture and return back to our client listeners are not always contained within a single class within the JDI, and can be spread everywhere.
 
 To ameliorate this, we made some simple Plain Old Java Objects (POJO) to contain the state we wished to capture and communicate to clients using our library.
 Initially we were using HashMaps to contain state, because that would work well with Python's dictionary types; however there were many caveats due to way that \texttt{py4j} mapped Java collection types and Python's collection types and serialisation became a big issue and if we had continued down this path we would have classes that had members that were unrelated.
@@ -604,7 +718,7 @@ This is class that clients (and in our case the Python VM via py4j) interacts wi
 We can make our requests which then forwards the request onto the inferior JVM.
 
 Due to the asynchronous nature of the JVM and it's events (the reason why we first misunderstood the model), we needed another way of receiving and processing the events, cue our Event Handler as aforementioned.
-However that was only one step of the process, we also needed to asynchronously communicate the data from the events (that we had subscribed to). 
+However that was only one step of the process, we also needed to asynchronously communicate the data from the events (that we had subscribed to).
 
 Initially we had used a semaphore, so that requests didn't complete until an event that would suspend the JVM would come and release the semaphore, thus sending the state back with the initial request.
 This created problems because of threaded nature of our web server, and the threaded nature of py4j and we were often getting deadlock, or being in inconsistent states (as the web interface wouldn't respond as the request was blocked or a deadlock etc).
@@ -612,7 +726,7 @@ It also meant that we couldn't define a new view of the state of the debugger, h
 
 We addressed this by defining an interface \texttt{`DeevaEventDispatcher'}, where clients would implement this interface and pass it into the constructor for our library, i.e. callbacks or handlers that get called when we're handling JDI events, e.g. should we receive a Breakpoint event, we then call \texttt{`suspended\_event()'} and pass along the state object.
 The concrete implementation of this on the client side would define the behaviour or what should happen should our debugger report that the JVM has suspended.
-How we implemented this for our client side is mentioned below in \emph{Middleware}. 
+How we implemented this for our client side is mentioned below in \emph{Middleware}.
 
 \textbf{\emph{Input/Output (I/O)}}\\
 Most first years are unlikely to have been introduced to Java UI and that also requires an understanding of how Java works as a whole.
@@ -635,7 +749,7 @@ We had to use this method of ``monkey-patching'' since for \texttt{System.in}, \
 
 When the inferior JVM starts to read from input, the JVM would suspend and emit an event.
 Whilst the JVM is suspended, we can also invoke methods.
-The \texttt{InputStream} class has a method called \texttt{available()} which as described by the Java docs: ``Returns an estimate of the number of bytes that can be read (or skipped over) from this input stream without blocking by the next invocation of a method for this input stream.'' \cite{java_available}. 
+The \texttt{InputStream} class has a method called \texttt{available()} which as described by the Java docs: ``Returns an estimate of the number of bytes that can be read (or skipped over) from this input stream without blocking by the next invocation of a method for this input stream.'' \cite{java_available}.
 It is usually not advised to use this value as part of a decision process, however we were in complete control of the inferior JVMs \texttt{stdin}, as it is backed by a Queue.
 
 We couldn't have put this logic in the Thread that was ``redirecting'' input, because it would keep notifying the user especially when the Queue was empty i.e. no data was entered in by the client.
@@ -649,10 +763,10 @@ How we handled I/O when it got to the client is mentioned below in \emph{Middlew
 \textbf{\emph{Sourcepath/Classpath resolution}}\\
 Since our debugger should be able to be run from anywhere, and also we can't assume that compiled sources would be in the same directory as the source files themselves, we tried to do some form of classpath/sourcepath resolution.
 
-The user would specify a classpath as usual, but also they had to specify a sourcepath, so we could find the corresponding sources for the classes that had been loaded. 
+The user would specify a classpath as usual, but also they had to specify a sourcepath, so we could find the corresponding sources for the classes that had been loaded.
 By default, to conform with Java's semantics, if they don't specify a classpath/sourcepath, we assume that it is just the current directory.
 
-To find all the classes that could potentially be of interest (N.B. we couldn't find a way that would  determine exactly what classes we would need before hand, see \emph{Lazy Loading Classes} below.) we traversed the directories listed in the classpath, looking for class files.
+To find all the classes that could potentially be of interest (N.B. we couldn't find a way that would  determine exactly what classes we would need before hand, see \emph{Classloading} below.) we traversed the directories listed in the classpath, looking for class files.
 Should we find a class file, we would append the directory structure relative to one of the directories in the classpath, so we could get the fully qualified class name (e.g. \texttt{java.lang.String} rather than just \texttt{String}).
 We would then keep a track of the absolute path of this class in map to be used later.
 
@@ -673,12 +787,44 @@ A few examples of errors that we handle are:
 \begin{description}
   \item[AbsentInformationException]\hfill\\
     This exception is raised when we try to query the JVM for knowledge that would only be there should the class file we're interested contains it, but isn't i.e. the class file was not compiled with debug symbols.
-    Examples of information that we're interested 
+
+    The main piece of information that we're interested in is the mapping of Java bytecode to line numbers in the source code.
+    Without it we're unable to invoke a lot of methods, as we don't have the required information, also it doesn't make sense either, and would just turn our program into a glorified program runner.
+    How we handle this is to send a message through the \texttt{DeevaEventDispatcher} that we have an error.
+
+  \item[VMDisconnectedException]\hfill\\
+    This exception is raised when we try to request an operation on the inferior JVM, however the VM in question is no longer accessible.
+
+    This could happen if the program running in the inferior JVM has finished running, and the user manages to get a request in.
+    Like previously mentioned, we send a message through the \texttt{DeevaEventDispatcher} about this error.
 \end{description}
 
 \textbf{\emph{General Problems/Caveats}}\\
-\todo[inline]{thread safety, i/o blocking, lazy loading classes (breakpoitns etc)}
+As with most projects, things don't always go as planned, and we generally run into problems, the main concerns that we ran into were thread safety, (this was particularly important due to our choice of development stack), and also the way that Java did class loading and the implications it had for us.
 
+\emph{Thread Safety}\\
+The libraries \texttt{py4j} and \texttt{Flask} are thread-safe, however access to objects in Java are not i.e. the Debugger class that the client will interact with needs to have synchronisation primitives.
+This is because every request made by the user in the browser results in a separate thread being created to handle that request.
+Any call using \texttt{py4j} also creates a new thread to deal with that request.
+Hence $x$ requests from the browser results in $x$ threads trying to access the Debug object, and we must also take into account the Event Handler thread that writes to our Debugger class.
+
+As a result we had to group certain methods together and control access to them using a lock (implicit - Java's synchronisation keyword and the explicit Lock class).
+This is to ensure mutual exclusion and that the data is consistent between requests, and also to irradicate race conditions.
+
+This is also why we had to switch from semaphore approach we described earlier, because should something go wrong, threads from Python would get stuck waiting for threads in Java to unblock, but they were blocked by some other thread etc. thus greatly complicating an already complicated thread model.
+
+\emph{Classloading}\\
+A problem we encountered was when we were trying to set breakpoint, we were unable to tell beforehand whether a location of a given breakpoint was valid.
+By valid we mean that we can't breakpoint on an empty line or something that was not an executable piece of code.
+The JDI does support methods for detecting when this happens, however we can't check this until the class has been loaded.
+Without any source code processing, the best thing we could do were to save the breakpoints in a map and attempt to set them, should we have a \texttt{ClassNotLoadedException}, we can save that breakpoint to apply later.
+
+This is mainly due to how Java works. It doesn't load all the classes that would be needed at the same time, it lazy loads them (i.e. as when and they are referenced/needed).
+Also it is not advised to force class loading, especially as some programs can dynamically modify the classpath at runtime.
+Another reason is that Java also supports custom class loaders, so we may not even be able to force load a class, as it has been defined by a custom class loader of which we can't determine how it loads classes before.
+
+Considering the scope of our project, it may have been safe to assume that first year students who require a simple debugger wouldn't necessarily be using custom class loaders.
+Trying to process the source ourselves to determine which lines are okay, probably would have meant invoking the compiler, or trying to decompile class files and look at the mapping or something along those lines, which would have added greater complexity to our project which is currently out of scope, (however this would make an interesting extension and add to the user experience).
 
 \section{Evaluation}
 \label{sec:evaluation}
@@ -709,7 +855,7 @@ This helped mainly with our first use case which is students using Deeva on the 
 We wanted to employ the use of A/B testing to assess how effective certain colour schemes and font sizes would be.
 However we had to make a compromise, because the environment and number of users that we could get in one room simultaneously meant that we had to do it in one sitting i.e. we could not force half the users in the room see one colour scheme and the other half see a different colour scheme.
 So in the end we just conducted a poll so they could pick which colour scheme and font size they liked the best.
-We did this with the help of our project supervisor (who lectures the course in which our debugger will primarily be used). 
+We did this with the help of our project supervisor (who lectures the course in which our debugger will primarily be used).
 
 This is helpful as it allows us to catch possible problems with readability early, which in our case may change the direction in which our solution is architected.
 An example of this is that the projectors’ resolution in the lecture room is small, so not all the necessary information can be seen.
@@ -754,7 +900,7 @@ From figure~\ref{fig:timeToFirstRequest}, you can see our application takes roug
 
 This graph allowed us to see when a commit increased the time-to-first-request, by clicking on the offending bar we could go to the relevant commit on Github and workout what caused the regression.
 
-Happily this turned out not to be such a big issue on this project as the time-to-first-request quickly stabilised and did not increase dramatically. 
+Happily this turned out not to be such a big issue on this project as the time-to-first-request quickly stabilised and did not increase dramatically.
 
 \section{Project Management}
 For this project we have three problems which we haven't had (at least in combination) in past university projects: we're not sure what we're building, we want to make sure we deliver the software on time but don't know how long it will take and
@@ -766,11 +912,11 @@ We used Agile Programming techniques to help solve these problems.
 \subsection{Team Management}
 
 To ensure effective development of the product, weekly supervisor meetings were scheduled.
-In these meetings, quality assurance was the main aim, making sure we were on the right track with our development, delivering correct features. 
-This avoided unnecessary misunderstandings and extra time spent on creating unneeded features for the product. 
+In these meetings, quality assurance was the main aim, making sure we were on the right track with our development, delivering correct features.
+This avoided unnecessary misunderstandings and extra time spent on creating unneeded features for the product.
 
-Further to the supervisor meetings, weekly group meetings ensured that all group members are in sync about the progress and direction of the project. 
-During these meetings, the information gathered from the supervisor meetings would be recapped and the targets for the upcoming week would be set. 
+Further to the supervisor meetings, weekly group meetings ensured that all group members are in sync about the progress and direction of the project.
+During these meetings, the information gathered from the supervisor meetings would be recapped and the targets for the upcoming week would be set.
 Thus, tasks could be divided among group members, with everyone knowing what their colleagues are working on in this week, making group and individual efforts significantly more effective.
 \begin{figure}[h!]
 \centering
@@ -791,19 +937,19 @@ To aid the management of the project on a holistic and timely perspective, sever
 \end{figure}
 
 We used Trello as our project management tool and as an Information Radiator\footnote{\url{https://www.atlassian.com/wallboards/information-radiators.jsp}}.
-It also allows us to track our progress and average velocity. 
-We decided to use Trello as it fulfills most of the key features required for such a tool: it is easy to use and update, relatively flexible and allows for communications between members without too much interruption. 
-We decided to use an electronic version as they are a more manageable alternative to physical boards. 
+It also allows us to track our progress and average velocity.
+We decided to use Trello as it fulfills most of the key features required for such a tool: it is easy to use and update, relatively flexible and allows for communications between members without too much interruption.
+We decided to use an electronic version as they are a more manageable alternative to physical boards.
 We also found it extremely useful when it came to keeping everyone informed on the general progress and keeping all the information in one compact environment.
 
-A Trello board was created for a better project management process. 
-There are several different swimlanes (see figure~\ref{fig:Trello}) on the board: ``Proposed'', which allows all members to throw in ideas; ``In Analysis'', where people talk about their ideas and have a discussion with group members to see if the story is feasible. 
+A Trello board was created for a better project management process.
+There are several different swimlanes (see figure~\ref{fig:Trello}) on the board: ``Proposed'', which allows all members to throw in ideas; ``In Analysis'', where people talk about their ideas and have a discussion with group members to see if the story is feasible.
 If it is, the card will be then moved to ``In Estimation'' where we would use Planning Poker to assign the story with a complexity points.
 Otherwise, the story will be moved to ``Discarded''.
 The reason why we want to keep track of what we have discarded is that we might have thought we would not have time for it, but in reality we may have time at the end.
-We might want to move it back and reconsider it. 
-After ``In Estimation'', the card will be assigned to group members with a set due date and be moved into ``In Development'' on the Trello board. 
-Once the development is complete, the card should be moved into ``In Review''. 
+We might want to move it back and reconsider it.
+After ``In Estimation'', the card will be assigned to group members with a set due date and be moved into ``In Development'' on the Trello board.
+Once the development is complete, the card should be moved into ``In Review''.
 This is when we meet as a group and review our code to improve our style and pattern-usage.
 
 \subsubsection{Planning Poker}
@@ -813,23 +959,23 @@ This is when we meet as a group and review our code to improve our style and pat
 \caption{Our hand made planning poker cards}
 \end{figure}
 
-We are using Planning Poker in order to estimate stories in each cycle of development. 
+We are using Planning Poker in order to estimate stories in each cycle of development.
 This method is known to avoid anchoring and will produce more accurate, less optimistic story point estimations\footnote{\tt{http://en.wikipedia.org/wiki/Planning\_poker\#Planning\_poker\_benefits}}. This technique takes some time to get used to because initially the story point bared little meaning to us.
 As we estimated more tasks, the story points became more meaningful hence the poker game proved to be a very efficient method.
 
 For example, it helped determine when people aren't really talking about the same scope for a certain task.
 Frequently we have a task like ``Set up the back end." and one person gives a task a 2 while another gives it an 8.
-The first person thinks the task title means ``Write some stubs so the middleware can integrate." while the second thinks it means ``Implement the backend up to the minimal specification.". 
+The first person thinks the task title means ``Write some stubs so the middleware can integrate." while the second thinks it means ``Implement the backend up to the minimal specification.".
 So using planing poker has already helped us make sure we're all on the same page.
 One of our group members hand-made a set of poker cards just for estimation.
-It contains the Fibonacci numbers up to 13 including 0 and infinity - if the task was unfeasible in the time given, as well as ``coffee time'' if we think we needed a break. 
+It contains the Fibonacci numbers up to 13 including 0 and infinity - if the task was unfeasible in the time given, as well as ``coffee time'' if we think we needed a break.
 
 \subsubsection{Facebook Group}
 Creating a Facebook group proved very efficient for communicating meeting times and general enquiries that were too conversational for Trello.
 
 \subsubsection{Google Docs}
 We used Google Docs for collaborative editing on reports, plans and meeting summaries in real time.
-  
+
 \subsubsection{Github}
 Github is a hosted source control which somebody else manages and is easily accessible from anywhere and also plays nicely with the hosted Continuous Integration tool we used - Travis CI.
 Over the period we worked on this project Github had a few hours of down time but this was easily less than the time it would have taken us to setup and maintain our own source control server.
@@ -838,8 +984,8 @@ Over the period we worked on this project Github had a few hours of down time bu
 Travis\footnote{\url{http://travis-ci.com/}} is an online continues integration server.
 Whenever we push code to the Github server Travis takes the commit then makes and runs our integration tests, if the build fails Travis' emails us.
 Ideally the build on Travis should never fail (since we should run the tests ourselves before we commit) but the email notifications proved very useful for problems which only show up on a fresh install or if we made a small commit which ``shouldn't" have broken the build.
-Travis' notifications allowed quickly brought bad commits to our attention allowing us to fix or revert them before they became a major problem.  
-Since Travis has to install all the dependencies each time running the tests can take up to ten minutes. 
+Travis' notifications allowed quickly brought bad commits to our attention allowing us to fix or revert them before they became a major problem.
+Since Travis has to install all the dependencies each time running the tests can take up to ten minutes.
 
 
 
@@ -849,7 +995,7 @@ Since Travis has to install all the dependencies each time running the tests can
 \subsubsection{Alina Draganescu}
 \subsubsection{Felix de Souza}
 \subsubsection{Hector Dearman}
-Hector worked mostly on the backend implementing Breakpoints and the middle server layer. 
+Hector worked mostly on the backend implementing Breakpoints and the middle server layer.
 
 \section{Extensions}
 
@@ -864,7 +1010,7 @@ Hector worked mostly on the backend implementing Breakpoints and the middle serv
 \parbox{\longest}{%
   \raggedright{%
   ``A process cannot be understood by stopping it." \\
-  }   
+  }
   \raggedright{\emph{First Law of the Mentat -- Dune}}\par%
 }
 \end{center}
@@ -907,7 +1053,7 @@ Hector worked mostly on the backend implementing Breakpoints and the middle serv
 	\url{http://pythontutor.com/}
 
 \bibitem{saeed09}
-	Dehnadi, Saeed, Richard Bornat, and Ray Adams. 
+	Dehnadi, Saeed, Richard Bornat, and Ray Adams.
 	\emph{Meta-analysis of the effect of consistency on success in early learning of programming.}
 	PPIG, 2009.
 
@@ -915,6 +1061,11 @@ Hector worked mostly on the backend implementing Breakpoints and the middle serv
 	Marijn Haverbeke.
 	\emph{CodeMirror}.
 	\url{http://codemirror.net/}
+
+\bibitem{blinker}
+        Jason Kirtand.
+        \emph{Blinker}
+        \url{http://pythonhosted.org/blinker/}
 
 \bibitem{jvmti}
         Wikipedia.
