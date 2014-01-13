@@ -366,12 +366,12 @@ As a result, we decided to test our mockups on the lecture room screens after ea
 \subsection{Frontend Design}
 \subsubsection{Overview}
 
-Each component of the user interface was built to represents core features of the project, like the ability to view the source code or the possibility of reading from Stdin.
+Each component of the user interface was built to represents core features of the project, like the ability to view the source code or the possibility of reading from \texttt{stdin}.
 
 The UI is esentially divided into two large parts. 
 On the left hand side there is a tab-like bar that enables the user to easily add or remove program arguments, a series of buttons representing the main debugging actions (run, stop, next, step into, step out), a dropw-down list that displays all the available classes from the package that could be loaded in the code pane and finally the code pane that displays the source code or the previously selected class.
 
-On the right hand side there is a console input/output area that allows for comunication with stdin, stdout and stderr. The rest of the space is filled by the graphical representation of the current stack and heap state.
+On the right hand side there is a console input/output area that allows for comunication with \texttt{stdin}, \texttt{stdout} and \texttt{stderr}. The rest of the space is filled by the graphical representation of the current stack and heap state.
 
 \subsubsection{UI Design}
 \begin{figure}[h!]
@@ -385,8 +385,9 @@ On the right hand side there is a console input/output area that allows for comu
 \caption{Different views of the UI designs}
 \end{figure}
 
-Initially, we designed different views of the UI where the stack, heap and the code pane lay in different order.
-After talking to Tristan, we thought if we put the stack and the heap visual at the bottom instead of on the right, we could better manage scenarios like small screens, a growing stack and large arrays.
+Initially, we considered a few different posibilities for the UI design in order to find the one that would be most suitable for regular use. We considered the pros and cons of all of them before deciding on the final design version. Here are some of the ideas we considered:
+
+After discussing with Tristan, we thought that if we put the stack and the heap visual at the bottom of the page we could better manage scenarios like small screens, a large heap and large arrays.
 As a result, we modified our UI design to be similar to the figure~\ref{fig:designIdea2}.\\
 \begin{figure}[h!]
 \centering
@@ -395,8 +396,10 @@ As a result, we modified our UI design to be similar to the figure~\ref{fig:desi
 \label{fig:finalDesign}
 \end{figure}
 
-However, we thought if the stack grow more then eventually user would need to scroll up and down to be able to see the code and the stack and heap at the same time, which is not really what we want.
-Therefore, we agreed on putting the stack and heap on the right with some modification to the first design (see figure~\ref{fig:finalDesign}).
+However, we discovered that when the stack grows larger the user would need to scroll up and down between the source code and the graphical representation which we considered to be a major unconvenience when using Deeva regularly.
+In order to solve this problem we considered making the code pane fixed to the top of the screen so it is visible even when scrolling. 
+This introduced other problems like the overlapping of the code and the graphic display. 
+Therefore, we agreed on putting the stack and heap on the right hand side with some modification to the initial design (see figure~\ref{fig:finalDesign}).
 
 \subsubsection{Button Design}
 After conducting some interviews with users (see ~\cref{sec:evaluation}), we discovered that some people found the naming and the design of buttons very confusing in Eclipse.
