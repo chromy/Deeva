@@ -538,18 +538,104 @@ We could have wasted a lot of time hand coding these components \footnote{NIH\to
 For the code pane we used CodeMirror\cite{CodeMirror} and we built the state pane using D3 we chose these libraries over alternatives because they are both active projects with good documentation.
 
 For the communication architecture between the frontend and the server there are many options but the most common are SOAP/XML and REST/JSON.
-We choose to use JOSN and REST partly because it is what we are most used each of us having encountered it at some point in the past but also because it is simpler SOAP/XML and now the defacto standard for new web applications.
+We choose to use JSON and REST partly because it is what we are most used each of us having encountered it at some point in the past but also because it is simpler SOAP/XML and now the defacto standard for new web applications.
 
 This was a good decision, \todo{Talk about outcome}.
 
 \subsubsection{Middleware}
-We considered using Java for the server layer which would have drastically simplify the design but in the end (despite trying several) could not find a Java web framework and server that was lightweight enough for our application.
-In the end we used Python and Flask for the middle server layer because we had a lot of previous experience with them.
-Flask is a very lightweight `microframework'.
+The Middleware is what connects the two seemingly different paradigms and
+environments together.  This is where we also map user requests on to the
+debugger, and manipulate and convert the data received back from the debugger in
+a format that the client expects.  As is recommended, we try not to reinvent the
+wheel, especially since it would make us diverge from the main focus of our
+project.  Ideally we were looking for a web framework that would sit atop of a
+web server, so we could focus more on the debugger rather than how to implement
+communication between the server, client and the debugger class (which in turn
+is connected to the inferior JVM).
 
-We used \cmd{py4j} to bridge the Java Python gap, allowing our Python server to call and handle callbacks from the Java backend.
-We initially attempted to use \cmd{Pyjnius} but it was time consuming to build (our continuous integration tests took ~15mins) and we could not get it to work on non-Linux platforms.
-We also considered \cmd{JPype} but it seemed to have worse documentation and seemed significantly less active than either of the others.
+Initially we thought it would be best to use a framework that was implemented on
+top of the JVM because then it would mean we could call our debugger code
+directly.  Some of the JVM-based frameworks we could have used were:
+\begin{itemize}
+  \item Play Framework (either in Java or Scala)
+  \item Spring Framework
+  \item Grails
+\end{itemize}
+
+However there was a steep learning curve, and none of us had any prior
+experience, which would have meant we would spending less time developing the
+debugger, and more trying to figure out how to write a server in one of the
+aforementioned frameworks.  This disadvantange, we felt, significantly
+outweighed the advantage of being able to natively call our debugger.
+
+For this we resorted to using Flask, a lightweight micro web framework written
+in Python, that the majority of us had used and had prior experience with.  It
+allows us to get up to speed surprisingly quickly, due to the well designed
+nature of the framework and also the language features of Python.  This then
+meant we need to find a way of getting the Python VM and the Java VM to
+communicate.  Yet again we didn't have time to reinvent the wheel, so we
+researched some possible options:
+\begin{description}
+  \item[Pyjnius]\hfill\\
+    Pyjnius is a library which provides methods and protocols for communicating
+    between the JVM and the Python VM.  We initially chose Pyjnius, which seemed
+    to have an active community and documentation that seemed to be up to
+    date. However we quickly realised that there were gaping holes in the
+    documentation, and there were many problems.
+
+    Some of these problems included that it wasn't cross-platform friendly, it
+    would work on certain platforms, and with a lot of work only sometimes on
+    another platform e.g. Mac OS X platform. It also required some C libraries
+    that may or may not have needed to be compiled, and the library would have
+    to be compiled on every platform it was run, and it is not always guaranteed
+    that a C compiler would be present by default e.g. Windows platform
+    (although we don't aim to support Windows currently) and also the Mac OS X
+    operating systems.
+
+    Another problem we faced with this library was that it more time consuming
+    to build, and our tests that the continuous integration server was doing
+    took around 15 mins (most of which was spent fetching and getting modules,
+    and also building them (especially the compulsory C library that
+    \texttt{pyjnius} required).
+  \item[JPype]\hfill\\
+    JPype is also another library which defines some protocol for which to send
+    and receive commands from both the Java and Python virtual machines.
+
+    We briefly considered this option, but the community and the development
+    seemed to be inactive, and it didn't seem to pick up a lot of traction in
+    the community, meaning if we got a bug, or were unaware how things were to
+    be, we would have to investigate ourselves and provide a fix ourselves.
+
+    The documentation also seemed to be unhelpful and very outdated, so we had
+    to pass up this option.
+  \item[Jython]\hfill\\
+    Jython isn't necessarily a framework per-se but an implementation of Python
+    on the Java Virtual Machine, meaning it could natively call functions of
+    languages that are based on the JVM i.e. Java, Scala etc. This seemed like a
+    better alternative than the other JVM based frameworks, as it also had all
+    the popular language features and expressiveness of the Python language.
+
+    However appealing this solution was, it had significant drawbacks. We had to
+    make sure that all the Python libraries/modules we were planning to use had
+    Jython implementations. We couldn't make this guarantee from the start as
+    this project was also very exploratory (we didn't know what we needed before
+    we needed it).
+  \item[\texttt{py4j}]\hfill\\
+    Like \texttt{pyjnius} and \texttt{JPype}, \texttt{py4j} also provided
+    methods and protocols for communicating between the two VMs. We settled for
+    this option because it seemed to be the most stable, and was rather
+    intuitive. The developer behind it seemed to be quite active, and a lot of
+    bug fixes had been present.
+
+    We did have a few issues, which were in fact bugs, and in the end we cloned
+    and forked the repository and made the changes ourselves and when building
+    Deeva, we pull from our fork.
+
+    However we've been largely impressed and comfortable with this library and
+    would thoroughly recommend it if using Python is a must.
+\end{description}
+
+
 
 \subsubsection{Back End}
 \textbf{Java Virtual Machine Tools Interface (JVM TI) and the Java Debug Interface (JDI)}
