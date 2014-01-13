@@ -113,7 +113,7 @@ For students Deeva provides excellent introduction to these tools while also fil
 
 \section{Motivation}
 \subsection{``Introduction to Imperative Programming" at Imperial}
-Around half of first year undergraduate computing students at Imperial have no previous imperative programming experience\cite{projectproposal}. 
+Around half of first year undergraduate computing students at Imperial have no previous imperative programming experience\cite{projectproposal}.
 The course ``Introduction to Imperative Programming" run in the first term directly after ``Introduction to Functional Programming" forms a cornerstone of the practical education students receive giving them skills they will need to use in almost every other course.
 
 The course focuses on the basics: control flow, functions and the write-compile-run cycle.
@@ -276,8 +276,8 @@ Starting Deeva will be similar to how we normally start a Java program.
 To start Deeva from the command line, we simply need to execute ``deeva" followed by the Java program name.
 Additionally, if the program requires arguments, users can put arguments on the command line after the class path.
 The user can also rerun the program changing the arguments on the page which will be explained in more detail later.
-Furthermore the user can enable assertions by adding ``-ea" on the command line. 
-Turning the assertion switch on and off can also be done within the program. 
+Furthermore the user can enable assertions by adding ``-ea" on the command line.
+Turning the assertion switch on and off can also be done within the program.
 Again this will be explained later.
 
 \subsection{Run}
@@ -344,7 +344,7 @@ Deeva allows the user to examine the current state of the program stack and heap
 As we can see from the figure \ref{fig:stack}, args is the first thing on the stack followed by primitives j, k and l.
 The value of j, k and l are visible on the stack frame whereas objects like args and aaa have a pointer stored on the stack frame.
 Clicking on the empty stack frame, user can then examine what is on the heap for the object.
-For example, in this case, the array aaa is displayed on the heap with the index of the array displayed on the top and content of the array at the bottom. 
+For example, in this case, the array aaa is displayed on the heap with the index of the array displayed on the top and content of the array at the bottom.
 Users can also minimise the view for each object by clicking again on the root of an arrow pointing at that object.
 \begin{figure}[h!]
 \centering
@@ -394,9 +394,9 @@ We also have the ability to stop the inferior JVM without stopping the web serve
 \end{figure}
 Deeva can be in different states when debugging a program. The current state of Deeva is shown in the header of the front-end next to Deeva header. Each state is described in more detail below.
 \subsubsection{Program not running}
-This state indicates that Deeva is just executed from the command line and program has not been run yet. In this state, user can inspect various files and set breakpoints accordingly. 
+This state indicates that Deeva is just executed from the command line and program has not been run yet. In this state, user can inspect various files and set breakpoints accordingly.
 \subsubsection{Program is running}
-When user runs the program, Deeva is in the running state until it reaches a breakpoint. 
+When user runs the program, Deeva is in the running state until it reaches a breakpoint.
 it might also be waiting for input, or the program is terminated.
 Running state could be hardly seen sometimes as program reaches paused state very quickly.
 \subsubsection{Program paused}
@@ -866,7 +866,7 @@ It also meant that we couldn't define a new view of the state of the debugger, h
 
 We addressed this by defining an interface \texttt{`DeevaEventDispatcher'}, where clients would implement this interface and pass it into the constructor for our library, i.e. callbacks or handlers that get called when we're handling JDI events, e.g. should we receive a Breakpoint event, we then call \texttt{`suspended\_event()'} and pass along the state object.
 The concrete implementation of this on the client side would define the behaviour or what should happen should our debugger report that the JVM has suspended.
-How we implemented this for our client side is mentioned below in \emph{Middleware}.
+How we implemented this for our client side is mentioned in \emph{Middleware}.
 
 \textbf{\emph{Input/Output (I/O)}}\\
 Most first years are unlikely to have been introduced to Java UI and that also requires an understanding of how Java works as a whole.
@@ -1057,7 +1057,7 @@ That allowed us to pick up bugs (mainly in our visual representation) in the ear
 As we advanced, we tested Java programs that included multiple features working together (for example, array of objects, linked lists, self-referencing).
 
 \subsection{Final Evaluation}
-Our final evaluation represented a walk through our goal features and an assessment of each on of them.
+Our final evaluation represented a walk through of our goal features and an assessment of each one of them.
 Below is a summary of our findings:
 
 \textbf{Minimum requirements}
@@ -1084,18 +1084,18 @@ Out of the proposed extensions we had time to implement the first two on our ext
 \end{enumerate}
 
 \section{Project Management}
-This project has probably been the largest and the most intricate we ever had to build.
-Along with the nature of the project, it combined three major milestones that we never had to face before (at least in combination): we are not sure what are we building, we want to make sure we deliver the software on time but we do not know how long it will take and we want to make sure the software we write is correct and useful but it is hard to define `correct' or `useful' in this context.
+This project has probably been the largest and the most intricate we have ever had to build.
+Along with the nature of the project, it combined three major milestones that we never had to face before (at least in combination): we are not sure what are we building, we want to make sure we deliver the software on time but we do not know how long it will take and we also want to make sure the software we write is correct and useful however it is hard to define `correct' or `useful' in this context.
 
 \subsection{Agile Programming}
 
-Our software development process is based on Agile programming methods because we found the approach suitable for our goals for the project.
+Our software development process is based on Agile programming methods because we found the approach suitable for our project goals..
 On top of helping solving the above mentioned challenges, Agile programming has sustainable methods for dealing with large, volatile projects.
 
 Firstly, it is based on iterative development, promoting tight cycles.
-Because this was a large project for which we were not sure how many features we can fit in the allocated time constrains, using one week development cycles helped us to keep track of the team's general speed and setbacks.
+Because this was a large project for which we were not sure how many features we can fit in the allocated time constraints, using one week development cycles helped us to keep track of the team's general speed and setbacks.
 For example, we could see in which weeks we were busy doing other courseworks and the number of implemented features in that cycle was low.
-We than could compensate by redesigning our goals for the next cycle.
+We then could compensate by redesigning our goals for the next cycle.
 This introduces another key feature of Agile programming: flexible response to change.
 
 One of our main challenges was the uncertainty regarding the end result of the project.
@@ -1109,9 +1109,9 @@ To ensure effective development of the product, weekly supervisor meetings were 
 In these meetings, quality assurance was the main aim, making sure we were on the right track with our development, delivering correct features.
 This avoided unnecessary misunderstandings and extra time spent on creating unnecessary features for the product.
 
-Further to the supervisor meetings, weekly group meetings ensured that all group members are in sync about the progress and direction of the project.
+Further to the supervisor meetings, weekly group meetings ensured that all group members were in sync about the progress and direction of the project.
 During these meetings, the information gathered from the supervisor meetings would be recapped and the targets for the upcoming week would be set.
-Thus, tasks could be divided among group members, with everyone knowing what their colleagues are working during each cycle, making group and individual efforts significantly more effective.
+Thus, tasks could be divided among group members, with everyone knowing what their colleagues were working during each cycle, making group and individual efforts significantly more effective.
 \begin{figure}[h!]
 \centering
 \includegraphics[width=130mm]{estimation.jpg}
@@ -1178,15 +1178,15 @@ Over the period we worked on this project Github had a few hours of down time bu
 Travis\cite{TravisCI} is an online continues integration server.
 Whenever we push code to the Github server Travis takes the commit then makes and runs our integration tests, if the build fails Travis' emails us.
 Ideally the build on Travis should never fail (since we should run the tests ourselves before we commit) but the email notifications proved very useful for problems which only show up on a fresh install or if we made a small commit which ``shouldn't" have broken the build.
-Travis' notifications allowed quickly brought bad commits to our attention allowing us to fix or revert them before they became a major problem.
-Since Travis has to install all the dependencies each time running the tests can take up to ten minutes.
+Travis' notifications quickly brought bad commits to our attention allowing us to fix or revert them before they became a major problem.
+Since Travis has to install all the dependencies each time, running the tests can take up to ten minutes.
 
 \subsection{Planning}
-Planning played an essential role in the development and completion of this project mainly because of the sheer size and the hard deadline we had to commit to.
+Planning played an essential role in the development and completion of this project mainly because of the sheer size and the hard deadlines we had to commit to.
 We created an initial weekly plan\ref{sec:initialplan} to coincide with the one week development cycles.
 However, during the project execution the initial plan was slightly modified.
 This was mainly due to the fact that we did not take into consideration that during the term there are coursework heavy weeks or there are revision/exam weeks in which we did little work on Deeva.
-Nonetheless, we roughly respected the plan we initially designed, with slight modifications.
+Nonetheless, we roughly stuck to the plan we initially designed, with slight modifications.
 For example, we did not manage to work on extensions although we included it in the last cycle of the initial plan.
 
 Overall, we are satisfied with the percentage of plan completion we achieved.
@@ -1195,8 +1195,8 @@ If we were to start again, we would redesign our plan so it allows for `slow` cy
 \subsection{Team Member Contributions}
 
 The general group dynamics were really good, we managed to keep a light atmosphere throughout the duration of the project.
-Every week, we had two official group meetings: one with Tristan and one just us.
-During these time we would discuss the goal for the new cycle, the results of the previous cycle, the highlights of the meeting we had with Tristan and we would allocate the tasks within the next cycle.
+Every week, we had two official group meetings: one with Tristan and one with just us.
+During these times we would discuss the goal for the new cycle, the results of the previous cycle, the highlights of the meeting we had with Tristan and we would also allocate the tasks within the next cycle.
 The allocations were mainly based on everyone's strong points so we guaranteed ourselves the best chances of achieving the weeks' goal.
 Also, we tried to have at least two people assigned to each part of the project.
 This, however, did not happen throughout the whole project.
@@ -1209,9 +1209,9 @@ Also, our most experienced team members gave advice and help with other sections
 Finally, through this project we all learned the importance of thorough planning, the importance of keeping every group member updated with the current state of the project and lastly, we understood how software development practices can save lives (and projects).
 
 \section{Extensions}
-After our initial meetings with Tristan we had a plan\ref{sec:initialplan} that included the list of basic features we wanted our debugger to have, followed by a list of extended features ranked in the orde§r we would implement them once the core functionalities are implemented.
+After our initial meetings with Tristan we had a plan\ref{sec:initialplan} that included the list of basic features we wanted our debugger to have, followed by a list of extended features ranked in the order we would implement them once the core functionalities had been implemented.
 
-Some of the extensions include display of the program state graphically, maximal documentation, making Deeva multi-platform or support all Java features.
+Some of the extensions include the display of the program state graphically, maximal documentation, making Deeva multi-platform or supporting all Java's features e.g threads etc.
 The idea of using Deeva in two different modes (lecturer mode and user mode) came to us late, but quickly became one of our top-priority extension along with displaying the program state graphically.
 
 These two represented the features that in our opinion, would make Deeva a useful debugger for first year students while the rest of the extensions would not be necessary in order to achieve that.
@@ -1236,15 +1236,14 @@ Deeva was not an easy project.
 It was both deep (many of the features hide significant complexity) and wide (even a minimal debugger requires a surprising array of features).
 Our choice of implementation strategy, extensibility over adding to the pile of Java GUIs nobody wants to use, did not make this any easier.
 
-However in-spite of this we have achieved most of our goals.
-Although the project (like any) would benefit from some polish it represents a significant step towards the goal of letting students learn imperative programming without relying on a massive IDE. 
-Students can navigate though their code while seeing a direct representation of the state of the program and lectures can use Deeva to illustrate the fundamentals of programming.
+However in spite of this we have achieved most of our goals.
+Although the project (like any) would benefit from some polish it represents a significant step towards the goal of letting students learn imperative programming without relying on a massive IDE.
+Students can navigate though their code while seeing a direct representation of the state of the program and lecturers can use Deeva to illustrate the fundamentals of programming.
 
 It is always the case that having finished a project you now understand how you should have begun (witness `write one to throw away' and every programmers constant struggle with their desire for a rewrite).
-Deeva is no different; cutting ourselves on every sharp edge from three programming languages and so many disparate libraries and technologies has been an amazing learning experience as has experiencing a project going from the merest outline to the delivered product. 
+Deeva is no different; cutting ourselves on every sharp edge from three programming languages and so many disparate libraries and technologies has been an amazing learning experience as has experiencing a project going from the merest outline to the delivered product.
 
-
-In the end it is our firm belief that Deeva is a useful tool and we hope it introduces future students to the wonderful world of debugging and helps them (in the immortal words of one interviewee) ``finish this lab so I can go get KFC''. 
+In the end it is our firm belief that Deeva is a useful tool and we hope it introduces future students to the wonderful world of debugging and helps them (in the immortal words of one interviewee) ``finish this lab so I can go get KFC''.
 
 
 \clearpage
