@@ -8,7 +8,7 @@
 \usepackage{subfigure}
 \usepackage{graphicx}
 \usepackage{titling}
-% \usepackage[margin=1.8cm, includefoot]{geometry}
+\usepackage[margin=1.8cm, includefoot]{geometry}
 
 \usepackage{parskip}
 \setlength{\parindent}{0cm}
@@ -271,8 +271,39 @@ Similarly we produced a prioritised list of extensions:
 
 \section{Deeva}
 \subsection{Starting the program}
+Starting Deeva will be similar to how we normally start a Java program.
+To start Deeva from the command line, we simply need to execute ``./run\_deeva.py" with the class path where the Java program is in.
+Additionally, if the program requires arguments, users can put arguments on the command line after the class path.
+Although after Deeva is started, if user does not want to restart Deeva, there is an option of rerun with arguments on the page which will be explained in more details later.
+Furthermore, user can enable assertion by having ``-ea" on the command line. Optionally, turning on and off the assertion switch from the page. Again, this will be explained later.
 \subsection{Run}
+After the program is started from the command line and compiled successfully, the ``Run" button can be clicked to start debugging.
+While the program is being run, the state message will be displaying: ``program running".
+If there is a break point, then the program will be paused at the point where it was set.
+At this point the state message will change to ``program paused".
+Otherwise, the program will be run through to the end and any system output will be printed out on the console.
+
+Need to note that, the ``Run" button is combined with the ``continue" button.
+After the program is paused and ready to debug, user can press ``continue" button to skip to the next breakpoint or skip to the end of the program.
+\begin{figure}[h!]
+\centering
+\subfigure[Run]{
+\includegraphics[width=20mm]{runBtn.png}}
+\quad
+\subfigure[Continue]{
+\includegraphics[width=20mm]{continueBtn.png}}
+\caption{Run and Continue Button}
+\end{figure}
 \subsection{Breakpoints}
+Breakpoints can be set by single-clicking on the left margin of the code pane.
+Multiple breakpoints can be set.
+To cancel the breakpoint, single-click on the unwanted breakpoint.
+\begin{figure}[h!]
+\centering
+\includegraphics[width=\textwidth]{breakpoint.png}
+\caption{Breakpoint}
+\label{fig:breakpoint}
+\end{figure}
 \subsection{Next/Into/Out}
 \begin{figure}[h!]
 \centering
@@ -318,6 +349,8 @@ Another nice feature about Deeva is that it allow assertion(s) to be ignored whe
 In other word, when the {\tt Assertion} panel is disabled like in figure \ref{fig:assertionFeature}, Deeva will simply ignore the condition under the assertion statement.
 
 \subsection{Stdin/Stdout/Stderr}
+The tool allows users to visualise the \cmd{stdout} and \cmd{stderr} stream output displayed in the console pane and allows for the normal interactions with the\cmd{stdin} stream. Also, it displays the \cmd{stderr} stream in red so the user differentiates between \cmd{stdout} and \cmd{stderr} output. 
+
 \subsection{Stop}
 \subsection{Current State}
 \begin{figure}[h!]
@@ -332,7 +365,7 @@ In other word, when the {\tt Assertion} panel is disabled like in figure \ref{fi
 \end{figure}
 Deeva can be in different states when debugging a program. The current state of Deeva is shown in the header of the front-end next to Deeva header. Each states is described in more detail below.
 \subsubsection{Program not running}
-This state indicates that Deeva is just executed from the command line and program is not running yet. In this state, user can inspect various files and set breakpoints accordingly. 
+This state indicates that Deeva is just executed from the command line and program is not running yet. In this state, user can inspect various files and set breakpoints accordingly.
 \subsubsection{Program is running}
 When user runs the program, Deeva is in the running state until it reaches a breakpoint, waiting for Input, or the program is terminated.
 Sometimes, it is hardly seen that Deeva is in running state as program executed and reach paused state very quickly.
@@ -360,6 +393,7 @@ Deeva supports multiple Java files as well as multiple packages. From figure \re
 Whenever Deeva server is terminated, the front-end will be able to notice it and the modal just like in figure \ref{fig:quitFeature} will be shown. This feature allows user to be noticed that the back-end is terminated and hence, he or she should not continue to debug or expect the correct behaviour.
 
 \subsection{Deeva in the Labs}
+<<<<<<< HEAD
 \begin{figure}[h!]
 \centering
 \includegraphics[scale=0.5]{buildFeature.png}
@@ -370,6 +404,8 @@ Deeva is supported by lab machines.
 Figure \ref{fig:buildFeature} from our github homepage shows that Deeva is easy and straightforward to deploy and build.
 In order to deploy Deeva, one can run {\tt git clone https://github.com/chromy/Deeva.git}, {\tt make deploy}, and {\tt ln -s start\_deeva <somewhere on your path>/deeva} from the command line.
 Similarly, to build Deeva, one can run {\tt pip install -r requirements.txt} and {\tt make build} from the command line.
+=======
+>>>>>>> edca676732dbd0af1e78186f88a196691ec72b03
 
 \section{Design}
 
@@ -457,7 +493,7 @@ They are \cmd{Step Into}, \cmd{Step Over} and \cmd{Step Return} from left to rig
 
 We asked a friend who does not study Computing and has never used a debugger but had exposure to programming to guess which stepping action corresponds to which button for the Eclipse debugger.
 He found it difficult to correctly match them just by the buttons' visual design, confirming our suspicion that these are not the most intuitive of designs.
-We was then explained the concept of \cmd{Step Into}, \cmd{Step Over} and \cmd{Step Return} in terms of debugging. 
+We was then explained the concept of \cmd{Step Into}, \cmd{Step Over} and \cmd{Step Return} in terms of debugging.
 Asked again if he thought any of them really matched the buttons, he gave us some valuable feedback: ``It would be useful if we could somehow represent different scopes/lines so that the arrows (along with their direction) can correctly express the intended function.''
 \begin{figure}[h!]
 \centering
@@ -475,7 +511,7 @@ We gave out questionnaires (see ~\cref{sec:buttonquestionnaire}) when we did the
 Our second set of designs were much more popular than the original design among first year students.
 However, most of the second year students chose the original Eclipse design, one of them explaining that they had already used Eclipse and so, they were used to the original button design.
 
-After discussing with our project supervisor we decided to adopt a button design that is consistent with the Eclipse design. 
+After discussing with our project supervisor we decided to adopt a button design that is consistent with the Eclipse design.
 He pointed out that for experienced debuggers our second design would be confusing as it is an unseen choice for debugger bottons.
 Additionally, we expect our users to eventually become proficient in using the Eclipse and other debuggers, so we did not want to create a whole new design vocabulary that they would soon have to relearn.
 We did however keep the new more intuitive names.
@@ -548,37 +584,37 @@ The solution to this problem became very simple as it only requires to build a c
 Deeva uses a range of technologies, some of which were new to us and some which were already familiar.
 
 \subsubsection{Front End}
-Effectively all web code ends up being executed in Javascript and although there are many tools which compile to Javascript (CoffeeScript, Dart, TypeScript and many many more) we opted to stick to JavaScript. 
+Effectively all web code ends up being executed in Javascript and although there are many tools which compile to Javascript (CoffeeScript, Dart, TypeScript and many many more) we opted to stick to JavaScript.
 This was mainly due to the fact that all of us had some experience with JavaScript but very little exposure to any of the above mentioned tools.
 
 We decided to use a frontend framework having experienced how messy it was attempting to do without in a second year group project.
 Felix had used Angular before and Hector had a some experience with Ember (two Javascript frameworks).
 Angular is less opinionated than Ember which fitted better with our slightly unusual project (not to mention Felix's greater experience) so we used Angular.
 
-Angular turned out to work well in our application it provided useful data binding to keep the UI state up to date and we used its implementation of services for implementing our file browser but it also left us free to program outside its model unlike more restrictive frameworks.  
+Angular turned out to work well in our application it provided useful data binding to keep the UI state up to date and we used its implementation of services for implementing our file browser but it also left us free to program outside its model unlike more restrictive frameworks.
 
 Our UI includes elements that have fundamentally different purposes.
-The code pane where we display code needs to mimic the programming style we are used to and also has to support debugging actions (for example setting breakpoints). 
+The code pane where we display code needs to mimic the programming style we are used to and also has to support debugging actions (for example setting breakpoints).
 The state pane where we graphically represent the stack and heap state has to be visually appealing and offer consistent behaviour.
 Hand coding these components would have been time consuming and error prone and so, we decided to use and configure existing components in an effort of minimising the NIH Syndrome \cite{NIH}.
 
 For the code pane we used CodeMirror\cite{CodeMirror} as it is a versatile text editor for the browser that is specialised in editing code (although we did not let users edit code through the browser in Deeva).
 Although CodeMirror has many more features than we used it made what we did need to do, features like line highlighting and displaying breakpoints) very easy.
-It has an active community, a well-documented API and is used on large products including Bitbucket and Google Apps. 
+It has an active community, a well-documented API and is used on large products including Bitbucket and Google Apps.
 
-For the state pane which shows the graphical representation of the program state we are using D3\cite{D3} as it provides a very easy and powerful way of manipulating data using HTML, SVG and CSS. 
+For the state pane which shows the graphical representation of the program state we are using D3\cite{D3} as it provides a very easy and powerful way of manipulating data using HTML, SVG and CSS.
 Similarly to CodeMirror, D3 has an active community and a multitude of use cases.
 When implementing the state visualisation we quickly came to appreciate the power of D3.
-For example D3 allows us to bind the JSON representation of Java objects retrieved from the server to HTML div then easily add and remove divs as the user explores the object graph. 
-D3 would also have made it easy to show which objects had been updated but we did not have time to implement this.    
-Alternatives include \cmd{Rapha\"el} which only handled drawing so we would have had to implement our own update logic and 
+For example D3 allows us to bind the JSON representation of Java objects retrieved from the server to HTML div then easily add and remove divs as the user explores the object graph.
+D3 would also have made it easy to show which objects had been updated but we did not have time to implement this.
+Alternatives include \cmd{Rapha\"el} which only handled drawing so we would have had to implement our own update logic and
 \cmd{chartjs} which was more like D3 but neither as supported or as general.
 
 We used Bootstrap\cite{Bootstrap} frontend framework as it provides a fast and easy way to web development.
 It is generally a popular choice in web development as it has multiple extensions and components and it was the natural choice as all of us had previous experience with it.
 
 For the communication architecture between the frontend and the server there are many options but the most common are SOAP/XML and REST/JSON.
-We chose to use JOSN and REST partly because it is the one that we have encountered most from the above mentioned options. 
+We chose to use JOSN and REST partly because it is the one that we have encountered most from the above mentioned options.
 Also, it is simpler than SOAP/XML and is now the de facto standard for new web applications.
 
 \subsubsection{Middleware}
@@ -745,6 +781,16 @@ different signals, we can filter the events that come through, and display
 different things based on the data received (namely have a main view and a
 stack\_heap view).
 
+See \ref{fig:servertoclient} for a diagram showing this model/infrastructure.
+\begin{figure}[h!]
+\centering
+\includegraphics[width=160mm, height=120mm]{servertoclient.png}
+\caption{Diagram showing asynchronous event dispatching from server to client}
+\label{fig:servertoclient}
+\end{figure}
+
+
+
 \subsubsection{Back End}
 \textbf{Java Virtual Machine Tools Interface (JVM TI) and the Java Debug Interface (JDI)}
 
@@ -778,8 +824,6 @@ Initially we were using HashMaps to contain state, because that would work well 
 
 Encapsulating the state that we wanted in POJOs meant that we could run serialisers, like \texttt{gson} (which serialises a Java Object into the JSON format) and we could deserialise the JSON on the Python side, into the Python Dictionary without any complaints.
 This method is more desirable because JSON is a public standard, so should anyone want to use our debugger library (in a different environment other than Python or Java), they would have a standard way of getting data out of our library.
-
-\todo[inline]{Talk about state data generation, object references/primitive types}
 
 \textbf{\emph{General Request Class and Event Dispatching}}\\
 This is class that clients (and in our case the Python VM via py4j) interacts with.
@@ -824,9 +868,14 @@ We couldn't have put this logic in the Thread that was ``redirecting'' input, be
 This way allows us to inform the user that we are ``requesting'' data (even though in the command line this rarely happens).
 It also allows the user experience to be more intuitive, especially considering our target audience and our development stack (i.e. web application).
 
-How we handled I/O when it got to the client is mentioned below in \emph{Middleware}.
+How we handled I/O when it got to the client is mentioned in \emph{Middleware} and can be shown in Figure \ref{fig:iostack}.
+\begin{figure}[h!]
+\centering
+\includegraphics[width=160mm, height=120mm]{iodiagram.png}
+\caption{Diagram showing how I/O is implemented with our development stack}
+\label{fig:iostack}
+\end{figure}
 
-\todo[inline]{Insert diagram of how I/O redirection worked}
 
 \textbf{\emph{Sourcepath/Classpath resolution}}\\
 Since our debugger should be able to be run from anywhere, and also we can't assume that compiled sources would be in the same directory as the source files themselves, we tried to do some form of classpath/sourcepath resolution.
@@ -898,9 +947,10 @@ Trying to process the source ourselves to determine which lines are okay, probab
 \label{sec:evaluation}
 We used a number of techniques to evaluate Deeva.
 We used some techniques to help us find or fix specific problems and we used others to make sure that we were on the right track building the right things.
-\subsection{Usability Testing}
+\subsection{Mechanisms}
+\subsubsection{Usability Testing}
 
-\subsubsection{Hallway Testing}
+\textbf{Hallway Testing}
 \begin{figure}[h!]
 \centering
 \subfigure{%
@@ -912,14 +962,15 @@ We used some techniques to help us find or fix specific problems and we used oth
 \label{fig:hallway}
 \end{figure}
 
-We employed a hallway testing approach when it came to evaluating the usability of our debugger, by getting the first year students (our primary stakeholders) and some second year students to demo our project and tell us their first impressions and what they were expecting (see figure~\ref{fig:hallway}). This was beneficial because as the developers, we are aware of the caveats and may subliminally navigate around them.
+We employed a hallway testing approach when it came to evaluating the usability of our debugger, by getting the first year students (our primary stakeholders) and some second year students to demo our project and tell us their first impressions and what they were expecting (see figure~\ref{fig:hallway}).
+This was beneficial because as developers, we are aware of the caveats and may subliminally navigate around them.
 Using the feedback from first year students allowed us to identify critical bugs/pitfalls in our usability design.
-This was obviously more qualitative however we used some measures (like how many times they had to ask questions) to help quantify things such as how intuitive the interface was or feature complete it was.
+This was obviously more qualitative, however, we used some measures (like how many times they had to ask questions) to help quantify things such as how intuitive the interface was or feature complete it was.
 On average, the people who participated in the testing asked around 1-3 questions related to basic features like how to run Deeva or how to set a breakpoint.
 This was insightful as we are aiming to make Deeva as intuitive as possible so we minimise the need to consult the help menu.
 This helped mainly with our first use case which is students using Deeva on the lab machines.
 
-\subsubsection{Quantified testing of colour schemes and font sizes}
+\textbf{Quantified testing of colour schemes and font sizes}
 We wanted to employ the use of A/B testing to assess how effective certain colour schemes and font sizes would be.
 However we had to make a compromise, because the environment and number of users that we could get in one room simultaneously meant that we had to do it in one sitting i.e. we could not force half the users in the room see one colour scheme and the other half see a different colour scheme.
 So in the end we just conducted a poll so they could pick which colour scheme and font size they liked the best.
@@ -930,7 +981,7 @@ An example of this is that the projectors’ resolution in the lecture room is s
 Hence, we may need to have a separate mode which shows just the stack and the heap.
 The implication of this mode meant we had to change our implementation to be less monolithic.
 
-\subsubsection{Questionnaire}
+\textbf{Questionnaire}
 \begin{figure}[h!]
 \centering
 \subfigure{%
@@ -942,19 +993,19 @@ The implication of this mode meant we had to change our implementation to be les
 \end{figure}
 
 After the general interviews we used a questionnaire to get answers to our most important questions.
-Specifically we asked which of the several button designs were better and validated our ad-hoc interview conclusions about the debugger.
+Specifically, we asked which of the several button designs were better and validated our ad-hoc interview conclusions about the debugger.
 We considered using something like Amazon Mechanical Turk to get larger numbers of responses which might have been more statistically significant but it seemed silly when we had hundreds of programmers who were our exact target audience sitting next to us.
 
 
-\subsection{Performance Testing}
+\subsubsection{Performance Testing}
 We also used a few other metrics, some custom and some off-the-shelf which could be automatically run over the repository to measure specific aspects of Deeva’s performance.
 
-\subsubsection{Time to First Request}
+\textbf{Time to First Request}
 
 \begin{figure}[h!]
 \centering
 \includegraphics[width=100mm]{timeToFirstRequest.png}
-\caption{Custom D3 graph displaying  time to first request}
+\caption{Custom D3 graph displaying time to first request}
 \label{fig:timeToFirstRequest}
 \end{figure}
 
@@ -970,25 +1021,59 @@ This graph allowed us to see when a commit increased the time-to-first-request, 
 
 Happily this turned out not to be such a big issue on this project as the time-to-first-request quickly stabilised and did not increase dramatically.
 
+\textbf{Java Feature Testing}
+
+In order to measure the performance of our tool we had to make sure that the Java features most likely used by first year students have the expected behaviour.
+So, we wrote a large number of small Java programs that tested fetures (like loops, arrays, \cmd{stdin}, \cmd{stdout}) independently.
+That allowed us to pick up bugs (mainly in our visual representation) in the early stages of the project.
+As we advanced, we tested Java programs that included multiple features working together (for example, array of objects, linked lists, self-refrencing).
+
+\subsection{Final Evaluation}
+Our final evaluation represented a walk through our goal features and an assesment of each on of them.
+Below is a summary of our findings:
+
+\textbf{Minimum requirements}
+\begin{itemize}
+\item Must run in the Labs - Deeva is a tool that is mainly going to be used on the computer labs and so all the technologies used had to be available on the Lab machines. However, we can not rely on CSG to maintain our software through each update, hence, we decided to run the tool within a virtual environment. That assures that general updates of the lab machines will not brake Deeva while giving us more freedom in choosing differnt tools and technologies.
+\item Start from the command line - This was one of Tristan's requirements as he is trying to teach students to use Java from the command line and so, the debugger would need to be runnable from the command line as well. We achieved this goal and made Deeva easy to run by inputtign on the command line the name of the program to be debugged along with any arguments the program might take.
+\item Supporting all the command line switches (-ea etc) - Deeva is currently supporting only -ea and -cp switches. We decided that other switches are out of scope for our target users, and hence would have represented features that would have rarely been used but would have taken us a lot of time to implement and test.
+\item Taking command line arguments (from the gui) - This requirement was entirely implemented, our GUI being able to take arguments that would be passed to the program when restarting the debugger.
+\item Users must be able to see stdin, stdout, stderr - As we initially planned, our GUI includes a console pane that displays stdin, stdout and stderr (displayed in red). This allows user to have a similar experience as if debugging with an IDE debugger.
+\item Users must be able to see the source code - This was an esential feature that we tried to implement in the early stages of the program. The source code class is loaded in the the code pane, which is displayed using CodeMirror.
+\item Users must be able to inspect the current state of the program somehow - This is an important feature for our debugger as we wanted that students understand the workings of Java by visualising how each line influences the program state. We defenetly achieved this by implementing a pleasent and interactive graphical interface that show the links between program stack and heap.
+\item Run/Pause/Step into/Step Over - These are essential actions that had to be implemented in order to have a feasible debugger. So, this requirement was quicly added to the tool and is part of the final product.
+\item Multiple Files - We wanted users to be able to visualise other files while debugging to allow for easy navigation. We implemented this feature by allowing users to switch between files in the same package by choosing the file from a dropdown menu.
+\item Breakpoints - We have achieved this goal not only by allowing breakpoints on the initially loaded source file but also by allowing the users to set breakpoints on any other file from within the package.
+\item Supports Java static methods, Objects, Arrays, Control flows, Generics, Enumerations - We are currently supporting all features needed for our stakeholders regular use including all of the mentioned ones.
+\item Minimal Documentation (--help, README, small user guide, etc) - Our tool does not currently have a well defined user guide. This was mainly due to time constrains and we are intending to incorporate a user guide with the deployed tool.
+\end{itemize}
+
+\textbf{Extensions}
+Out of the proposed extentions we had time to implement the first two on our extention list:
+\begin{enumerate}
+\item Lecture Mode - We are providing Deeva in two modes, the normal desktop mode and lecturer mode. This allows the lecturer to decouple the graphical visual from the rest of the application in order to display them on different screens.
+\item Display of state is graphical - Our tool displays the state of the stack and the heap using a graphical visualisation built in D3 that allows for easy naigation through the stack and the heap objects.
+\end{enumerate}
+
 \section{Project Management}
 This project has probably been the largest and the most intricated we ever had to build.
 Along with the nature of the project, it combined three major milestones that we never had to face before (at least in combination): we are not sure what are we building, we want to make sure we deliver the software on time but we do not know how long it will take and we want to make sure the software we write is correct and useful but it is hard to define `correct' or `useful' in this context.
 
 \subsection{Agile Programming}
 
-Our software devlopment process is based on Agile programming methods because we found the approach suitable for our goals for the project. 
+Our software devlopment process is based on Agile programming methods because we found the approach suitable for our goals for the project.
 On top of helping solving the above mentioned challenges, Agile programming has sustainable methods for dealing with large, volatile projects.
 
-Firstly, it is based on iterative development, promoting tight cycles. 
-Because this was a large project for which we were not sure how many features we can fit in the allocated time constrains, using one week development cycles helped us to keep track of the team's general speed and setbacks. 
-For examlple, we could see in which weeks we were busy doing other courseworks and the number of implemented features in that cycle was low. 
-We than could compensate by redesigning our goals for the next cycle. 
+Firstly, it is based on iterative development, promoting tight cycles.
+Because this was a large project for which we were not sure how many features we can fit in the allocated time constrains, using one week development cycles helped us to keep track of the team's general speed and setbacks.
+For examlple, we could see in which weeks we were busy doing other courseworks and the number of implemented features in that cycle was low.
+We than could compensate by redesigning our goals for the next cycle.
 This introduces another key feature of Agile programming: flexible response to change.
 
-One of our main challanges was the uncertainty regarding the end result of the project. 
+One of our main challanges was the uncertainty regarding the end result of the project.
 Hence, we required a programming style that allowed for rapid response to change as our initial plan got modified during the project execution.
 
-Finally, incremental feature development allowed us to have a basic tool working soon after the project assignment which meant we started receiving feedback from the early stages of Deeva. 
+Finally, incremental feature development allowed us to have a basic tool working soon after the project assignment which meant we started receiving feedback from the early stages of Deeva.
 
 \subsection{Team Management}
 
@@ -1076,18 +1161,18 @@ This was mainly due to the fact that we did not take into consideration that dur
 Nonetheless, we roughly respected the plan we initially desiged, with slight modifications.
 For example, we did not manage to work on extensions although we included it in the last cycle of the initial plan.
 
-Overall, we are satisfied with the percentage of plan completion we achieved. 
+Overall, we are satisfied with the percentage of plan completion we achieved.
 If we were to start again, we would redesign our plan so it allows for `slow` cycles and we would be more realistic when it comes to the number of features that we would like to implement.
 
 \subsection{Team Member Contributions}
 
-The general group dynamics were really good, we managed to keep a light atmosphere throught the duration of the project. 
-Every week, we had two official group meetings: one with Tristan and one just us. 
+The general group dynamics were really good, we managed to keep a light atmosphere throught the duration of the project.
+Every week, we had two official group meetings: one with Tristan and one just us.
 During these time we would disscuss the goal for the new cycle, the results of the previous cycle, the highlights of the meeting we had with Tristan and we would allocate the tasks within the next cycle.
-The allocations were mainly based on everyone's strong points so we guaranteed ourselfs the best chances of acheveing the weeks' goal. 
-Also, we tried to have at least two people assigned to each part of the project. 
+The allocations were mainly based on everyone's strong points so we guaranteed ourselfs the best chances of acheveing the weeks' goal.
+Also, we tried to have at least two people assigned to each part of the project.
 This, however, did not happen throughout the whole project.
-If we were to do this again we would probably inforce this idea more strongly, luckly, this time we had no issues emerging from it. 
+If we were to do this again we would probably inforce this idea more strongly, luckly, this time we had no issues emerging from it.
 %\subsubsection{Kritaphat Sonsri-in}
 %\subsubsection{Xueqi Chen}
 %\subsubsection{Alina Draganescu}
@@ -1095,8 +1180,8 @@ If we were to do this again we would probably inforce this idea more strongly, l
 %\subsubsection{Hector Dearman}
 %Hector worked mostly on the backend implementing Breakpoints and the middle server layer.
 
-We used a large number of different technologies and tools, some new to us. 
-To take advantage of everyone's previous knowledge and experience we decided that Felix and Hector would mainly work on the backend while the rest of the group, Kira, Krit and Alina worked on the frontend. 
+We used a large number of different technologies and tools, some new to us.
+To take advantage of everyone's previous knowledge and experience we decided that Felix and Hector would mainly work on the backend while the rest of the group, Kira, Krit and Alina worked on the frontend.
 Also, our most experienced team mambers gave advice and help with other sections of the project.
 
 Finally, through this project we all learned the importance of thourough planning, th importance of keeping every group member updated with the current state of the project and lastly, we understood how software development practices can save lifes (and projects).
@@ -1105,13 +1190,19 @@ Finally, through this project we all learned the importance of thourough plannin
 After our initial meetings with Tristan we had a plan\ref{sec:initialplan} that included the list of basic features we wanted our debugger to have, followed by a list of extended features ranked in the order we would implement them once the core functionalities are implemented.
 
 Some of the extensions include display of the program state graphically, maximal documentation, making Deeva multi-platform or support all Java features.
-The idea of using Deeva in two different modes (lecturer mode and user mode) came to us late, but quickle became one of our top-priority extension along with displaying the program state graphically. 
+The idea of using Deeva in two different modes (lecturer mode and user mode) came to us late, but quickle became one of our top-priority extension along with displaying the program state graphically.
 
 These two represented the features that in our opinion, would make Deeva a useful debugger for first year students while the rest of the extensions would not be neccessary in order to achieve that.
 This was  mainly because the rest of the extensions incorporate features that would make the tool an all-purpose debugger rather than being aimed at first year students which do not study some of the concepts until much later.
 
-To sum up, the current level of feature implementation (both core and extenstions) meet the project constrains and represent a functional debugger suitable for teaching introductory Java. 
+Although not initially planned/discussed as a plausible extension, the decision to use an event-based messaging system between the multiple tiers, opened up another possibility for an extension.
+That is, not only should the lecturer be able to show the code and the current stack, but also be able to hand out a read only link that students with laptops could open and see the changes on their screen in real time.
+If we had time, we may have looked into this possibility, depending on the needs of our supervisor.
+
+To sum up, the current level of feature implementation (both core and extenstions) meet the project constrains and represent a functional debugger suitable for teaching introductory Java.
 The rest of the extensions would build upon it in order to make it an all-purpose debugger that could support any command a IDE debugger could.
+
+
 
 \section{Conclusion}
 
@@ -1187,6 +1278,12 @@ The rest of the extensions would build upon it in order to make it an all-purpos
         \url{http://en.wikipedia.org/wiki/Java_Virtual_Machine_Tools_Interface}
         2013
 
+\bibitem{Bootstrap}
+        Bootstrap.
+        \emph{Bootstrap}
+        \url{http://getbootstrap.com}
+        2013
+
 \bibitem{heisenbug}
         Wikipedia.
         \emph{Heisenbug}
@@ -1232,7 +1329,7 @@ The rest of the extensions would build upon it in order to make it an all-purpos
         TravisCI docs.
         \emph{TravisCI}
         \url{http://travis-ci.com/}
-        
+
 \end{thebibliography}
 
 \end{document}
