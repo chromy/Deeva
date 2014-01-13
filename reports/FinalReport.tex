@@ -713,7 +713,7 @@ using \texttt{blinker}, and the data would be pushed all the way from the JVM to
 the client and be processed and displayed as need be. By subscribing to
 different signals, we can filter the events that come through, and display
 different things based on the data received (namely have a main view and a
-stack_heap view).
+stack\_heap view).
 
 \subsubsection{Back End}
 \textbf{Java Virtual Machine Tools Interface (JVM TI) and the Java Debug Interface (JDI)}
@@ -956,7 +956,7 @@ We than could compensate by redesigning our goals for the next cycle.
 This introduces another key feature of Agile programming: flexible response to change.
 
 One of our main challanges was the uncertainty regarding the end result of the project. 
-Hence, we required a programming style that allowed for rapid response to change as our initial plan changed during the project execution.
+Hence, we required a programming style that allowed for rapid response to change as our initial plan got modified during the project execution.
 
 Finally, incremental feature development allowed us to have a basic tool working soon after the project assignment which meant we started receiving feedback from the early stages of Deeva. 
 
@@ -964,11 +964,11 @@ Finally, incremental feature development allowed us to have a basic tool working
 
 To ensure effective development of the product, weekly supervisor meetings were scheduled.
 In these meetings, quality assurance was the main aim, making sure we were on the right track with our development, delivering correct features.
-This avoided unnecessary misunderstandings and extra time spent on creating unneeded features for the product.
+This avoided unnecessary misunderstandings and extra time spent on creating unneccessary features for the product.
 
 Further to the supervisor meetings, weekly group meetings ensured that all group members are in sync about the progress and direction of the project.
 During these meetings, the information gathered from the supervisor meetings would be recapped and the targets for the upcoming week would be set.
-Thus, tasks could be divided among group members, with everyone knowing what their colleagues are working on in this week, making group and individual efforts significantly more effective.
+Thus, tasks could be divided among group members, with everyone knowing what their colleagues are working during each cycle, making group and individual efforts significantly more effective.
 \begin{figure}[h!]
 \centering
 \includegraphics[width=130mm]{estimation.jpg}
@@ -987,7 +987,7 @@ To aid the management of the project on a holistic and timely perspective, sever
 \label{fig:Trello}
 \end{figure}
 
-We used Trello as our project management tool and as an Information Radiator\footnote{\url{https://www.atlassian.com/wallboards/information-radiators.jsp}}.
+We used Trello as our project management tool and as an Information Radiator\cite{Trello}.
 It also allows us to track our progress and average velocity.
 We decided to use Trello as it fulfills most of the key features required for such a tool: it is easy to use and update, relatively flexible and allows for communications between members without too much interruption.
 We decided to use an electronic version as they are a more manageable alternative to physical boards.
@@ -1010,11 +1010,11 @@ This is when we meet as a group and review our code to improve our style and pat
 \caption{Our hand made planning poker cards}
 \end{figure}
 
-We are using Planning Poker in order to estimate stories in each cycle of development.
-This method is known to avoid anchoring and will produce more accurate, less optimistic story point estimations\footnote{\tt{http://en.wikipedia.org/wiki/Planning\_poker\#Planning\_poker\_benefits}}. This technique takes some time to get used to because initially the story point bared little meaning to us.
+We are using Planning Poker\cite{PlanningPoker} in order to estimate stories in each cycle of development.
+This method is known to avoid anchoring and will produce more accurate, less optimistic story point estimations. This technique takes some time to get used to because initially the story point bared little meaning to us.
 As we estimated more tasks, the story points became more meaningful hence the poker game proved to be a very efficient method.
 
-For example, it helped determine when people aren't really talking about the same scope for a certain task.
+For example, it helped determine when people are not really talking about the same scope for a certain task.
 Frequently we have a task like ``Set up the back end." and one person gives a task a 2 while another gives it an 8.
 The first person thinks the task title means ``Write some stubs so the middleware can integrate." while the second thinks it means ``Implement the backend up to the minimal specification.".
 So using planing poker has already helped us make sure we're all on the same page.
@@ -1032,15 +1032,32 @@ Github is a hosted source control which somebody else manages and is easily acce
 Over the period we worked on this project Github had a few hours of down time but this was easily less than the time it would have taken us to setup and maintain our own source control server.
 
 \subsubsection{Travis CI}
-Travis\footnote{\url{http://travis-ci.com/}} is an online continues integration server.
+Travis\cite{TravisCI} is an online continues integration server.
 Whenever we push code to the Github server Travis takes the commit then makes and runs our integration tests, if the build fails Travis' emails us.
 Ideally the build on Travis should never fail (since we should run the tests ourselves before we commit) but the email notifications proved very useful for problems which only show up on a fresh install or if we made a small commit which ``shouldn't" have broken the build.
 Travis' notifications allowed quickly brought bad commits to our attention allowing us to fix or revert them before they became a major problem.
 Since Travis has to install all the dependencies each time running the tests can take up to ten minutes.
 
+\subsection{Planning}
+Planning played an esential role in the development and completion of this project mainly because of the sheer size and the hard deadline we had to commit to.
+We created an initial weekly plan\ref{sec:initialplan} to coincide with the one week development cycles.
+However, during the project exectution the initial plan was slightly modified.
+This was mainly due to the fact that we did not take into consideration that during the term there are coursework heavy weeks or there are revision/exam weeks in which we did little work on Deeva.
+Nonetheless, we roughly respected the plan we initially desiged, with slight modifications.
+For example, we did not manage to work on extensions although we included it in the last cycle of the initial plan.
 
+Overall, we are satisfied with the percentage of plan completion we achieved. 
+If we were to start again, we would redesign our plan so it allows for `slow` cycles and we would be more realistic when it comes to the number of features that we would like to implement.
 
 \subsection{Team Member Contributions}
+
+The general group dynamics were really good, we managed to keep a light atmosphere throught the duration of the project. 
+We would have two weekly official group meetings: one with Tristan and one just us. 
+During that time we would disscuss the goal for the new cycle, the results of the previous cycle, the highlights of the meeting we had with Tristan and we would allocate the tasks within the next cycle.
+The allocations were mainly based on everyone's strong points so we guaranteed ourselfs the best chances of acheveing the weeks goal. 
+Also, we tried to have at least two people assigned to each part of the project. 
+This, however, did not happen throughout the whole project.
+If we were to do this again we would probably inforce this idea more strongly, luckly, we had no issues emerging from it. 
 \subsubsection{Kritaphat Sonsri-in}
 \subsubsection{Xueqi Chen}
 \subsubsection{Alina Draganescu}
@@ -1153,6 +1170,23 @@ Hector worked mostly on the backend implementing Breakpoints and the middle serv
         \emph{Bootstrap}
         \url{http://getbootstrap.com/}
         2013
+
+\bibitem{Trello}
+        Wallboards.
+        \url{https://www.atlassian.com/wallboards/information-radiators.jsp}
+        2013
+
+\bibitem{PlanningPoker}
+        Wikipedia.
+        \emph{Planning Poker}
+        \url{http://en.wikipedia.org/wiki/Planning\_poker\#Planning\_poker\_benefits}
+        2013
+
+\bibitem{TravisCI}
+        TravisCI docs.
+        \emph{TravisCI}
+        \url{http://travis-ci.com/}
+        
 \end{thebibliography}
 
 \end{document}
