@@ -271,8 +271,39 @@ Similarly we produced a prioritised list of extensions:
 
 \section{Deeva}
 \subsection{Starting the program}
+Starting Deeva will be similar to how we normally start a Java program.
+To start Deeva from the command line, we simply need to execute ``./run\_deeva.py" with the class path where the Java program is in.
+Additionally, if the program requires arguments, users can put arguments on the command line after the class path.
+Although after Deeva is started, if user does not want to restart Deeva, there is an option of rerun with arguments on the page which will be explained in more details later.
+Furthermore, user can enable assertion by having ``-ea" on the command line. Optionally, turning on and off the assertion switch from the page. Again, this will be explained later.
 \subsection{Run}
+After the program is started from the command line and compiled successfully, the ``Run" button can be clicked to start debugging.
+While the program is being run, the state message will be displaying: ``program running".
+If there is a break point, then the program will be paused at the point where it was set.
+At this point the state message will change to ``program paused".
+Otherwise, the program will be run through to the end and any system output will be printed out on the console.
+
+Need to note that, the ``Run" button is combined with the ``continue" button.
+After the program is paused and ready to debug, user can press ``continue" button to skip to the next breakpoint or skip to the end of the program.
+\begin{figure}[h!]
+\centering
+\subfigure[Run]{
+\includegraphics[width=20mm]{runBtn.png}}
+\quad
+\subfigure[Continue]{
+\includegraphics[width=20mm]{continueBtn.png}}
+\caption{Run and Continue Button}
+\end{figure}
 \subsection{Breakpoints}
+Breakpoints can be set by single-clicking on the left margin of the code pane.
+Multiple breakpoints can be set. 
+To cancel the breakpoint, single-click on the unwanted breakpoint.
+\begin{figure}[h!]
+\centering
+\includegraphics[width=\textwidth]{breakpoint.png}
+\caption{Breakpoint}
+\label{fig:breakpoint}
+\end{figure}
 \subsection{Next/Into/Out}
 \begin{figure}[h!]
 \centering
@@ -342,7 +373,6 @@ Like traditional IDE debugger, user is able to going to next line of code, going
 \end{figure}
 
 \subsection{Deeva in the Labs}
-\todo{??}
 
 \section{Design}
 
