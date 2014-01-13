@@ -137,7 +137,7 @@ As in many courses this is done diagrammatically, by showing how each line of co
 \centering
 \includegraphics[width=125mm]{whiteBoardDrawing.jpg}
 \caption{Example diagram of Stack and Heap}
-\label{boarddiagrams}
+\label{fig:boarddiagrams}
 \end{figure}
 
 However this approach is not ideal.
@@ -152,7 +152,7 @@ Some computer tools like \cmd{Python Tutor} \cite{pythontutor} are very useful a
 \caption{Python Tutor Stack and Heap Diagram}
 \end{figure}
 
-By replacing the unintuitive tabular representation of the stack and heap found in almost every debugger with a user interface (based on these diagrams - see Figure \ref{/boarddiagrams}) we hope to make Deeva a useful tool for teaching,
+By replacing the unintuitive tabular representation of the stack and heap found in almost every debugger with a user interface (based on these diagrams - see Figure \ref{fig:boarddiagrams}) we hope to make Deeva a useful tool for teaching,
 allowing instructors to create traces for programs in real time without making a mistake.
 Even more importantly, it lets Deeva become a tool for learning, allowing students to explore the unfamiliar model of imperative programming without expert oversight.
 
@@ -413,8 +413,8 @@ Therefore, we agreed on putting the stack and heap on the right hand side with s
 \subsubsection{Button Design}
 The essential feature of any debugger is the ability of gradual navigation through the code by using combinations of the next, step in, step out and run actions.
 Hence, the visual representation of these actions in the UI had to be carefully considered.
-Using buttons was the natural choice for these actions. However, choosing the buttons' design required a detailed research to find out what would appeal to our main users, first year students.
-After conducting a quick survey (see ~\cref{sec:evaluation}) on students from different years with both computing and non-computing backgrounds, we discovered that most people found the buttons names and designs in Eclipse to be very confusing.
+Using buttons was the natural choice for these actions. However, choosing the buttons' design required a detailed research in order to find out what would appeal to our main users, first year students.
+After conducting a quick survey (see ~\cref{sec:evaluation}) on students from different years with both computing and non-computing backgrounds, we discovered that most people found the buttons names and designs in Eclipse to be generally confusing.
 As a result, we designed several different sets of buttons and used a questionnaire to pick among them.
 
 \begin{figure}[h!]
@@ -428,22 +428,10 @@ Figure~\ref{fig:button1} shows our original design of the ``Stepping'' buttons.
 They inherit the design from the Eclipse debugger.
 They are \cmd{Step Into}, \cmd{Step Over} and \cmd{Step Return} from left to right respectively.
 
-\begin{framed}
-
-\emph{A digression on the behavior of the Stepping buttons.}
-Given a program counter pointing
-\begin{description}
-\item Step Into
-\item Step Over
-\item Step Return
-\end{description}
-\end{framed}
-\todo{I don't know what exactly this box is supposed to mean.}
-
-
 We asked a friend who does not study Computing and has never used a debugger but had exposure to programming to guess which stepping action corresponds to which button for the Eclipse debugger.
 He found it difficult to correctly match them just by the buttons' visual design, confirming our suspicion that these are not the most intuitive of designs.
-We was then explained the concept of \cmd{Step Into}, \cmd{Step Over} and \cmd{Step Return} in terms of debugging. Asked again if he thought any of them really matched the buttons, he gave us some valuable feedback: ``It would be useful if we could somehow represent different scopes/lines so that the arrows (along with their direction) can correctly express the intended function.''
+We was then explained the concept of \cmd{Step Into}, \cmd{Step Over} and \cmd{Step Return} in terms of debugging. 
+Asked again if he thought any of them really matched the buttons, he gave us some valuable feedback: ``It would be useful if we could somehow represent different scopes/lines so that the arrows (along with their direction) can correctly express the intended function.''
 \begin{figure}[h!]
 \centering
 \includegraphics[height=20mm,width=60mm]{buttons2.png}
@@ -452,17 +440,17 @@ We was then explained the concept of \cmd{Step Into}, \cmd{Step Over} and \cmd{S
 \end{figure}
 
 Figure~\ref{fig:buttons2} represents our second design.
-As suggested by our friend, the black lines indicate the lines of code which is similar to an editor.
-Arrows going in either the upwards or downwards directions indicate going to the next line, function, or (or previous) scope.
-We created a questionnaire in which we explained the definition of ``Next", ``Into" and ``Out" (our new and hopefully more intuitive names for the functionality previously known as ``Step Into'', ``Step Over'' and ``Step Return'').
-\todo{section needs redesigning}
-Then we asked which of the eight button designs best represents the aforementioned functions.
-We gave out the questionnaires (see ~\cref{sec:buttonquestionnaire}) when we did the Hallway Testing (see ~\cref{sec:evaluation}) to some first year students and second year students.
+As suggested by our friend, the black lines indicate the lines of code, similar to an editor.
+Arrows going in either downwards indicate going to the next line, function, or scope.
+Arrows going upwards indicate returning to the previous scope.
+We created a questionnaire in which we explained the definition of \cmd{Next}, `\cmd{Into} and \cmd{Out} (our new and hopefully more intuitive names for the functionality previously known as \cmd{Step Into}, \cmd{Step Over} and \cmd{Step Return} respectively).
+We gave out questionnaires (see ~\cref{sec:buttonquestionnaire}) when we did the Hallway Testing (see ~\cref{sec:evaluation}) to some first year students and second year students in order to decide which design idea appealed most to the users.
 Our second set of designs were much more popular than the original design among first year students.
-However most of the second year students chose the original Eclipse design, one of them explaining that because they had already used Eclipse they were used to the original buttons.
+However, most of the second year students chose the original Eclipse design, one of them explaining that they had already used Eclipse and so, they were used to the original button design.
 
-In the end we did not use the second design because of some confusion from our users and comments from our project supervisor during the process.
-It was not that clear what the black lines indicate especially for experienced users who are already used to the original design common to many debuggers additionally given that we expect users to graduate to using the Eclipse and other debuggers we did not want to create a whole new design vocabulary that they would soon have to relearn.
+After discussing with our project supervisor we decided to adopt a button design that is consistent with the Eclipse design. 
+He pointed out that for experienced debuggers our second design would be confusing as it is an unseen choice for debugger bottons.
+Additionally, we expect our users to eventually become proficient in using the Eclipse and other debuggers, so we did not want to create a whole new design vocabulary that they would soon have to relearn.
 We did however keep the new more intuitive names.
 
 \subsubsection{Colour Scheme and Font Size Design}
@@ -505,8 +493,6 @@ As this questionnaire was performed in one of the big lecture rooms (Huxley room
 However, as the smaller font size sample is perfectly readable on the lab machines we are considering to release our debugger in two modes: `normal mode' (to be used on the lab machines - font size 16) and  `lecturer mode' (to be used by lecturers when teaching - font size 26).
 This was not part of our initial plan but after consulting with our project supervisor, we amended our list of extensions adding a `lecturer mode' to it.
 
-\subsection{System Design}
-\todo{Not sure what we should talk about here}
 \section{Implementation}
 
 \subsection{Overview}
@@ -1061,20 +1047,36 @@ If we were to start again, we would redesign our plan so it allows for `slow` cy
 \subsection{Team Member Contributions}
 
 The general group dynamics were really good, we managed to keep a light atmosphere throught the duration of the project. 
-We would have two weekly official group meetings: one with Tristan and one just us. 
-During that time we would disscuss the goal for the new cycle, the results of the previous cycle, the highlights of the meeting we had with Tristan and we would allocate the tasks within the next cycle.
-The allocations were mainly based on everyone's strong points so we guaranteed ourselfs the best chances of acheveing the weeks goal. 
+Every week, we had two official group meetings: one with Tristan and one just us. 
+During these time we would disscuss the goal for the new cycle, the results of the previous cycle, the highlights of the meeting we had with Tristan and we would allocate the tasks within the next cycle.
+The allocations were mainly based on everyone's strong points so we guaranteed ourselfs the best chances of acheveing the weeks' goal. 
 Also, we tried to have at least two people assigned to each part of the project. 
 This, however, did not happen throughout the whole project.
-If we were to do this again we would probably inforce this idea more strongly, luckly, we had no issues emerging from it. 
-\subsubsection{Kritaphat Sonsri-in}
-\subsubsection{Xueqi Chen}
-\subsubsection{Alina Draganescu}
-\subsubsection{Felix de Souza}
-\subsubsection{Hector Dearman}
-Hector worked mostly on the backend implementing Breakpoints and the middle server layer.
+If we were to do this again we would probably inforce this idea more strongly, luckly, this time we had no issues emerging from it. 
+%\subsubsection{Kritaphat Sonsri-in}
+%\subsubsection{Xueqi Chen}
+%\subsubsection{Alina Draganescu}
+%\subsubsection{Felix de Souza}
+%\subsubsection{Hector Dearman}
+%Hector worked mostly on the backend implementing Breakpoints and the middle server layer.
+
+We used a large number of different technologies and tools, some new to us. 
+To take advantage of everyone's previous knowledge and experience we decided that Felix and Hector would mainly work on the backend while the rest of the group, Kira, Krit and Alina worked on the frontend. 
+Also, our most experienced team mambers gave advice and help with other sections of the project.
+
+Finally, through this project we all learned the importance of thourough planning, th importance of keeping every group member updated with the current state of the project and lastly, we understood how software development practices can save lifes (and projects).
 
 \section{Extensions}
+After our initial meetings with Tristan we had a plan\ref{sec:initialplan} that included the list of basic features we wanted our debugger to have, followed by a list of extended features ranked in the order we would implement them once the core functionalities are implemented.
+
+Some of the extensions include display of the program state graphically, maximal documentation, making Deeva multi-platform or support all Java features.
+The idea of using Deeva in two different modes (lecturer mode and user mode) came to us late, but quickle became one of our top-priority extension along with displaying the program state graphically. 
+
+These two represented the features that in our opinion, would make Deeva a useful debugger for first year students while the rest of the extensions would not be neccessary in order to achieve that.
+This was  mainly because the rest of the extensions incorporate features that would make the tool an all-purpose debugger rather than being aimed at first year students which do not study some of the concepts until much later.
+
+To sum up, the current level of feature implementation (both core and extenstions) meet the project constrains and represent a functional debugger suitable for teaching introductory Java. 
+The rest of the extensions would build upon it in order to make it an all-purpose debugger that could support any command a IDE debugger could.
 
 \section{Conclusion}
 
