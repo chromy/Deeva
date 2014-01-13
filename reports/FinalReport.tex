@@ -329,7 +329,7 @@ Like a traditional IDE debugger, the user is able to go to next line of code wit
 Whenever Deeva is executed from the command line with uncompiled program, the code panel will show the text similar to figure \ref{fig:warningFeature}. When this occurs, user need to compile the Java program and re-run Deeva again.
 
 \subsection{Stack Heap}
-The key feature of Deeva allows user to examine the current state of the program in a form of stack and heap.
+Deeva allows the user to examine the current state of the program stack and heap.
 \begin{figure}[h!]
 \centering
 \subfigure[Code]{
@@ -345,7 +345,7 @@ As we can see from the figure \ref{fig:stack}, args is the first thing on the st
 The value of j, k and l are visible on the stack frame whereas objects like args and aaa have a pointer stored on the stack frame.
 Clicking on the empty stack frame, user can then examine what is on the heap for the object.
 For example, in this case, the array aaa is displayed on the heap with the index of the array displayed on the top and content of the array at the bottom. 
-User can also minimise the view for each object by click again on the stack frame for a object.
+Users can also minimise the view for each object by clicking again on the root of an arrow pointing at that object.
 \begin{figure}[h!]
 \centering
 \includegraphics[scale=0.5]{heap.png}
