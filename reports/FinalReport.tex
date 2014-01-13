@@ -643,7 +643,7 @@ Since our debugger should be able to be run from anywhere, and also we can't ass
 The user would specify a classpath as usual, but also they had to specify a sourcepath, so we could find the corresponding sources for the classes that had been loaded.
 By default, to conform with Java's semantics, if they don't specify a classpath/sourcepath, we assume that it is just the current directory.
 
-To find all the classes that could potentially be of interest (N.B. we couldn't find a way that would  determine exactly what classes we would need before hand, see \emph{Lazy Loading Classes} below.) we traversed the directories listed in the classpath, looking for class files.
+To find all the classes that could potentially be of interest (N.B. we couldn't find a way that would  determine exactly what classes we would need before hand, see \emph{Classloading} below.) we traversed the directories listed in the classpath, looking for class files.
 Should we find a class file, we would append the directory structure relative to one of the directories in the classpath, so we could get the fully qualified class name (e.g. \texttt{java.lang.String} rather than just \texttt{String}).
 We would then keep a track of the absolute path of this class in map to be used later.
 
@@ -677,11 +677,22 @@ A few examples of errors that we handle are:
 \end{description}
 
 \textbf{\emph{General Problems/Caveats}}\\
+As with most projects, things don't always go as planned, and we generally run into problems, the main concerns that we ran into were thread safety, (this was particularly important due to our choice of development stack), and also the way that Java did class loading and the implications it had for us.
+
 \emph{Thread Safety}
-As with most projects, things aren't always
+As will be described in further detail in the \emph{Middleware} section, \texttt{py4j} and \texttt{Flask} are thread-safe, however access to objects in Java are not i.e. the Debugger class that the class will interact with needs to have synchronisation primitives.
+This is because every request made by the user in the browser results in a separate thread being created to handle that request.
+Any call using \texttt{py4j} also creates a new thread to deal with that request.
+Hence $x$ requests from the browser results in $x$ threads trying to access the Debug object, and we must also take into account the Event Handler thread that writes to our Debugger class.
+
+As a result we had to group certain methods together and control access to them using a lock (implicit - Java's synchronisation keyword and the explicit Lock class).
+This is to ensure mutual exclusion and that the data is consistent between requests, and also to irradicate race conditions.
+
+This is also why we had to switch from semaphore approach we described earlier, because should something go wrong, threads from Python would get stuck waiting for threads in Java to unblock, but they were blocked by some other thread etc. thus greatly complicating an already complicated thread model.
 
 \emph{Classloading}
 \todo[inline]{Talk about class loading}
+
 
 \section{Evaluation}
 \label{sec:evaluation}
