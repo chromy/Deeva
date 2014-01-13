@@ -312,7 +312,7 @@ To cancel the breakpoint, single-click on the unwanted breakpoint.
 \label{fig:buttons}
 \end{figure}
 
-Like traditional IDE debugger, user is able to going to next line of code, going into a sub function and returning from a sub function by clicking on the ``Next", ``Into" and ``Out" buttons on the page respectively (see figure~\ref{fig:buttons}).
+Like traditional IDE debugger, user is able to go to next line of code, going into a sub function and returning from a sub function by clicking on the ``Next", ``Into" and ``Out" buttons on the page respectively (see figure~\ref{fig:buttons}).
 \subsection{Warning about uncompiled programs.}
 \begin{figure}[h!]
 \centering
@@ -322,7 +322,27 @@ Like traditional IDE debugger, user is able to going to next line of code, going
 \end{figure}
 
 \subsection{Stack Heap}
-\subsection{Expansion}
+The key feature of Deeva allows user to examine the current state of the program in a form of stack and heap.
+\begin{figure}[h!]
+\centering
+\subfigure[Code]{
+\includegraphics[scale=0.5]{code.png}}
+\quad
+\subfigure[Stack and Heap]{
+\includegraphics[scale=0.5]{stack.png}
+\label{fig:stack}}
+\caption{Stack and Heap}
+\end{figure}
+
+As we can see from the figure \ref{fig:stack}, args is the first thing on the stack followed by primitives j, k and l.
+The value of j, k and l are visible on the stack frame whereas objects like args and aaa have a pointer stored on the stack frame.
+Clicking on the empty stack frame, user can then examine what is on the heap for the object.
+For example, in this case, the array aaa is displayed on the heap with the index of the array displayed on the top and content of the array at the bottom. 
+User can also minimise the view for each object by click again on the stack frame for a object.
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.5]{heap.png}
+\end{figure}
 
 \subsection{Arguments}
 \begin{figure}[h!]
@@ -361,16 +381,17 @@ In other word, when the {\tt Assertion} panel is disabled like in figure \ref{fi
 \caption{Different states of Current State}
 \label{fig:stateFeature}
 \end{figure}
-Deeva can be in different states when debugging a program. The current state of Deeva is shown in the header of the front-end next to Deeva header. Each states is described in more detail below.
+Deeva can be in different states when debugging a program. The current state of Deeva is shown in the header of the front-end next to Deeva header. Each state is described in more detail below.
 \subsubsection{Program not running}
-This state indicates that Deeva is just executed from the command line and program is not running yet. In this state, user can inspect various files and set breakpoints accordingly. 
+This state indicates that Deeva is just executed from the command line and program has not been run yet. In this state, user can inspect various files and set breakpoints accordingly. 
 \subsubsection{Program is running}
-When user runs the program, Deeva is in the running state until it reaches a breakpoint, waiting for Input, or the program is terminated.
-Sometimes, it is hardly seen that Deeva is in running state as program executed and reach paused state very quickly.
+When user runs the program, Deeva is in the running state until it reaches a breakpoint. 
+it might also be waiting for input, or the program is terminated.
+Running state could be hardly seen sometimes as program reaches paused state very quickly.
 \subsubsection{Program paused}
-Once Deeva reached a breakpoint, it is in paused state. During this state, user may choose various actions e.g. run program, execute next line, or even inspect the current state of the stack and heap.
+Once Deeva reaches a breakpoint, it is in paused state. During this state, user may choose various actions e.g. run program, execute next line, or even inspect the current state of the stack and heap.
 \subsubsection{Awaiting I/O}
-Since Deeva also supports stdIn/stdOut, Deeva is in this state when the program is awaiting for input from the console.
+Since Deeva also supports stdIn/stdOut, Deeva is in this state when the program is waiting for input from the console.
 
 \subsection{Multiple Files}
 \begin{figure}[h!]
@@ -379,7 +400,7 @@ Since Deeva also supports stdIn/stdOut, Deeva is in this state when the program 
 \caption{Multiple Files Feature Screenshot}
 \label{fig:multipleFile}
 \end{figure}
-Deeva supports multiple Java files as well as multiple packages. From figure \ref{fig:multipleFile}, the panel that allows different packages or files to be shown is just above the code panel. User can choose to inspect or set breakpoint(s) in any files. However, notice that only those breakpoints in the files that is called by the main class will be stopped at.
+Deeva supports multiple Java files as well as multiple packages. From figure \ref{fig:multipleFile}, the tab that shows different packages or files is just above the code panel. User can choose to inspect or set breakpoint(s) in any files. However, only those breakpoints in the files that is called by the main class can be stopped at.
 
 \subsection{Server Quit}
 \begin{figure}[h!]
@@ -388,7 +409,7 @@ Deeva supports multiple Java files as well as multiple packages. From figure \re
 \caption{Server Quit Screenshot}
 \label{fig:quitFeature}
 \end{figure}
-Whenever Deeva server is terminated, the front-end will be able to notice it and the modal just like in figure \ref{fig:quitFeature} will be shown. This feature allows user to be noticed that the back-end is terminated and hence, he or she should not continue to debug or expect the correct behaviour.
+Whenever Deeva server is terminated, a modal(see figure \ref{fig:quitFeature}) will be shown. This feature notifies user that the back-end is terminated and hence, they should restart the server again.
 
 \subsection{Deeva in the Labs}
 
