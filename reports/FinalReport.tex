@@ -323,6 +323,7 @@ Like traditional IDE debugger, user is able to going to next line of code, going
 
 \subsection{Stack Heap}
 \subsection{Expansion}
+
 \subsection{Arguments}
 \begin{figure}[h!]
 \centering
@@ -330,17 +331,22 @@ Like traditional IDE debugger, user is able to going to next line of code, going
 \caption{Arguments Feature Screenshot}
 \label{fig:argumentFeature}
 \end{figure}
+Not only Deeva allows argument to be passed when starting from the command line, but it also allow arguments to be passed from the front-end.
+Figure \ref{fig:argumentFeature} shows that arguments can be easily passed into the input box. Notice that argument can be passed with space under a single or double quote e.g. ``Arguments with space".
+
 \subsection{Assertion}
 \begin{figure}[h!]
 \centering
 \subfigure[Assertions Disabled]{
-\includegraphics{falseAssertionFeature.png}}
+\includegraphics{falseAssertionFeature.png}
+\label{fig:assertionFeature}}
 \quad
 \subfigure[Assertions Enabled]{
-\includegraphics{trueAssertionFeature.png}
-\label{fig:argumentFeature}}
+\includegraphics{trueAssertionFeature.png}}
 \caption{Different states of Assertions}
 \end{figure}
+Another nice feature about Deeva is that it allow assertion(s) to be ignored when Deeva executing a assertion statement.
+In other word, when the {\tt Assertion} panel is disabled like in figure \ref{fig:assertionFeature}, Deeva will simply ignore the condition under the assertion statement.
 
 \subsection{Stdin/Stdout/Stderr}
 \subsection{Stop}
@@ -351,10 +357,20 @@ Like traditional IDE debugger, user is able to going to next line of code, going
 \includegraphics[scale=0.5]{notRunningCurrentStateFeature.png}}
 \quad
 \subfigure[Current State is ``Program paused"]{
-\includegraphics[scale=0.5]{pausedCurrentStateFeature.png}
-\label{fig:argumentFeature}}
+\includegraphics[scale=0.5]{pausedCurrentStateFeature.png}}
 \caption{Different states of Current State}
+\label{fig:stateFeature}
 \end{figure}
+Deeva can be in different states when debugging a program. The current state of Deeva is shown in the header of the front-end next to Deeva header. Each states is described in more detail below.
+\subsubsection{Program not running}
+This state indicates that Deeva is just executed from the command line and program is not running yet. In this state, user can inspect various files and set breakpoints accordingly. 
+\subsubsection{Program is running}
+When user runs the program, Deeva is in the running state until it reaches a breakpoint, waiting for Input, or the program is terminated.
+Sometimes, it is hardly seen that Deeva is in running state as program executed and reach paused state very quickly.
+\subsubsection{Program paused}
+Once Deeva reached a breakpoint, it is in paused state. During this state, user may choose various actions e.g. run program, execute next line, or even inspect the current state of the stack and heap.
+\subsubsection{Awaiting I/O}
+Since Deeva also supports stdIn/stdOut, Deeva is in this state when the program is awaiting for input from the console.
 
 \subsection{Multiple Files}
 \begin{figure}[h!]
@@ -363,6 +379,7 @@ Like traditional IDE debugger, user is able to going to next line of code, going
 \caption{Multiple Files Feature Screenshot}
 \label{fig:multipleFile}
 \end{figure}
+Deeva supports multiple Java files as well as multiple packages. From figure \ref{fig:multipleFile}, the panel that allows different packages or files to be shown is just above the code panel. User can choose to inspect or set breakpoint(s) in any files. However, notice that only those breakpoints in the files that is called by the main class will be stopped at.
 
 \subsection{Server Quit}
 \begin{figure}[h!]
@@ -371,6 +388,7 @@ Like traditional IDE debugger, user is able to going to next line of code, going
 \caption{Server Quit Screenshot}
 \label{fig:quitFeature}
 \end{figure}
+Whenever Deeva server is terminated, the front-end will be able to notice it and the modal just like in figure \ref{fig:quitFeature} will be shown. This feature allows user to be noticed that the back-end is terminated and hence, he or she should not continue to debug or expect the correct behaviour.
 
 \subsection{Deeva in the Labs}
 
@@ -537,10 +555,10 @@ Firstly, we all have limited experience with desktop GUI programs which meant th
 Secondly, we knew we would need a lot of custom code for drawing the visual program state.
 Rendering that in Java would have been a slow and painful process that could have distracted us from actually implementing our core functionalities.
 Another reason for not choosing a desktop app is that we found Java UI to be visually unappealing for users.
-Finally, Java desktop applications can easily turn to unmanagable-sized projects mainly due to the fact that basic but powerful functionalities that \texttt{Html} offer would need to be reimplemented.
+Finally, Java desktop applications can easily turn to unmanageable-sized projects mainly due to the fact that basic but powerful functionalities that \texttt{Html} offer would need to be reimplemented.
 Also, the tool would end up being a complicated application that does not appeal to users which would defeat Tristan's goal of increasing the usage of debuggers among first years.
 
-Therefore, after taking all the above mentioned arguments in consideration we decided to build Deeva as a web application as we have considerably more experience in web developpment that in desktop app developpment.
+Therefore, after taking all the above mentioned arguments in consideration we decided to build Deeva as a web application as we have considerably more experience in web development that in desktop app development.
 Also, having examined Python Tutor we knew that the custom UI we wanted would be easy to do in a web front end by using well tested and well documented libraries.
 Finally, writing the project as a ``local web service" promotes a clear boundary between interface and backend allowing us to be more efficient at work on the project.
 People can work on front and back end simultaneously and allows for either of the components to be easily swapped out.
@@ -558,19 +576,27 @@ We decided to use a frontend framework having experienced how messy it was attem
 Felix had used Angular before and Hector had a some experience with Ember (two Javascript frameworks).
 Angular is less opinionated than Ember which fitted better with our slightly unusual project (not to mention Felix's greater experience) so we used Angular.
 
-Our UI includes elements that have fundamentaly differnt purposes.
+Angular turned out to work well in our application it provided useful data binding to keep the UI state up to date and we used its implementation of services for implementing our file browser but it also left us free to program outside its model unlike more restrictive frameworks.  
+
+Our UI includes elements that have fundamentally different purposes.
 The code pane where we display code needs to mimic the programming style we are used to and also has to support debugging actions (for example setting breakpoints). 
-The state pane where we graphically represent the stack and heap state has to be visually appeling and offer consistent behaviour.
+The state pane where we graphically represent the stack and heap state has to be visually appealing and offer consistent behaviour.
 Hand coding these components would have been time consuming and error prone and so, we decided to use and configure existing components in an effort of minimising the NIH Syndrome \cite{NIH}.
 
-For the code pane we used CodeMirror\cite{CodeMirror} as it is a versatile text editor for the browser that is specialised in editing code. 
-Also, it has an active community and well-documented API.
+For the code pane we used CodeMirror\cite{CodeMirror} as it is a versatile text editor for the browser that is specialised in editing code (although we did not let users edit code through the browser in Deeva).
+Although CodeMirror has many more features than we used it made what we did need to do, features like line highlighting and displaying breakpoints) very easy.
+It has an active community, a well-documented API and is used on large products including Bitbucket and Google Apps. 
 
 For the state pane which shows the graphical representation of the program state we are using D3\cite{D3} as it provides a very easy and powerful way of manipulating data using HTML, SVG and CSS. 
 Similarly to CodeMirror, D3 has an active community and a multitude of use cases.
+When implementing the state visualisation we quickly came to appreciate the power of D3.
+For example D3 allows us to bind the JSON representation of Java objects retrieved from the server to HTML div then easily add and remove divs as the user explores the object graph. 
+D3 would also have made it easy to show which objects had been updated but we did not have time to implement this.    
+Alternatives include \cmd{Rapha\"el} which only handled drawing so we would have had to implement our own update logic and 
+\cmd{chartjs} which was more like D3 but neither as supported or as general.
 
-We used Bootstrap\cite{Bootstrap} frontend framework as it provides a fast and easy way to web developpment.
-It is generally a popular choice in web developpment as it has multiple extentions and components and it was the natural choice as all of us had previous experience with it.
+We used Bootstrap\cite{Bootstrap} frontend framework as it provides a fast and easy way to web development.
+It is generally a popular choice in web development as it has multiple extensions and components and it was the natural choice as all of us had previous experience with it.
 
 For the communication architecture between the frontend and the server there are many options but the most common are SOAP/XML and REST/JSON.
 We chose to use JOSN and REST partly because it is the one that we have encountered most from the above mentioned options. 
