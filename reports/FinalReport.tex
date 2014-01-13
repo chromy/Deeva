@@ -810,8 +810,6 @@ Initially we were using HashMaps to contain state, because that would work well 
 Encapsulating the state that we wanted in POJOs meant that we could run serialisers, like \texttt{gson} (which serialises a Java Object into the JSON format) and we could deserialise the JSON on the Python side, into the Python Dictionary without any complaints.
 This method is more desirable because JSON is a public standard, so should anyone want to use our debugger library (in a different environment other than Python or Java), they would have a standard way of getting data out of our library.
 
-\todo[inline]{Talk about state data generation, object references/primitive types}
-
 \textbf{\emph{General Request Class and Event Dispatching}}\\
 This is class that clients (and in our case the Python VM via py4j) interacts with.
 We can make our requests which then forwards the request onto the inferior JVM.
