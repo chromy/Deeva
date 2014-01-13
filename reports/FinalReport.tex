@@ -142,7 +142,7 @@ As in many courses this is done diagrammatically, by showing how each line of co
 
 However this approach is not ideal.
 It is time consuming and error prone to update the diagram and worse, it requires an oracle, the instructor, to act as mechanical interpreter of the rules.
-Students have no way of graphically visualise the state of the programs they write, no easy way to see why their code does not have the effect they expect without ad-hoc experimentation: modifying the source code and hoping it exposes the original problem.
+Students have no way of graphically visualise the state of the programs they write, no easy way to see why their code does not have the effect they expect without \emph{ad hoc} experimentation: modifying the source code and hoping it exposes the original problem.
 
 Some computer tools like \cmd{Python Tutor} \cite{pythontutor} are very useful at rendering a correct visualisation of the execution trace base on a code snippet.
 
@@ -430,7 +430,7 @@ Similarly, to build Deeva, one can run {\tt pip install -r requirements.txt} and
 
 \section{Design}
 
-After the project assignment, we had our first meeting with Tristan in order to disscuss his expectations for the debugging tool along with our ideas about the project requirements.
+After the project assignment, we had our first meeting with Tristan in order to discuss his expectations for the debugging tool along with our ideas about the project requirements.
 
 We found that Tristan's motivation behind setting such a project was to have a teaching tool that can graphically represent the state of Java programs. In lectures, he uses the whiteboard to create a picture of the stack and the heap at different points in the program like you can see in Figure \ref{fig:sketch}. However, he wanted a debugger suitable for teaching with a graphical representation as the whiteboard method is time consuming and offers less consitency than a automated tool.
 Therefore, we decided to use his whiteboard sketches as the starting point for Deeva's user interface, mostly because we found his drawings intuitive and accurate.
@@ -1014,7 +1014,7 @@ The implication of this mode meant we had to change our implementation to be les
 \end{figure}
 
 After the general interviews we used a questionnaire to get answers to our most important questions.
-Specifically, we asked which of the several button designs were better and validated our ad-hoc interview conclusions about the debugger.
+Specifically, we asked which of the several button designs were better and validated our \emph{ad hoc} interview conclusions about the debugger.
 We considered using something like Amazon Mechanical Turk to get larger numbers of responses which might have been more statistically significant but it seemed silly when we had hundreds of programmers who were our exact target audience sitting next to us.
 
 
@@ -1047,22 +1047,22 @@ Happily this turned out not to be such a big issue on this project as the time-t
 In order to measure the performance of our tool we had to make sure that the Java features most likely used by first year students have the expected behaviour.
 So, we wrote a large number of small Java programs that tested fetures (like loops, arrays, \cmd{stdin}, \cmd{stdout}) independently.
 That allowed us to pick up bugs (mainly in our visual representation) in the early stages of the project.
-As we advanced, we tested Java programs that included multiple features working together (for example, array of objects, linked lists, self-refrencing).
+As we advanced, we tested Java programs that included multiple features working together (for example, array of objects, linked lists, self-referencing).
 
 \subsection{Final Evaluation}
-Our final evaluation represented a walk through our goal features and an assesment of each on of them.
+Our final evaluation represented a walk through our goal features and an assessment of each on of them.
 Below is a summary of our findings:
 
 \textbf{Minimum requirements}
 \begin{itemize}
-\item Must run in the Labs - Deeva is a tool that is mainly going to be used on the computer labs and so all the technologies used had to be available on the Lab machines. However, we can not rely on CSG to maintain our software through each update, hence, we decided to run the tool within a virtual environment. That assures that general updates of the lab machines will not brake Deeva while giving us more freedom in choosing differnt tools and technologies.
-\item Start from the command line - This was one of Tristan's requirements as he is trying to teach students to use Java from the command line and so, the debugger would need to be runnable from the command line as well. We achieved this goal and made Deeva easy to run by inputtign on the command line the name of the program to be debugged along with any arguments the program might take.
+\item Must run in the Labs - Deeva is a tool that is mainly going to be used on the computer labs and so all the technologies used had to be available on the Lab machines. However, we can not rely on CSG to maintain our software through each update, hence, we decided to run the tool within a virtual environment. That assures that general updates of the lab machines will not brake Deeva while giving us more freedom in choosing different tools and technologies.
+\item Start from the command line - This was one of Tristan's requirements as he is trying to teach students to use Java from the command line and so, the debugger would need to be runnable from the command line as well. We achieved this goal and made Deeva easy to run by inputting on the command line the name of the program to be debugged along with any arguments the program might take.
 \item Supporting all the command line switches (-ea etc) - Deeva is currently supporting only -ea and -cp switches. We decided that other switches are out of scope for our target users, and hence would have represented features that would have rarely been used but would have taken us a lot of time to implement and test.
 \item Taking command line arguments (from the gui) - This requirement was entirely implemented, our GUI being able to take arguments that would be passed to the program when restarting the debugger.
 \item Users must be able to see stdin, stdout, stderr - As we initially planned, our GUI includes a console pane that displays stdin, stdout and stderr (displayed in red). This allows user to have a similar experience as if debugging with an IDE debugger.
-\item Users must be able to see the source code - This was an esential feature that we tried to implement in the early stages of the program. The source code class is loaded in the the code pane, which is displayed using CodeMirror.
-\item Users must be able to inspect the current state of the program somehow - This is an important feature for our debugger as we wanted that students understand the workings of Java by visualising how each line influences the program state. We defenetly achieved this by implementing a pleasent and interactive graphical interface that show the links between program stack and heap.
-\item Run/Pause/Step into/Step Over - These are essential actions that had to be implemented in order to have a feasible debugger. So, this requirement was quicly added to the tool and is part of the final product.
+\item Users must be able to see the source code - This was an essentially feature that we tried to implement in the early stages of the program. The source code class is loaded in the the code pane, which is displayed using CodeMirror.
+\item Users must be able to inspect the current state of the program somehow - This is an important feature for our debugger as we wanted that students understand the workings of Java by visualising how each line influences the program state. We definitely achieved this by implementing a pleasant and interactive graphical interface that show the links between program stack and heap.
+\item Run/Pause/Step into/Step Over - These are essential actions that had to be implemented in order to have a feasible debugger. So, this requirement was quickly added to the tool and is part of the final product.
 \item Multiple Files - We wanted users to be able to visualise other files while debugging to allow for easy navigation. We implemented this feature by allowing users to switch between files in the same package by choosing the file from a dropdown menu.
 \item Breakpoints - We have achieved this goal not only by allowing breakpoints on the initially loaded source file but also by allowing the users to set breakpoints on any other file from within the package.
 \item Supports Java static methods, Objects, Arrays, Control flows, Generics, Enumerations - We are currently supporting all features needed for our stakeholders regular use including all of the mentioned ones.
@@ -1070,28 +1070,28 @@ Below is a summary of our findings:
 \end{itemize}
 
 \textbf{Extensions}
-Out of the proposed extentions we had time to implement the first two on our extention list:
+Out of the proposed extensions we had time to implement the first two on our extension list:
 \begin{enumerate}
 \item Lecture Mode - We are providing Deeva in two modes, the normal desktop mode and lecturer mode. This allows the lecturer to decouple the graphical visual from the rest of the application in order to display them on different screens.
-\item Display of state is graphical - Our tool displays the state of the stack and the heap using a graphical visualisation built in D3 that allows for easy naigation through the stack and the heap objects.
+\item Display of state is graphical - Our tool displays the state of the stack and the heap using a graphical visualisation built in D3 that allows for easy navigation through the stack and the heap objects.
 \end{enumerate}
 
 \section{Project Management}
-This project has probably been the largest and the most intricated we ever had to build.
+This project has probably been the largest and the most intricate we ever had to build.
 Along with the nature of the project, it combined three major milestones that we never had to face before (at least in combination): we are not sure what are we building, we want to make sure we deliver the software on time but we do not know how long it will take and we want to make sure the software we write is correct and useful but it is hard to define `correct' or `useful' in this context.
 
 \subsection{Agile Programming}
 
-Our software devlopment process is based on Agile programming methods because we found the approach suitable for our goals for the project.
+Our software development process is based on Agile programming methods because we found the approach suitable for our goals for the project.
 On top of helping solving the above mentioned challenges, Agile programming has sustainable methods for dealing with large, volatile projects.
 
 Firstly, it is based on iterative development, promoting tight cycles.
 Because this was a large project for which we were not sure how many features we can fit in the allocated time constrains, using one week development cycles helped us to keep track of the team's general speed and setbacks.
-For examlple, we could see in which weeks we were busy doing other courseworks and the number of implemented features in that cycle was low.
+For example, we could see in which weeks we were busy doing other courseworks and the number of implemented features in that cycle was low.
 We than could compensate by redesigning our goals for the next cycle.
 This introduces another key feature of Agile programming: flexible response to change.
 
-One of our main challanges was the uncertainty regarding the end result of the project.
+One of our main challenges was the uncertainty regarding the end result of the project.
 Hence, we required a programming style that allowed for rapid response to change as our initial plan got modified during the project execution.
 
 Finally, incremental feature development allowed us to have a basic tool working soon after the project assignment which meant we started receiving feedback from the early stages of Deeva.
@@ -1100,7 +1100,7 @@ Finally, incremental feature development allowed us to have a basic tool working
 
 To ensure effective development of the product, weekly supervisor meetings were scheduled.
 In these meetings, quality assurance was the main aim, making sure we were on the right track with our development, delivering correct features.
-This avoided unnecessary misunderstandings and extra time spent on creating unneccessary features for the product.
+This avoided unnecessary misunderstandings and extra time spent on creating unnecessary features for the product.
 
 Further to the supervisor meetings, weekly group meetings ensured that all group members are in sync about the progress and direction of the project.
 During these meetings, the information gathered from the supervisor meetings would be recapped and the targets for the upcoming week would be set.
@@ -1125,7 +1125,7 @@ To aid the management of the project on a holistic and timely perspective, sever
 
 We used Trello as our project management tool and as an Information Radiator\cite{Trello}.
 It also allows us to track our progress and average velocity.
-We decided to use Trello as it fulfills most of the key features required for such a tool: it is easy to use and update, relatively flexible and allows for communications between members without too much interruption.
+We decided to use Trello as it fulfils most of the key features required for such a tool: it is easy to use and update, relatively flexible and allows for communications between members without too much interruption.
 We decided to use an electronic version as they are a more manageable alternative to physical boards.
 We also found it extremely useful when it came to keeping everyone informed on the general progress and keeping all the information in one compact environment.
 
@@ -1155,7 +1155,7 @@ Frequently we have a task like ``Set up the back end." and one person gives a ta
 The first person thinks the task title means ``Write some stubs so the middleware can integrate." while the second thinks it means ``Implement the backend up to the minimal specification.".
 So using planing poker has already helped us make sure we're all on the same page.
 One of our group members hand-made a set of poker cards just for estimation.
-It contains the Fibonacci numbers up to 13 including 0 and infinity - if the task was unfeasible in the time given, as well as ``coffee time'' if we think we needed a break.
+It contains the Fibonacci numbers up to 13 including 0 and infinity - if the task was infeasible in the time given, as well as ``coffee time'' if we think we needed a break.
 
 \subsubsection{Facebook Group}
 Creating a Facebook group proved very efficient for communicating meeting times and general enquiries that were too conversational for Trello.
@@ -1175,11 +1175,11 @@ Travis' notifications allowed quickly brought bad commits to our attention allow
 Since Travis has to install all the dependencies each time running the tests can take up to ten minutes.
 
 \subsection{Planning}
-Planning played an esential role in the development and completion of this project mainly because of the sheer size and the hard deadline we had to commit to.
+Planning played an essential role in the development and completion of this project mainly because of the sheer size and the hard deadline we had to commit to.
 We created an initial weekly plan\ref{sec:initialplan} to coincide with the one week development cycles.
-However, during the project exectution the initial plan was slightly modified.
+However, during the project execution the initial plan was slightly modified.
 This was mainly due to the fact that we did not take into consideration that during the term there are coursework heavy weeks or there are revision/exam weeks in which we did little work on Deeva.
-Nonetheless, we roughly respected the plan we initially desiged, with slight modifications.
+Nonetheless, we roughly respected the plan we initially designed, with slight modifications.
 For example, we did not manage to work on extensions although we included it in the last cycle of the initial plan.
 
 Overall, we are satisfied with the percentage of plan completion we achieved.
@@ -1187,40 +1187,34 @@ If we were to start again, we would redesign our plan so it allows for `slow` cy
 
 \subsection{Team Member Contributions}
 
-The general group dynamics were really good, we managed to keep a light atmosphere throught the duration of the project.
+The general group dynamics were really good, we managed to keep a light atmosphere throughout the duration of the project.
 Every week, we had two official group meetings: one with Tristan and one just us.
-During these time we would disscuss the goal for the new cycle, the results of the previous cycle, the highlights of the meeting we had with Tristan and we would allocate the tasks within the next cycle.
-The allocations were mainly based on everyone's strong points so we guaranteed ourselfs the best chances of acheveing the weeks' goal.
+During these time we would discuss the goal for the new cycle, the results of the previous cycle, the highlights of the meeting we had with Tristan and we would allocate the tasks within the next cycle.
+The allocations were mainly based on everyone's strong points so we guaranteed ourselves the best chances of achieving the weeks' goal.
 Also, we tried to have at least two people assigned to each part of the project.
 This, however, did not happen throughout the whole project.
-If we were to do this again we would probably inforce this idea more strongly, luckly, this time we had no issues emerging from it.
-%\subsubsection{Kritaphat Sonsri-in}
-%\subsubsection{Xueqi Chen}
-%\subsubsection{Alina Draganescu}
-%\subsubsection{Felix de Souza}
-%\subsubsection{Hector Dearman}
-%Hector worked mostly on the backend implementing Breakpoints and the middle server layer.
+If we were to do this again we would probably enforce this idea more strongly, luckily, this time we had no issues emerging from it.
 
 We used a large number of different technologies and tools, some new to us.
 To take advantage of everyone's previous knowledge and experience we decided that Felix and Hector would mainly work on the backend while the rest of the group, Kira, Krit and Alina worked on the frontend.
-Also, our most experienced team mambers gave advice and help with other sections of the project.
+Also, our most experienced team members gave advice and help with other sections of the project.
 
-Finally, through this project we all learned the importance of thourough planning, th importance of keeping every group member updated with the current state of the project and lastly, we understood how software development practices can save lifes (and projects).
+Finally, through this project we all learned the importance of thorough planning, the importance of keeping every group member updated with the current state of the project and lastly, we understood how software development practices can save lives (and projects).
 
 \section{Extensions}
 After our initial meetings with Tristan we had a plan\ref{sec:initialplan} that included the list of basic features we wanted our debugger to have, followed by a list of extended features ranked in the order we would implement them once the core functionalities are implemented.
 
 Some of the extensions include display of the program state graphically, maximal documentation, making Deeva multi-platform or support all Java features.
-The idea of using Deeva in two different modes (lecturer mode and user mode) came to us late, but quickle became one of our top-priority extension along with displaying the program state graphically.
+The idea of using Deeva in two different modes (lecturer mode and user mode) came to us late, but quickly became one of our top-priority extension along with displaying the program state graphically.
 
-These two represented the features that in our opinion, would make Deeva a useful debugger for first year students while the rest of the extensions would not be neccessary in order to achieve that.
+These two represented the features that in our opinion, would make Deeva a useful debugger for first year students while the rest of the extensions would not be necessary in order to achieve that.
 This was  mainly because the rest of the extensions incorporate features that would make the tool an all-purpose debugger rather than being aimed at first year students which do not study some of the concepts until much later.
 
 Although not initially planned/discussed as a plausible extension, the decision to use an event-based messaging system between the multiple tiers, opened up another possibility for an extension.
 That is, not only should the lecturer be able to show the code and the current stack, but also be able to hand out a read only link that students with laptops could open and see the changes on their screen in real time.
 If we had time, we may have looked into this possibility, depending on the needs of our supervisor.
 
-To sum up, the current level of feature implementation (both core and extenstions) meet the project constrains and represent a functional debugger suitable for teaching introductory Java.
+To sum up, the current level of feature implementation (both core and extensions) meet the project constraints and represent a functional debugger suitable for teaching introductory Java.
 The rest of the extensions would build upon it in order to make it an all-purpose debugger that could support any command a IDE debugger could.
 
 
