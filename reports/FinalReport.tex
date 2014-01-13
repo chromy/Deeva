@@ -635,7 +635,38 @@ researched some possible options:
     would thoroughly recommend it if using Python is a must.
 \end{description}
 
+\textbf{Client Implementation}
 
+Aside from the bridging libraries and the web server frameworks, there was more
+to the Middleware that wasn't necessarily an integral part of the Java Debugger,
+hence may nont be included in the back-end section. This is because we could
+swap it out and use a different client, due to the implementation agnostic
+approach we took in designing our debugger. This is just one way of implementing
+a client to our class, if we were to use Java UI we could still interact with
+our Debugger class without any changes to it.
+
+We previously discussed that low resolution was a problem, especially for where
+it would be mainly used, in a teaching setting (namely Huxley 308/311) where the
+projectors have very low resolution, and even if they had higher resolution they
+would not be visible from the back. This forced us to rethink our design, and
+was also another reason for why we moved away from the initial semaphore design
+we were using. If we were able to have two separate views running, one showing
+the main interface (code and state) and another view showing the stack and heap,
+then this problem of the low resolution could be alleviated.
+
+\emph{Blinker}
+
+Enter \texttt{blinker} \cite{blinker}
+
+
+
+\todo[inline]{EventDispatcher Implementation - I/O}
+\todo[inline]{Blinker/Stack Heap view}
+\todo[inline]{Diagram showing the model - maybe it should go in the design bit}
+\todo[inline]{Data processing into a format the client was expecting}
+\todo[inline]{Loading the files}
+\todo[inline]{Starting the debugger,}
+\todo[inline]{User experience, files out of date}
 
 \subsubsection{Back End}
 \textbf{Java Virtual Machine Tools Interface (JVM TI) and the Java Debug Interface (JDI)}
@@ -658,9 +689,6 @@ The solution to this is that we submit requests for events we would like to hand
 \textbf{Deeva - Java Debugger Implementation}\\
 Our debugger is not a fully fledged one, however we believe it suffices for the scope of our project.
 It consists of mainly three parts, an Event Loop, Event Handler, and a general class that can make requests to the JVM.
-
-State, EventDispatcher (asynchronous), I/O, Error Handling
-Problems - Classpath/Sourcepath \& (Lazy loading), Thread Safety, I/O blocking,
 
 \textbf{\emph{Event Loop \& Event Handler}}\\
 The Event Loop runs in a separate thread, and it is connected to the inferior VM, listening for any requests that were submitted.
@@ -765,8 +793,8 @@ A few examples of errors that we handle are:
 \textbf{\emph{General Problems/Caveats}}\\
 As with most projects, things don't always go as planned, and we generally run into problems, the main concerns that we ran into were thread safety, (this was particularly important due to our choice of development stack), and also the way that Java did class loading and the implications it had for us.
 
-\emph{Thread Safety}
-As will be described in further detail in the \emph{Middleware} section, \texttt{py4j} and \texttt{Flask} are thread-safe, however access to objects in Java are not i.e. the Debugger class that the class will interact with needs to have synchronisation primitives.
+\emph{Thread Safety}\\
+The libraries \texttt{py4j} and \texttt{Flask} are thread-safe, however access to objects in Java are not i.e. the Debugger class that the client will interact with needs to have synchronisation primitives.
 This is because every request made by the user in the browser results in a separate thread being created to handle that request.
 Any call using \texttt{py4j} also creates a new thread to deal with that request.
 Hence $x$ requests from the browser results in $x$ threads trying to access the Debug object, and we must also take into account the Event Handler thread that writes to our Debugger class.
@@ -776,7 +804,7 @@ This is to ensure mutual exclusion and that the data is consistent between reque
 
 This is also why we had to switch from semaphore approach we described earlier, because should something go wrong, threads from Python would get stuck waiting for threads in Java to unblock, but they were blocked by some other thread etc. thus greatly complicating an already complicated thread model.
 
-\emph{Classloading}
+\emph{Classloading}\\
 A problem we encountered was when we were trying to set breakpoint, we were unable to tell beforehand whether a location of a given breakpoint was valid.
 By valid we mean that we can't breakpoint on an empty line or something that was not an executable piece of code.
 The JDI does support methods for detecting when this happens, however we can't check this until the class has been loaded.
@@ -1025,6 +1053,11 @@ Hector worked mostly on the backend implementing Breakpoints and the middle serv
 	\emph{CodeMirror}.
 	\url{http://codemirror.net/}
 
+\bibitem{blinker}
+        Jason Kirtand.
+        \emph{Blinker}
+        \url{http://pythonhosted.org/blinker/}
+
 \bibitem{jvmti}
         Wikipedia.
         \emph{Java Virtual Machine Tools Interface}
@@ -1042,6 +1075,8 @@ Hector worked mostly on the backend implementing Breakpoints and the middle serv
         \emph{Javadoc: InputStream, available()}
         \url{http://docs.oracle.com/javase/7/docs/api/java/io/InputStream.html#available()}
         2011
+
+
 \end{thebibliography}
 
 \end{document}
