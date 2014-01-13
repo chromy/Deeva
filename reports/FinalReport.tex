@@ -705,23 +705,15 @@ connection, achieving some sort of pipe functionality with streaming. We also
 define events that the browser would listen for, and on the front-end
 javascript, we define event handlers for such data.
 
-So overall, the client would open a \texttt{eventstream} connection, which in
+So overall, the browser would open a \texttt{eventstream} connection, which in
 turn would create a new subscriber to all the relevant signals as previously
 mentioned, so that when the inferior JVM emitted events which in turn cased the
 debugger to emit events (via the Event Dispatcher), which in turn sends signals
 using \texttt{blinker}, and the data would be pushed all the way from the JVM to
-the client and be processed and displayed as need be.
-
-
-
-\todo[inline]{EventDispatcher Implementation - I/O}
-\todo[inline]{SSE}
-\todo[inline]{Blinker/Stack Heap view}
-\todo[inline]{Diagram showing the model - maybe it should go in the design bit}
-\todo[inline]{Data processing into a format the client was expecting}
-\todo[inline]{Loading the files}
-\todo[inline]{Starting the debugger,}
-\todo[inline]{User experience, files out of date}
+the client and be processed and displayed as need be. By subscribing to
+different signals, we can filter the events that come through, and display
+different things based on the data received (namely have a main view and a
+stack_heap view).
 
 \subsubsection{Back End}
 \textbf{Java Virtual Machine Tools Interface (JVM TI) and the Java Debug Interface (JDI)}
