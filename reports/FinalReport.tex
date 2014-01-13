@@ -402,8 +402,10 @@ This introduced other problems like the overlapping of the code and the graphic 
 Therefore, we agreed on putting the stack and heap on the right hand side with some modification to the initial design (see figure~\ref{fig:finalDesign}).
 
 \subsubsection{Button Design}
-After conducting some interviews with users (see ~\cref{sec:evaluation}), we discovered that some people found the naming and the design of buttons very confusing in Eclipse.
-Especially the ``Step Into'', ``Step Over'' and ``Step Return'' buttons which control movement through the code.
+The essential feature of any debugger is the ability of gradual navigation through the code by using combinations of the next, step in, step out and run actions. 
+Hence, the visual representation of these actions in the UI had to be carefully considered. 
+Using buttons was the natural choice for these actions. However, choosing the buttons' design required a detailed research to find out what would appeal to our main users, first year students.
+After conducting a quick survey (see ~\cref{sec:evaluation}) on students from different years with both computing and non-computing backgrounds, we discovered that most people found the buttons names and designs in Eclipse to be very confusing.
 As a result, we designed several different sets of buttons and used a questionnaire to pick among them.
 
 \begin{figure}[h!]
@@ -419,7 +421,7 @@ They are \cmd{Step Into}, \cmd{Step Over} and \cmd{Step Return} from left to rig
 
 \begin{framed}
 \emph{A digression on the behavior of the Stepping buttons.}
-
+\todo{I don't know what exactly this box is supposed to mean.}
 Given a program counter pointing 
 \begin{description}
 \item Step Into
@@ -430,10 +432,9 @@ Given a program counter pointing
 \end{framed}
 
 
-We asked a friend who does not study Computing and who has not used a debugger before but has had exposure to programming before what he guessed each one should do.
-He could not quite figure it out just by looking at them confirming our suspicion that these are not the most intuitive of designs.
-We then explained the concept of \cmd{Step Into}, \cmd{Step Over} and \cmd{Step Return} in terms of debugging and then asked again if he thought any of them really matched the buttons.\todo{edit}
-He gave us some valuable feedback: ``It would be useful if we could somehow represent different scopes/lines so that the arrows (along with their direction) can correctly express the intended function.''
+We asked a friend who does not study Computing and has never used a debugger but had exposure to programming to guess which stepping action corresponds to which button for the Eclipse debugger.
+He found it difficult to correctly match them just by the buttons' visual design, confirming our suspicion that these are not the most intuitive of designs.
+We was then explained the concept of \cmd{Step Into}, \cmd{Step Over} and \cmd{Step Return} in terms of debugging. Asked again if he thought any of them really matched the buttons, he gave us some valuable feedback: ``It would be useful if we could somehow represent different scopes/lines so that the arrows (along with their direction) can correctly express the intended function.''
 \begin{figure}[h!]
 \centering
 \includegraphics[height=20mm,width=60mm]{buttons2.png}
@@ -445,7 +446,7 @@ Figure~\ref{fig:buttons2} represents our second design.
 As suggested by our friend, the black lines indicate the lines of code which is similar to an editor.
 Arrows going in either the upwards or downwards directions indicate going to the next line, function, or (or previous) scope.
 We created a questionnaire in which we explained the definition of ``Next", ``Into" and ``Out" (our new and hopefully more intuitive names for the functionality previously known as ``Step Into'', ``Step Over'' and ``Step Return'').
-
+\todo{section needs redesigning}
 Then we asked which of the eight button designs best represents the aforementioned functions.
 We gave out the questionnaires (see ~\cref{sec:buttonquestionnaire}) when we did the Hallway Testing (see ~\cref{sec:evaluation}) to some first year students and second year students.
 Our second set of designs were much more popular than the original design among first year students.
@@ -456,6 +457,9 @@ It was not that clear what the black lines indicate especially for experienced u
 We did however keep the new more intuitive names.
 
 \subsubsection{Colour Scheme and Font Size Design}
+One of Deeva's desired feature that would set it apart from other debuggers is a nice interface that would appeal to all of our users. 
+As our two main stakholders are students using the tool  
+Hence, the colour scheme and 
 We carried out a test and questionnaire in front of a first year Java class to see which colour scheme and font size are the most liked and most visible on the projector in the lecture hall.
 
 \begin{figure}[h!]
