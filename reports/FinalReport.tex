@@ -41,7 +41,7 @@
 
 \title{Deeva}
 \subtitle{A Java Debugger Suitable for Teaching}
-\author{Kritaphat Sonsri-in, Xueqi Chen, Hector Dearman, \\Alina Draganescu, Felix de Souza}
+\author{Kritaphat Songsri-in, Xueqi Chen, Hector Dearman, \\Alina Draganescu, Felix de Souza}
 
 \maketitle
 \thispagestyle{empty} % No page numbers on first page.
@@ -84,15 +84,15 @@ In the first year introductory Java course many students are encountering impera
 Unfortunately this attempt is hamstrung by the absence of a good Java debugger decoupled from an IDE.
 Without a good strategy to fix broken programs students quickly reinvent bad habits ranging from the awful, shotgun debugging, to the merely poor, print statements.
 
-What we want is a debugger, invokable from the command line, simple enough that students who have never seen a debugger before can taught to use it in only a few minutes but powerful enough to make tracking down a bug easy.
+What we want is a debugger, invokable from the command line, simple enough that students who have never seen a debugger before can be taught to use it in only a few minutes but powerful enough to make tracking down a bug easy.
 Deeva fills this hole in the Java ecosystem and Lab infrastructure.
 
 Deeva was designed with an additional goal in mind.
-At Imperial (as most places) students are taught imperative programming with diagrams, the lecturer draws a stack and a heap and shows how moving through the code effect the stack and the heap.
-By using a novel user interface which resembles these diagrams we make debugging more intuitive, allow lectures to easily construct and step through these diagrams live on arbitrary code without fear of mistake and, for the first time, allow students to see how code they write is run on their own time without outside help.
+At Imperial (as most places) students are taught imperative programming with diagrams, the lecturer draws a stack and a heap and shows how moving through the code affects the stack and the heap.
+By using a novel user interface which resembles these diagrams we make debugging more intuitive, allowing lecturers to easily construct and step through these diagrams live on arbitrary code without fear of mistake and, for the first time, allowing students to see how code they write is run without outside help.
 This way Deeva becomes a tool for both teaching and learning.
 
-All to many programmers, experts and beginners, never really learn to use or desire the powerful tools which already exist to introspect and modify running programs preferring instead to grovel though the source code with \cmd{printf}.
+To many programmers, experts and beginners, never really learn to use or desire the powerful tools which already exist to introspect and modify running programs preferring instead to grovel though the source code with \cmd{printf}.
 For students Deeva provides excellent introduction to these tools while also filling a vital gap in Lab infrastructure and providing a useful tool for lecturers teaching imperative programming.
 
 % What is a debugger?
@@ -113,23 +113,24 @@ For students Deeva provides excellent introduction to these tools while also fil
 
 \section{Motivation}
 \subsection{``Introduction to Imperative Programming" at Imperial}
-Around half of first year undergraduate computing students at Imperial have no previous imperative programming experience\cite{projectproposal} so the course ``Introduction to Imperative Programming" run in the first term directly after ``Introduction to Functional Programming" forms a cornerstone of the practical education students receive giving them skills they will need in almost every other course.
+Around half of first year undergraduate computing students at Imperial have no previous imperative programming experience\cite{projectproposal}. 
+The course ``Introduction to Imperative Programming" run in the first term directly after ``Introduction to Functional Programming" forms a cornerstone of the practical education students receive giving them skills they will need to use in almost every other course.
 
 The course focuses on the basics: control flow, functions and the write-compile-run cycle.
-To make teaching more effective it is desirable to avoid introducing unnecessary complexity like Object Orientation, memory management or complex IDEs all of which are left to later courses.
+To make teaching more effective it is desirable to avoid introducing unnecessary complexity like Object Orientated, memory management or complex IDEs all of which are left to later courses.
 For example, although the introductory course is now taught in Java it has previously been taught in Kenya\footnote{http://chatley.com/kenya/}, a language which acts as an imperative stepping stone to Java by allowing functions to exist outside of objects.
 
 In particular, the department does not want students to end up relying on the large complex IDE like Eclipse or IntelliJ to `magically' run the code without understanding what it does.
 So for the last two years students have been encouraged to avoid IDEs and instead use a text editor (like \cmd{vim}, \cmd{emacs} or \cmd{gedit}) and invoke the Java compiler (\cmd{javac}) and virtual machine (\cmd{java}) directly.
-Unfortunately there is a downside to this approach, as most Java debuggers are integrated into IDEs and those which are not are often of poor quality. This coupled with the relatively complex UI of debuggers in general (see our analysis below) means that there is no good option for instructors to suggest to their class.
-Students quickly encounter bugs in their programs and without a strong understanding of the language or a strategy to deal with bugs they are reduced to reinventing well known bad habits including an abundance of print statements, large try-catch blocks, making everything public or the plain wait for a miracle.
+Unfortunately there is a downside to this approach, as most Java debuggers are integrated into IDEs and those which are not are often of poor quality. This coupled with the relatively complex UI of debuggers in general (see our analysis below) means that instructors have no good option to suggest to their class.
+Students quickly encounter bugs in their programs and without a strong understanding of the language or a strategy to deal with bugs they are reduced to reinventing well known bad habits including an abundance of print statements, shotgun debugging, large try-catch blocks, making everything public or the plain wait for a miracle.
 
 To combat this problem Dr. Tristan Allwood proposed\cite{projectproposal} this third year group project to build a tool to fill this gap.
 A debugger which was: independent from an IDE, simple enough to be used by beginners but powerful enough to be useful.
 
 %%The project also had another goal which was to be a tool for teaching.
 Another main goal for this project is to be a teaching tool.
-``Introduction to Imperative Programming" teaches fundamentals including control flow and the effect of assignment and function calls, return statements, etc
+``Introduction to Imperative Programming" teaches fundamentals including control flow, the effect of assignment, function calls, return statements, etc
 \footnote{A strong mental model of programming fundamentals is very important, for example when learning to program an early, consistent grasp of assignment is predictive of eventual achievement\cite{saeed09}.}.
 As in many courses this is done diagrammatically, by showing how each line of code in a program effects the stack and heap.
 
@@ -144,7 +145,7 @@ However this approach is not ideal.
 It is time consuming and error prone to update the diagram and worse, it requires an oracle, the instructor, to act as mechanical interpreter of the rules.
 Students have no way of graphically visualise the state of the programs they write, no easy way to see why their code does not have the effect they expect without \emph{ad hoc} experimentation: modifying the source code and hoping it exposes the original problem.
 
-Some computer tools like \cmd{Python Tutor} \cite{pythontutor} are very useful at rendering a correct visualisation of the execution trace base on a code snippet.
+Some computer tools like \cmd{Python Tutor} \cite{pythontutor} are very useful, rendering a correct visualisation of the execution trace base on a code snippet.
 
 \begin{figure}[h!]
 \centering
@@ -171,10 +172,10 @@ Below is a summary of our conclusions.
 \end{figure}
 
 The Java Debugger, jdb, is a simple command line debugger that provides inspection and debugging for Java classes.
-It provides most of the basic functionalities of a debugger eg. setting breakpoint(s), stepping through the next line, and diagnosing the cause of the exception.
+It provides most of the basic functionalities of a debugger e.g. setting breakpoint(s), stepping through the next line, and diagnosing the cause of the exception.
 However, since it is a command line debugger, it provides a poor graphic user interface.
 
-Hence, jdb has the core functionalities we are looking for in a debugger but it is not supported by a good graphic representation. This makes it unintuitive for first year students, introducing the exact problem we are trying to solve.
+Hence, jdb has the core functionalities we are looking for in a debugger but it is not supported by a good graphic representation. This makes it unintuitive for first year students, the exact problem we are trying to solve.
 \subsubsection{JSwat}
 \begin{figure}[h!]
 \centering
@@ -198,9 +199,9 @@ Finally, JSwat is a tool that is closer to what we are trying to achieve but we 
 
 Eclipse allows the user to start a Java program in Debug mode which provides a control of the execution process and allows for investigation of the variable state.
 In addition, it provides a lot more functionalities than jdb, such as setting conditional breakpoints, modifying variables, friendlier graphic user interface etc.
-Nevertheless, Eclipse is an integrated IDE debugger that has a lot of features that beginner will not use.
+Nevertheless, Eclipse is an integrated IDE debugger that has a lot of features that beginners will not use.
 
-In concluion, although Eclipse is one of the most used and reliable IDEs it is not suitable for beginners as it wraps debugging in a `magical' black box which is exactly what the lecturers are trying to avoid.
+In conclusion, although Eclipse is one of the most used and reliable IDEs it is not suitable for beginners as it wraps debugging in a `magical' black box which is exactly what we are trying to avoid.
 
 \subsubsection{IntelliJ Debugger}
 \begin{figure}[h!]
@@ -210,7 +211,7 @@ In concluion, although Eclipse is one of the most used and reliable IDEs it is n
 \end{figure}
 
 Similar to Eclipse Debugger, IntelliJ Debugger is also an integrated IDE debugger which provides fast and powerful functionalities.
-Even though it also provides nice features that allow for easy object inspection, it is again overwhelming first year students.
+Even though it also provides nice features that allow for easy object inspection, it is again overwhelming for first year students.
 \subsubsection{Python Tutor}
 \begin{figure}[h!]
 \centering
@@ -239,13 +240,13 @@ The debugger is powerful enough to solve real problems.
 The debugger is intuitive enough to be easily picked up by first year students.
 \end{description}
 
-At the start of the project we produced a initial plan (for the full plan please see ~\cref{sec:initialplan}) where we broke these high level objectives down into a minimal set of concrete goals which we then had signed off by Dr. Allwood.
+At the start of the project we produced a initial plan (for the full plan please see ~\cref{sec:initialplan}) where we broke these high level objectives down into a minimal set of concrete goals which we then had signed off by our supervisor Dr. Allwood.
 
 \begin{itemize}
 \item Must run in the Labs
 \item Start from the command line
 \item Supporting all the command line switches (-ea etc)
-\item Taking command line arguments (from the gui)
+\item Taking command line arguments (from the GUI)
 \item Users must be able to see stdin, stdout, stderr
 \item Users must be able to see the source code
 \item Users must be able to inspect the current state of the program somehow
@@ -272,19 +273,22 @@ Similarly we produced a prioritised list of extensions:
 \section{Deeva}
 \subsection{Starting the program}
 Starting Deeva will be similar to how we normally start a Java program.
-To start Deeva from the command line, we simply need to execute ``./run\_deeva.py" with the class path where the Java program is in.
+To start Deeva from the command line, we simply need to execute ``deeva" followed by the Java program name.
 Additionally, if the program requires arguments, users can put arguments on the command line after the class path.
-Although after Deeva is started, if user does not want to restart Deeva, there is an option of rerun with arguments on the page which will be explained in more details later.
-Furthermore, user can enable assertion by having ``-ea" on the command line. Optionally, turning on and off the assertion switch from the page. Again, this will be explained later.
-\subsection{Run}
-After the program is started from the command line and compiled successfully, the ``Run" button can be clicked to start debugging.
-While the program is being run, the state message will be displaying: ``program running".
-If there is a break point, then the program will be paused at the point where it was set.
-At this point the state message will change to ``program paused".
-Otherwise, the program will be run through to the end and any system output will be printed out on the console.
+The user can also rerun the program changing the arguments on the page which will be explained in more detail later.
+Furthermore the user can enable assertions by adding ``-ea" on the command line. 
+Turning the assertion switch on and off can also be done within the program. 
+Again this will be explained later.
 
-Need to note that, the ``Run" button is combined with the ``continue" button.
-After the program is paused and ready to debug, user can press ``continue" button to skip to the next breakpoint or skip to the end of the program.
+\subsection{Run}
+After the program is started from the command line, the ``Run" button can be clicked to start debugging.
+While the program is being run, the state message displays: ``program running".
+If there is a break point, then the program will be paused at the point where it was set.
+The state message will change to ``program paused".
+Otherwise, the program will continue to run to the end and any system output will be printed out on the console.
+
+The ``Run" button is combined with the ``continue" button.
+After the program is paused and ready to debug, the user can press ``continue" to run to the next breakpoint or to the end of the program.
 \begin{figure}[h!]
 \centering
 \subfigure[Run]{
@@ -294,10 +298,11 @@ After the program is paused and ready to debug, user can press ``continue" butto
 \includegraphics[width=20mm]{continueBtn.png}}
 \caption{Run and Continue Button}
 \end{figure}
+
 \subsection{Breakpoints}
-Breakpoints can be set by single-clicking on the left margin of the code pane.
+Breakpoints can be set by clicking on the left margin of the code pane.
 Multiple breakpoints can be set.
-To cancel the breakpoint, single-click on the unwanted breakpoint.
+To cancel a breakpoint the user clicks on the unwanted breakpoint.
 \begin{figure}[h!]
 \centering
 \includegraphics[width=\textwidth]{breakpoint.png}
@@ -312,12 +317,13 @@ To cancel the breakpoint, single-click on the unwanted breakpoint.
 \label{fig:buttons}
 \end{figure}
 
-Like traditional IDE debugger, user is able to go to next line of code, going into a sub function and returning from a sub function by clicking on the ``Next", ``Into" and ``Out" buttons on the page respectively (see figure~\ref{fig:buttons}).
-\subsection{Warning about uncompiled programs.}
+Like a traditional IDE debugger, the user is able to go to next line of code within the same level, go into a call or return from a call by clicking on the ``Next", ``Into" and ``Out" buttons respectively (see figure~\ref{fig:buttons}).
+
+\subsection{Warning on old class files.}
 \begin{figure}[h!]
 \centering
 \includegraphics[scale=0.6]{warningFeature.png}
-\caption{Warning about Uncompiled Programs Screenshot}
+\caption{Screenshot of Old Class Files Warning}
 \label{fig:warningFeature}
 \end{figure}
 Whenever Deeva is executed from the command line with uncompiled program, the code panel will show the text similar to figure \ref{fig:warningFeature}. When this occurs, user need to compile the Java program and re-run Deeva again.
@@ -1059,7 +1065,7 @@ Below is a summary of our findings:
 \item Must run in the Labs - Deeva is a tool that is mainly going to be used on the computer labs and so all the technologies used had to be available on the Lab machines. However, we can not rely on CSG to maintain our software through each update, hence, we decided to run the tool within a virtual environment. That assures that general updates of the lab machines will not brake Deeva while giving us more freedom in choosing different tools and technologies.
 \item Start from the command line - This was one of Tristan's requirements as he is trying to teach students to use Java from the command line and so, the debugger would need to be runnable from the command line as well. We achieved this goal and made Deeva easy to run by inputting on the command line the name of the program to be debugged along with any arguments the program might take.
 \item Supporting all the command line switches (-ea etc) - Deeva is currently supporting only -ea and -cp switches. We decided that other switches are out of scope for our target users, and hence would have represented features that would have rarely been used but would have taken us a lot of time to implement and test.
-\item Taking command line arguments (from the gui) - This requirement was entirely implemented, our GUI being able to take arguments that would be passed to the program when restarting the debugger.
+\item Taking command line arguments (from the GUI) - This requirement was entirely implemented, our GUI being able to take arguments that would be passed to the program when restarting the debugger.
 \item Users must be able to see stdin, stdout, stderr - As we initially planned, our GUI includes a console pane that displays stdin, stdout and stderr (displayed in red). This allows user to have a similar experience as if debugging with an IDE debugger.
 \item Users must be able to see the source code - This was an essentially feature that we tried to implement in the early stages of the program. The source code class is loaded in the the code pane, which is displayed using CodeMirror.
 \item Users must be able to inspect the current state of the program somehow - This is an important feature for our debugger as we wanted that students understand the workings of Java by visualising how each line influences the program state. We definitely achieved this by implementing a pleasant and interactive graphical interface that show the links between program stack and heap.
@@ -1276,8 +1282,6 @@ In the end it is our firm belief that Deeva is a useful tool and we hope it intr
 \includegraphics[width=\textwidth]{questionnair2.jpg}
 \caption{An example feedback given by a user on our button designs.}
 \end{figure}
-
-\section{User Guide}
 
 \begin{thebibliography}{20}
 
