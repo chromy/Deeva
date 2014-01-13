@@ -944,16 +944,16 @@ Below is a summary of our findings:
 \begin{itemize}
 \item Must run in the Labs - Deeva is a tool that is mainly going to be used on the computer labs and so all the technologies used had to be available on the Lab machines. However, we can not rely on CSG to maintain our software through each update, hence, we decided to run the tool within a virtual environment. That assures that general updates of the lab machines will not brake Deeva while giving us more freedom in choosing differnt tools and technologies.
 \item Start from the command line - This was one of Tristan's requirements as he is trying to teach students to use Java from the command line and so, the debugger would need to be runnable from the command line as well. We achieved this goal and made Deeva easy to run by inputtign on the command line the name of the program to be debugged along with any arguments the program might take. 
-\item Supporting all the command line switches (-ea etc)
-\item Taking command line arguments (from the gui)
-\item Users must be able to see stdin, stdout, stderr
-\item Users must be able to see the source code
-\item Users must be able to inspect the current state of the program somehow
-\item Run/Pause/Step into/Step Over
-\item Multiple Files
-\item Breakpoints
-\item Supports Java static methods, Objects, Arrays, Control flows, Generics, Enumerations
-\item Minimal Documentation (--help, README, small user guide, etc)
+\item Supporting all the command line switches (-ea etc) - Deeva is currently supporting only -ea and -cp switches. We decided that other switches are out of scope for our target users, and hence would have represented features that would have rarely been used but would have taken us a lot of time to implement and test.
+\item Taking command line arguments (from the gui) - This requirement was entirely implemented, our GUI being able to take arguments that would be passed to the program when restarting the debugger.
+\item Users must be able to see stdin, stdout, stderr - As we initially planned, our GUI includes a console pane that displays stdin, stdout and stderr (displayed in red). This allows user to have a similar experience as if debugging with an IDE debugger.
+\item Users must be able to see the source code - This was an esential feature that we tried to implement in the early stages of the program. The source code class is loaded in the the code pane, which is displayed using CodeMirror.
+\item Users must be able to inspect the current state of the program somehow - This is an important feature for our debugger as we wanted that students understand the workings of Java by visualising how each line influences the program state. We defenetly achieved this by implementing a pleasent and interactive graphical interface that show the links between program stack and heap. 
+\item Run/Pause/Step into/Step Over - These are essential actions that had to be implemented in order to have a feasible debugger. So, this requirement was quicly added to the tool and is part of the final product.
+\item Multiple Files - We wanted users to be able to visualise other files while debugging to allow for easy navigation. We implemented this feature by allowing users to switch between files in the same package by choosing the file from a dropdown menu.
+\item Breakpoints - We have achieved this goal not only by allowing breakpoints on the initially loaded source file but also by allowing the users to set breakpoints on any other file from within the package.
+\item Supports Java static methods, Objects, Arrays, Control flows, Generics, Enumerations - We are currently supporting all features needed for our stakeholders regular use including all of the mentioned ones.  
+\item Minimal Documentation (--help, README, small user guide, etc) - Our tool does not currently have a well defined user guide. This was mainly due to time constrains and we are intending to incorporate a user guide with the deployed tool.
 \end{itemize}
 
 \textbf{Extensions}
