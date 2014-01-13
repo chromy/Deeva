@@ -432,7 +432,7 @@ Similarly, to build Deeva, one can run {\tt pip install -r requirements.txt} and
 
 After the project assignment, we had our first meeting with Tristan in order to discuss his expectations for the debugging tool along with our ideas about the project requirements.
 
-We found that Tristan's motivation behind setting such a project was to have a teaching tool that can graphically represent the state of Java programs. In lectures, he uses the whiteboard to create a picture of the stack and the heap at different points in the program like you can see in Figure \ref{fig:sketch}. However, he wanted a debugger suitable for teaching with a graphical representation as the whiteboard method is time consuming and offers less consitency than a automated tool.
+We found that Tristan's motivation behind setting such a project was to have a teaching tool that can graphically represent the state of Java programs. In lectures, he uses the whiteboard to create a picture of the stack and the heap at different points in the program like you can see in Figure \ref{fig:sketch}. However, he wanted a debugger suitable for teaching with a graphical representation as the whiteboard method is time consuming and offers less consistency than a automated tool.
 Therefore, we decided to use his whiteboard sketches as the starting point for Deeva's user interface, mostly because we found his drawings intuitive and accurate.
 
 \begin{figure}[h!]
@@ -442,7 +442,7 @@ Therefore, we decided to use his whiteboard sketches as the starting point for D
 \label{fig:sketch}
 \end{figure}
 
-To avoid the costly mistake of spending a lot of time designing and building a UI that we may not use for the final product we decided to create a mocked front end design that satisfies both our and Tristan's requirements. We acheived this by disscussing differnet approaches with Tristan, sketching them on the whteboard and the transposing the idea in a Google Doc mockup (Figure~\ref{fig:mockup}).
+To avoid the costly mistake of spending a lot of time designing and building a UI that we may not use for the final product we decided to create a mocked front end design that satisfies both our and Tristan's requirements. We achieved this by discussing different approaches with Tristan, sketching them on the whiteboard and the transposing the idea in a Google Doc mockup (Figure~\ref{fig:mockup}).
 
 \begin{figure}[h!]
 \centering
@@ -461,10 +461,10 @@ As a result, we decided to test our mockups on the lecture room screens after ea
 
 Each component of the user interface was built to represents core features of the project, like the ability to view the source code or the possibility of reading from \texttt{stdin}.
 
-The UI is esentially divided into two large parts.
+The UI is essentially divided into two large parts.
 On the left hand side there is a tab-like bar that enables the user to easily add or remove program arguments, a series of buttons representing the main debugging actions (run, stop, next, step into, step out), a dropw-down list that displays all the available classes from the package that could be loaded in the code pane and finally the code pane that displays the source code or the previously selected class.
 
-On the right hand side there is a console input/output area that allows for comunication with \texttt{stdin}, \texttt{stdout} and \texttt{stderr}. The rest of the space is filled by the graphical representation of the current stack and heap state.
+On the right hand side there is a console input/output area that allows for communication with \texttt{stdin}, \texttt{stdout} and \texttt{stderr}. The rest of the space is filled by the graphical representation of the current stack and heap state.
 
 \subsubsection{UI Design}
 \begin{figure}[h!]
@@ -478,7 +478,7 @@ On the right hand side there is a console input/output area that allows for comu
 \caption{Different views of the UI designs}
 \end{figure}
 
-Initially, we considered a few different posibilities for the UI design in order to find the one that would be most suitable for regular use. We considered the pros and cons of all of them before deciding on the final design version. Here are some of the ideas we considered:
+Initially, we considered a few different possibilities for the UI design in order to find the one that would be most suitable for regular use. We considered the pros and cons of all of them before deciding on the final design version. Here are some of the ideas we considered:
 
 After discussing with Tristan, we thought that if we put the stack and the heap visual at the bottom of the page we could better manage scenarios like small screens, a large heap and large arrays.
 As a result, we modified our UI design to be similar to the figure~\ref{fig:designIdea2}.\\
@@ -489,7 +489,7 @@ As a result, we modified our UI design to be similar to the figure~\ref{fig:desi
 \label{fig:finalDesign}
 \end{figure}
 
-However, we discovered that when the stack grows larger the user would need to scroll up and down between the source code and the graphical representation which we considered to be a major unconvenience when using Deeva regularly.
+However, we discovered that when the stack grows larger the user would need to scroll up and down between the source code and the graphical representation which we considered to be a major inconvenience when using Deeva regularly.
 In order to solve this problem we considered making the code pane fixed to the top of the screen so it is visible even when scrolling.
 This introduced other problems like the overlapping of the code and the graphic display.
 Therefore, we agreed on putting the stack and heap on the right hand side with some modification to the initial design (see figure~\ref{fig:finalDesign}).
@@ -533,15 +533,15 @@ Our second set of designs were much more popular than the original design among 
 However, most of the second year students chose the original Eclipse design, one of them explaining that they had already used Eclipse and so, they were used to the original button design.
 
 After discussing with our project supervisor we decided to adopt a button design that is consistent with the Eclipse design.
-He pointed out that for experienced debuggers our second design would be confusing as it is an unseen choice for debugger bottons.
+He pointed out that for experienced debuggers our second design would be confusing as it is an unseen choice for debugger buttons.
 Additionally, we expect our users to eventually become proficient in using the Eclipse and other debuggers, so we did not want to create a whole new design vocabulary that they would soon have to relearn.
 We did however keep the new more intuitive names.
 
 \subsubsection{Colour Scheme and Font Size Design}
 One of Deeva's desired feature that would set it apart from other debuggers is a nice interface that would appeal to all of our users.
-As our two main stakholders are students using the tool themselves on the lab machine and students observing the lecturer using the tool on the lecture room screens, we had to cater for different visual requirements, including choosing the right color scheme and font design.
+As our two main stakeholders are students using the tool themselves on the lab machine and students observing the lecturer using the tool on the lecture room screens, we had to cater for different visual requirements, including choosing the right colour scheme and font design.
 
-When choosing the color scheme we considered a set of diferent issues, for example, the colours should not be to tiring for the student that is using it for his personal use and is close to the screen, the color scheme has to be visible to all students including those with some form of visual impairment or the scheme used has to subconsciously keep the users interested.
+When choosing the colour scheme we considered a set of different issues, for example, the colours should not be to tiring for the student that is using it for his personal use and is close to the screen, the colour scheme has to be visible to all students including those with some form of visual impairment or the scheme used has to subconsciously keep the users interested.
 Similarly, the font sizes had to be suitable for both stakeholders.
 
 We carried out a questionnaire on the first year Java class to see which colour scheme and font size are the most liked and most visible on the projector in the lecture hall.
@@ -549,7 +549,7 @@ We carried out a questionnaire on the first year Java class to see which colour 
 \begin{figure}[h!]
 \centering
 \includegraphics[height=50mm,width=100mm]{lectureHall.jpg}
-\caption{Font size and colourscheme test in first year lecture.}
+\caption{Font size and colour scheme test in first year lecture.}
 \end{figure}
 
 Given 5 different colour schemes, the preferred choice was our current colour scheme (orange), followed by a light blue color scheme (see figure~\ref{fig:colours}).
@@ -565,7 +565,7 @@ As some people expressed that they would like the possibility to personalise Dee
 
 However, this is not a priority as we are more concerned with implementing more functionality rather than a personalised UI design.
 
-For font size, we provided 2 samples.
+For font size, we provided two samples.
 Sample 1 had a font size of 26px and Sample 2 had a font size of 16px.
 \begin{figure}[h!]
 \centering
@@ -1202,7 +1202,7 @@ Also, our most experienced team members gave advice and help with other sections
 Finally, through this project we all learned the importance of thorough planning, the importance of keeping every group member updated with the current state of the project and lastly, we understood how software development practices can save lives (and projects).
 
 \section{Extensions}
-After our initial meetings with Tristan we had a plan\ref{sec:initialplan} that included the list of basic features we wanted our debugger to have, followed by a list of extended features ranked in the order we would implement them once the core functionalities are implemented.
+After our initial meetings with Tristan we had a plan\ref{sec:initialplan} that included the list of basic features we wanted our debugger to have, followed by a list of extended features ranked in the orde§r we would implement them once the core functionalities are implemented.
 
 Some of the extensions include display of the program state graphically, maximal documentation, making Deeva multi-platform or support all Java features.
 The idea of using Deeva in two different modes (lecturer mode and user mode) came to us late, but quickly became one of our top-priority extension along with displaying the program state graphically.
