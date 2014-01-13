@@ -855,9 +855,10 @@ Trying to process the source ourselves to determine which lines are okay, probab
 \label{sec:evaluation}
 We used a number of techniques to evaluate Deeva.
 We used some techniques to help us find or fix specific problems and we used others to make sure that we were on the right track building the right things.
-\subsection{Usability Testing}
+\subsection{Mechanisms}
+\subsubsection{Usability Testing}
 
-\subsubsection{Hallway Testing}
+\textbf{Hallway Testing}
 \begin{figure}[h!]
 \centering
 \subfigure{%
@@ -869,14 +870,15 @@ We used some techniques to help us find or fix specific problems and we used oth
 \label{fig:hallway}
 \end{figure}
 
-We employed a hallway testing approach when it came to evaluating the usability of our debugger, by getting the first year students (our primary stakeholders) and some second year students to demo our project and tell us their first impressions and what they were expecting (see figure~\ref{fig:hallway}). This was beneficial because as the developers, we are aware of the caveats and may subliminally navigate around them.
+We employed a hallway testing approach when it came to evaluating the usability of our debugger, by getting the first year students (our primary stakeholders) and some second year students to demo our project and tell us their first impressions and what they were expecting (see figure~\ref{fig:hallway}). 
+This was beneficial because as developers, we are aware of the caveats and may subliminally navigate around them.
 Using the feedback from first year students allowed us to identify critical bugs/pitfalls in our usability design.
-This was obviously more qualitative however we used some measures (like how many times they had to ask questions) to help quantify things such as how intuitive the interface was or feature complete it was.
+This was obviously more qualitative, however, we used some measures (like how many times they had to ask questions) to help quantify things such as how intuitive the interface was or feature complete it was.
 On average, the people who participated in the testing asked around 1-3 questions related to basic features like how to run Deeva or how to set a breakpoint.
 This was insightful as we are aiming to make Deeva as intuitive as possible so we minimise the need to consult the help menu.
 This helped mainly with our first use case which is students using Deeva on the lab machines.
 
-\subsubsection{Quantified testing of colour schemes and font sizes}
+\textbf{Quantified testing of colour schemes and font sizes}
 We wanted to employ the use of A/B testing to assess how effective certain colour schemes and font sizes would be.
 However we had to make a compromise, because the environment and number of users that we could get in one room simultaneously meant that we had to do it in one sitting i.e. we could not force half the users in the room see one colour scheme and the other half see a different colour scheme.
 So in the end we just conducted a poll so they could pick which colour scheme and font size they liked the best.
@@ -887,7 +889,7 @@ An example of this is that the projectors’ resolution in the lecture room is s
 Hence, we may need to have a separate mode which shows just the stack and the heap.
 The implication of this mode meant we had to change our implementation to be less monolithic.
 
-\subsubsection{Questionnaire}
+\textbf{Questionnaire}
 \begin{figure}[h!]
 \centering
 \subfigure{%
@@ -899,19 +901,19 @@ The implication of this mode meant we had to change our implementation to be les
 \end{figure}
 
 After the general interviews we used a questionnaire to get answers to our most important questions.
-Specifically we asked which of the several button designs were better and validated our ad-hoc interview conclusions about the debugger.
+Specifically, we asked which of the several button designs were better and validated our ad-hoc interview conclusions about the debugger.
 We considered using something like Amazon Mechanical Turk to get larger numbers of responses which might have been more statistically significant but it seemed silly when we had hundreds of programmers who were our exact target audience sitting next to us.
 
 
-\subsection{Performance Testing}
+\subsubsection{Performance Testing}
 We also used a few other metrics, some custom and some off-the-shelf which could be automatically run over the repository to measure specific aspects of Deeva’s performance.
 
-\subsubsection{Time to First Request}
+\textbf{Time to First Request}
 
 \begin{figure}[h!]
 \centering
 \includegraphics[width=100mm]{timeToFirstRequest.png}
-\caption{Custom D3 graph displaying  time to first request}
+\caption{Custom D3 graph displaying time to first request}
 \label{fig:timeToFirstRequest}
 \end{figure}
 
@@ -927,6 +929,45 @@ This graph allowed us to see when a commit increased the time-to-first-request, 
 
 Happily this turned out not to be such a big issue on this project as the time-to-first-request quickly stabilised and did not increase dramatically.
 
+\textbf{Java Feature Testing}
+
+In order to measure the performance of our tool we had to make sure that the Java features most likely used by first year students have the expected behaviour.
+So, we wrote a large number of small Java programs that tested fetures (like loops, arrays, \cmd{stdin}, \cmd{stdout}) independently. 
+That allowed us to pick up bugs (mainly in our visual representation) in the early stages of the project.
+As we advanced, we tested Java programs that included multiple features working together (for example, array of objects, linked lists, self-refrencing).
+
+\subsection{Final Evaluation}
+Our final evaluation represented a walk through our goal features and an assesment of each on of them.
+Below is a summary of our findings:
+
+\textbf{Minimum requirements}
+\begin{itemize}
+\item Must run in the Labs - Deeva is a tool that is mainly going to be used on the computer labs and so all the technologies used had to be available on the Lab machines. However, we can not rely on CSG to maintain our software through each update, hence, we decided to run the tool within a virtual environment. That assures that general updates of the lab machines will not brake Deeva while giving us more freedom in choosing differnt tools and technologies.
+\item Start from the command line - This was one of Tristan's requirements as he is trying to teach students to use Java from the command line and so, the debugger would need to be runnable from the command line as well. We achieved this goal and made Deeva easy to run by inputtign on the command line the name of the program to be debugged along with any arguments the program might take. 
+\item Supporting all the command line switches (-ea etc)
+\item Taking command line arguments (from the gui)
+\item Users must be able to see stdin, stdout, stderr
+\item Users must be able to see the source code
+\item Users must be able to inspect the current state of the program somehow
+\item Run/Pause/Step into/Step Over
+\item Multiple Files
+\item Breakpoints
+\item Supports Java static methods, Objects, Arrays, Control flows, Generics, Enumerations
+\item Minimal Documentation (--help, README, small user guide, etc)
+\end{itemize}
+
+\textbf{Extensions}
+\begin{enumerate}
+\item Lecture Mode
+\item Display of state is graphical
+\item Pictures of previous state and current state for comparison
+\item Conditional breakpoints
+\item Watch points
+\item Multi-platform (OSX, Linux, Windows)
+\item Maximal Documentation
+\item Support all of Java features (Threads etc)
+\end{enumerate}
+  
 \section{Project Management}
 This project has probably been the largest and the most intricated we ever had to build.
 Along with the nature of the project, it combined three major milestones that we never had to face before (at least in combination): we are not sure what are we building, we want to make sure we deliver the software on time but we do not know how long it will take and we want to make sure the software we write is correct and useful but it is hard to define `correct' or `useful' in this context.
