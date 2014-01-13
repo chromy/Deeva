@@ -397,13 +397,13 @@ As a result, we modified our UI design to be similar to the figure~\ref{fig:desi
 \end{figure}
 
 However, we discovered that when the stack grows larger the user would need to scroll up and down between the source code and the graphical representation which we considered to be a major unconvenience when using Deeva regularly.
-In order to solve this problem we considered making the code pane fixed to the top of the screen so it is visible even when scrolling. 
-This introduced other problems like the overlapping of the code and the graphic display. 
+In order to solve this problem we considered making the code pane fixed to the top of the screen so it is visible even when scrolling.
+This introduced other problems like the overlapping of the code and the graphic display.
 Therefore, we agreed on putting the stack and heap on the right hand side with some modification to the initial design (see figure~\ref{fig:finalDesign}).
 
 \subsubsection{Button Design}
-The essential feature of any debugger is the ability of gradual navigation through the code by using combinations of the next, step in, step out and run actions. 
-Hence, the visual representation of these actions in the UI had to be carefully considered. 
+The essential feature of any debugger is the ability of gradual navigation through the code by using combinations of the next, step in, step out and run actions.
+Hence, the visual representation of these actions in the UI had to be carefully considered.
 Using buttons was the natural choice for these actions. However, choosing the buttons' design required a detailed research to find out what would appeal to our main users, first year students.
 After conducting a quick survey (see ~\cref{sec:evaluation}) on students from different years with both computing and non-computing backgrounds, we discovered that most people found the buttons names and designs in Eclipse to be very confusing.
 As a result, we designed several different sets of buttons and used a questionnaire to pick among them.
@@ -422,7 +422,7 @@ They are \cmd{Step Into}, \cmd{Step Over} and \cmd{Step Return} from left to rig
 \begin{framed}
 \emph{A digression on the behavior of the Stepping buttons.}
 \todo{I don't know what exactly this box is supposed to mean.}
-Given a program counter pointing 
+Given a program counter pointing
 \begin{description}
 \item Step Into
 \item Step Over
@@ -457,10 +457,10 @@ It was not that clear what the black lines indicate especially for experienced u
 We did however keep the new more intuitive names.
 
 \subsubsection{Colour Scheme and Font Size Design}
-One of Deeva's desired feature that would set it apart from other debuggers is a nice interface that would appeal to all of our users. 
+One of Deeva's desired feature that would set it apart from other debuggers is a nice interface that would appeal to all of our users.
 As our two main stakholders are students using the tool themselves on the lab machine and students observing the lecturer using the tool on the lecture room screens, we had to cater for different visual requirements, including choosing the right color scheme and font design.
 
-When choosing the color scheme we considered a set of diferent issues, for example, the colours should not be to tiring for the student that is using it for his personal use and is close to the screen, the color scheme has to be visible to all students including those with some form of visual impairment or the scheme used has to subconsciously keep the users interested. 
+When choosing the color scheme we considered a set of diferent issues, for example, the colours should not be to tiring for the student that is using it for his personal use and is close to the screen, the color scheme has to be visible to all students including those with some form of visual impairment or the scheme used has to subconsciously keep the users interested.
 Similarly, the font sizes had to be suitable for both stakeholders.
 
 We carried out a questionnaire on the first year Java class to see which colour scheme and font size are the most liked and most visible on the projector in the lecture hall.
@@ -506,19 +506,19 @@ A Javascript frontend using Angular, Codemirror and D3, a Java backend using the
 
 \subsection{Deciding on a Web Front End}
 From the beginning of this project we knew that the tool would need a graphical interface and so, we were faced with a difficult decision.
-The obvious approach was a classic monolithic Java application\footnote{Java being the natural choice since it was the target language}, however, this had some disadvantages. 
+The obvious approach was a classic monolithic Java application\footnote{Java being the natural choice since it was the target language}, however, this had some disadvantages.
 
 Firstly, we all have limited experience with desktop GUI programs which meant that it would have been more difficult for us to achieve our projects' goal state.
-Secondly, we knew we would need a lot of custom code for drawing the visual program state. 
-Rendering that in Java would have been a slow and painful process that could have distracted us from actually implementing our core functionalities. 
+Secondly, we knew we would need a lot of custom code for drawing the visual program state.
+Rendering that in Java would have been a slow and painful process that could have distracted us from actually implementing our core functionalities.
 Another reason for not choosing a desktop app is that we found Java UI to be visually unappealing for users.
-Finally, Java desktop applications can easily turn to unmanagable-sized projects mainly due to the fact that basic but powerful functionalities that \texttt{Html} offer would need to be reimplemented. 
+Finally, Java desktop applications can easily turn to unmanagable-sized projects mainly due to the fact that basic but powerful functionalities that \texttt{Html} offer would need to be reimplemented.
 Also, the tool would end up being a complicated application that does not appeal to users which would defeat Tristan's goal of increasing the usage of debuggers among first years.
 
 Therefore, after taking all the above mentioned arguments in consideration we decided to build Deeva as a web application as we have considerably more experience in web developpment that in desktop app developpment.
 Also, having examined Python Tutor we knew that the custom UI we wanted would be easy to do in a web front end by using well tested and well documented libraries.
-Finally, writing the project as a ``local web service" promotes a clear boundary between interface and backend allowing us to be more efficient at work on the project. 
-People can work on front and back end simultaneously and allows for either of the components to be easily swapped out. 
+Finally, writing the project as a ``local web service" promotes a clear boundary between interface and backend allowing us to be more efficient at work on the project.
+People can work on front and back end simultaneously and allows for either of the components to be easily swapped out.
 Also, the decoupling between the frontend and backend component became important when mid way through the project we realised that the lecture room projectors have a low resolution that do not allow for the code and the graphical visual to fit on the same screen.
 The solution to this problem became very simple as it only requires to build a customed view for the projectors and connect it to the backend without any additional modifications.
 
@@ -663,13 +663,59 @@ we were using. If we were able to have two separate views running, one showing
 the main interface (code and state) and another view showing the stack and heap,
 then this problem of the low resolution could be alleviated.
 
-\emph{Blinker}
+\textbf{\emph{Blinker, Event Dispatching, Event Stream, Server-Sent Events}}
 
-Enter \texttt{blinker} \cite{blinker}
+To achieve this we needed a way for multiple clients (be it objects/threads
+etc.) to simultaneously get data from the debugger. This couldn't happen with
+the semaphore approach, since we could only deal with one request at a time, and
+also the requests are independent of each other and are unaware of each other.
+
+Enter \texttt{blinker} ``Blinker provides fast \& simple object-to-object and
+broadcast signaling for Python objects.'' \cite{blinker}. This allows us to
+define signals/events, and also subscribers that would subscribe to these
+events, similar to the Publish-Subscribe model. This ties in with the Event
+Dispatcher that was previously aforementioned, when the inferior JVM emits an
+event, which then gets handled by our Debugger, which then calls methods defined
+in the Dispatcher passed whilst being created. Our implementation of the
+\texttt{DeevaEventDispatcher} then sends a signal using \texttt{blinker} to all
+those who are listening/subscribed.
+
+The idea is that due to the asynchronous nature of the debugger, each view gets
+data pushed to it via some event stream, containing the relevant bits of data as
+and when it happens. Each view can get this data pushed to it by subscribing to
+the relevant signals that the EventDispatcher defined, e.g. a stack/heap view
+would only subscribe to events pertaining to the stack/heap and also control
+events that determine the state of the debugger.
+
+So currently we have a way of getting a stream of data that the debugger is
+outputting, and we can have multiple listeners, however, how can we push this to
+the client browser? There were two possible options that we considered with
+regards to server-to-client push in real time: Websockets and Server-Sent
+Events.
+
+We have had previous experience with Websockets, which was useful for providing
+real time functionality in both directions, however it required a complicated
+setup, and seemed overkill. Also client-to-server needn't happen in real time
+and could be handled with just simple \texttt{POST} requests.
+
+This is where Server-Sent Events (SSE) come into play, this technology keeps the
+connection between the browser and the server open so that the server can just
+continually write more and more data in one go without ever closing the
+connection, achieving some sort of pipe functionality with streaming. We also
+define events that the browser would listen for, and on the front-end
+javascript, we define event handlers for such data.
+
+So overall, the client would open a \texttt{eventstream} connection, which in
+turn would create a new subscriber to all the relevant signals as previously
+mentioned, so that when the inferior JVM emitted events which in turn cased the
+debugger to emit events (via the Event Dispatcher), which in turn sends signals
+using \texttt{blinker}, and the data would be pushed all the way from the JVM to
+the client and be processed and displayed as need be.
 
 
 
 \todo[inline]{EventDispatcher Implementation - I/O}
+\todo[inline]{SSE}
 \todo[inline]{Blinker/Stack Heap view}
 \todo[inline]{Diagram showing the model - maybe it should go in the design bit}
 \todo[inline]{Data processing into a format the client was expecting}
