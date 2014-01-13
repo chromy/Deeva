@@ -284,6 +284,7 @@ Similarly we produced a prioritised list of extensions:
 
 \subsection{Stack Heap}
 \subsection{Expansion}
+
 \subsection{Arguments}
 \begin{figure}[h!]
 \centering
@@ -291,17 +292,22 @@ Similarly we produced a prioritised list of extensions:
 \caption{Arguments Feature Screenshot}
 \label{fig:argumentFeature}
 \end{figure}
+Not only Deeva allows argument to be passed when starting from the command line, but it also allow arguments to be passed from the front-end.
+Figure \ref{fig:argumentFeature} shows that arguments can be easily passed into the input box. Notice that argument can be passed with space under a single or double quote e.g. ``Arguments with space".
+
 \subsection{Assertion}
 \begin{figure}[h!]
 \centering
 \subfigure[Assertions Disabled]{
-\includegraphics{falseAssertionFeature.png}}
+\includegraphics{falseAssertionFeature.png}
+\label{fig:assertionFeature}}
 \quad
 \subfigure[Assertions Enabled]{
-\includegraphics{trueAssertionFeature.png}
-\label{fig:argumentFeature}}
+\includegraphics{trueAssertionFeature.png}}
 \caption{Different states of Assertions}
 \end{figure}
+Another nice feature about Deeva is that it allow assertion(s) to be ignored when Deeva executing a assertion statement.
+In other word, when the {\tt Assertion} panel is disabled like in figure \ref{fig:assertionFeature}, Deeva will simply ignore the condition under the assertion statement.
 
 \subsection{Stdin/Stdout/Stderr}
 \subsection{Stop}
@@ -312,10 +318,20 @@ Similarly we produced a prioritised list of extensions:
 \includegraphics[scale=0.5]{notRunningCurrentStateFeature.png}}
 \quad
 \subfigure[Current State is ``Program paused"]{
-\includegraphics[scale=0.5]{pausedCurrentStateFeature.png}
-\label{fig:argumentFeature}}
+\includegraphics[scale=0.5]{pausedCurrentStateFeature.png}}
 \caption{Different states of Current State}
+\label{fig:stateFeature}
 \end{figure}
+Deeva can be in different states when debugging a program. The current state of Deeva is shown in the header of the front-end next to Deeva header. Each states is described in more detail below.
+\subsubsection{Program not running}
+This state indicates that Deeva is just executed from the command line and program is not running yet. In this state, user can inspect various files and set breakpoints accordingly. 
+\subsubsection{Program is running}
+When user runs the program, Deeva is in the running state until it reaches a breakpoint, waiting for Input, or the program is terminated.
+Sometimes, it is hardly seen that Deeva is in running state as program executed and reach paused state very quickly.
+\subsubsection{Program paused}
+Once Deeva reached a breakpoint, it is in paused state. During this state, user may choose various actions e.g. run program, execute next line, or even inspect the current state of the stack and heap.
+\subsubsection{Awaiting I/O}
+Since Deeva also supports stdIn/stdOut, Deeva is in this state when the program is awaiting for input from the console.
 
 \subsection{Multiple Files}
 \begin{figure}[h!]
@@ -324,6 +340,7 @@ Similarly we produced a prioritised list of extensions:
 \caption{Multiple Files Feature Screenshot}
 \label{fig:multipleFile}
 \end{figure}
+Deeva supports multiple Java files as well as multiple packages. From figure \ref{fig:multipleFile}, the panel that allows different packages or files to be shown is just above the code panel. User can choose to inspect or set breakpoint(s) in any files. However, notice that only those breakpoints in the files that is called by the main class will be stopped at.
 
 \subsection{Server Quit}
 \begin{figure}[h!]
@@ -332,6 +349,7 @@ Similarly we produced a prioritised list of extensions:
 \caption{Server Quit Screenshot}
 \label{fig:quitFeature}
 \end{figure}
+Whenever Deeva server is terminated, the front-end will be able to notice it and the modal just like in figure \ref{fig:quitFeature} will be shown. This feature allows user to be noticed that the back-end is terminated and hence, he or she should not continue to debug or expect the correct behaviour.
 
 \subsection{Deeva in the Labs}
 \todo{??}
