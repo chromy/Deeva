@@ -691,8 +691,17 @@ This is to ensure mutual exclusion and that the data is consistent between reque
 This is also why we had to switch from semaphore approach we described earlier, because should something go wrong, threads from Python would get stuck waiting for threads in Java to unblock, but they were blocked by some other thread etc. thus greatly complicating an already complicated thread model.
 
 \emph{Classloading}
-\todo[inline]{Talk about class loading}
+A problem we encountered was when we were trying to set breakpoint, we were unable to tell beforehand whether a location of a given breakpoint was valid.
+By valid we mean that we can't breakpoint on an empty line or something that was not an executable piece of code.
+The JDI does support methods for detecting when this happens, however we can't check this until the class has been loaded.
+Without any source code processing, the best thing we could do were to save the breakpoints in a map and attempt to set them, should we have a \texttt{ClassNotLoadedException}, we can save that breakpoint to apply later.
 
+This is mainly due to how Java works. It doesn't load all the classes that would be needed at the same time, it lazy loads them (i.e. as when and they are referenced/needed).
+Also it is not advised to force class loading, especially as some programs can dynamically modify the classpath at runtime.
+Another reason is that Java also supports custom class loaders, so we may not even be able to force load a class, as it has been defined by a custom class loader of which we can't determine how it loads classes before.
+
+Considering the scope of our project, it may have been safe to assume that first year students who require a simple debugger wouldn't necessarily be using custom class loaders.
+Trying to process the source ourselves to determine which lines are okay, probably would have meant invoking the compiler, or trying to decompile class files and look at the mapping or something along those lines, which would have added greater complexity to our project which is currently out of scope, (however this would make an interesting extension and add to the user experience).
 
 \section{Evaluation}
 \label{sec:evaluation}
