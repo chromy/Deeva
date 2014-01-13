@@ -538,12 +538,18 @@ The code pane where we display code needs to mimic the programming style we are 
 The state pane where we graphically represent the stack and heap state has to be visually appeling and offer consistent behaviour.
 Hand coding these components would have been time consuming and error prone and so, we decided to use and configure existing components in an effort of minimising the NIH Syndrome \cite{NIH}.
 
-For the code pane we used CodeMirror\cite{CodeMirror} and we built the state pane using D3 we chose these libraries over alternatives because they are both active projects with good documentation. 
+For the code pane we used CodeMirror\cite{CodeMirror} as it is a versatile text editor for the browser that is specialised in editing code. 
+Also, it has an active community and well-documented API.
+
+For the state pane which shows the graphical representation of the program state we are using D3\cite{D3} as it provides a very easy and powerful way of manipulating data using HTML, SVG and CSS. 
+Similarly to CodeMirror, D3 has an active community and a multitude of use cases.
+
+We used Bootstrap\cite{Bootstrap} frontend framework as it provides a fast and easy way to web developpment.
+It is generally a popular choice in web developpment as it has multiple extentions and components and it was the natural choice as all of us had previous experience with it.
 
 For the communication architecture between the frontend and the server there are many options but the most common are SOAP/XML and REST/JSON.
-We choose to use JOSN and REST partly because it is what we are most used each of us having encountered it at some point in the past but also because it is simpler SOAP/XML and now the defacto standard for new web applications.
-
-This was a good decision, \todo{Talk about outcome}.
+We chose to use JOSN and REST partly because it is the one that we have encountered most from the above mentioned options. 
+Also, it is simpler than SOAP/XML and is now the de facto standard for new web applications.
 
 \subsubsection{Middleware}
 We considered using Java for the server layer which would have drastically simplify the design but in the end (despite trying several) could not find a Java web framework and server that was lightweight enough for our application. 
@@ -932,6 +938,18 @@ Hector worked mostly on the backend implementing Breakpoints and the middle serv
         Wikipedia.
         \emph{Not invented here}
         \url{http://en.wikipedia.org/wiki/Not_invented_here}
+        2013
+
+\bibitem{D3}
+        D3 docs.
+        \emph{Data-Driven Documents}
+        \url{d3js.org}
+        2013
+
+\bibitem{NIH}
+        Bootstrap docs.
+        \emph{Bootstrap}
+        \url{http://getbootstrap.com/}
         2013
 \end{thebibliography}
 
