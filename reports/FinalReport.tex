@@ -497,27 +497,30 @@ However, as the smaller font size sample is perfectly readable on the lab machin
 This was not part of our initial plan but after consulting with our project supervisor, we amended our list of extensions adding a `lecturer mode' to it.
 
 \subsection{System Design}
-
+\todo{Not sure what we should talk about here}
 \section{Implementation}
 
 \subsection{Overview}
-Deeva is written as web application in three parts.
+Deeva is written as a web application in three parts: frontend-server-backend.
 A Javascript frontend using Angular, Codemirror and D3, a Java backend using the jdi library to run and control the inferior program and finally a Python web server using Flask and py4j to tie the two together.
 
 \subsection{Deciding on a Web Front End}
-Beginning this project we knew we needed a graphical interface and were faced with a difficult decision.
-The obvious approach was a classic monolithic Java application\footnote{Java being the natural choice since it was the target language} however this had some disadvantages. 
+From the beginning of this project we knew that the tool would need a graphical interface and so, we were faced with a difficult decision.
+The obvious approach was a classic monolithic Java application\footnote{Java being the natural choice since it was the target language}, however, this had some disadvantages. 
 
-We have limited experience with desktop GUI programs, our previous experience with Java GUIs (as users) had been poor, 
-we knew we would need a lot of custom code for drawing the state UI which would be painful in Java and where worried about the 
+Firstly, we all have limited experience with desktop GUI programs which meant that it would have been more difficult for us to achieve our projects' goal state.
+Secondly, we knew we would need a lot of custom code for drawing the visual program state. 
+Rendering that in Java would have been a slow and painful process that could have distracted us from actually implementing our core functionalities. 
+Another reason for not choosing a desktop app is that we found Java UI to be visually unappealing for users.
+Finally, Java desktop applications can easily turn to unmanagable-sized projects mainly due to the fact that basic but powerful functionalities that \texttt{Html} offer would need to be reimplemented. 
+Also, the tool would end up being a complicated application that does not appeal to users which would defeat Tristan's goal of increasing the usage of debuggers among first years.
 
-In contrast we had a lot more web development experience.
-Having examined Python Tutor we knew that the custom UI we wanted would be easy to do in a web front end.
-
-Finally writing the project as a ``local web service" promotes a clear boundary between interface and backend allowing us to more effectively work on the project (people can work on front and back end simultaneously) and allowing either component to be easily swapped out.
-
-\todo{This became important when mid way through the project we realised that the resolution of the projectors in the lecture halls was too low to see both the code and the state on the same screen.}
-
+Therefore, after taking all the above mentioned arguments in consideration we decided to build Deeva as a web application as we have considerably more experience in web developpment that in desktop app developpment.
+Also, having examined Python Tutor we knew that the custom UI we wanted would be easy to do in a web front end by using well tested and well documented libraries.
+Finally, writing the project as a ``local web service" promotes a clear boundary between interface and backend allowing us to be more efficient at work on the project. 
+People can work on front and back end simultaneously and allows for either of the components to be easily swapped out. 
+Also, the decoupling between the frontend and backend component became important when mid way through the project we realised that the lecture room projectors have a low resolution that do not allow for the code and the graphical visual to fit on the same screen.
+The solution to this problem became very simple as it only requires to build a customed view for the projectors and connect it to the backend without any additional modifications.
 
 \subsection{Technology Choice}
 Deeva uses a range of technologies, some of which were new to us and some which were already familiar.
