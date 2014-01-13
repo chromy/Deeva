@@ -349,7 +349,8 @@ Another nice feature about Deeva is that it allow assertion(s) to be ignored whe
 In other word, when the {\tt Assertion} panel is disabled like in figure \ref{fig:assertionFeature}, Deeva will simply ignore the condition under the assertion statement.
 
 \subsection{Stdin/Stdout/Stderr}
-The tool allows users to visualise the \cmd{stdout} and \cmd{stderr} stream output displayed in the console pane and allows for the normal interactions with the\cmd{stdin} stream. Also, it displays the \cmd{stderr} stream in red so the user differentiates between \cmd{stdout} and \cmd{stderr} output. 
+The tool allows users to visualise the \cmd{stdout} and \cmd{stderr} stream output displayed in the console pane and allows for the normal interactions with the\cmd{stdin} stream. Also, it displays the \cmd{stderr} stream in red so the user differentiates between \cmd{stdout} and \cmd{stderr} output.
+We also notify the user when we're awaiting input from them, otherwise the debugger appears to look frozen.
 
 \subsection{Stop}
 We also have the ability to stop the inferior JVM without stopping the web server, and also restart the JVM at any time we wish.
