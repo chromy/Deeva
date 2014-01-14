@@ -310,15 +310,15 @@ function append_heap(heap_objects) {
         .selectAll("td")
         .data(function(d) { return d.array; })
         .enter().append("td");
-     
+
     var array_indexes = array_tables
-    .append("tr")
-    .attr("class", "indice")
-    .selectAll("td")
-    .data(function(d) { return d.array; })
-    .enter().append("td")
-        .text(function(d, i) { return i; });
-            
+        .append("tr")
+        .attr("class", "indice")
+        .selectAll("td")
+        .data(function(d) { return d.array; })
+        .enter().append("td")
+            .text(function(d, i) { return i; });
+
     populate_values(array_values);
 
     var string_tables = strings.append("table")
