@@ -1,10 +1,19 @@
 
-.stackFrameVar, .stackFrameValue{
+.stackFrameVar{
  min-width: 50px;
  height: 30px;
  font-weight: bold;
  font-size: 15px;
- background-color: #F5B142;
+ background-color: rgb(255, 153, 0);
+ border: 2px solid white;
+}
+
+.stackFrameValue{
+ min-width: 50px;
+ height: 30px;
+ font-weight: bold;
+ font-size: 15px;
+ background-color: rgb(255, 153, 0);
  border: 2px solid white;
 }
 
@@ -103,13 +112,10 @@ svg.connectLine path{
 }
 
 .pointer{
-  cursor: pointer;
-  display: block;
-  height: 31px;
+	cursor: pointer;
+	display: block;
+	height: 100%;
 }
 
 .pointer:hover{
-  outline-style: double;
-  outline-width: 2px;
-  outline-color: rgb(255,235,0);
 }

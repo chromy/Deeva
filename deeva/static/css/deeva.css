@@ -41,7 +41,7 @@ html, body {
 }
 
 #console {
-  color: orange;
+  color: rgb(255, 153, 0);
   font-size: 20px;
   margin-bottom: 2px;
 }
