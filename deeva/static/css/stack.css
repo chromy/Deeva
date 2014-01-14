@@ -48,16 +48,11 @@
     text-decoration: underline;
 }
 
-#heap{
-
-}
 .indice td, .value td {
   min-width: 30px;
+  height: 8px;
   text-align: center;
-}
-
-#value td {
-  height: 30px;
+  font-size: 8px;
 }
 
 table.STRING{
@@ -72,13 +67,10 @@ table.ARRAY td {
   border: 1px solid black;
 }
 
-#indice {
-  min-height: 10px;
-  font-size: 10px;
-}
 
-#value{
+.value{
   min-height: 22px;
+  height: 31px;
   font-size: 22px;
 }
 
@@ -106,8 +98,7 @@ svg.connectLine path{
 
 .heapRow td {
     min-width: 40px;
-    height: 31px;
-    font-size: 15px;
+    font-size: 13px;
     text-align: center;
 }
 

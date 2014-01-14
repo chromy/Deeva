@@ -304,6 +304,13 @@ function append_heap(heap_objects) {
             return d.object_type;
         });
 
+    var array_values = array_tables
+        .append("tr")
+        .attr("class", "value")
+        .selectAll("td")
+        .data(function(d) { return d.array; })
+        .enter().append("td");
+
     var array_indexes = array_tables
         .append("tr")
         .attr("class", "indice")
@@ -312,12 +319,6 @@ function append_heap(heap_objects) {
         .enter().append("td")
             .text(function(d, i) { return i; });
 
-    var array_values = array_tables
-        .append("tr")
-        .attr("class", "value")
-        .selectAll("td")
-        .data(function(d) { return d.array; })
-        .enter().append("td");
     populate_values(array_values);
 
     var string_tables = strings.append("table")
