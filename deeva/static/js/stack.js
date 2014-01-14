@@ -304,20 +304,21 @@ function append_heap(heap_objects) {
             return d.object_type;
         });
 
-    var array_indexes = array_tables
-        .append("tr")
-        .attr("class", "indice")
-        .selectAll("td")
-        .data(function(d) { return d.array; })
-        .enter().append("td")
-            .text(function(d, i) { return i; });
-
     var array_values = array_tables
         .append("tr")
         .attr("class", "value")
         .selectAll("td")
         .data(function(d) { return d.array; })
         .enter().append("td");
+     
+    var array_indexes = array_tables
+    .append("tr")
+    .attr("class", "indice")
+    .selectAll("td")
+    .data(function(d) { return d.array; })
+    .enter().append("td")
+        .text(function(d, i) { return i; });
+            
     populate_values(array_values);
 
     var string_tables = strings.append("table")
@@ -346,7 +347,7 @@ function append_heap(heap_objects) {
             return d.object_type;
         });
 
-    var pure_object_rows = pure_objects.selectAll("tr")
+    var pure_object_rows = pure_object_tables.selectAll("tr")
         .data(function(d) { return d.fields; })
         .enter()
             .append("tr");
