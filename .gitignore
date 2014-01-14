@@ -10,7 +10,9 @@
 .coverage
 docs/_build
 scripts/*.csv
+reports/auto/
 start_deeva
+*#*
 
 *.toc
 *.out
