@@ -1,27 +1,34 @@
 /* deeva css stylesheet */
 
-body {
+html, body {
+    height: 100%;
 }
-.row {
+
+.bottom {
+  width: 100%;
+  position: absolute;
+  top: 240px;
+  bottom: 25px;
+}
+
+.fullHeight {
   height: 100%;
 }
 
 #myContainer {
-  display:table;
   width: 100%;
-  margin-bottom: 20px;
+  height: 100%;
 }
 
 #code {
   position: relative;
   width: 50%;
-
 }
 
 #startBtn {
 	width: 38px;
 	height: 38px;
-	background: orange;
+	background: rgb(255, 184, 0);
 	border-radius: 7px;
 	box-shadow: 5px 5px 0px 0px #ccc;
 	margin-right: 5px;
@@ -34,8 +41,10 @@ body {
 }
 
 #console {
-  color: orange;
+  color: rgb(255, 184, 0);
   font-size: 20px;
+  margin-bottom: 2px;
+  font-weight: bold;
 }
 
 #arg-btn {
@@ -46,15 +55,27 @@ body {
 #header {
   padding-top: 10px;
   padding-bottom: 10px;
-  margin-bottom: 30px;
+  margin-bottom: 15px;
   font-size: 21px;
-  background-color: rgb(255, 153, 0);
+  background-color: rgb(255, 184, 0);
 }
 
 #header h1 {
   color: #ffffff;
   margin: 0;
   margin-left: 50px;
+  font-weight: bold;
+}
+
+#header p {
+  color: #ffffff;
+  margin: 0;
+  margin-top: 10px;
+  margin-left: 50px;
+}
+
+#headerRow {
+  width: 100%;
 }
 
 #buttons_container {
@@ -63,8 +84,6 @@ body {
   text-align: center;
   height: 56px;
   width: 290px;
-  margin-left: auto;
-  margin-right: auto;
 }
 
 .myButtons[disabled="disabled"] {
@@ -74,7 +93,7 @@ body {
 .myButtons {
   width: 50px;
   height: 50px;
-  background: orange;
+  background: rgb(255, 184, 0);
   border-radius: 7px;
   box-shadow: 5px 5px 0px 0px #ccc;
   transition: opacity 0.5s ease-in-out;
@@ -93,13 +112,16 @@ body {
   box-shadow: 3px 3px 0px 0px #ccc;
 }
 
+.myButtons:focus {
+  outline: none;
+}
+
 #state {
   text-align: center;
   font-size: 25px;
 }
 
 #heap_stack {
-  margin-top: 10px;
 }
 
 .myTabs {
@@ -134,22 +156,13 @@ body {
   cursor: pointer;
 }
 
-#stepOverBtn {
-  content:url("images/step_over.png");
-}
-
-#stepIntoBtn {
-  content:url("images/Step_into.png");
-}
-
-#stepReturnBtn {
-  content:url("images/step_return.png");
-}
-
 #visual {
   overflow:scroll;
   width: 100%;
-  height: 500px;
+  height: 100%;
+  border-style: solid;
+  border-width: 1px;
+  border-color: rgb(175, 164, 164);
 }
 
 #openFile {
@@ -188,7 +201,7 @@ body {
 }
 
 #codeInputPane {
-  height: 600px;
+  height: 100%;
 }
 
 a:hover {

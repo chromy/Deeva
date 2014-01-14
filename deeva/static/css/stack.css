@@ -1,73 +1,67 @@
 
-.stackFrameVar, .stackFrameValue{
- min-width: 50px;
+.stackFrameVarTable{
  height: 30px;
  font-weight: bold;
  font-size: 15px;
- background-color: #F5B142;
- border: 2px solid white;
+ background-color: rgb(255, 184, 0);
+ text-align: center;
 }
 
-.stackFrameValue{
- text-align: center;
+.stackFrameVar, .stackFrameValue{
+  min-width: 50px;
+  height: 30px;
+  border: 1px solid rgb(224, 224, 224);
 }
 
 #stack_td{
   margin-left: 20%;
 }
 
-#heap_td{
-}
-
 #stackHeader, #heapHeader{
  font-weight: bold;
- font-size: 30px;
+ font-size: 25px;
+ color: rgb(255, 184, 0);
+ margin-left: 10px;
 }
 
 .stackFrameHeader{
- font-weight: bold;
- font-size: 20px;
- padding-top: 15px;
- padding-bottom: 10px;
- 
+	font-weight: bold;
+	font-size: 16px;
+	margin-top: 13px;
+	background: rgb(224, 224, 224);
+	text-align: center;
+	border-radius: 5px 5px 0 0;
+	width: 101px;
 }
 
-.stackFrameVar{
- font-size: 22px;
+.typeLabel {
+	text-decoration: underline;
+	background: rgb(224, 224, 224);
+	text-align: center;
+	border-radius: 5px 5px 0 0;
+	width: 91px;
 }
 
-#heap{
- padding-top:50px;
-}
-#indice td, #value td{
-  min-width: 30px;
+.indice td, .value td {
   text-align: center;
 }
 
-#value td{
+#value td {
   height: 30px;
 }
 
-table.STRING{
-  background-color: #F3F781;
-  border-radius: 7px;
-}
-
 table.ARRAY{
-  background-color: yellow;
-}
-table.ARRAY td{
-  border: 1px solid black;
+  background-color: #C7FF9B;
 }
 
-#indice {
-  min-height: 10px;
-  font-size: 10px;
+table.STRING{
+  background-color: #FFF4BA;
+  border-radius: 0 5px 5px 5px;
 }
 
-#value{
-  min-height: 22px;
-  font-size: 22px;
+table.OBJECT{
+  background-color: rgb(177, 243, 252);
+  border-radius: 0 5px 5px 5px;
 }
 
 svg.connectLine path{
@@ -79,6 +73,56 @@ svg.connectLine path{
   fill: black;
 }
 
-.heapRow{
- margin-bottom: 7px;
+#heapBody {
+  margin-top: 12px;
+}
+
+.heapRow {
+	min-width: 80px;
+    margin: 5px;
+}
+
+.heapRow table {
+    border-collapse: collapse;
+}
+
+.STRING td {
+	min-width: 20px;
+}
+
+.STRING .value td {
+	font-size: 20px;
+}
+
+.STRING .indice td {
+	font-size: 10px;
+}
+
+.ARRAY td {
+	min-width: 30px;
+	border: 1px solid rgb(224, 224, 224);
+}
+
+.ARRAY .value td {
+	front-size: 20px;
+}
+
+.ARRAY .indice td {
+	font-size: 10px;
+}
+
+.OBJECT tr {
+	min-width: 30px;
+}
+
+.OBJECT td {
+	front-size: 20px;
+	text-align: center;
+	min-width: 60px;
+}
+
+.pointer{
+	cursor: pointer;
+	display: block;
+	height: 100%;
 }

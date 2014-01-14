@@ -11,11 +11,13 @@
   </ul>
   </div>
   <div class="col-md-3 enable-assertions">
+    <button type="button" class="btn btn-default btn-deeva-args">
     <span class="glyphicon"
           ng-class="{'glyphicon-ok': enableAssertions, enabled: enableAssertions,
                      'glyphicon-remove': !enableAssertions, disabled: !enableAssertions}"></span>
     <label ng-click="enableAssertions = !enableAssertions">
       Assertions <span ng-show="enableAssertions">Enabled</span><span ng-show="!enableAssertions">Disabled</span>
     </label>
+    </button>
   </div>
 </div>

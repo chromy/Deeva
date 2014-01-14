@@ -46,10 +46,17 @@
   </head>
 
   <body>
-    <div id="header">
-      <h1>Deeva</h1>
-    </div>
     <div class="container" id="myContainer">
+    <div id="header">
+      <div class="row" id="headerRow">
+        <div class="col-md-7">
+          <h1>Deeva</h1>
+        </div>
+        <div class="col-md-5">
+          <p>Current State: {{stateToPresent[currentState]}}</p>
+        </div>
+      </div>
+    </div>
       <div class="row">
         <div class="col-md-6" style="max-width:{{cmMaxWidth}}px">
           <!-- Arguments -->
@@ -63,50 +70,54 @@
               <div id="innerRunBtn" ng-show="currentState != 'NO_INFERIOR'"></div>
               <div id="innerRunBtnText" ng-show="currentState == 'NO_INFERIOR'">Run</div>
             </div>
-            <div type="image" class="myButtons" id="stopBtn"
+            <input type="image" class="myButtons" id="stopBtn"
                  ng-disabled="!(state.stopBtn.indexOf(currentState) > -1)"
-                 ng-click="stop()" title="Stop">
-              <div id="innerStopBtn"></div>
-            </div>
-            <div type="image" class="myButtons" id="stepOverBtn"
+                 ng-click="stop()" title="Stop" 
+                 src="/static/css/images/stop.png"/>
+            <input type="image" class="myButtons" id="stepOverBtn"
                  ng-disabled="!(state.stepOverBtn.indexOf(currentState) > -1)"
-                 ng-click="clickButton('stepOver')" title="Next">
-            </div>
-            <div type="image" class="myButtons" id="stepIntoBtn"
+                 ng-click="clickButton('stepOver')" title="Next"
+                 src="/static/css/images/step_over.png"/>
+            <input type="image" class="myButtons" id="stepIntoBtn"
                  ng-disabled="!(state.stepIntoBtn.indexOf(currentState) > -1)"
-                 ng-click="clickButton('stepInto')" title="Step Into">
-            </div>
-            <div type="image" class="myButtons" id="stepReturnBtn"
+                 ng-click="clickButton('stepInto')" title="Step Into"
+                 src="/static/css/images/step_into.png"/>
+            <input type="image" class="myButtons" id="stepReturnBtn"
                  ng-disabled="!(state.stepReturnBtn.indexOf(currentState) > -1)"
-                 ng-click="clickButton('stepReturn')" title="Step Out">
-            </div>
-          </div> <!-- end buttons container -->
+                 ng-click="clickButton('stepReturn')" title="Step Out"
+                 src="/static/css/images/step_return.png"/>
+            <!-- Package directive -->
 
-          <!-- Package directive -->
-          <deeva-package breadcrumb="breadcrumb" package-dir="package_dir"
+          </div> <!-- end buttons container -->
+            <deeva-package breadcrumb="breadcrumb" package-dir="package_dir"
                          current-class="current_class"
                          source-click="loadFile"></deeva-package>
+        </div> <!-- end col-md-6 -->
+        <div class="col-md-6">
+          
+          <p id="console">Console</p>
+          <div id="terminal"></div>
+        </div> <!-- end col-md-6 -->
+      </div> <!-- end row -->
+
+      <div class="row bottom">
+        <div class="col-md-6 fullHeight" style="max-width:{{cmMaxWidth}}px;">
           <!-- CodeMirror Instance -->
-          <div id="codeInputPane" class="outer-circle"></div>
+          <div id="codeInputPane" class="outer-circle fullHeight"></div>
         </div> <!-- end col-md-6 -->
 
         <!-- Begin Stack/Heap section, bring this into a new controller, easier to separate -->
-        <div class="col-md-6">
-          <div id="state">{{stateToPresent[currentState]}}</div>
-          <p id="console">Console</p>
-          <div id="terminal"></div>
-
-          <div class="row" id="heap_stack">
-            <div id="visual">
-              <div class="col-md-4">
+        <div class="col-md-6 fullHeight">
+          <div id="heap_stack" class="fullHeight">
+            <div id="visual" style="position: relative;">
+              <div style="float:left; width:33%;">
                 <div id="stack_td">
                   <div id="stack">
                     <div id="stackHeader">Stacks</div>
-
                   </div>
                 </div>
               </div>
-              <div class="col-md-8">
+              <div style="float:left; width: 66%;">
                 <div id="heap_td">
                    <div id="heap">
                      <div id="heapHeader">Heap</div>

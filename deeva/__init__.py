@@ -228,7 +228,7 @@ def make_api_response(f, *args, **kargs):
         # not in a suspend state.
 
         if result_dict.get('state') == "AWAITING_IO" or result_dict.get('premature_push'):
-            return jsonify(stdout=stdout, stderr=stderr, state=result.get('state'))
+            return jsonify(stdout=stdout, stderr=stderr, state=result_dict.get('state'))
 
         # XXX: fix
         result_dict['line_number'] -= 1

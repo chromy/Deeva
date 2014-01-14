@@ -278,7 +278,7 @@ function ($scope, $http, FileService, MiscService, $window) {
         }, {
             // Initial setup for terminal
             greetings: "",
-            height: 200,
+            height: 123,
             width: "100%",
             prompt: INITIAL_PROMPT,
         });
