@@ -129,11 +129,23 @@ function append_stacks(stack_selection, stack_variables) {
                 return "stackFrameValue_" + d.name;
         });
 
+    //jsPlumb.addEndpoint(".pointer", { endpoint: "Dot"});
     populate_values(stackValues);
 }
 
 function draw_arrows() {
     var objects = d3.select("#heapBody").selectAll("div");
+    console.log("in draw_arrows", objects);
+    var pointers = d3.selectAll(".pointer");
+
+    pointers.each(function(p) {
+       jsPlumb.addEndpoint(this, {
+        endpoint :["Dot", {radius: 5, cssClass: "stackPoint" }],
+        anchor: [0.5, 0.5, 1, 1]
+ 
+       });
+    });
+    
     objects.each(function(d) {
         var obj = this;
         var pointers = d3.selectAll(".pointer_to_" + obj.id);
@@ -219,7 +231,7 @@ function populate_values(selection) {
         .text(function(d) {
             return '⊥';
         });
-
+    console.log("object", objects);
     objects
         .on("click", function(d) {
             toggle_object_visibility(d.unique_id, d.type);
@@ -468,6 +480,5 @@ function is_empty_object(obj) {
 function get_class_name(type) {
     var s = type.split(".");
     var actual_type = s[s.length - 1];
-    console.log("aaaaaaaaaaaa", actual_type);
     return actual_type;
 }
