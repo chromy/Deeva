@@ -9,7 +9,7 @@ public class PasswordChecker {
 
 
     public static void main(String[] args) {
-        assert args.length != 2 : "Enter Username and Password";
+        assert args.length == 2 : "Enter Username and Password";
         String username = args[0];
         String password = args[1];
         
