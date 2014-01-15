@@ -2,7 +2,8 @@
 
 import os, webbrowser, subprocess
 import deeva
-from deeva import app, debug, file_examiner
+from deeva import app, debug, file_examiner, events
+import signal, sys
 
 class ConfigError(Exception):
     pass
@@ -77,5 +78,12 @@ if __name__ == "__main__":
     parser.add_argument("args", nargs="*", help="Command line arguments for the debuggee program");
     # TODO: Look properly into how Java expects/uses it's arguments
     args = parser.parse_args()
+
+    def signal_handler(signal, frame):
+        print 'You pressed Ctrl+C!'
+        dispatcher = events.DeevaEventDispatcher()
+        dispatcher.exit()
+        sys.exit(0)
+    signal.signal(signal.SIGINT, signal_handler)
 
     main(args.java_class, args)
