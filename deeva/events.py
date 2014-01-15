@@ -42,7 +42,7 @@ class DeevaEventDispatcher(object):
         self.deeva_main.send('deeva_java', event_obj=DeevaOutputEvent("stdout", stdout))
 
     def awaiting_io_event(self):
-        """"""
+        """Awaiting I/O"""
         self.deeva_main.send('deeva_java', event_obj=DeevaAwaitingIOEvent())
 
     def error(self):
