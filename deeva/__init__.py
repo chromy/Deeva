@@ -14,7 +14,7 @@ app.source_code = {}
 
 @app.route("/closeConnection", methods=['POST']) # take in a con id
 def closeCon():
-    args = request.getJson()
+    args = request.get_json()
     uid = args.get('unique_id', None)
     from blinker import signal
     sig = signal(uid)

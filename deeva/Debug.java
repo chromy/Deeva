@@ -262,7 +262,7 @@ public class Debug extends EventHandlerBase {
             System.err.println("Type: " + type.name());
 
             /* Get an overview for the variable */
-
+            
             JVMValue jvmValue
                 = ValueProcessor.processVariable(var, variableValue,
                                                  finder.getAllClasses()

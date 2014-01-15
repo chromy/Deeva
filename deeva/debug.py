@@ -25,12 +25,16 @@ class ResponseQueue(object):
 
     def get(self):
         # This call is blocking
-        string = response_queue.get(True)
+        string = self.response_queue.get(True)
         self.response_queue.task_done()
         return string
 
     class Java:
         implements = ['deeva.DebugResponseQueue']
+
+# Globals
+out_queue = ResponseQueue()
+deeva_event_dispatcher = events.DeevaEventDispatcher()
 
 # fix
 def launch_gateway(port=0, jarpath="", classpath="", javaopts=[],
@@ -68,6 +72,19 @@ def create_java_debugger(classpath, prog, debuggee_classpaths,
 
     java_args = ListConverter().convert(debuggee_args, gateway._gateway_client)
 
+    # Create output queue thread listener
+    def output_dispatcher():
+        while True:
+            output_type, string = out_queue.get()
+            print "output dispatcher", repr(string)
+            output_signal = signal('deeva_main')
+            output_signal.send('deeva_java', event_obj=events.DeevaOutputEvent(output_type, string))
+
+    output_thread = Thread(target=output_dispatcher)
+    output_thread.daemon = True
+    output_thread.start()
+
+    # Create debugger instance
     debugger = JavaProxy(gateway.jvm.deeva.Debug(out_queue, debuggee_classpaths,
                                                  debuggee_sourcepaths, prog, ea,
                                                  java_args, deeva_event_dispatcher))
@@ -120,10 +137,6 @@ def pop_output():
     stdout = ''.join([msg for stream, msg in results if stream == "stdout"])
     stderr = ''.join([msg for stream, msg in results if stream == "stderr"])
     return stdout, stderr
-
-# Globals
-out_queue = ResponseQueue()
-deeva_event_dispatcher = events.DeevaEventDispatcher()
 
 def enable_py4j_logging():
     logger = logging.getLogger("py4j")

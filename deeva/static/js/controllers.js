@@ -15,7 +15,7 @@ function ($scope, $http, FileService, MiscService, $window) {
      */
 
     $scope.currentLine = -1;
-    $scope.breakPoints = new Array();
+    $scope.breakPoints = [];
     $scope.showArguments = true;
     $scope.currentPrompt = "";
     $scope.stateToPresent = {"STASIS" : "Program paused",
@@ -55,8 +55,8 @@ function ($scope, $http, FileService, MiscService, $window) {
         var checkID = window.setInterval(function () {
             $http.get("ping").error(function(status) {
                 $('#exitModal').modal({
-                     keyboard: false,
-                     backdrop: 'static'
+                    keyboard: false,
+                    backdrop: 'static'
                 });
                 console.error("Server Dead.");
                 clearInterval(checkID);
@@ -143,8 +143,8 @@ function ($scope, $http, FileService, MiscService, $window) {
                 console.debug("CurrentLine: ", $scope.currentLine);
 
                 /*if (prev_line >= 0) {
-                    $scope.codeMirror.removeLineClass(prev_line, "background", BACK_CLASS);
-                }*/
+                  $scope.codeMirror.removeLineClass(prev_line, "background", BACK_CLASS);
+                  }*/
 
                 if ($scope.currentLine > 0) {
                     var cls = $scope.currentState == "NO_INFERIOR" ? PASSIVE_BACK_CLASS : BACK_CLASS;
@@ -153,14 +153,6 @@ function ($scope, $http, FileService, MiscService, $window) {
 
                 $scope.codeMirror.setCursor($scope.currentLine);
             });
-        }
-
-        if (data.stdout) {
-            printToTerminal(data.stdout, false);
-        }
-
-        if (data.stderr) {
-            printToTerminal(data.stderr, true);
         }
     }
 
@@ -246,12 +238,12 @@ function ($scope, $http, FileService, MiscService, $window) {
             });
     }
 
-    function printToTerminal(output, isErr) {
-        if (!output) {
+    function printToTerminal(lines, isErr) {
+        if (!lines) {
             return;
         }
 
-        var lines = output.split("\n");
+        //var lines = output.split("\n");
         for (var index = 0; index < lines.length; index++) {
             var line = lines[index];
             if (index == lines.length - 1) {
@@ -323,21 +315,12 @@ function ($scope, $http, FileService, MiscService, $window) {
         });
     };
 
-    $scope.getObj = function(unique_id, typestring) {
-        $http.post('/getHeapObject', {'unique_id': parseInt(unique_id), 'typestring': typestring})
-            .success(function(data) {
-                console.log(data);
-            })
-            .error(function() {
-                console.error("Error getting object");
-            });
-    };
-
     $scope.listen = function() {
         $scope.eventStream = new EventSource("/stream");
         $scope.eventStream.onerror = function(e) {
             console.error("We encountered an error whilst connecting to the EventSource, closing now.");
-            evtSource.close();
+            $scope.eventStream.close();
+            $scope.eventStream = null;
         };
 
         /* Closing the connection should we navigate away */
@@ -370,7 +353,6 @@ function ($scope, $http, FileService, MiscService, $window) {
             var stack_heap = JSON.parse(json_string);
             console.debug("stack_heap:", stack_heap);
 
-            //TODO: Call update stack/heap view
             updateStack(stack_heap);
         });
 
@@ -380,7 +362,6 @@ function ($scope, $http, FileService, MiscService, $window) {
             var state = JSON.parse(json_string);
             console.debug("suspended:", state);
 
-            //TODO: Call update state
             updateState(state);
         });
 
@@ -393,14 +374,16 @@ function ($scope, $http, FileService, MiscService, $window) {
         });
 
         $scope.eventStream.addEventListener("stderr", function(e) {
-            var stderr = e.data;
+            var stderr_json_array = e.data;
+            var stderr = JSON.parse(stderr_json_array);
             console.debug("stderr:", stderr);
             printToTerminal(stderr, false);
         });
 
         $scope.eventStream.addEventListener("stdout", function(e) {
-            var stdout = e.data;
-            console.debug("stdout:", stdout)
+            var stdout_json_array = e.data;
+            var stdout = JSON.parse(stdout_json_array);
+            console.debug("stdout:", stdout);
             printToTerminal(stdout, false);
         });
     };
