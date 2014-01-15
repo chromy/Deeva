@@ -14,9 +14,11 @@ def older_than(path_a, path_b):
 def classes_that_look_out_of_date(source_path):
     classes = list(files_with_extension(source_path, '.class'))
     sources = list(files_with_extension(source_path, '.java'))
-    classes.sort()
-    sources.sort()
-    old_files = [s for c, s in zip(classes, sources) if not older_than(s, c)]
+    classes_without_ext = set((c[:-len('.class')] for c in classes))
+    sources_without_ext = set((c[:-len('.java')] for c in sources))
+    matched_files = classes_without_ext.intersection(sources_without_ext)
+    pairs = [(f + '.java', f + '.class') for f in matched_files]
+    old_files = [s for s, c in pairs if not older_than(s, c)]
     return old_files
 
 
