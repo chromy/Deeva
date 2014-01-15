@@ -5,7 +5,8 @@ public class PasswordChecker {
     private static boolean validate(String userPassword) {
         //String salt = "xyzzy";
         String password = "xyzzy";
-        return password == userPassword;
+        boolean correct = password == userPassword;
+        return correct;
     }
 
 
@@ -13,7 +14,7 @@ public class PasswordChecker {
         assert args.length == 2 : "Enter Username and Password";
         String username = args[0];
         String userPassword = args[1];
-        
+
         if (validate(userPassword)) {
             System.out.println("Welcome " + username + "!");
         } else {
