@@ -389,7 +389,7 @@ function ($scope, $http, FileService, MiscService, $window) {
             var stderr_json_array = e.data;
             var stderr = JSON.parse(stderr_json_array);
             console.debug("stderr:", stderr);
-            printToTerminal(stderr, false);
+            printToTerminal(stderr, true);
         });
 
         $scope.eventStream.addEventListener("stdout", function(e) {
