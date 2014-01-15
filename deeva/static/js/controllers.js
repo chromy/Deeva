@@ -7,6 +7,14 @@ var CHS_PER_LINE = 80;
 var BACK_CLASS = "CodeMirror-activeline-background";
 var PASSIVE_BACK_CLASS = "CodeMirror-passiveline-background";
 
+function updateStack(stacks) {
+    /* Update the stack and the heap */
+    var stack_heap = {'stacks' : stacks};
+    if (stack_heap.stacks) {
+        main(stack_heap);
+    }
+}
+
 // Currently is a whole document controller
 deeva.controller('SimpleController', ['$scope', '$http', 'FileService', 'MiscService', '$window',
 function ($scope, $http, FileService, MiscService, $window) {
@@ -29,6 +37,8 @@ function ($scope, $http, FileService, MiscService, $window) {
     $scope.args = [];
     $scope.enableAssertions = false;
     $scope.subscriber_id = "";
+    $scope.errorTitle = "";
+    $scope.errorMessage = "";
 
     // ZZZ: Maybe should be in a directive thing somewhere
     /* Define what states that the given button is allowed to be enabled in */
@@ -51,9 +61,12 @@ function ($scope, $http, FileService, MiscService, $window) {
     init();
     startLivenessCheck();
 
+
     function startLivenessCheck() {
         var checkID = window.setInterval(function () {
             $http.get("ping").error(function(status) {
+                $scope.errorTitle = "Deeva Error";
+                $scope.errorMessage = "The Deeva server has closed."
                 $('#exitModal').modal({
                     keyboard: false,
                     backdrop: 'static'
@@ -63,6 +76,7 @@ function ($scope, $http, FileService, MiscService, $window) {
             });
         }, 1000);
     }
+
 
     /* Click handler for the debug buttons */
     $scope.clickButton = function(destination, assertions, argument_array) {
@@ -85,14 +99,6 @@ function ($scope, $http, FileService, MiscService, $window) {
                 console.error("There is an error on " + destination + "()");
             });
     };
-
-    function updateStack(stacks) {
-        /* Update the stack and the heap */
-        var stack_heap = {'stacks' : stacks};
-        if (stack_heap.stacks) {
-            main(stack_heap);
-        }
-    }
 
     function updateState(data) {
         if (!data) {
@@ -166,7 +172,6 @@ function ($scope, $http, FileService, MiscService, $window) {
             .error(function(status) {
                 console.error("There is an error getting the state.");
             });
-        //$scope.listen();
     }
 
     /* Initialze codeMirror and display it */
@@ -367,6 +372,13 @@ function ($scope, $http, FileService, MiscService, $window) {
 
         $scope.eventStream.addEventListener("absent_information", function(e) {
             console.debug("Absent information for class: ", e.data);
+            var classname = e.data;
+            $scope.errorTitle = "Java Error";
+            $scope.errorMessage = "Please compile the class: " + classname + " with debug symbols to be able to use the debugger.";
+            $('#exitModal').modal({
+                keyboard: false,
+                backdrop: 'static'
+            });
         });
 
         $scope.eventStream.addEventListener("awaiting_io", function(e) {
@@ -386,10 +398,93 @@ function ($scope, $http, FileService, MiscService, $window) {
             console.debug("stdout:", stdout);
             printToTerminal(stdout, false);
         });
+
+        $scope.eventStream.addEventListener("error", function(e) {
+            console.debug("Errors");
+            var json_string = e.data;
+            var error_obj = JSON.parse(error_obj);
+            $scope.errorTitle = error_obj.title;
+            $scope.errorMessage = error_obj.message;
+            $('#exitModal').modal({
+                keyboard: false,
+                backdrop: 'static'
+            });
+        });
     };
 
     $scope.listen();
 
+}]);
+
+deeva.controller('StackController', ['$scope', '$http', function($scope, $http) {
+    $scope.subscriber_id = "";
+    $scope.errorTitle = "";
+    $scope.errorMessage = "";
+    $scope.listen = function() {
+        $scope.eventStream = new EventSource("/stackStream");
+        $scope.eventStream.onerror = function(e) {
+            console.error("We encountered an error whilst connecting to the EventSource, closing now.");
+            $scope.eventStream.close();
+            $scope.eventStream = null;
+        };
+
+        /* Closing the connection should we navigate away */
+        window.onbeforeunload = function() {
+            console.debug("Sending request to close the connection");
+            $http.post("/closeConnection", {unique_id: $scope.subscriber_id})
+                .success(function(data) {
+                    console.debug(data);
+                });
+        };
+
+        /*
+         *  Event Listener's
+         */
+
+        /* close event */
+        $scope.eventStream.addEventListener("close", function(e) {
+            console.debug("Closing the event stream");
+        });
+
+        /* event to receive the subscriber_id */
+        $scope.eventStream.addEventListener("subscriber_id", function(e) {
+            $scope.subscriber_id = e.data;
+            console.debug("Subscriber ID:", $scope.subscriber_id);
+        });
+
+        /* event to receive the stack/heap data */
+        $scope.eventStream.addEventListener("stack_heap", function(e) {
+            var json_string = e.data;
+            var stack_heap = JSON.parse(json_string);
+            console.debug("stack_heap:", stack_heap);
+
+            updateStack(stack_heap);
+        });
+
+        $scope.eventStream.addEventListener("absent_information", function(e) {
+            var classname = e.data;
+            console.debug("Absent information for class: ", classname);
+            $scope.errorTitle = "Java Error";
+            $scope.errorMessage = "Please compile the class: " + classname + " with debug symbols to be able to use the debugger.";
+            $('#exitModal').modal({
+                keyboard: false,
+                backdrop: 'static'
+            });
+        });
+
+        $scope.eventStream.addEventListener("error", function(e) {
+            console.debug("Errors");
+            var json_string = e.data;
+            var error_obj = JSON.parse(error_obj);
+            $scope.errorTitle = error_obj.title;
+            $scope.errorMessage = error_obj.message;
+            $('#exitModal').modal({
+                keyboard: false,
+                backdrop: 'static'
+            });
+        });
+    };
+    $scope.listen();
 }]);
 
 // Return a div that contain a marker for breakpoint.

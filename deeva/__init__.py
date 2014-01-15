@@ -38,6 +38,13 @@ def index():
     except Exception as e:
         print "got something here"
 
+@app.route("/stack")
+def stack():
+    try:
+        return app.send_static_file('stack.html')
+    except Exception as e:
+        print "got something here in stack"
+
 @app.route("/breakPoints")
 def breakPoints():
     bkpts = app.debugger.getBreakpoints()
@@ -214,6 +221,7 @@ def make_api_response(f, *args, **kargs):
                 )
     else:
         stdout, stderr = debug.pop_output()
+        print "Printing from Make API:", stdout
 
         # Serialise the Java Object using the gson library and deserialise it
         # into a Python Dictionary

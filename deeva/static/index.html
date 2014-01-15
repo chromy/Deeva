@@ -72,7 +72,7 @@
             </div>
             <input type="image" class="myButtons" id="stopBtn"
                  ng-disabled="!(state.stopBtn.indexOf(currentState) > -1)"
-                 ng-click="stop()" title="Stop" 
+                 ng-click="stop()" title="Stop"
                  src="/static/css/images/stop.png"/>
             <input type="image" class="myButtons" id="stepOverBtn"
                  ng-disabled="!(state.stepOverBtn.indexOf(currentState) > -1)"
@@ -94,7 +94,7 @@
                          source-click="loadFile"></deeva-package>
         </div> <!-- end col-md-6 -->
         <div class="col-md-6">
-          
+
           <p id="console">Console</p>
           <div id="terminal"></div>
         </div> <!-- end col-md-6 -->
@@ -137,10 +137,10 @@
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h4 class="modal-title">Deeva Exited</h4>
+            <h4 class="modal-title">{{errorTitle}}</h4>
           </div>
           <div class="modal-body">
-            <p>The Deeva server has closed.</p>
+            <p>{{errorMessage}}</p>
           </div>
         </div><!-- /.modal-content -->
       </div><!-- /.modal-dialog -->
