@@ -347,7 +347,7 @@ function append_heap(heap_objects) {
             return d.object_type;
         });
 
-    var pure_object_rows = pure_objects.selectAll("tr")
+    var pure_object_rows = pure_object_tables.selectAll("tr")
         .data(function(d) { return d.fields; })
         .enter()
             .append("tr");

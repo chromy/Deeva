@@ -1,6 +1,8 @@
 package deeva.io;
 
 import deeva.DebugResponseQueue;
+import deeva.DeevaEventDispatcher;
+import deeva.OutputDispatcher;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,6 +14,7 @@ public class StreamRedirectThread extends Thread {
     private static final int BUFFER_SIZE = 2048;
     private final Reader in;
     private final DebugResponseQueue resQueue;
+    private final OutputDispatcher dispatcher;
 
     /**
      * Set up for copy.
@@ -21,8 +24,10 @@ public class StreamRedirectThread extends Thread {
      * @param resQueue Output queue that we're pushing stdout/err to.
      */
     public StreamRedirectThread(String name, InputStream in,
-                                DebugResponseQueue resQueue) {
+                                DebugResponseQueue resQueue,
+                                OutputDispatcher dispatcher) {
         super(name);
+        this.dispatcher = dispatcher;
         this.in = new InputStreamReader(in);
         this.resQueue = resQueue;
         setPriority(Thread.MAX_PRIORITY - 1);
@@ -38,6 +43,7 @@ public class StreamRedirectThread extends Thread {
             int count;
             while ((count = in.read(cbuf, 0, BUFFER_SIZE)) >= 0) {
                 String s = new String(cbuf, 0, count);
+                //dispatcher.dispatchOutput(s);
                 resQueue.put(getName(), s);
             }
         } catch (IOException exc) {

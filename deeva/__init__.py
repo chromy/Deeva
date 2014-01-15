@@ -12,33 +12,24 @@ app.package_dict = {}
 app.sources = {}
 app.source_code = {}
 
-@app.route("/closeConnection") # take in a con id
+@app.route("/closeConnection", methods=['POST']) # take in a con id
 def closeCon():
-    # Replace with conn id
+    args = request.get_json()
+    uid = args.get('unique_id', None)
     from blinker import signal
-    sig = signal('deeva')
-
-    sig.send('closeCon', event="close", data="hello")
-    return "Close request send"
-
-
-@app.route("/postData/<event>/<data>")
-def postData(event, data):
-    print "Post Data:", data
-    from blinker import signal
-    sig = signal('deeva')
-    sig.send('postData', event=event, data={'abc': data})
-    return "All Good"
-
-@app.route("/streamHTML")
-def stream_html():
-    return app.send_static_file('test.html')
+    sig = signal(uid)
+    sig.send('closeCon', event_obj=events.DeevaExitEvent())
+    return "Close request recieved"
 
 @app.route("/stream")
 def stream():
-    subscriber = debug.DeevaEventSubscriber(["deeva"])
+    subscriber = events.DeevaEventSubscriber(events.DEEVA_DEFAULT_STREAM)
+    return Response(subscriber.event_stream(), mimetype="text/event-stream")
 
-
+@app.route("/stackStream")
+def stack_stream():
+    subscriber = events.DeevaEventSubscriber(events.DEEVA_STACK_HEAP_STREAM)
+    return Response(subscriber.event_stream(), mimetype="text/event-stream")
 
 @app.route("/")
 def index():
@@ -46,6 +37,13 @@ def index():
         return app.send_static_file('index.html')
     except Exception as e:
         print "got something here"
+
+@app.route("/stack")
+def stack():
+    try:
+        return app.send_static_file('stack.html')
+    except Exception as e:
+        print "got something here in stack"
 
 @app.route("/breakPoints")
 def breakPoints():
@@ -223,6 +221,7 @@ def make_api_response(f, *args, **kargs):
                 )
     else:
         stdout, stderr = debug.pop_output()
+        print "Printing from Make API:", stdout
 
         # Serialise the Java Object using the gson library and deserialise it
         # into a Python Dictionary

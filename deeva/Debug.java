@@ -262,7 +262,7 @@ public class Debug extends EventHandlerBase {
             System.err.println("Type: " + type.name());
 
             /* Get an overview for the variable */
-
+            
             JVMValue jvmValue
                 = ValueProcessor.processVariable(var, variableValue,
                                                  finder.getAllClasses()
@@ -690,11 +690,21 @@ public class Debug extends EventHandlerBase {
 
         errThread = new StreamRedirectThread("stderr",
                 process.getErrorStream(),
-                this.outQueue);
+                this.outQueue, new OutputDispatcher() {
+            @Override
+            public void dispatchOutput(String s) {
+                dispatcher.stderr(s);
+            }
+        });
 
         outThread = new StreamRedirectThread("stdout",
                 process.getInputStream(),
-                this.outQueue);
+                this.outQueue, new OutputDispatcher() {
+            @Override
+            public void dispatchOutput(String s) {
+                dispatcher.stdout(s);
+            }
+        });
 
         inThread = new StdInRedirectThread("stdin",
                 process.getOutputStream(), this.inQueue);

@@ -7,15 +7,23 @@ var CHS_PER_LINE = 80;
 var BACK_CLASS = "CodeMirror-activeline-background";
 var PASSIVE_BACK_CLASS = "CodeMirror-passiveline-background";
 
+function updateStack(stacks) {
+    /* Update the stack and the heap */
+    var stack_heap = {'stacks' : stacks};
+    if (stack_heap.stacks) {
+        main(stack_heap);
+    }
+}
+
 // Currently is a whole document controller
-deeva.controller('SimpleController', ['$scope', '$http', 'FileService', 'MiscService',
-function ($scope, $http, FileService, MiscService) {
+deeva.controller('SimpleController', ['$scope', '$http', 'FileService', 'MiscService', '$window',
+function ($scope, $http, FileService, MiscService, $window) {
     /*
      * Initialise scope variables
      */
 
     $scope.currentLine = -1;
-    $scope.breakPoints = new Array();
+    $scope.breakPoints = [];
     $scope.showArguments = true;
     $scope.currentPrompt = "";
     $scope.stateToPresent = {"STASIS" : "Program paused",
@@ -28,6 +36,9 @@ function ($scope, $http, FileService, MiscService) {
     $scope.current_class = "";
     $scope.args = [];
     $scope.enableAssertions = false;
+    $scope.subscriber_id = "";
+    $scope.errorTitle = "";
+    $scope.errorMessage = "";
 
     // ZZZ: Maybe should be in a directive thing somewhere
     /* Define what states that the given button is allowed to be enabled in */
@@ -50,18 +61,22 @@ function ($scope, $http, FileService, MiscService) {
     init();
     startLivenessCheck();
 
+
     function startLivenessCheck() {
         var checkID = window.setInterval(function () {
             $http.get("ping").error(function(status) {
+                $scope.errorTitle = "Deeva Error";
+                $scope.errorMessage = "The Deeva server has closed."
                 $('#exitModal').modal({
-                     keyboard: false,
-                     backdrop: 'static'
+                    keyboard: false,
+                    backdrop: 'static'
                 });
                 console.error("Server Dead.");
                 clearInterval(checkID);
             });
         }, 1000);
     }
+
 
     /* Click handler for the debug buttons */
     $scope.clickButton = function(destination, assertions, argument_array) {
@@ -77,7 +92,8 @@ function ($scope, $http, FileService, MiscService) {
         $http.post(destination, {args: argument_array, ea: assertions})
             .success(function(data) {
                 console.log(data);
-                updateState(data);
+                console.debug("Commented out updating state, line 68");
+                //updateState(data);
             })
             .error(function(status) {
                 console.error("There is an error on " + destination + "()");
@@ -88,6 +104,8 @@ function ($scope, $http, FileService, MiscService) {
         if (!data) {
             return;
         }
+
+        console.debug("Updating State");
 
         /* Update the arguments, if we don't get anything, stick with previous value */
         $scope.args = data.arguments || $scope.args;
@@ -104,7 +122,7 @@ function ($scope, $http, FileService, MiscService) {
         $scope.enableAssertions = data.enable_assertions;
 
         /* Update the codemirror instance and the stack/heap visuals */
-        if (data.line_number && data.current_class) {
+        if (data.line_number != undefined && data.current_class) {
             /* Set the breadcrumb (if need be) */
             var new_breadcrumb = data.current_class.split(".");
             var last_index = new_breadcrumb.length - 1;
@@ -115,7 +133,7 @@ function ($scope, $http, FileService, MiscService) {
             $scope.breadcrumb = new_breadcrumb;
 
             /* Remove the line highlights */
-            $scope.codeMirror.removeLineClass($scope.currentLine, "background");
+            $scope.codeMirror.removeLineClass($scope.currentLine - 1, "background");
 
             /* Update the current class */
             $scope.current_class = data.current_class;
@@ -128,33 +146,19 @@ function ($scope, $http, FileService, MiscService) {
                 var current_line = data.line_number;
 
                 $scope.currentLine = current_line;
+                console.debug("CurrentLine: ", $scope.currentLine);
 
                 /*if (prev_line >= 0) {
-                    $scope.codeMirror.removeLineClass(prev_line, "background", BACK_CLASS);
-                }*/
+                  $scope.codeMirror.removeLineClass(prev_line, "background", BACK_CLASS);
+                  }*/
 
-                if ($scope.currentLine >= 0) {
+                if ($scope.currentLine > 0) {
                     var cls = $scope.currentState == "NO_INFERIOR" ? PASSIVE_BACK_CLASS : BACK_CLASS;
-                    $scope.codeMirror.addLineClass($scope.currentLine, 'background', cls);
+                    $scope.codeMirror.addLineClass($scope.currentLine - 1, 'background', cls);
                 }
 
                 $scope.codeMirror.setCursor($scope.currentLine);
             });
-
-            // refactor - plus fix heap!
-            /* Update the stack and the heap */
-            var stack_heap = {'stacks' : data.stacks};
-            if (data.stacks) {
-                main(stack_heap);
-            }
-        }
-
-        if (data.stdout) {
-            printToTerminal(data.stdout, false);
-        }
-
-        if (data.stderr) {
-            printToTerminal(data.stderr, true);
         }
     }
 
@@ -162,7 +166,8 @@ function ($scope, $http, FileService, MiscService) {
     function init() {
         $http.get('getCurrentState')
             .success(function(data) {
-                updateState(data);
+                console.debug("Commented out updateState line 154");
+                //updateState(data);
             })
             .error(function(status) {
                 console.error("There is an error getting the state.");
@@ -238,12 +243,12 @@ function ($scope, $http, FileService, MiscService) {
             });
     }
 
-    function printToTerminal(output, isErr) {
-        if (!output) {
+    function printToTerminal(lines, isErr) {
+        if (!lines) {
             return;
         }
 
-        var lines = output.split("\n");
+        //var lines = output.split("\n");
         for (var index = 0; index < lines.length; index++) {
             var line = lines[index];
             if (index == lines.length - 1) {
@@ -282,7 +287,8 @@ function ($scope, $http, FileService, MiscService) {
         $http.post('pushInput', {message:input+'\n'})
             .success(function(data) {
                 console.log(data)
-                updateState(data);
+                console.debug("Commenting out updating State line 276");
+                //updateState(data);
             })
             .error(function(status) {
                 console.error("There is an error sending input " + status);
@@ -314,15 +320,171 @@ function ($scope, $http, FileService, MiscService) {
         });
     };
 
-    $scope.getObj = function(unique_id, typestring) {
-        $http.post('/getHeapObject', {'unique_id': parseInt(unique_id), 'typestring': typestring})
-            .success(function(data) {
-                console.log(data);
-            })
-            .error(function() {
-                console.error("Error getting object");
+    $scope.listen = function() {
+        $scope.eventStream = new EventSource("/stream");
+        $scope.eventStream.onerror = function(e) {
+            console.error("We encountered an error whilst connecting to the EventSource, closing now.");
+            $scope.eventStream.close();
+            $scope.eventStream = null;
+        };
+
+        /* Closing the connection should we navigate away */
+        window.onbeforeunload = function() {
+            console.debug("Sending request to close the connection");
+            $http.post("/closeConnection", {unique_id: $scope.subscriber_id})
+                .success(function(data) {
+                    console.debug(data);
+                });
+        };
+
+        /*
+         *  Event Listener's
+         */
+
+        /* close event */
+        $scope.eventStream.addEventListener("close", function(e) {
+            console.debug("Closing the event stream");
+        });
+
+        /* event to receive the subscriber_id */
+        $scope.eventStream.addEventListener("subscriber_id", function(e) {
+            $scope.subscriber_id = e.data;
+            console.debug("Subscriber ID:", $scope.subscriber_id);
+        });
+
+        /* event to receive the stack/heap data */
+        $scope.eventStream.addEventListener("stack_heap", function(e) {
+            var json_string = e.data;
+            var stack_heap = JSON.parse(json_string);
+            console.debug("stack_heap:", stack_heap);
+
+            updateStack(stack_heap);
+        });
+
+        /* event to receive the state data when the debuggee jvm gets suspended */
+        $scope.eventStream.addEventListener("suspended", function(e) {
+            var json_string = e.data;
+            var state = JSON.parse(json_string);
+            console.debug("suspended:", state);
+
+            updateState(state);
+        });
+
+        $scope.eventStream.addEventListener("absent_information", function(e) {
+            console.debug("Absent information for class: ", e.data);
+            var classname = e.data;
+            $scope.errorTitle = "Java Error";
+            $scope.errorMessage = "Please compile the class: " + classname + " with debug symbols to be able to use the debugger.";
+            $('#exitModal').modal({
+                keyboard: false,
+                backdrop: 'static'
             });
+        });
+
+        $scope.eventStream.addEventListener("awaiting_io", function(e) {
+            console.debug("AWAITING_IO, data: ", e.data);
+        });
+
+        $scope.eventStream.addEventListener("stderr", function(e) {
+            var stderr_json_array = e.data;
+            var stderr = JSON.parse(stderr_json_array);
+            console.debug("stderr:", stderr);
+            printToTerminal(stderr, false);
+        });
+
+        $scope.eventStream.addEventListener("stdout", function(e) {
+            var stdout_json_array = e.data;
+            var stdout = JSON.parse(stdout_json_array);
+            console.debug("stdout:", stdout);
+            printToTerminal(stdout, false);
+        });
+
+        $scope.eventStream.addEventListener("error", function(e) {
+            console.debug("Errors");
+            var json_string = e.data;
+            var error_obj = JSON.parse(error_obj);
+            $scope.errorTitle = error_obj.title;
+            $scope.errorMessage = error_obj.message;
+            $('#exitModal').modal({
+                keyboard: false,
+                backdrop: 'static'
+            });
+        });
     };
+
+    $scope.listen();
+
+}]);
+
+deeva.controller('StackController', ['$scope', '$http', function($scope, $http) {
+    $scope.subscriber_id = "";
+    $scope.errorTitle = "";
+    $scope.errorMessage = "";
+    $scope.listen = function() {
+        $scope.eventStream = new EventSource("/stackStream");
+        $scope.eventStream.onerror = function(e) {
+            console.error("We encountered an error whilst connecting to the EventSource, closing now.");
+            $scope.eventStream.close();
+            $scope.eventStream = null;
+        };
+
+        /* Closing the connection should we navigate away */
+        window.onbeforeunload = function() {
+            console.debug("Sending request to close the connection");
+            $http.post("/closeConnection", {unique_id: $scope.subscriber_id})
+                .success(function(data) {
+                    console.debug(data);
+                });
+        };
+
+        /*
+         *  Event Listener's
+         */
+
+        /* close event */
+        $scope.eventStream.addEventListener("close", function(e) {
+            console.debug("Closing the event stream");
+        });
+
+        /* event to receive the subscriber_id */
+        $scope.eventStream.addEventListener("subscriber_id", function(e) {
+            $scope.subscriber_id = e.data;
+            console.debug("Subscriber ID:", $scope.subscriber_id);
+        });
+
+        /* event to receive the stack/heap data */
+        $scope.eventStream.addEventListener("stack_heap", function(e) {
+            var json_string = e.data;
+            var stack_heap = JSON.parse(json_string);
+            console.debug("stack_heap:", stack_heap);
+
+            updateStack(stack_heap);
+        });
+
+        $scope.eventStream.addEventListener("absent_information", function(e) {
+            var classname = e.data;
+            console.debug("Absent information for class: ", classname);
+            $scope.errorTitle = "Java Error";
+            $scope.errorMessage = "Please compile the class: " + classname + " with debug symbols to be able to use the debugger.";
+            $('#exitModal').modal({
+                keyboard: false,
+                backdrop: 'static'
+            });
+        });
+
+        $scope.eventStream.addEventListener("error", function(e) {
+            console.debug("Errors");
+            var json_string = e.data;
+            var error_obj = JSON.parse(error_obj);
+            $scope.errorTitle = error_obj.title;
+            $scope.errorMessage = error_obj.message;
+            $('#exitModal').modal({
+                keyboard: false,
+                backdrop: 'static'
+            });
+        });
+    };
+    $scope.listen();
 }]);
 
 // Return a div that contain a marker for breakpoint.
