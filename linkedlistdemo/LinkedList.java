@@ -2,31 +2,13 @@ package linkedlistdemo;
 
 import java.util.Scanner;
 
-public class LinkedList<T> {
-    private LinkedList<T> next;
-    private T elem;
-
-    public void setElem(T elem) {
-        this.elem = elem;
-    }
+public class LinkedList {
     
-    public void setNext(LinkedList<T> next) {
-        this.next = next;
-    }
-
-    public T elem() {
-        return elem;
-    }
-
-    private LinkedList<T> next() {
-      return next;
-    }
-    
-    public static int sum(LinkedList<Integer> l) {
-        if (l == null) {
+    public static int sum(Node head) {
+        if (head == null) {
             return 0;
         }
-        return l.elem() + sum(l.next());
+        return head.getElem() + sum(head.getNext());
     }
 
     public static void main(String[] args) {
@@ -37,9 +19,9 @@ public class LinkedList<T> {
             "How many element you want the linked list to have?");
         int number = sc.nextInt();
 
-        LinkedList<Integer> next = null;
+        Node next = null;
         for(int i = number;i>0;i--) {
-          LinkedList<Integer> tmp = new LinkedList<Integer>();
+          Node tmp = new Node();
           tmp.setElem(i);
           tmp.setNext(next);
           next = tmp;
