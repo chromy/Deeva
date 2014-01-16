@@ -140,3 +140,7 @@ svg.connectLine path{
 	text-align: center;
 	line-height: 7px;
 }
+
+#visual{
+    min-height: 500px;
+}
