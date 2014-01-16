@@ -374,7 +374,7 @@ function ($scope, $http, FileService, MiscService, $window) {
             console.debug("Absent information for class: ", e.data);
             var classname = e.data;
             $scope.errorTitle = "Java Error";
-            $scope.errorMessage = "Please compile the class: " + classname + " with debug symbols to be able to use the debugger.";
+            $scope.errorMessage = "Please compile the class: " + classname + " with debug symbols i.e javac " + classname +  " -g.";
             $('#exitModal').modal({
                 keyboard: false,
                 backdrop: 'static'
@@ -465,7 +465,7 @@ deeva.controller('StackController', ['$scope', '$http', function($scope, $http) 
             var classname = e.data;
             console.debug("Absent information for class: ", classname);
             $scope.errorTitle = "Java Error";
-            $scope.errorMessage = "Please compile the class: " + classname + " with debug symbols to be able to use the debugger.";
+            $scope.errorMessage = "Please compile the class: " + classname + " with debug symbols i.e javac " + classname +  " -g.";
             $('#exitModal').modal({
                 keyboard: false,
                 backdrop: 'static'
