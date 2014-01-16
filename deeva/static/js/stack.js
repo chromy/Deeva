@@ -145,12 +145,13 @@ function draw_arrows() {
        jsPlumb.addEndpoint(this, {
         endpoint :["Dot", {radius: 5, cssClass: "stackPoint" }],
         anchor: [0.5, 0.5, 1, 1]
- 
+
        });
     });
-    
+
     objects.each(function(d) {
         var obj = this;
+        console.debug("object thing", d);
         var pointers = d3.selectAll(".pointer_to_" + obj.id);
         pointers.each(function(p) {
             jsPlumb.connect({

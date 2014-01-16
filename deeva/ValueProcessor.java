@@ -16,7 +16,7 @@ public class ValueProcessor {
 
         JVMValue jvmValue = processValueOverview(variableValue, sources);
         if (jvmValue == null) {
-            jvmValue = new JVMValue(localVariable.typeName());
+            jvmValue = new NullValue(localVariable.typeName());
         }
         jvmValue.setName(localVariable.name());
 

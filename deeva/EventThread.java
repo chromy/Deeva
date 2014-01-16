@@ -38,6 +38,8 @@ public class EventThread extends Thread {
                 break;
             } catch (Exception e) {
                 // I'M SO SORRY
+                System.err.println(e.getMessage());
+                e.printStackTrace();
             }
         }
     }
