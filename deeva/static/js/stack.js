@@ -367,7 +367,12 @@ function append_heap(heap_objects) {
               
     var object_panel_heading = object_panels.append("div")
         .attr("class", "panel-heading")
-        .text("OBJECT");
+        .text(function(d, i) {
+            if (is_of_type(d, type_object)) {
+                return get_class_name(d.type);
+            }
+            return d.object_type;
+        });
         
     var pure_object_tables = object_panels.append("table")
         .attr("class", function(d, i) {
