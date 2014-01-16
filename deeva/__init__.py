@@ -60,15 +60,21 @@ def breakPoints():
 
 @app.route("/stepOver", methods=['POST'])
 def step_over():
-    return make_api_response(app.debugger.stepOver)
+    app.debugger.stepOver()
+    return jsonify(success=True)
+    #return make_api_response(app.debugger.stepOver)
 
 @app.route("/stepInto", methods=['POST'])
 def step_into():
-    return make_api_response(app.debugger.stepInto)
+    app.debugger.stepInto()
+    return jsonify(success=True)
+    #return make_api_response(app.debugger.stepInto)
 
 @app.route("/stepReturn", methods=['POST'])
 def step_return():
-    return make_api_response(app.debugger.stepReturn)
+    app.debugger.stepReturn()
+    return jsonify(success=True)
+    #return make_api_response(app.debugger.stepReturn)
 
 @app.route("/setBreakpoint", methods=['POST'])
 def set_breakpoint():
@@ -101,7 +107,9 @@ def run():
     else:
         print 'Continuing program...'
 
-    return make_api_response(app.debugger.run)
+    app.debugger.run()
+    return jsonify(success=True)
+    #return make_api_response(app.debugger.run)
 
 def form_package_dict(sources):
     # Get cached version of the package_dict, we only need to do this once
@@ -175,14 +183,17 @@ def get_code(classname):
 
 @app.route("/getCurrentState")
 def get_state():
-    return make_api_response(app.debugger.getState)
+    app.debugger.sendState()
+    return jsonify(success=True)
+    #return make_api_response(app.debugger.sendState)
 
 @app.route("/pushInput", methods=["POST"])
 def push_input():
     args = request.get_json()
     message = args.get('message')
-
-    return make_api_response(app.debugger.putStdInMessage, message)
+    app.debugger.putStdInMessage(message)
+    return jsonify(success=True)
+    #return make_api_response(app.debugger.putStdInMessage, message)
 
 @app.route("/getHeapObjects", methods=["POST"])
 def get_heap_objects():

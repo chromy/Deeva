@@ -15,14 +15,12 @@ import deeva.exception.WrongStateError;
 import deeva.io.StdInRedirectThread;
 import deeva.io.StreamRedirectThread;
 import deeva.processor.JVMValue;
-import deeva.processor.ReferenceValue;
 import deeva.sourceutil.SourceClassFinder;
 
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.Semaphore;
 
 public class Debug extends EventHandlerBase {
     public static enum State {
@@ -41,7 +39,6 @@ public class Debug extends EventHandlerBase {
     private BlockingQueue<String> inQueue;
     private DebugResponseQueue outQueue;
     private State state = State.NO_INFERIOR;
-    private Semaphore sema;
     private List<StackFrameMeta> stacks;
     private Map<Breakpoint, BreakpointRequest> breakpoints;
     private SourceClassFinder finder;
@@ -66,7 +63,6 @@ public class Debug extends EventHandlerBase {
         this.breakpoints = new HashMap<Breakpoint, BreakpointRequest>();
         this.outQueue = outQueue;
         this.inQueue = new LinkedBlockingQueue<String>();
-        this.sema = new Semaphore(0);
         this.state = State.NO_INFERIOR;
         this.finder = new SourceClassFinder(classPaths, sourcePaths);
         this.currentClass = mainClass;
@@ -132,7 +128,7 @@ public class Debug extends EventHandlerBase {
         return this.finder.getAllSources();
     }
 
-    public DeevaState putStdInMessage(String msg) throws
+    public void putStdInMessage(String msg) throws
             InterruptedException {
         /* Possibly more validation if necessary */
 
@@ -142,21 +138,13 @@ public class Debug extends EventHandlerBase {
 
         /* If we are awaiting_io */
         if (state == State.AWAITING_IO) {
+            /* Is this the behaviour that we want? */
             state = State.RUNNING;
-            sema.acquire();
-            DeevaState state = getState();
-            /* TODO: Fire event somewhere else */
-            return state;
         }
-
-        /* If we are not awaiting io, i.e. premature push of input data,
-        then just continue */
 
         DeevaStateBuilder dsb = new DeevaStateBuilder();
         dsb.setState(state);
         DeevaState state = dsb.create();
-        state.premature_push = true;
-        return state;
     }
 
     public JVMValue getHeapObject(Long uniqueRefID, String refType) {
@@ -274,14 +262,12 @@ public class Debug extends EventHandlerBase {
         return localVariables;
     }
 
-    public DeevaState run() throws InterruptedException {
+    public void run() throws InterruptedException {
         vm.resume();
         state = State.RUNNING;
-        sema.acquire();
-        return getState();
     }
 
-    public DeevaState getState() {
+    public void sendState() {
         DeevaStateBuilder dsb = new DeevaStateBuilder();
         dsb.setState(state);
         dsb.setLineNumber(line_number);
@@ -294,34 +280,27 @@ public class Debug extends EventHandlerBase {
         /* TODO: rename function to send state, and make it return void */
         dispatcher.stack_heap_object_event(deevaState.getStacks(), null);
         dispatcher.suspended_event(deevaState);
-        return deevaState;
     }
 
-    public DeevaState stepInto() throws InterruptedException {
+    public void stepInto() throws InterruptedException {
         if (state != State.STASIS) {
             throw new WrongStateError("Should be in STASIS state.");
         }
         step(StepRequest.STEP_INTO);
-        sema.acquire();
-        return getState();
     }
 
-    public DeevaState stepReturn() throws InterruptedException {
+    public void stepReturn() throws InterruptedException {
         if (state != State.STASIS) {
             throw new WrongStateError("Should be in STASIS state.");
         }
         step(StepRequest.STEP_OUT);
-        sema.acquire();
-        return getState();
     }
 
-    public DeevaState stepOver() throws InterruptedException {
+    public void stepOver() throws InterruptedException {
         if (state != State.STASIS) {
             throw new WrongStateError("Should be in STASIS state.");
         }
         step(StepRequest.STEP_OVER);
-        sema.acquire();
-        return getState();
     }
 
     public boolean setBreakpoint(String clas, int lineNum) {
@@ -466,10 +445,11 @@ public class Debug extends EventHandlerBase {
             ClassNotLoadedException
     {
         System.err.println(event.location().method() + "@" + event.location().lineNumber());
+        state = State.STASIS;
         stacks = getStacks(event);
         /* Delete the request */
         getRequestManager().deleteEventRequest(event.request());
-        sema.release();
+        sendState();
     }
 
     @Override
@@ -479,7 +459,7 @@ public class Debug extends EventHandlerBase {
         /* Try to extract the stack variables */
         state = State.STASIS;
         stacks = getStacks(event);
-        sema.release();
+        sendState();
     }
 
     @Override
@@ -522,8 +502,7 @@ public class Debug extends EventHandlerBase {
                             /* Change the state that we're in */
                             state = State.AWAITING_IO;
                             dispatcher.awaiting_io_event();
-                            /* Release the semaphore that is being held */
-                            sema.release();
+                            sendState();
                         }
 
                     } catch (InvalidTypeException e) {
@@ -591,7 +570,7 @@ public class Debug extends EventHandlerBase {
             System.err.println("Could not get all output.");
         }
         state = State.NO_INFERIOR;
-        sema.release();
+        sendState();
     }
 
     public String getStateName() {
@@ -636,32 +615,6 @@ public class Debug extends EventHandlerBase {
 
         return sb.toString();
     }
-
-    public static void main(String[] args) {
-        System.out.println("Null List:");
-        System.out.println(Debug.stringListJoin(null, "-"));
-
-        System.out.println("Empty List:");
-        String[] a = {};
-        List<String> list = new LinkedList<String>(Arrays.asList(a));
-        System.out.println(Debug.stringListJoin(list, "-"));
-
-        System.out.println("List with null elem");
-        a = new String[]{null};
-        list = new LinkedList<String>(Arrays.asList(a));
-        System.out.println(Debug.stringListJoin(list, "-"));
-
-        System.out.println("List with normal elems");
-        a = new String[]{"a", "b", "c"};
-        list = new LinkedList<String>(Arrays.asList(a));
-        System.out.println(Debug.stringListJoin(list, "-"));
-
-        System.out.println("List with null and normal elems");
-        a = new String[]{"a", null, "c", "d"};
-        list = new LinkedList<String>(Arrays.asList(a));
-        System.out.println(Debug.stringListJoin(list, "-"));
-    }
-
 
     private VirtualMachine launchTarget(String programName,
                                         List<String> programArgs) {
