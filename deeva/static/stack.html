@@ -3,13 +3,12 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Deeva - {{current_class}}</title>
+    <title>Deeva</title>
 
     <!-- Common css -->
     <link rel="stylesheet" href="static/css/common.css">
     <link rel="stylesheet" href="static/css/separateStack.css">
     <link rel="stylesheet" href="static/css/bootstrap.min.css">
-    <link rel="stylesheet" href="static/css/stack.css">
     <link rel="stylesheet" href="static/css/package.css">
     <link rel="stylesheet" href="static/css/arguments.css">
 
@@ -41,37 +40,29 @@
   <body>
     <div class="container" id="myContainer">
       <div id="header">
-        <div class="row" id="headerRow">
-          <div class="col-md-7">
             <h1>Deeva</h1>
-          </div>
-        </div> <!-- row -->
       </div> <!-- header -->
 
       <div class="row">
-        <div class="col-md-12">
           <!-- Begin Stack/Heap section, bring this into a new controller, easier to separate -->
-          <div class="col-md-6 fullHeight">
-            <div id="heap_stack" class="fullHeight">
-              <div id="visual" style="position: relative;">
-                <div style="float:left; width:33%;">
-                  <div id="stack_td">
-                    <div id="stack">
-                      <div id="stackHeader">Stacks</div>
-                    </div>
-                  </div>
-                </div>
-                <div style="float:left; width: 66%;">
-                  <div id="heap_td">
-                    <div id="heap">
-                      <div id="heapHeader">Heap</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div> <!-- end heap/stack div -->
-          </div> <!-- end Stack/Heap... section -->
-        </div>
+            <div id="heap_stack">
+              <div id="visual">
+                 <div class="col-md-4">
+                    <div id="stack_td">
+                      <div id="stack">
+                        <div id="stackHeader">Stacks</div>
+                      </div> <!-- end of stack -->
+                    </div> <!-- end of stack_td -->
+                 </div><!-- end of col-md-6 -->
+                 <div class="col-md-8">
+                   <div id="heap_td">
+                     <div id="heap">
+                       <div id="heapHeader">Heap</div>
+                     </div> <!-- end of heap -->
+                   </div> <!-- end of heap_td -->
+                 </div> <!-- end of col-md-6 -->
+               </div> <!-- end of visual -->
+             </div> <!-- end of heap_stack -->
       </div>
     </div> <!-- container -->
 
