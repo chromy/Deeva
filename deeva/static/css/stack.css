@@ -149,3 +149,7 @@ svg.connectLine path{
   border-width: 1px;
   border-color: rgb(175, 164, 164);
 }
+
+#heap_td {
+	margin-left: 40px;
+}
