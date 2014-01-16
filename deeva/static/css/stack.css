@@ -7,10 +7,18 @@
  text-align: center;
 }
 
+.stackFrameVarTable tr{
+	border-top: 1px solid #f5f5f5;
+}
+
 .stackFrameVar, .stackFrameValue{
   min-width: 50px;
   height: 30px;
-  border: 1px solid rgb(224, 224, 224);
+  border-right: 1px solid rgb(224, 224, 224);
+}
+
+.stackFrame{
+	margin-top: 13px;
 }
 
 #stack_td{
@@ -26,12 +34,7 @@
 
 .stackFrameHeader{
 	font-weight: bold;
-	font-size: 16px;
-	margin-top: 13px;
-	background: rgb(224, 224, 224);
-	text-align: center;
-	border-radius: 5px 5px 0 0;
-	width: 101px;
+	
 }
 
 .typeLabel {
@@ -51,17 +54,15 @@
 }
 
 table.ARRAY{
-  background-color: #F3F3F3;
+  background-color: #B5FF93;
 }
 
 table.STRING{
   background-color: #FFF4BA;
-  border-radius: 0 5px 5px 5px;
 }
 
 table.OBJECT{
   background-color: rgb(177, 243, 252);
-  border-radius: 0 5px 5px 5px;
 }
 
 svg.connectLine path{
@@ -88,6 +89,7 @@ svg.connectLine path{
 
 .STRING td {
 	min-width: 20px;
+	font-weight: bold;
 }
 
 .STRING .value td {
@@ -99,9 +101,7 @@ svg.connectLine path{
 }
 
 .ARRAY td {
-	min-width: 30px;
-	border-right: 1px solid #dff0d8;
-	border-left: 1px solid #dff0d8;
+	width: 30px;
 	font-weight: bold;
 }
 
@@ -121,6 +121,7 @@ svg.connectLine path{
 	front-size: 20px;
 	text-align: center;
 	min-width: 60px;
+    font-weight: bold;
 }
 
 .pointer{
@@ -132,4 +133,10 @@ svg.connectLine path{
 .panel{
     display: inline-block;
     min-width: 20px;
+}
+
+.panel-heading{
+	height: 25px;
+	text-align: center;
+	line-height: 7px;
 }

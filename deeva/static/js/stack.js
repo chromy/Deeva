@@ -85,9 +85,12 @@ function append_stacks(stack_selection, stack_variables) {
             return "stack" + i;
         });
 
+    var stack_panel = stack.append("div")
+        .attr("class", "panel panel-default");
+        
     // name of the stack
-    var stackHeaders = stack.append("div")
-        .attr("class", "stackFrameHeader")
+    var stackHeaders = stack_panel.append("div")
+        .attr("class", "panel-heading")
         .attr("id", function(d, i) {
             return "stackHeader" + i;
         })
@@ -96,7 +99,7 @@ function append_stacks(stack_selection, stack_variables) {
         });
 
     // variable table
-    var stackTables = stack.append("table")
+    var stackTables = stack_panel.append("table")
         .attr("class", "stackFrameVarTable")
         .attr("id", function(d, i) {
             return "stackVarTable" + i;
@@ -331,7 +334,14 @@ function append_heap(heap_objects) {
 
     populate_values(array_values);
 
-    var string_tables = strings.append("table")
+    var string_panels = strings.append("div")
+        .attr("class", "panel panel-warning");
+              
+    var string_panel_heading = string_panels.append("div")
+        .attr("class", "panel-heading")
+        .text("STRING");
+        
+    var string_tables = string_panels.append("table")
         .attr("class", function(d, i) {
             return d.object_type;
         });
@@ -351,8 +361,15 @@ function append_heap(heap_objects) {
         .data(function(d) { return d.string; })
         .enter().append("td")
             .text(function(d, i) { return i; });
-
-    var pure_object_tables = pure_objects.append("table")
+    
+    var object_panels = pure_objects.append("div")
+        .attr("class", "panel panel-info");
+              
+    var object_panel_heading = object_panels.append("div")
+        .attr("class", "panel-heading")
+        .text("OBJECT");
+        
+    var pure_object_tables = object_panels.append("table")
         .attr("class", function(d, i) {
             return d.object_type;
         });
