@@ -276,6 +276,7 @@ function append_heap(heap_objects) {
             .attr("class", "heapRow");
 
     // label each object according to type
+    /*
     objects.append("div")
         .attr("class", "typeLabel")
         .text(function(d, i) {
@@ -284,6 +285,7 @@ function append_heap(heap_objects) {
             }
             return d.object_type;
         });
+     */
 
     // we have three diffrent types of things, arrays, strings and 'real'
     // objects
@@ -299,7 +301,15 @@ function append_heap(heap_objects) {
         return is_of_type(d, type_object);
     });
 
-    var array_tables = arrays.append("table")
+    var array_panels = arrays.append("div")
+        .attr("class", "panel panel-success");
+        
+        
+    var array_panel_heading = array_panels.append("div")
+        .attr("class", "panel-heading")
+        .text("ARRAY");
+        
+    var array_tables = array_panels.append("table")
         .attr("class", function(d, i) {
             return d.object_type;
         });

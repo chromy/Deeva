@@ -51,7 +51,7 @@
 }
 
 table.ARRAY{
-  background-color: #C7FF9B;
+  background-color: #F3F3F3;
 }
 
 table.STRING{
@@ -100,7 +100,9 @@ svg.connectLine path{
 
 .ARRAY td {
 	min-width: 30px;
-	border: 1px solid rgb(224, 224, 224);
+	border-right: 1px solid #dff0d8;
+	border-left: 1px solid #dff0d8;
+	font-weight: bold;
 }
 
 .ARRAY .value td {
@@ -125,4 +127,9 @@ svg.connectLine path{
 	cursor: pointer;
 	display: block;
 	height: 100%;
+}
+
+.panel{
+    display: inline-block;
+    min-width: 20px;
 }
