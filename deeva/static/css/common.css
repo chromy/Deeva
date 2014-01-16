@@ -5,6 +5,8 @@
   margin-bottom: 15px;
   font-size: 21px;
   background-color: rgb(255, 184, 0);
+  margin-left: -15px;
+  margin-right: -15px;
 }
 #header h1 {
   color: #ffffff;
