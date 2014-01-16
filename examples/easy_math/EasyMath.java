@@ -6,5 +6,6 @@ public class EasyMath {
 	int b = 2;
 	int c = a + b;
 	System.out.println("The answer is: c = "+c);
+        System.out.println("The answer is: c = fdsafesdf" + "esfddsdfg" + "gsfdsfsdf"+c);
     }
 }

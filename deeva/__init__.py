@@ -38,6 +38,13 @@ def index():
     except Exception as e:
         print "got something here"
 
+@app.route("/code")
+def code():
+    try:
+        return app.send_static_file('code.html')
+    except Exception as e:
+        print "got something here in stack"
+
 @app.route("/stack")
 def stack():
     try:

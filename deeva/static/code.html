@@ -1,0 +1,133 @@
+<!doctype html>
+<html ng-app="deeva" ng-controller="SimpleController">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deeva - {{current_class}}</title>
+
+    <!-- Common css -->
+    <link rel="stylesheet" href="static/css/separateCode.css">
+    <link rel="stylesheet" href="static/css/common.css">
+    <link rel="stylesheet" href="static/css/deeva.css">
+    <link rel="stylesheet" href="static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="static/css/stack.css">
+    <link rel="stylesheet" href="static/css/package.css">
+    <link rel="stylesheet" href="static/css/arguments.css">
+
+    <!-- D3 -->
+    <script src="static/lib/d3/d3.v3.min.js"></script>
+
+    <!-- codemirror.net online code editor -->
+    <script src="static/lib/jquery/jquery-1.10.2.min.js"></script>
+    <script src="static/lib/codemirror/codemirror-compressed.js"></script>
+    <script src="static/lib/codemirror/clike.js"></script>
+    <link href="static/css/lectureRoomCodemirror.css" rel="stylesheet">
+
+    <!-- jquery-terminal -->
+    <script src="static/lib/jquery-terminal/jquery.mousewheel-min.js"></script>
+    <script src="static/lib/jquery-terminal/jquery.terminal-0.7.7.min.js"></script>
+    <link href="static/css/jquery.terminal.css" rel="stylesheet">
+
+    <!-- AngularJS -->
+    <script src="static/lib/angular/angular.min.js"></script>
+
+    <!-- Bootstrap tab.js -->
+    <script src="static/js/bootstrap.js"></script>
+
+    <!-- Controller, Directives, Services-->
+    <script src="static/js/controllers.js"></script>
+    <script src="static/js/directives.js"></script>
+    <script src="static/js/services.js"></script>
+
+    <!-- Stack -->
+    <script src="static/js/stack.js"></script>
+
+    <!-- jsPlumber -->
+    <script src="static/lib/jsplumber/jquery.jsPlumb-1.5.3.js"></script>
+
+  </head>
+
+  <body>
+    <div class="container" id="myContainer">
+    <div id="header">
+      <div class="row" id="headerRow">
+        <div class="col-md-7">
+          <h1>Deeva</h1>
+        </div>
+        <div class="col-md-5">
+          <p>Current State: {{stateToPresent[currentState]}}</p>
+        </div>
+      </div>
+    </div>
+      <div class="row">
+        <div class="col-md-5" style="max-width:{{cmMaxWidth}}px">
+          <!-- Arguments -->
+          <deeva-args args="args" enable-assertions="enableAssertions"></deeva-args>
+
+          <!-- Buttons Container -->
+          <div id="buttons_container">
+            <div type="image" class="myButtons" id="runBtn"
+                 ng-click="clickButton('run', enableAssertions, args)" title="Continue"
+                 ng-disabled="!(state.runBtn.indexOf(currentState) > -1)">
+              <div id="innerRunBtn" ng-show="currentState != 'NO_INFERIOR'"></div>
+              <div id="innerRunBtnText" ng-show="currentState == 'NO_INFERIOR'">Run</div>
+            </div>
+            <input type="image" class="myButtons" id="stopBtn"
+                 ng-disabled="!(state.stopBtn.indexOf(currentState) > -1)"
+                 ng-click="stop()" title="Stop"
+                 src="/static/css/images/stop.png"/>
+            <input type="image" class="myButtons" id="stepOverBtn"
+                 ng-disabled="!(state.stepOverBtn.indexOf(currentState) > -1)"
+                 ng-click="clickButton('stepOver')" title="Next"
+                 src="/static/css/images/step_over.png"/>
+            <input type="image" class="myButtons" id="stepIntoBtn"
+                 ng-disabled="!(state.stepIntoBtn.indexOf(currentState) > -1)"
+                 ng-click="clickButton('stepInto')" title="Step Into"
+                 src="/static/css/images/step_into.png"/>
+            <input type="image" class="myButtons" id="stepReturnBtn"
+                 ng-disabled="!(state.stepReturnBtn.indexOf(currentState) > -1)"
+                 ng-click="clickButton('stepReturn')" title="Step Out"
+                 src="/static/css/images/step_return.png"/>
+            <!-- Package directive -->
+
+          </div> <!-- end buttons container -->
+            <deeva-package breadcrumb="breadcrumb" package-dir="package_dir"
+                         current-class="current_class"
+                         source-click="loadFile"></deeva-package>
+         
+          <div>
+          <p id="console">Console</p>
+          <div id="terminal"></div>
+          </div>
+        </div> <!-- end col-md-6 -->
+        
+        <div class="col-md-7 fullHeight" style="max-width:{{cmMaxWidth}}px;">
+          <!-- CodeMirror Instance -->
+          <div id="codeInputPane" class="outer-circle fullHeight"></div>
+        </div> <!-- end col-md-6 -->
+      </div> <!-- row -->
+
+      
+        
+
+
+      
+    </div> <!-- end container -->
+
+
+    <div class="modal fade" id="exitModal" tabindex="-1" role="dialog" aria-labelledby="exitModel" aria-hidden="true" style="display: none;">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">{{errorTitle}}</h4>
+          </div>
+          <div class="modal-body">
+            <p>{{errorMessage}}</p>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+  </body>
+
+</html>

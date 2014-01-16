@@ -1,0 +1,13 @@
+
+.row{
+   height: 100%;
+}
+
+.terminal{
+   min-height: 300px;
+   font-size: 25px;
+}
+
+.CodeMirror{
+     font-size: 25px;
+}
