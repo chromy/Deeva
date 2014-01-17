@@ -168,7 +168,7 @@ function is_primative(d) {
 }
 
 function is_null(d) {
-    return d === undefined;
+    return d === undefined || d.value == "null";
 }
 
 function is_object(d) {
