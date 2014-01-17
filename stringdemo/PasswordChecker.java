@@ -3,7 +3,6 @@ package stringdemo;
 public class PasswordChecker {
 
     private static boolean validate(String userPassword) {
-        //String salt = "xyzzy";
         String password = "xyzzy";
         boolean correct = password == userPassword;
         return correct;

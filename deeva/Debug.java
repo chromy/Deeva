@@ -250,7 +250,7 @@ public class Debug extends EventHandlerBase {
             System.err.println("Type: " + type.name());
 
             /* Get an overview for the variable */
-            
+
             JVMValue jvmValue
                 = ValueProcessor.processVariable(var, variableValue,
                                                  finder.getAllClasses()
@@ -455,6 +455,13 @@ public class Debug extends EventHandlerBase {
     @Override
     public void breakpointEvent(BreakpointEvent event) throws ClassNotLoadedException, IncompatibleThreadStateException {
         System.err.println(event.location().method() + "@" + event.location().lineNumber());
+
+        // If user is stepping then ignore breakpoint 
+        //
+        if (getRequestManager().stepRequests().size() != 0) {
+            vm.resume();
+            return;
+        }
 
         /* Try to extract the stack variables */
         state = State.STASIS;
