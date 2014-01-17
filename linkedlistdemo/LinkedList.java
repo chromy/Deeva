@@ -26,6 +26,9 @@ public class LinkedList {
           tmp.setNext(next);
           next = tmp;
         }
-        System.out.println("The total is " + sum(next));
+
+        int sum = sum(next);
+
+        System.out.println("The total is " + sum);
     }
 }
