@@ -20,14 +20,14 @@ $ make build
 
 Debugging a program
 --------
-In order to debug any program, you need to compile the java source code with "-g flag"
+In order to debug any program, you need to compile java source code with "-g flag"
 e.g. 
 ```bash
 $ javac -g linkedlistdemo/*.java
 ```
-To start debugging, run the command "./run_deeva.py" with java class which cntain main method e.g.
+To start debugging, run the command "./run_deeva.py" with java class which contains main method e.g.
 ```bash
-$ ./run_deeva.py linkedlistdemo/LinkedList.class
+$ ./run_deeva.py linkedlistdemo.LinkedList
 ```
 
 Running Tests
