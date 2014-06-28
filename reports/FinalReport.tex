@@ -394,19 +394,13 @@ We can also quit the inferior program at any time we wish using the stop button.
 \label{fig:stateFeature}
 \end{figure}
 Deeva can be in different states when debugging a program. The current state of Deeva is shown in the header of the front-end. Each state is described in more detail below.
-\subsubsection{Program not running}
-<<<<<<< HEAD
-This state indicates that Deeva has just been started from the command line and program is not yet running.
-In this state, user can inspect various files and set breakpoints accordingly. 
-\subsubsection{Program is running}
-When user runs the program, Deeva is in the running state until it starts waiting for input or reaches a breakpoint or terminates. 
-=======
+\subsubsection{Program is not running}
+When user runs the program, Deeva is in the running state until it starts waiting for input or reaches a breakpoint or terminates.
 This state indicates that Deeva is just executed from the command line and program has not been run yet. In this state, user can inspect various files and set breakpoints accordingly.
 \subsubsection{Program is running}
 When user runs the program, Deeva is in the running state until it reaches a breakpoint.
 it might also be waiting for input, or the program is terminated.
 Running state could be hardly seen sometimes as program reaches paused state very quickly.
->>>>>>> f2bd451f75773f8ec58b924ee71eabec8ddaa40a
 \subsubsection{Program paused}
 Once Deeva reaches a breakpoint, it is in a paused state. During this state, user may choose various actions e.g. continue the program, execute the next line or inspect the current state of the stack and heap.
 \subsubsection{Awaiting I/O}
